@@ -1,0 +1,25 @@
+<Project>
+  <PropertyGroup>
+    <Platforms>AnyCPU</Platforms>
+    <TargetFramework>net10.0</TargetFramework>
+
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+    <IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
+
+    <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath>
+    <UseArtifactsOutput>true</UseArtifactsOutput>
+
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="$(MSBuildProjectName).Tests;$(MSBuildProjectName).Bench"/>
+  </ItemGroup>
+</Project>
