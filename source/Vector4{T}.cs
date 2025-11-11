@@ -245,11 +245,7 @@ public partial struct Vector4<T>(T x, T y, T z, T w) where T : unmanaged, IBinar
     {
         unsafe
         {
-            if (sizeof(T) == 8)
-            {
-                return Vector64.Sqrt(Vector64.Create(DistanceSquared(vec1, vec2))).ToScalar();
-            }
-            else if (sizeof(T) == 4)
+            if (sizeof(T) <= 8)
             {
                 return Vector64.Sqrt(Vector64.Create(DistanceSquared(vec1, vec2))).ToScalar();
             }
@@ -274,11 +270,7 @@ public partial struct Vector4<T>(T x, T y, T z, T w) where T : unmanaged, IBinar
     {
         unsafe
         {
-            if (sizeof(T) == 8)
-            {
-                return Vector64.Sqrt(Vector64.Create(LengthSquared())).ToScalar();
-            }
-            else if (sizeof(T) == 4)
+            if (sizeof(T) <= 8)
             {
                 return Vector64.Sqrt(Vector64.Create(LengthSquared())).ToScalar();
             }
