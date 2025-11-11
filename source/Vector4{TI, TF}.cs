@@ -5,6 +5,8 @@ using System.Runtime.Intrinsics;
 
 namespace System.Numerics;
 
+// Proposal to expose floating behavior for Length and Distance
+
 [DebuggerDisplay("{X};{Y};{Z};{W}")]
 [StructLayout(LayoutKind.Sequential)]
 public partial struct Vector4<TI, TF>(TI x, TI y, TI z, TI w)
