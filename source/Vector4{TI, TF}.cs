@@ -200,6 +200,7 @@ public partial struct Vector4<TI, TF>(TI x, TI y, TI z, TI w)
         throw new NotSupportedException();
     }
     #endregion
+
     public static Vector4<TI, TF> Zero { get; } = new();
 
     public static Vector4<TI, TF> One { get; } = new(TI.One, TI.One, TI.One, TI.One);

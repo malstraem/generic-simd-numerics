@@ -2,12 +2,19 @@ using System.Runtime.CompilerServices;
 
 namespace System.Numerics;
 
-public partial struct Matrix44<T>(Vector4<T> row1, Vector4<T> row2, Vector4<T> row3, Vector4<T> row4)
+public partial struct Mat44<T>
     where T : unmanaged, IBinaryNumber<T>
 {
-    public Vector4<T> Row1 = row1, Row2 = row2, Row3 = row3, Row4 = row4;
+    public Vec4<T> X, Y, Z, W;
 
-    public Matrix44(T m11, T m12, T m13, T m14,
+    public Mat44(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
+    {
+        Unsafe.SkipInit(out this);
+
+        X = x; Y = y; Z = z; W = w;
+    }
+
+    public Mat44(T m11, T m12, T m13, T m14,
                  T m21, T m22, T m23, T m24,
                  T m31, T m32, T m33, T m34,
                  T m41, T m42, T m43, T m44)
@@ -17,34 +24,34 @@ public partial struct Matrix44<T>(Vector4<T> row1, Vector4<T> row2, Vector4<T> r
                   new(m41, m42, m43, m44))
     { }
 
-    public static Matrix44<T> Identity => new
+    public static Mat44<T> Identity => new
     (
-        Vector4<T>.UnitX,
-        Vector4<T>.UnitY,
-        Vector4<T>.UnitZ,
-        Vector4<T>.UnitW
+        Vec4<T>.UnitX,
+        Vec4<T>.UnitY,
+        Vec4<T>.UnitZ,
+        Vec4<T>.UnitW
     );
 
     public readonly bool IsIdentity =>
-           Row1 == Vector4<T>.UnitX
-        && Row2 == Vector4<T>.UnitY
-        && Row3 == Vector4<T>.UnitZ
-        && Row4 == Vector4<T>.UnitW;
+           X == Vec4<T>.UnitX
+        && Y == Vec4<T>.UnitY
+        && Z == Vec4<T>.UnitZ
+        && W == Vec4<T>.UnitW;
 
-    public readonly T TranslationX => Row4.X;
+    public readonly T TranslationX => W.X;
 
-    public readonly T TranslationY => Row4.Y;
+    public readonly T TranslationY => W.Y;
 
-    public readonly T TranslationZ => Row4.Z;
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Matrix44<T> Add(Matrix44<T> mat1, Matrix44<T> mat2) => mat1 + mat2;
+    public readonly T TranslationZ => W.Z;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Matrix44<T> Subtract(Matrix44<T> mat1, Matrix44<T> mat2) => mat1 - mat2;
+    public static Mat44<T> Add(Mat44<T> left, Mat44<T> right) => left + right;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Matrix44<T> Multiply(Matrix44<T> mat1, Matrix44<T> mat2) => mat1 * mat2;
+    public static Mat44<T> Subtract(Mat44<T> left, Mat44<T> right) => left - right;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Mat44<T> Multiply(Mat44<T> left, Mat44<T> right) => left * right;
 
     /* Wait for Vector4<T>.Lerp...
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -58,72 +65,92 @@ public partial struct Matrix44<T>(Vector4<T> row1, Vector4<T> row2, Vector4<T> r
     */
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Matrix44<T> Transpose(Matrix44<T> mat) => new
+    public static Mat44<T> Transpose(Mat44<T> mat) => new
     (
-        mat.Row1.X, mat.Row2.X, mat.Row3.X, mat.Row4.X,
-        mat.Row1.Y, mat.Row2.Y, mat.Row3.Y, mat.Row4.Y,
-        mat.Row1.Z, mat.Row2.Z, mat.Row3.Z, mat.Row4.Z,
-        mat.Row1.W, mat.Row2.W, mat.Row3.W, mat.Row4.W
+        mat.X.X, mat.Y.X, mat.Z.X, mat.W.X,
+        mat.X.Y, mat.Y.Y, mat.Z.Y, mat.W.Y,
+        mat.X.Z, mat.Y.Z, mat.Z.Z, mat.W.Z,
+        mat.X.W, mat.Y.W, mat.Z.W, mat.W.W
     );
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Matrix44<T> operator +(Matrix44<T> left, Matrix44<T> right) => new
+    public static Mat44<T> operator +(Mat44<T> left, Mat44<T> right) => new
     (
-        left.Row1 + right.Row1,
-        left.Row2 + right.Row2,
-        left.Row3 + right.Row3,
-        left.Row4 + right.Row4
+        left.X + right.X,
+        left.Y + right.Y,
+        left.Z + right.Z,
+        left.W + right.W
     );
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Matrix44<T> operator -(Matrix44<T> left, Matrix44<T> right) => new
+    public static Mat44<T> operator -(Mat44<T> left, Mat44<T> right) => new
     (
-        left.Row1 - right.Row1,
-        left.Row2 - right.Row2,
-        left.Row3 - right.Row3,
-        left.Row4 - right.Row4
+        left.X - right.X,
+        left.Y - right.Y,
+        left.Z - right.Z,
+        left.W - right.W
     );
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Matrix44<T> operator *(Matrix44<T> mat1, Matrix44<T> mat2)
+    public static Mat44<T> operator *(Mat44<T> mat, T value)
     {
-        var row0 = mat2.Row1 * mat1.Row1.X;
-        row0 += mat2.Row2 * mat1.Row1.Y;
-        row0 += mat2.Row3 * mat1.Row1.Z;
-        row0 += mat2.Row4 * mat1.Row1.W;
+        Mat44<T> mul;
 
-        var row1 = mat2.Row1 * mat1.Row2.X;
-        row1 += mat2.Row2 * mat1.Row2.Y;
-        row1 += mat2.Row3 * mat1.Row2.Z;
-        row1 += mat2.Row4 * mat1.Row2.W;
+        mul.X = mat.X * value;
+        mul.Y = mat.Y * value;
+        mul.Z = mat.Z * value;
+        mul.W = mat.W * value;
 
-        var row2 = mat2.Row1 * mat1.Row3.X;
-        row2 += mat2.Row2 * mat1.Row3.Y;
-        row2 += mat2.Row3 * mat1.Row3.Z;
-        row2 += mat2.Row4 * mat1.Row3.W;
-
-        var row3 = mat2.Row1 * mat1.Row4.X;
-        row3 += mat2.Row2 * mat1.Row4.Y;
-        row3 += mat2.Row3 * mat1.Row4.Z;
-        row3 += mat2.Row4 * mat1.Row4.W;
-
-        return new(row0, row1, row2, row3);
+        return mul;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator ==(Matrix44<T> mat1, Matrix44<T> mat2) => mat1.Row1 == mat2.Row1
-                                                                       && mat1.Row2 == mat2.Row2
-                                                                       && mat1.Row3 == mat2.Row3
-                                                                       && mat1.Row4 == mat2.Row4;
+    /*public static Mat44<T> operator *(Mat44<T> mat1, Mat44<T> mat2) => new
+    (
+        Vec4<T>.Transform(mat1.X, mat2),
+        Vec4<T>.Transform(mat1.Y, mat2),
+        Vec4<T>.Transform(mat1.Z, mat2),
+        Vec4<T>.Transform(mat1.W, mat2)
+    );*/
+    public static Mat44<T> operator *(Mat44<T> left, Mat44<T> right)
+    {
+        var x = right.X * left.X.X;
+        x += right.Y * left.X.Y;
+        x += right.Z * left.X.Z;
+        x += right.W * left.X.W;
+
+        var y = right.X * left.Y.X;
+        y += right.Y * left.Y.Y;
+        y += right.Z * left.Y.Z;
+        y += right.W * left.Y.W;
+
+        var z = right.X * left.Z.X;
+        z += right.Y * left.Z.Y;
+        z += right.Z * left.Z.Z;
+        z += right.W * left.Z.W;
+
+        var w = right.X * left.W.X;
+        w += right.Y * left.W.Y;
+        w += right.Z * left.W.Z;
+        w += right.W * left.W.W;
+
+        return new(x, y, z, w);
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator !=(Matrix44<T> mat1, Matrix44<T> mat2) => mat1.Row1 != mat2.Row1
-                                                                       || mat1.Row2 != mat2.Row2
-                                                                       || mat1.Row3 != mat2.Row3
-                                                                       || mat1.Row4 != mat2.Row4;
+    public static bool operator ==(Mat44<T> left, Mat44<T> right) => left.X == right.X
+                                                                  && left.Y == right.Y
+                                                                  && left.Z == right.Z
+                                                                  && left.W == right.W;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool operator !=(Mat44<T> left, Mat44<T> right) => left.X != right.X
+                                                                  || left.Y != right.Y
+                                                                  || left.Z != right.Z
+                                                                  || left.W != right.W;
 
-    public override readonly bool Equals(object? obj) => (obj is Matrix44<T> matrix) && matrix == this;
+    public override readonly bool Equals(object? obj) => (obj is Mat44<T> mat) && mat == this;
 
-    public override readonly int GetHashCode() => HashCode.Combine(Row1, Row2, Row3, Row4);
+    public override readonly int GetHashCode() => HashCode.Combine(X, Y, Z, W);
 
-    public readonly bool Equals(Matrix44<T> other) => other == this;
+    public readonly bool Equals(Mat44<T> other) => other == this;
 }

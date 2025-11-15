@@ -7,245 +7,241 @@ namespace System.Numerics;
 
 [DebuggerDisplay("{X};{Y};{Z};{W}")]
 [StructLayout(LayoutKind.Sequential)]
-public partial struct Vector4<T>(T x, T y, T z, T w) where T : unmanaged, IBinaryNumber<T>
+public partial struct Vec4<T> :
+    IVector<Vec4<T>>,
+    IMultiplyOperators<Vec4<T>, Vec4<T>, Vec4<T>>
+    where T : unmanaged, IBinaryNumber<T>
 {
-    public T X = x, Y = y, Z = z, W = w;
+    public T X, Y, Z, W;
+
+    public Vec4(T x, T y, T z, T w)
+    {
+        Unsafe.SkipInit(out this);
+
+        X = x; Y = y; Z = z; W = w;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private Vector64<T> AsVec64() => Unsafe.As<Vec4<T>, Vector64<T>>(ref this);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private Vector128<T> AsVec128() => Unsafe.As<Vec4<T>, Vector128<T>>(ref this);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private Vector256<T> AsVec256() => Unsafe.As<Vec4<T>, Vector256<T>>(ref this);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static Vec4<T> From64(Vector64<T> vec) => Unsafe.As<Vector64<T>, Vec4<T>>(ref vec);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static Vec4<T> From128(Vector128<T> vec) => Unsafe.As<Vector128<T>, Vec4<T>>(ref vec);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static Vec4<T> From256(Vector256<T> vec) => Unsafe.As<Vector256<T>, Vec4<T>>(ref vec);
 
     #region Operators
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> operator +(Vector4<T> left, Vector4<T> right)
+    public static Vec4<T> operator +(Vec4<T> left, Vec4<T> right)
     {
         unsafe
         {
-            if (sizeof(T) == 8)
+            if (sizeof(T) == 2)
             {
-                var add = Unsafe.As<Vector4<T>, Vector256<T>>(ref left) + Unsafe.As<Vector4<T>, Vector256<T>>(ref right);
-
-                return Unsafe.As<Vector256<T>, Vector4<T>>(ref add);
+                return Vec4<T>.From64(left.AsVec64() + right.AsVec64());
             }
             else if (sizeof(T) == 4)
             {
-                var add = Unsafe.As<Vector4<T>, Vector128<T>>(ref left) + Unsafe.As<Vector4<T>, Vector128<T>>(ref right);
+                return Vec4<T>.From128(left.AsVec128() + right.AsVec128());
+            }
+            // I have no idea at this point...
 
-                return Unsafe.As<Vector128<T>, Vector4<T>>(ref add);
+            // any meaning?
+            // any way to store unaligned data to vector register?
+
+            // maybe we need to load using general registers? Or using special instruction (if exist)
+            // performance trade off is a question
+            else if (sizeof(T) < 8)
+            {
+                throw new NotSupportedException();
+            }
+            else if (sizeof(T) == 8)
+            {
+                return Vec4<T>.From256(left.AsVec256() + right.AsVec256());
             }
         }
         throw new NotSupportedException();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> operator -(Vector4<T> left, Vector4<T> right)
+    public static Vec4<T> operator -(Vec4<T> left, Vec4<T> right)
     {
         unsafe
         {
-            if (sizeof(T) == 8)
+            return sizeof(T) switch
             {
-                var sub = Unsafe.As<Vector4<T>, Vector256<T>>(ref left) - Unsafe.As<Vector4<T>, Vector256<T>>(ref right);
-
-                return Unsafe.As<Vector256<T>, Vector4<T>>(ref sub);
-            }
-            else if (sizeof(T) == 4)
-            {
-                var sub = Unsafe.As<Vector4<T>, Vector128<T>>(ref left) - Unsafe.As<Vector4<T>, Vector128<T>>(ref right);
-
-                return Unsafe.As<Vector128<T>, Vector4<T>>(ref sub);
-            }
+                2 => Vec4<T>.From64(left.AsVec64() - right.AsVec64()),
+                4 => Vec4<T>.From128(left.AsVec128() - right.AsVec128()),
+                8 => Vec4<T>.From256(left.AsVec256() - right.AsVec256()),
+                _ => throw new NotSupportedException()
+            };
         }
-        throw new NotSupportedException();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> operator -(Vector4<T> value)
+    public static Vec4<T> operator -(Vec4<T> value)
     {
         unsafe
         {
-            if (sizeof(T) == 8)
+            return sizeof(T) switch
             {
-                var neg = -Unsafe.As<Vector4<T>, Vector256<T>>(ref value);
-
-                return Unsafe.As<Vector256<T>, Vector4<T>>(ref neg);
-            }
-            else if (sizeof(T) == 4)
-            {
-                var neg = -Unsafe.As<Vector4<T>, Vector128<T>>(ref value);
-
-                return Unsafe.As<Vector128<T>, Vector4<T>>(ref neg);
-            }
+                2 => Vec4<T>.From64(-value.AsVec64()),
+                4 => Vec4<T>.From128(-value.AsVec128()),
+                8 => Vec4<T>.From256(-value.AsVec256()),
+                _ => throw new NotSupportedException()
+            };
         }
-        throw new NotSupportedException();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    public static Vec4<T> operator *(Vec4<T> left, Vec4<T> right)
+    {
+        unsafe
+        {
+            return sizeof(T) switch
+            {
+                2 => Vec4<T>.From64(left.AsVec64() * right.AsVec64()),
+                4 => Vec4<T>.From128(left.AsVec128() * right.AsVec128()),
+                8 => Vec4<T>.From256(left.AsVec256() * right.AsVec256()),
+                _ => throw new NotSupportedException()
+            };
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> operator *(Vector4<T> left, Vector4<T> right)
+    public static Vec4<T> operator *(Vec4<T> vec, T value)
     {
         unsafe
         {
-            if (sizeof(T) == 8)
+            return sizeof(T) switch
             {
-                var mul = Unsafe.As<Vector4<T>, Vector256<T>>(ref left) * Unsafe.As<Vector4<T>, Vector256<T>>(ref right);
-
-                return Unsafe.As<Vector256<T>, Vector4<T>>(ref mul);
-            }
-            else if (sizeof(T) == 4)
-            {
-                var mul = Unsafe.As<Vector4<T>, Vector128<T>>(ref left) * Unsafe.As<Vector4<T>, Vector128<T>>(ref right);
-
-                return Unsafe.As<Vector128<T>, Vector4<T>>(ref mul);
-            }
+                2 => Vec4<T>.From64(vec.AsVec64() * value),
+                4 => Vec4<T>.From128(vec.AsVec128() * value),
+                8 => Vec4<T>.From256(vec.AsVec256() * value),
+                _ => throw new NotSupportedException()
+            };
         }
-        throw new NotSupportedException();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> operator *(Vector4<T> left, T value)
+    public static Vec4<T> operator /(Vec4<T> left, Vec4<T> right)
     {
         unsafe
         {
-            if (sizeof(T) == 8)
+            return sizeof(T) switch
             {
-                var mul = Unsafe.As<Vector4<T>, Vector256<T>>(ref left) * value;
-
-                return Unsafe.As<Vector256<T>, Vector4<T>>(ref mul);
-            }
-            else if (sizeof(T) == 4)
-            {
-                var mul = Unsafe.As<Vector4<T>, Vector128<T>>(ref left) * value;
-
-                return Unsafe.As<Vector128<T>, Vector4<T>>(ref mul);
-            }
+                2 => Vec4<T>.From64(left.AsVec64() / right.AsVec64()),
+                4 => Vec4<T>.From128(left.AsVec128() / right.AsVec128()),
+                8 => Vec4<T>.From256(left.AsVec256() / right.AsVec256()),
+                _ => throw new NotSupportedException()
+            };
         }
-        throw new NotSupportedException();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> operator /(Vector4<T> left, Vector4<T> right)
+    public static Vec4<T> operator /(Vec4<T> vec, T value)
     {
         unsafe
         {
-            if (sizeof(T) == 8)
+            return sizeof(T) switch
             {
-                var div = Unsafe.As<Vector4<T>, Vector256<T>>(ref left) / Unsafe.As<Vector4<T>, Vector256<T>>(ref right);
-
-                return Unsafe.As<Vector256<T>, Vector4<T>>(ref div);
-            }
-            else if (sizeof(T) == 4)
-            {
-                var div = Unsafe.As<Vector4<T>, Vector128<T>>(ref left) / Unsafe.As<Vector4<T>, Vector128<T>>(ref right);
-
-                return Unsafe.As<Vector128<T>, Vector4<T>>(ref div);
-            }
+                2 => Vec4<T>.From64(vec.AsVec64() / value),
+                4 => Vec4<T>.From128(vec.AsVec128() / value),
+                8 => Vec4<T>.From256(vec.AsVec256() / value),
+                _ => throw new NotSupportedException()
+            };
         }
-        throw new NotSupportedException();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> operator /(Vector4<T> left, T value)
+    public static bool operator ==(Vec4<T> left, Vec4<T> right)
     {
         unsafe
         {
-            if (sizeof(T) == 8)
+            return sizeof(T) switch
             {
-                var div = Unsafe.As<Vector4<T>, Vector256<T>>(ref left) / value;
-
-                return Unsafe.As<Vector256<T>, Vector4<T>>(ref div);
-            }
-            else if (sizeof(T) == 4)
-            {
-                var div = Unsafe.As<Vector4<T>, Vector128<T>>(ref left) / value;
-
-                return Unsafe.As<Vector128<T>, Vector4<T>>(ref div);
-            }
+                2 => left.AsVec64() == right.AsVec64(),
+                4 => left.AsVec128() == right.AsVec128(),
+                8 => left.AsVec256() == right.AsVec256(),
+                _ => throw new NotSupportedException()
+            };
         }
-        throw new NotSupportedException();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> operator *(T value, Vector4<T> right) => right * value;
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator ==(Vector4<T> left, Vector4<T> right)
+    public static bool operator !=(Vec4<T> left, Vec4<T> right)
     {
         unsafe
         {
-            if (sizeof(T) == 8)
+            return sizeof(T) switch
             {
-                return Unsafe.As<Vector4<T>, Vector256<T>>(ref left) == Unsafe.As<Vector4<T>, Vector256<T>>(ref right);
-            }
-            else if (sizeof(T) == 4)
-            {
-                return Unsafe.As<Vector4<T>, Vector128<T>>(ref left) == Unsafe.As<Vector4<T>, Vector128<T>>(ref right);
-            }
+                2 => left.AsVec64() != right.AsVec64(),
+                4 => left.AsVec128() != right.AsVec128(),
+                8 => left.AsVec256() != right.AsVec256(),
+                _ => throw new NotSupportedException()
+            };
         }
-        throw new NotSupportedException();
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator !=(Vector4<T> left, Vector4<T> right)
-    {
-        unsafe
-        {
-            if (sizeof(T) == 8)
-            {
-                return Unsafe.As<Vector4<T>, Vector256<T>>(ref left) != Unsafe.As<Vector4<T>, Vector256<T>>(ref right);
-            }
-            else if (sizeof(T) == 4)
-            {
-                return Unsafe.As<Vector4<T>, Vector128<T>>(ref left) != Unsafe.As<Vector4<T>, Vector128<T>>(ref right);
-            }
-        }
-        throw new NotSupportedException();
     }
     #endregion
-    public static Vector4<T> Zero { get; } = new();
+    public static Vec4<T> Zero { get; } = new();
 
-    public static Vector4<T> One { get; } = new(T.One, T.One, T.One, T.One);
+    public static Vec4<T> One { get; } = new(T.One, T.One, T.One, T.One);
 
-    public static Vector4<T> UnitX { get; } = new(T.One, T.Zero, T.Zero, T.Zero);
+    public static Vec4<T> UnitX { get; } = new(T.One, T.Zero, T.Zero, T.Zero);
 
-    public static Vector4<T> UnitY { get; } = new(T.Zero, T.One, T.Zero, T.Zero);
+    public static Vec4<T> UnitY { get; } = new(T.Zero, T.One, T.Zero, T.Zero);
 
-    public static Vector4<T> UnitZ { get; } = new(T.Zero, T.Zero, T.One, T.Zero);
+    public static Vec4<T> UnitZ { get; } = new(T.Zero, T.Zero, T.One, T.Zero);
 
-    public static Vector4<T> UnitW { get; } = new(T.Zero, T.Zero, T.Zero, T.One);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> Add(Vector4<T> left, Vector4<T> right) => left + right;
+    public static Vec4<T> UnitW { get; } = new(T.Zero, T.Zero, T.Zero, T.One);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> Subtract(Vector4<T> left, Vector4<T> right) => left - right;
+    public static Vec4<T> Add(Vec4<T> left, Vec4<T> right) => left + right;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> Multiply(Vector4<T> left, Vector4<T> right) => left * right;
+    public static Vec4<T> Subtract(Vec4<T> left, Vec4<T> right) => left - right;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> Multiply(Vector4<T> left, T value) => left * value;
+    public static Vec4<T> Multiply(Vec4<T> left, Vec4<T> right) => left * right;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> Multiply(T value, Vector4<T> right) => right * value;
+    public static Vec4<T> Multiply(Vec4<T> left, T value) => left * value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> Divide(Vector4<T> left, Vector4<T> right) => left / right;
+    public static Vec4<T> Multiply(T value, Vec4<T> right) => right * value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> Divide(Vector4<T> left, T divisor) => left / divisor;
+    public static Vec4<T> Divide(Vec4<T> left, Vec4<T> right) => left / right;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> Negate(Vector4<T> vec) => -vec;
+    public static Vec4<T> Divide(Vec4<T> left, T divisor) => left / divisor;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> Normalize(Vector4<T> vec) => vec / Distance(vec, Zero);
+    public static Vec4<T> Negate(Vec4<T> vec) => -vec;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T Dot(Vector4<T> vec1, Vector4<T> vec2) => Sum(vec1 * vec2);
+    public static Vec4<T> Normalize(Vec4<T> vec) => vec / Distance(vec, Zero);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T Dot(Vec4<T> vec1, Vec4<T> vec2) => Sum(vec1 * vec2);
 
     // too hard...
     // no meaning for integer cases
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T Distance(Vector4<T> vec1, Vector4<T> vec2)
+    public static T Distance(Vec4<T> vec1, Vec4<T> vec2)
     {
         unsafe
         {
-            if (sizeof(T) <= 8)
+            if (sizeof(T) == 8)
             {
                 return Vector64.Sqrt(Vector64.Create(DistanceSquared(vec1, vec2))).ToScalar();
             }
@@ -254,7 +250,7 @@ public partial struct Vector4<T>(T x, T y, T z, T w) where T : unmanaged, IBinar
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T DistanceSquared(Vector4<T> vec1, Vector4<T> vec2)
+    public static T DistanceSquared(Vec4<T> vec1, Vec4<T> vec2)
     {
         var sub = vec2 - vec1;
         return Dot(sub, sub);
@@ -270,7 +266,7 @@ public partial struct Vector4<T>(T x, T y, T z, T w) where T : unmanaged, IBinar
     {
         unsafe
         {
-            if (sizeof(T) <= 8)
+            if (sizeof(T) == 8)
             {
                 return Vector64.Sqrt(Vector64.Create(LengthSquared())).ToScalar();
             }
@@ -279,73 +275,51 @@ public partial struct Vector4<T>(T x, T y, T z, T w) where T : unmanaged, IBinar
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> Abs(Vector4<T> vec)
+    public static Vec4<T> Abs(Vec4<T> vec)
     {
         unsafe
         {
-            if (sizeof(T) == 8)
+            return sizeof(T) switch
             {
-                var abs = Vector256.Abs(Unsafe.As<Vector4<T>, Vector256<T>>(ref vec));
-
-                return Unsafe.As<Vector256<T>, Vector4<T>>(ref abs);
-            }
-            else if (sizeof(T) == 4)
-            {
-                var abs = Vector128.Abs(Unsafe.As<Vector4<T>, Vector128<T>>(ref vec));
-
-                return Unsafe.As<Vector128<T>, Vector4<T>>(ref abs);
-            }
+                2 => Vec4<T>.From64(Vector64.Abs(vec.AsVec64())),
+                4 => Vec4<T>.From128(Vector128.Abs(vec.AsVec128())),
+                8 => Vec4<T>.From256(Vector256.Abs(vec.AsVec256())),
+                _ => throw new NotSupportedException()
+            };
         }
-        throw new NotSupportedException();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T Sum(Vector4<T> vec)
+    public static T Sum(Vec4<T> vec)
     {
         unsafe
         {
-            if (sizeof(T) == 8)
+            return sizeof(T) switch
             {
-                return Vector256.Sum(Unsafe.As<Vector4<T>, Vector256<T>>(ref vec));
-            }
-            else if (sizeof(T) == 4)
-            {
-                return Vector128.Sum(Unsafe.As<Vector4<T>, Vector128<T>>(ref vec));
-            }
+                2 => Vector64.Sum(vec.AsVec64()),
+                4 => Vector128.Sum(vec.AsVec128()),
+                8 => Vector256.Sum(vec.AsVec256()),
+                _ => throw new NotSupportedException()
+            };
         }
-        throw new NotSupportedException();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> Clamp(Vector4<T> vec, Vector4<T> min, Vector4<T> max)
+    public static Vec4<T> Clamp(Vec4<T> vec, Vec4<T> min, Vec4<T> max)
     {
         unsafe
         {
-            if (sizeof(T) == 8)
+            return sizeof(T) switch
             {
-                var result = Vector256.Clamp
-                (
-                    Unsafe.As<Vector4<T>, Vector256<T>>(ref vec),
-                    Unsafe.As<Vector4<T>, Vector256<T>>(ref min),
-                    Unsafe.As<Vector4<T>, Vector256<T>>(ref max)
-                );
-                return Unsafe.As<Vector256<T>, Vector4<T>>(ref result);
-            }
-            else if (sizeof(T) == 4)
-            {
-                var result = Vector128.Clamp
-                (
-                    Unsafe.As<Vector4<T>, Vector128<T>>(ref vec),
-                    Unsafe.As<Vector4<T>, Vector128<T>>(ref min),
-                    Unsafe.As<Vector4<T>, Vector128<T>>(ref max)
-                );
-                return Unsafe.As<Vector128<T>, Vector4<T>>(ref result);
-            }
+                2 => Vec4<T>.From64(Vector64.Clamp(vec.AsVec64(), min.AsVec64(), max.AsVec64())),
+                4 => Vec4<T>.From128(Vector128.Clamp(vec.AsVec128(), min.AsVec128(), max.AsVec128())),
+                8 => Vec4<T>.From256(Vector256.Clamp(vec.AsVec256(), min.AsVec256(), max.AsVec256())),
+                _ => throw new NotSupportedException()
+            };
         }
-        throw new NotSupportedException();
     }
 
-    /* Vector256.Lerp()<T> is missed...
+    /* no Vector256.Lerp()<T>...
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector4<T> Lerp(Vector4<T> vec1, Vector4<T> vec2, T amount)
@@ -375,54 +349,80 @@ public partial struct Vector4<T>(T x, T y, T z, T w) where T : unmanaged, IBinar
     }*/
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> Max(Vector4<T> vec1, Vector4<T> vec2)
+    public static Vec4<T> Max(Vec4<T> left, Vec4<T> right)
     {
         unsafe
         {
-            if (sizeof(T) == 8)
+            return sizeof(T) switch
             {
-                var min = Vector256.Max
-                (
-                    Unsafe.As<Vector4<T>, Vector256<T>>(ref vec1),
-                    Unsafe.As<Vector4<T>, Vector256<T>>(ref vec2)
-                );
-                return Unsafe.As<Vector256<T>, Vector4<T>>(ref min);
-            }
-            else if (sizeof(T) == 4)
-            {
-                var min = Vector128.Max
-                (
-                    Unsafe.As<Vector4<T>, Vector128<T>>(ref vec1),
-                    Unsafe.As<Vector4<T>, Vector128<T>>(ref vec2)
-                );
-                return Unsafe.As<Vector128<T>, Vector4<T>>(ref min);
-            }
+                2 => Vec4<T>.From64(Vector64.Max(left.AsVec64(), right.AsVec64())),
+                4 => Vec4<T>.From128(Vector128.Max(left.AsVec128(), right.AsVec128())),
+                8 => Vec4<T>.From256(Vector256.Max(left.AsVec256(), right.AsVec256())),
+                _ => throw new NotSupportedException()
+            };
         }
-        throw new NotSupportedException();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> Min(Vector4<T> vec1, Vector4<T> vec2)
+    public static Vec4<T> Min(Vec4<T> left, Vec4<T> right)
     {
         unsafe
         {
-            if (sizeof(T) == 8)
+            return sizeof(T) switch
             {
-                var min = Vector256.Min
-                (
-                    Unsafe.As<Vector4<T>, Vector256<T>>(ref vec1),
-                    Unsafe.As<Vector4<T>, Vector256<T>>(ref vec2)
-                );
-                return Unsafe.As<Vector256<T>, Vector4<T>>(ref min);
+                2 => Vec4<T>.From64(Vector64.Max(left.AsVec64(), right.AsVec64())),
+                4 => Vec4<T>.From128(Vector128.Max(left.AsVec128(), right.AsVec128())),
+                8 => Vec4<T>.From256(Vector256.Max(left.AsVec256(), right.AsVec256())),
+                _ => throw new NotSupportedException()
+            };
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vec4<T> MultiplyAddEstimate(Vec4<T> left, Vec4<T> right, Vec4<T> add)
+    {
+        unsafe
+        {
+            return sizeof(T) switch
+            {
+                2 => Vec4<T>.From64(Vector64.MultiplyAddEstimate(left.AsVec64().AsDouble(), right.AsVec64().AsDouble(), add.AsVec64().AsDouble())),
+                4 => Vec4<T>.From128(Vector128.MultiplyAddEstimate(left.AsVec128(), right.AsVec128(), add.AsVec128())),
+                8 => Vec4<T>.From256(Vector256.MultiplyAddEstimate(left.AsVec256(), right.AsVec256(), add.AsVec256())),
+                _ => throw new NotSupportedException()
+            };
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vec4<T> Transform(Vec4<T> vec, Mat44<T> mat)
+    {
+        var result = mat.X * vec.X;
+
+        unsafe
+        {
+            if (sizeof(T) == 4)
+            {
+                var estY = Vector128.Create(vec.Y);
+                var estZ = Vector128.Create(vec.Z);
+                var estW = Vector128.Create(vec.W);
+
+                result = MultiplyAddEstimate(mat.Y, Unsafe.As<Vector128<T>, Vec4<T>>(ref estY), result);
+                result = MultiplyAddEstimate(mat.Z, Unsafe.As<Vector128<T>, Vec4<T>>(ref estZ), result);
+                result = MultiplyAddEstimate(mat.W, Unsafe.As<Vector128<T>, Vec4<T>>(ref estW), result);
+
+                return result;
             }
-            else if (sizeof(T) == 4)
+            else if (sizeof(T) == 8)
             {
-                var min = Vector128.Min
-                (
-                    Unsafe.As<Vector4<T>, Vector128<T>>(ref vec1),
-                    Unsafe.As<Vector4<T>, Vector128<T>>(ref vec2)
-                );
-                return Unsafe.As<Vector128<T>, Vector4<T>>(ref min);
+                var estY = Vector256.Create(vec.Y);
+                var estZ = Vector256.Create(vec.Z);
+                var estW = Vector256.Create(vec.W);
+
+                result = MultiplyAddEstimate(mat.Y, Unsafe.As<Vector256<T>, Vec4<T>>(ref estY), result);
+                result = MultiplyAddEstimate(mat.Z, Unsafe.As<Vector256<T>, Vec4<T>>(ref estZ), result);
+                result = MultiplyAddEstimate(mat.W, Unsafe.As<Vector256<T>, Vec4<T>>(ref estW), result);
+
+                return result;
             }
         }
         throw new NotSupportedException();
@@ -430,9 +430,9 @@ public partial struct Vector4<T>(T x, T y, T z, T w) where T : unmanaged, IBinar
 
     public override readonly string ToString() => $"{X};{Y};{Z};{W}";
 
-    public override readonly bool Equals(object? obj) => (obj is Vector4<T> other) && Equals(other);
+    public override readonly bool Equals(object? obj) => (obj is Vec4<T> other) && Equals(other);
 
     public override readonly int GetHashCode() => HashCode.Combine(X, Y, Z, W);
 
-    public readonly bool Equals(Vector4<T> other) => this == other;
+    public readonly bool Equals(Vec4<T> other) => this == other;
 }

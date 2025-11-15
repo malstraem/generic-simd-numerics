@@ -7,10 +7,11 @@ public class Matrix44Tests
     [Test]
     public async Task Multiply() => await Task.WhenAll
     (
-        Multiply<double>(),
         Multiply<float>(),
+        Multiply<double>(),
         Multiply<int>(),
-        Multiply<long>()
+        Multiply<long>()/*,
+        Multiply<FooInteger5>()*/
     );
 
     /*[Test]
@@ -24,12 +25,12 @@ public class Matrix44Tests
 
     private static async Task Multiply<T>() where T : unmanaged, IBinaryNumber<T>
     {
-        var a = Matrix44<T>.Generate(T.One);
-        var b = Matrix44<T>.Generate(T.One + T.One);
+        var a = Mat44<T>.Generate(T.One);
+        var b = Mat44<T>.Generate(T.One + T.One);
 
         var mul = a * b;
 
-        Matrix44<T> expected = (Matrix4X4<T>)a * (Matrix4X4<T>)b;
+        Mat44<T> expected = (Matrix4X4<T>)a * (Matrix4X4<T>)b;
 
         await Assert.That(mul).IsEqualTo(expected);
     }

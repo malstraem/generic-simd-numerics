@@ -4,17 +4,17 @@ namespace System.Numerics;
 
 /* Only for tests, drop */
 
-public partial struct Matrix44<T>
+public partial struct Mat44<T>
 {
-    public static implicit operator Matrix4X4<T>(Matrix44<T> mat) => new
+    public static implicit operator Matrix4X4<T>(Mat44<T> mat) => new
     (
-        mat.Row1.X, mat.Row1.Y, mat.Row1.Z, mat.Row1.W,
-        mat.Row2.X, mat.Row2.Y, mat.Row2.Z, mat.Row2.W,
-        mat.Row3.X, mat.Row3.Y, mat.Row3.Z, mat.Row3.W,
-        mat.Row4.X, mat.Row4.Y, mat.Row4.Z, mat.Row4.W
+        mat.X.X, mat.X.Y, mat.X.Z, mat.X.W,
+        mat.Y.X, mat.Y.Y, mat.Y.Z, mat.Y.W,
+        mat.Z.X, mat.Z.Y, mat.Z.Z, mat.Z.W,
+        mat.W.X, mat.W.Y, mat.W.Z, mat.W.W
     );
 
-    public static implicit operator Matrix44<T>(Matrix4X4<T> mat) => new
+    public static implicit operator Mat44<T>(Matrix4X4<T> mat) => new
     (
         mat.M11, mat.M12, mat.M13, mat.M14,
         mat.M21, mat.M22, mat.M23, mat.M24,
@@ -23,14 +23,14 @@ public partial struct Matrix44<T>
     );
 }
 
-public partial struct Vector4<T>
+public partial struct Vec4<T>
 {
-    public static implicit operator Vector4D<T>(Vector4<T> vec) => new
+    public static implicit operator Vector4D<T>(Vec4<T> vec) => new
     (
         vec.X, vec.Y, vec.Z, vec.W
     );
 
-    public static implicit operator Vector4<T>(Vector4D<T> vec) => new
+    public static implicit operator Vec4<T>(Vector4D<T> vec) => new
     (
         vec.X, vec.Y, vec.Z, vec.W
     );

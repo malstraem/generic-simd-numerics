@@ -10,7 +10,8 @@ public class Vector4Tests
         Multiply<float>(),
         Multiply<double>(),
         Multiply<int>(),
-        Multiply<long>()
+        Multiply<long>()/*,
+        Multiply<FooInteger5>()*/
     );
 
     [Test]
@@ -35,19 +36,19 @@ public class Vector4Tests
 
     private static async Task Multiply<T>() where T : unmanaged, IBinaryNumber<T>
     {
-        var a = Vector4<T>.Generate(T.One);
-        var b = Vector4<T>.Generate(T.One + T.One);
+        var a = Vec4<T>.Generate(T.One);
+        var b = Vec4<T>.Generate(T.One + T.One);
 
         var mul = a * b;
 
-        Vector4<T> expected = (Vector4D<T>)a * (Vector4D<T>)b;
+        Vec4<T> expected = (Vector4D<T>)a * (Vector4D<T>)b;
 
         await Assert.That(mul).IsEqualTo(expected);
     }
 
     private static async Task Length<T>() where T : unmanaged, IBinaryNumber<T>
     {
-        var a = Vector4<T>.Generate(T.One);
+        var a = Vec4<T>.Generate(T.One);
 
         var length = a.Length();
 
