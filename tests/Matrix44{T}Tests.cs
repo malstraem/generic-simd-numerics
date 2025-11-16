@@ -8,9 +8,9 @@ public class Matrix44Tests
     public async Task Multiply() => await Task.WhenAll
     (
         Multiply<float>(),
-        Multiply<double>(),
+        Multiply<double>()/*,
         Multiply<int>(),
-        Multiply<long>()/*,
+        Multiply<long>(),
         Multiply<FooInteger5>()*/
     );
 

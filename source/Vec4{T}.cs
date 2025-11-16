@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
@@ -7,40 +8,48 @@ namespace System.Numerics;
 
 [DebuggerDisplay("{X};{Y};{Z};{W}")]
 [StructLayout(LayoutKind.Sequential)]
-public partial struct Vec4<T> :
+public partial struct Vec4<T>(T x, T y, T z, T w) :
     IVector<Vec4<T>>,
     IMultiplyOperators<Vec4<T>, Vec4<T>, Vec4<T>>
     where T : unmanaged, IBinaryNumber<T>
 {
-    public T X, Y, Z, W;
+    public T X = x, Y = y, Z = z, W = w;
 
-    public Vec4(T x, T y, T z, T w)
-    {
-        Unsafe.SkipInit(out this);
-
-        X = x; Y = y; Z = z; W = w;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [UnscopedRef]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private Vector64<T> AsVec64() => Unsafe.As<Vec4<T>, Vector64<T>>(ref this);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [UnscopedRef]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private Vector128<T> AsVec128() => Unsafe.As<Vec4<T>, Vector128<T>>(ref this);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [UnscopedRef]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private Vector256<T> AsVec256() => Unsafe.As<Vec4<T>, Vector256<T>>(ref this);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    private Vector128<float> AsVec128F() => Unsafe.As<Vec4<T>, Vector128<float>>(ref this);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    private Vector256<double> AsVec256D() => Unsafe.As<Vec4<T>, Vector256<double>>(ref this);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static Vec4<T> From64(Vector64<T> vec) => Unsafe.As<Vector64<T>, Vec4<T>>(ref vec);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static Vec4<T> From128(Vector128<T> vec) => Unsafe.As<Vector128<T>, Vec4<T>>(ref vec);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static Vec4<T> From256(Vector256<T> vec) => Unsafe.As<Vector256<T>, Vec4<T>>(ref vec);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    private static Vec4<T> From128F(Vector128<float> vec) => Unsafe.As<Vector128<float>, Vec4<T>>(ref vec);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    private static Vec4<T> From256D(Vector256<double> vec) => Unsafe.As<Vector256<double>, Vec4<T>>(ref vec);
+
     #region Operators
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static Vec4<T> operator +(Vec4<T> left, Vec4<T> right)
     {
         unsafe
@@ -107,17 +116,23 @@ public partial struct Vec4<T> :
     {
         unsafe
         {
-            return sizeof(T) switch
+            if (sizeof(T) == 2)
             {
-                2 => Vec4<T>.From64(left.AsVec64() * right.AsVec64()),
-                4 => Vec4<T>.From128(left.AsVec128() * right.AsVec128()),
-                8 => Vec4<T>.From256(left.AsVec256() * right.AsVec256()),
-                _ => throw new NotSupportedException()
-            };
+                return Vec4<T>.From64(left.AsVec64() * right.AsVec64());
+            }
+            else if (sizeof(T) == 4)
+            {
+                return Vec4<T>.From128(left.AsVec128() * right.AsVec128());
+            }
+            else if (sizeof(T) == 8)
+            {
+                return Vec4<T>.From256(left.AsVec256() * right.AsVec256());
+            }
         }
+        throw new NotSupportedException();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static Vec4<T> operator *(Vec4<T> vec, T value)
     {
         unsafe
@@ -192,6 +207,7 @@ public partial struct Vec4<T> :
         }
     }
     #endregion
+
     public static Vec4<T> Zero { get; } = new();
 
     public static Vec4<T> One { get; } = new(T.One, T.One, T.One, T.One);
@@ -385,44 +401,56 @@ public partial struct Vec4<T> :
         {
             return sizeof(T) switch
             {
-                2 => Vec4<T>.From64(Vector64.MultiplyAddEstimate(left.AsVec64().AsDouble(), right.AsVec64().AsDouble(), add.AsVec64().AsDouble())),
-                4 => Vec4<T>.From128(Vector128.MultiplyAddEstimate(left.AsVec128(), right.AsVec128(), add.AsVec128())),
-                8 => Vec4<T>.From256(Vector256.MultiplyAddEstimate(left.AsVec256(), right.AsVec256(), add.AsVec256())),
+                4 => Vec4<T>.From128F(Vector128.FusedMultiplyAdd(left.AsVec128F(), right.AsVec128F(), add.AsVec128F())),
+                8 => Vec4<T>.From256D(Vector256.FusedMultiplyAdd(left.AsVec256D(), right.AsVec256D(), add.AsVec256D())),
                 _ => throw new NotSupportedException()
             };
+            /*return sizeof(T) switch
+            {
+                4 => left * right + add,
+                8 => left * right + add,
+                _ => throw new NotSupportedException()
+            };*/
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vec4<T> Transform(Vec4<T> vec, Mat44<T> mat)
     {
-        var result = mat.X * vec.X;
+        /*result += mat.Y * vec.Y;
+        result += mat.Z * vec.Z;
+        result += mat.W * vec.W;
 
+        return result;*/
         unsafe
         {
             if (sizeof(T) == 4)
             {
+                var result = (mat.X * vec.X).AsVec128F();
+
                 var estY = Vector128.Create(vec.Y);
                 var estZ = Vector128.Create(vec.Z);
                 var estW = Vector128.Create(vec.W);
 
-                result = MultiplyAddEstimate(mat.Y, Unsafe.As<Vector128<T>, Vec4<T>>(ref estY), result);
-                result = MultiplyAddEstimate(mat.Z, Unsafe.As<Vector128<T>, Vec4<T>>(ref estZ), result);
-                result = MultiplyAddEstimate(mat.W, Unsafe.As<Vector128<T>, Vec4<T>>(ref estW), result);
+                result = Vector128.FusedMultiplyAdd(mat.Y.AsVec128F(), estY.AsSingle(), result);
+                result = Vector128.FusedMultiplyAdd(mat.Z.AsVec128F(), estZ.AsSingle(), result);
+                result = Vector128.FusedMultiplyAdd(mat.W.AsVec128F(), estW.AsSingle(), result);
 
-                return result;
+                return Vec4<T>.From128F(result);
             }
             else if (sizeof(T) == 8)
             {
+                var result = (mat.X * vec.X).AsVec256D();
+
                 var estY = Vector256.Create(vec.Y);
                 var estZ = Vector256.Create(vec.Z);
                 var estW = Vector256.Create(vec.W);
 
-                result = MultiplyAddEstimate(mat.Y, Unsafe.As<Vector256<T>, Vec4<T>>(ref estY), result);
-                result = MultiplyAddEstimate(mat.Z, Unsafe.As<Vector256<T>, Vec4<T>>(ref estZ), result);
-                result = MultiplyAddEstimate(mat.W, Unsafe.As<Vector256<T>, Vec4<T>>(ref estW), result);
+                result = Vector256.FusedMultiplyAdd(mat.Y.AsVec256D(), estY.AsDouble(), result);
+                result = Vector256.FusedMultiplyAdd(mat.Z.AsVec256D(), estZ.AsDouble(), result);
+                result = Vector256.FusedMultiplyAdd(mat.W.AsVec256D(), estW.AsDouble(), result);
 
-                return result;
+                return Vec4<T>.From256D(result);
             }
         }
         throw new NotSupportedException();

@@ -105,13 +105,15 @@ public partial struct Mat44<T>
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    /*public static Mat44<T> operator *(Mat44<T> mat1, Mat44<T> mat2) => new
+    public static Mat44<T> operator *(Mat44<T> left, Mat44<T> right) => new
     (
-        Vec4<T>.Transform(mat1.X, mat2),
-        Vec4<T>.Transform(mat1.Y, mat2),
-        Vec4<T>.Transform(mat1.Z, mat2),
-        Vec4<T>.Transform(mat1.W, mat2)
-    );*/
+        Vec4<T>.Transform(left.X, right),
+        Vec4<T>.Transform(left.Y, right),
+        Vec4<T>.Transform(left.Z, right),
+        Vec4<T>.Transform(left.W, right)
+    );
+
+    /*[MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Mat44<T> operator *(Mat44<T> left, Mat44<T> right)
     {
         var x = right.X * left.X.X;
@@ -135,7 +137,19 @@ public partial struct Mat44<T>
         w += right.W * left.W.W;
 
         return new(x, y, z, w);
-    }
+    }*/
+
+    /*[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    public static Mat44<T> operator *(Mat44<T> left, Mat44<T> right) => new
+    (
+        right.X * left.X.X + right.Y * left.X.Y + right.Z * left.X.Z + right.W * left.X.W,
+
+        right.X * left.Y.X + right.Y * left.Y.Y + right.Z * left.Y.Z + right.W * left.Y.W,
+
+        right.X * left.Z.X + right.Y * left.Z.Y + right.Z * left.Z.Z + right.W * left.Z.W,
+
+        right.X * left.W.X + right.Y * left.W.Y + right.Z * left.W.Z + right.W * left.W.W
+    );*/
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator ==(Mat44<T> left, Mat44<T> right) => left.X == right.X

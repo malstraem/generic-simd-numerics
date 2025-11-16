@@ -27,8 +27,8 @@ public class Vector4Bench
     {
         var res = T.One;
 
-        foreach (var mat in vectors)
-            res *= mat;
+        foreach (var vec in vectors)
+            res *= vec;
 
         return res;
     }
@@ -38,8 +38,8 @@ public class Vector4Bench
     {
         var res = Vector4.One;
 
-        foreach (var mat in floatSystemNumerics)
-            res *= mat;
+        foreach (var vec in floatSystemNumerics)
+            res *= vec;
 
         return res;
     }
@@ -52,8 +52,8 @@ public class Vector4Bench
     {
         var res = Vector4D<double>.One;
 
-        foreach (var mat in doubleSilkNetMaths)
-            res *= mat;
+        foreach (var vec in doubleSilkNetMaths)
+            res *= vec;
 
         return res;
     }
