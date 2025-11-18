@@ -1,18 +1,13 @@
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Numerics;
 
-public partial struct Mat44<T>
-    where T : unmanaged, IBinaryNumber<T>
+[StructLayout(LayoutKind.Sequential)]
+public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
+    where T : unmanaged, IFloatingPoint<T>
 {
-    public Vec4<T> X, Y, Z, W;
-
-    public Mat44(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
-    {
-        Unsafe.SkipInit(out this);
-
-        X = x; Y = y; Z = z; W = w;
-    }
+    public Vec4<T> X = x, Y = y, Z = z, W = w;
 
     public Mat44(T m11, T m12, T m13, T m14,
                  T m21, T m22, T m23, T m24,
@@ -113,7 +108,7 @@ public partial struct Mat44<T>
         Vec4<T>.Transform(left.W, right)
     );
 
-    /*[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    /*[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static Mat44<T> operator *(Mat44<T> left, Mat44<T> right)
     {
         var x = right.X * left.X.X;
@@ -138,18 +133,6 @@ public partial struct Mat44<T>
 
         return new(x, y, z, w);
     }*/
-
-    /*[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static Mat44<T> operator *(Mat44<T> left, Mat44<T> right) => new
-    (
-        right.X * left.X.X + right.Y * left.X.Y + right.Z * left.X.Z + right.W * left.X.W,
-
-        right.X * left.Y.X + right.Y * left.Y.Y + right.Z * left.Y.Z + right.W * left.Y.W,
-
-        right.X * left.Z.X + right.Y * left.Z.Y + right.Z * left.Z.Z + right.W * left.Z.W,
-
-        right.X * left.W.X + right.Y * left.W.Y + right.Z * left.W.Z + right.W * left.W.W
-    );*/
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator ==(Mat44<T> left, Mat44<T> right) => left.X == right.X

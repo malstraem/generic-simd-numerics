@@ -1,17 +1,14 @@
-using System.Numerics;
-
 using Silk.NET.Maths;
 
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 
-namespace GenericNumerics.Bench;
+namespace System.Numerics.Bench;
 
-//[SimpleJob(RuntimeMoniker.Net90)]
 [SimpleJob(RuntimeMoniker.Net10_0)]
 public class MatrixMultiplication
 {
-    private const int Count = 50_000;
+    private const int Count = 100_000;
 
     private const double Coeff = 200;
 
@@ -22,8 +19,6 @@ public class MatrixMultiplication
     private static Matrix4X4<double>[] doublesSilkNet = new Matrix4X4<double>[Count];
 
     private static Mat44<double>[] doubles = new Mat44<double>[Count];
-
-    private static Mat44<FooInteger5>[] fiveBytes = new Mat44<FooInteger5>[Count];
 
     [Benchmark(Description = "Silk.NET.Maths.Matrix4X4<double>")]
     public Matrix4X4<double> SilkDoubles()
@@ -64,17 +59,6 @@ public class MatrixMultiplication
         var res = Mat44<float>.Identity;
 
         foreach (var mat in floats)
-            res *= mat;
-
-        return res;
-    }
-
-    //[Benchmark(Description = "Proposal Matrix44<FooFiveByteInteger>")]
-    public Mat44<FooInteger5> GenericFiveBytes()
-    {
-        var res = Mat44<FooInteger5>.Identity;
-
-        foreach (var mat in fiveBytes)
             res *= mat;
 
         return res;

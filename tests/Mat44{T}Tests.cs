@@ -2,28 +2,16 @@ using Silk.NET.Maths;
 
 namespace System.Numerics.Tests;
 
-public class Matrix44Tests
+public class Mat44Tests
 {
     [Test]
     public async Task Multiply() => await Task.WhenAll
     (
         Multiply<float>(),
-        Multiply<double>()/*,
-        Multiply<int>(),
-        Multiply<long>(),
-        Multiply<FooInteger5>()*/
+        Multiply<double>()
     );
 
-    /*[Test]
-    public async Task MultiplyToVector() => await Task.WhenAll
-    (
-        MultiplyByVector<double>(),
-        MultiplyByVector<float>(),
-        MultiplyByVector<int>(),
-        MultiplyByVector<long>()
-    );*/
-
-    private static async Task Multiply<T>() where T : unmanaged, IBinaryNumber<T>
+    private static async Task Multiply<T>() where T : unmanaged, IBinaryFloatingPointIeee754<T>
     {
         var a = Mat44<T>.Generate(T.One);
         var b = Mat44<T>.Generate(T.One + T.One);

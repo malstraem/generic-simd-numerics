@@ -2,25 +2,22 @@ using Silk.NET.Maths;
 
 namespace System.Numerics.Tests;
 
-public class Vector4Tests
+public class Vec4Tests
 {
     [Test]
     public async Task Multiply() => await Task.WhenAll
     (
+        //Multiply<Half>(),
         Multiply<float>(),
-        Multiply<double>(),
-        Multiply<int>(),
-        Multiply<long>()/*,
-        Multiply<FooInteger5>()*/
+        Multiply<double>()
     );
 
     [Test]
     public async Task Length() => await Task.WhenAll
     (
+        //Length<Half>(),
         Length<float>(),
-        Length<double>(),
-        Length<int>(),
-        Length<long>()
+        Length<double>()
     );
 
     /* Waiting Vector4<T>.Lerp...
@@ -34,7 +31,7 @@ public class Vector4Tests
     );
     */
 
-    private static async Task Multiply<T>() where T : unmanaged, IBinaryNumber<T>
+    private static async Task Multiply<T>() where T : unmanaged, IBinaryFloatingPointIeee754<T>
     {
         var a = Vec4<T>.Generate(T.One);
         var b = Vec4<T>.Generate(T.One + T.One);
@@ -46,7 +43,7 @@ public class Vector4Tests
         await Assert.That(mul).IsEqualTo(expected);
     }
 
-    private static async Task Length<T>() where T : unmanaged, IBinaryNumber<T>
+    private static async Task Length<T>() where T : unmanaged, IBinaryFloatingPointIeee754<T>
     {
         var a = Vec4<T>.Generate(T.One);
 
@@ -68,6 +65,5 @@ public class Vector4Tests
         Vector4<T> expected = Vector4D.Lerp((Vector4D<T>)a, (Vector4D<T>)b, amount);
 
         await Assert.That(expected).IsEqualTo(actual);
-    }
-    */
+    }*/
 }

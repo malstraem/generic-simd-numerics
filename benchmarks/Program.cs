@@ -1,6 +1,6 @@
 using BenchmarkDotNet.Running;
 
-using GenericNumerics.Bench;
+using System.Numerics.Bench;
 
 BenchmarkRunner.Run<MatrixMultiplication>();
 //BenchmarkRunner.Run<Vector4Bench>();

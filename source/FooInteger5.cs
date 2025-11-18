@@ -9,7 +9,7 @@ public struct FooInteger5 : IBinaryInteger<FooInteger5>
 {
     public byte Value;
 
-    private static FooInteger5 OneBiba()
+    private static FooInteger5 OneFoo()
     {
         FooInteger5 num = new();
 
@@ -22,7 +22,7 @@ public struct FooInteger5 : IBinaryInteger<FooInteger5>
         return num;
     }
 
-    public static FooInteger5 One => OneBiba();
+    public static FooInteger5 One => OneFoo();
 
     public static int Radix => throw new NotImplementedException();
 
