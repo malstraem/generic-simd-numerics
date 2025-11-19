@@ -1,9 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Silk.NET.Maths" />
+
+    <None Include="pessimized/*.cs"/>
+    <Compile Remove="pessimized/*.cs"/>
   </ItemGroup>
 </Project>

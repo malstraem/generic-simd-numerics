@@ -1,11 +1,10 @@
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
 public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
-    where T : unmanaged, IFloatingPoint<T>
+    where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>
 {
     public Vec4<T> X = x, Y = y, Z = z, W = w;
 
@@ -33,19 +32,19 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
         && Z == Vec4<T>.UnitZ
         && W == Vec4<T>.UnitW;
 
-    public readonly T TranslationX => W.X;
+    public readonly T TransX => W.X;
 
-    public readonly T TranslationY => W.Y;
+    public readonly T TransY => W.Y;
 
-    public readonly T TranslationZ => W.Z;
+    public readonly T TransZ => W.Z;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Mat44<T> Add(Mat44<T> left, Mat44<T> right) => left + right;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Mat44<T> Subtract(Mat44<T> left, Mat44<T> right) => left - right;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Mat44<T> Multiply(Mat44<T> left, Mat44<T> right) => left * right;
 
     /* Wait for Vector4<T>.Lerp...
@@ -59,7 +58,8 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
     );
     */
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [Obsolete("TODO")]
+    [MethodImpl(AggressiveInlining)]
     public static Mat44<T> Transpose(Mat44<T> mat) => new
     (
         mat.X.X, mat.Y.X, mat.Z.X, mat.W.X,
@@ -68,7 +68,7 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
         mat.X.W, mat.Y.W, mat.Z.W, mat.W.W
     );
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Mat44<T> operator +(Mat44<T> left, Mat44<T> right) => new
     (
         left.X + right.X,
@@ -77,7 +77,7 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
         left.W + right.W
     );
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Mat44<T> operator -(Mat44<T> left, Mat44<T> right) => new
     (
         left.X - right.X,
@@ -86,26 +86,22 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
         left.W - right.W
     );
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Mat44<T> operator *(Mat44<T> mat, T value)
-    {
-        Mat44<T> mul;
+    [MethodImpl(AggressiveInlining)]
+    public static Mat44<T> operator *(Mat44<T> mat, T value) => new
+    (
+        mat.X * value,
+        mat.Y * value,
+        mat.Z * value,
+        mat.W * value
+    );
 
-        mul.X = mat.X * value;
-        mul.Y = mat.Y * value;
-        mul.Z = mat.Z * value;
-        mul.W = mat.W * value;
-
-        return mul;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Mat44<T> operator *(Mat44<T> left, Mat44<T> right) => new
     (
-        Vec4<T>.Transform(left.X, right),
-        Vec4<T>.Transform(left.Y, right),
-        Vec4<T>.Transform(left.Z, right),
-        Vec4<T>.Transform(left.W, right)
+        left.X.Transform(right),
+        left.Y.Transform(right),
+        left.Z.Transform(right),
+        left.W.Transform(right)
     );
 
     /*[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
@@ -134,12 +130,12 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
         return new(x, y, z, w);
     }*/
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static bool operator ==(Mat44<T> left, Mat44<T> right) => left.X == right.X
                                                                   && left.Y == right.Y
                                                                   && left.Z == right.Z
                                                                   && left.W == right.W;
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static bool operator !=(Mat44<T> left, Mat44<T> right) => left.X != right.X
                                                                   || left.Y != right.Y
                                                                   || left.Z != right.Z

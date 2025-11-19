@@ -1,9 +1,6 @@
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
-
-using static System.Runtime.CompilerServices.MethodImplOptions;
 
 namespace System.Numerics;
 
@@ -19,9 +16,11 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     IDivisionOperators<Vec4<T>, T, Vec4<T>>,
     IUnaryNegationOperators<Vec4<T>, Vec4<T>>,
     IUnaryPlusOperators<Vec4<T>, Vec4<T>>
-        where T : unmanaged, IFloatingPoint<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>
 {
     public T X = x, Y = y, Z = z, W = w;
+
+    public Vec4(T value) : this(value, value, value, value) { }
 
     [MethodImpl(AggressiveInlining)]
     private readonly Vector128<T> AsVec128() => Unsafe.BitCast<Vec4<T>, Vector128<T>>(this);
@@ -49,188 +48,127 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
 
     #region Operators
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> operator +(Vec4<T> value)
+    public static Vec4<T> operator +(Vec4<T> vec)
     {
-        if (IsNotHardware())
-            return SoftPlus(value);
+        if (typeof(T) == typeof(float))
+            return Vec4<T>.From128(+vec.AsVec128());
 
-        unsafe
-        {
-            return sizeof(T) switch
-            {
-                //2 => Vec4<T>.From64(+value.AsVec64()), // any vector instructions for IEEE's binary16?
-                4 => Vec4<T>.From128(+value.AsVec128()),
-                8 => Vec4<T>.From256(+value.AsVec256()),
-                _ => throw new NotSupportedException()
-            };
-        }
+        if (typeof(T) == typeof(double))
+            return Vec4<T>.From256(+vec.AsVec256());
+
+        return SoftPlus(vec);
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> operator -(Vec4<T> value)
+    public static Vec4<T> operator -(Vec4<T> vec)
     {
-        if (IsNotHardware())
-            return SoftNegate(value);
+        if (typeof(T) == typeof(float))
+            return Vec4<T>.From128(-vec.AsVec128());
 
-        unsafe
-        {
-            return sizeof(T) switch
-            {
-                //2 => Vec4<T>.From64(-value.AsVec64()),
-                4 => Vec4<T>.From128(-value.AsVec128()),
-                8 => Vec4<T>.From256(-value.AsVec256()),
-                _ => throw new NotSupportedException()
-            };
-        }
+        if (typeof(T) == typeof(double))
+            return Vec4<T>.From256(-vec.AsVec256());
+
+        return SoftNegate(vec);
     }
 
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator *(Vec4<T> vec, T value)
     {
-        if (IsNotHardware())
-            return SoftMultiply(vec, value);
+        if (typeof(T) == typeof(float))
+            return Vec4<T>.From128(vec.AsVec128() * value);
 
-        unsafe
-        {
-            return sizeof(T) switch
-            {
-                //2 => Vec4<T>.From64(vec.AsVec64() * value),
-                4 => Vec4<T>.From128(vec.AsVec128() * value),
-                8 => Vec4<T>.From256(vec.AsVec256() * value),
-                _ => throw new NotSupportedException()
-            };
-        }
+        if (typeof(T) == typeof(double))
+            return Vec4<T>.From256(vec.AsVec256() * value);
+
+        return SoftMultiply(vec, value);
     }
 
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator /(Vec4<T> vec, T value)
     {
-        if (IsNotHardware())
-            return SoftDivide(vec, value);
+        if (typeof(T) == typeof(float))
+            return Vec4<T>.From128(vec.AsVec128() / value);
 
-        unsafe
-        {
-            return sizeof(T) switch
-            {
-                //2 => Vec4<T>.From64(vec.AsVec64() / value),
-                4 => Vec4<T>.From128(vec.AsVec128() / value),
-                8 => Vec4<T>.From256(vec.AsVec256() / value),
-                _ => throw new NotSupportedException()
-            };
-        }
+        if (typeof(T) == typeof(double))
+            return Vec4<T>.From256(vec.AsVec256() / value);
+
+        return SoftDivide(vec, value);
     }
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator +(Vec4<T> left, Vec4<T> right)
     {
-        if (IsNotHardware())
-            return SoftAdd(left, right);
+        if (typeof(T) == typeof(float))
+            return Vec4<T>.From128(left.AsVec128() + right.AsVec128());
 
-        unsafe
-        {
-            return sizeof(T) switch
-            {
-                //2 => Vec4<T>.From64(left.AsVec64() + right.AsVec64()),
-                4 => Vec4<T>.From128(left.AsVec128() + right.AsVec128()),
-                8 => Vec4<T>.From256(left.AsVec256() + right.AsVec256()),
-                _ => throw new NotSupportedException()
-            };
-        }
+        if (typeof(T) == typeof(double))
+            return Vec4<T>.From256(left.AsVec256() + right.AsVec256());
+
+        return SoftAdd(left, right);
     }
 
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator -(Vec4<T> left, Vec4<T> right)
     {
-        if (IsNotHardware())
-            return SoftSubtract(left, right);
+        if (typeof(T) == typeof(float))
+            return Vec4<T>.From128(left.AsVec128() - right.AsVec128());
 
-        unsafe
-        {
-            return sizeof(T) switch
-            {
-                //2 => Vec4<T>.From64(left.AsVec64() - right.AsVec64()),
-                4 => Vec4<T>.From128(left.AsVec128() - right.AsVec128()),
-                8 => Vec4<T>.From256(left.AsVec256() - right.AsVec256()),
-                _ => throw new NotSupportedException()
-            };
-        }
+        if (typeof(T) == typeof(double))
+            return Vec4<T>.From256(left.AsVec256() - right.AsVec256());
+
+        return SoftSubstract(left, right);
     }
 
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator *(Vec4<T> left, Vec4<T> right)
     {
-        if (IsNotHardware())
-            return SoftMultiply(left, right);
+        if (typeof(T) == typeof(float))
+            return Vec4<T>.From128(left.AsVec128() * right.AsVec128());
 
-        unsafe
-        {
-            return sizeof(T) switch
-            {
-                //2 => Vec4<T>.From64(left.AsVec64() * right.AsVec64()),
-                4 => Vec4<T>.From128(left.AsVec128() * right.AsVec128()),
-                8 => Vec4<T>.From256(left.AsVec256() * right.AsVec256()),
-                _ => throw new NotSupportedException()
-            };
-        }
-        throw new NotSupportedException();
+        if (typeof(T) == typeof(double))
+            return Vec4<T>.From256(left.AsVec256() * right.AsVec256());
+
+        return SoftMultiply(left, right);
     }
 
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator /(Vec4<T> left, Vec4<T> right)
     {
-        if (IsNotHardware())
-            return SoftMultiply(left, right);
+        if (typeof(T) == typeof(float))
+            return Vec4<T>.From128(left.AsVec128() / right.AsVec128());
 
-        unsafe
-        {
-            return sizeof(T) switch
-            {
-                //2 => Vec4<T>.From64(left.AsVec64() / right.AsVec64()),
-                4 => Vec4<T>.From128(left.AsVec128() / right.AsVec128()),
-                8 => Vec4<T>.From256(left.AsVec256() / right.AsVec256()),
-                _ => throw new NotSupportedException()
-            };
-        }
+        if (typeof(T) == typeof(double))
+            return Vec4<T>.From256(left.AsVec256() / right.AsVec256());
+
+        return SoftMultiply(left, right);
     }
 
     [MethodImpl(AggressiveInlining)]
     public static bool operator ==(Vec4<T> left, Vec4<T> right)
     {
-        if (IsNotHardware())
-            return SoftEqual(left, right);
+        if (typeof(T) == typeof(float))
+            return left.AsVec128() == right.AsVec128();
 
-        unsafe
-        {
-            return sizeof(T) switch
-            {
-                //2 => left.AsVec64() == right.AsVec64(),
-                4 => left.AsVec128() == right.AsVec128(),
-                8 => left.AsVec256() == right.AsVec256(),
-                _ => throw new NotSupportedException()
-            };
-        }
+        if (typeof(T) == typeof(double))
+            return left.AsVec256() == right.AsVec256();
+
+        return SoftEqual(left, right);
     }
 
     [MethodImpl(AggressiveInlining)]
     public static bool operator !=(Vec4<T> left, Vec4<T> right)
     {
-        if (IsNotHardware())
-            return SoftNotEqual(left, right);
+        if (typeof(T) == typeof(float))
+            return left.AsVec128() == right.AsVec128();
 
-        unsafe
-        {
-            return sizeof(T) switch
-            {
-                //2 => left.AsVec64() != right.AsVec64(),
-                4 => left.AsVec128() != right.AsVec128(),
-                8 => left.AsVec256() != right.AsVec256(),
-                _ => throw new NotSupportedException()
-            };
-        }
+        if (typeof(T) == typeof(double))
+            return left.AsVec256() == right.AsVec256();
+
+        return SoftNotEqual(left, right);
     }
     #endregion
 
-    public static Vec4<T> Zero { get; } = new(T.Zero, T.Zero, T.Zero, T.Zero);
+    public static Vec4<T> Zero { get; } = new(T.Zero);
 
     public static Vec4<T> One { get; } = new(T.One, T.One, T.One, T.One);
 
@@ -267,28 +205,19 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public static Vec4<T> Negate(Vec4<T> vec) => -vec;
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T Sum(Vec4<T> vec)
+    public readonly T Sum()
     {
-        if (IsNotHardware())
-            return SoftSum(vec);
+        if (typeof(T) == typeof(float))
+            return Vector128.Sum(AsVec128());
 
-        unsafe
-        {
-            return sizeof(T) switch
-            {
-                //2 => Vector64.Sum(vec.AsVec64()),
-                4 => Vector128.Sum(vec.AsVec128()),
-                8 => Vector256.Sum(vec.AsVec256()),
-                _ => throw new NotSupportedException()
-            };
-        }
+        if (typeof(T) == typeof(double))
+            return Vector256.Sum(AsVec256());
+
+        return SoftSum(this);
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Normalize(Vec4<T> vec) => vec / Distance(vec, Zero);
-
-    [MethodImpl(AggressiveInlining)]
-    public readonly T Dot(Vec4<T> vec) => Sum(this * vec);
+    public readonly T Dot(Vec4<T> vec) => (this * vec).Sum();
 
     [MethodImpl(AggressiveInlining)]
     public readonly T LengthSquared() => Dot(this);
@@ -296,171 +225,147 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec4<T> vec) => (this - vec).LengthSquared();
 
-    // too hard...
-    // no meaning for integer cases
     [MethodImpl(AggressiveInlining)]
-    public readonly T Length()
-    {
-        unsafe
-        {
-            if (sizeof(T) == 8)
-            {
-                return Vector64.Sqrt(Vector64.Create(LengthSquared())).ToScalar();
-            }
-        }
-        throw new NotSupportedException();
-    }
+    public readonly T Length() => T.Sqrt(LengthSquared());
 
-    // too hard...
-    // no meaning for integer cases
     [MethodImpl(AggressiveInlining)]
-    public static T Distance(Vec4<T> left, Vec4<T> right)
+    public readonly T Distance(Vec4<T> vec) => T.Sqrt(DistanceSquared(vec));
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly Vec4<T> Normalize() => this / Distance(Zero);
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly Vec4<T> Abs()
     {
-        unsafe
-        {
-            if (sizeof(T) == 8)
-            {
-                return Vector64.Sqrt(Vector64.Create(left.DistanceSquared(right))).ToScalar();
-            }
-        }
-        throw new NotSupportedException();
+        if (typeof(T) == typeof(float))
+            return Vec4<T>.From128(Vector128.Abs(AsVec128()));
+
+        if (typeof(T) == typeof(double))
+            return Vec4<T>.From256(Vector256.Abs(AsVec256()));
+
+        return SoftAbs(this);
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Abs(Vec4<T> vec)
+    public readonly Vec4<T> Min(Vec4<T> vec)
     {
-        if (IsNotHardware())
-            return SoftAbs(vec);
+        if (typeof(T) == typeof(float))
+            return Vec4<T>.From128(Vector128.Min(AsVec128(), vec.AsVec128()));
 
-        unsafe
-        {
-            return sizeof(T) switch
-            {
-                //2 => Vec4<T>.From64(Vector64.Abs(vec.AsVec64())),
-                4 => Vec4<T>.From128(Vector128.Abs(vec.AsVec128())),
-                8 => Vec4<T>.From256(Vector256.Abs(vec.AsVec256())),
-                _ => throw new NotSupportedException()
-            };
-        }
+        if (typeof(T) == typeof(double))
+            return Vec4<T>.From256(Vector256.Min(AsVec256(), vec.AsVec256()));
+
+        return SoftMin(this, vec);
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Clamp(Vec4<T> vec, Vec4<T> min, Vec4<T> max)
+    public readonly Vec4<T> Max(Vec4<T> vec)
     {
-        unsafe
-        {
-            return sizeof(T) switch
-            {
-                //2 => Vec4<T>.From64(Vector64.Clamp(vec.AsVec64(), min.AsVec64(), max.AsVec64())),
-                4 => Vec4<T>.From128(Vector128.Clamp(vec.AsVec128(), min.AsVec128(), max.AsVec128())),
-                8 => Vec4<T>.From256(Vector256.Clamp(vec.AsVec256(), min.AsVec256(), max.AsVec256())),
-                _ => throw new NotSupportedException()
-            };
-        }
+        if (typeof(T) == typeof(float))
+            return Vec4<T>.From128(Vector128.Max(AsVec128(), vec.AsVec128()));
+
+        if (typeof(T) == typeof(double))
+            return Vec4<T>.From256(Vector256.Max(AsVec256(), vec.AsVec256()));
+
+        return SoftMax(this, vec);
     }
 
-    /* no Vector256.Lerp()<T>...
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector4<T> Lerp(Vector4<T> vec1, Vector4<T> vec2, T amount)
+    [MethodImpl(AggressiveInlining)]
+    public readonly Vec4<T> Clamp(Vec4<T> min, Vec4<T> max)
     {
-        unsafe
+        if (typeof(T) == typeof(float))
+            return Vec4<T>.From128(Vector128.Clamp(AsVec128(), min.AsVec128(), max.AsVec128()));
+
+        if (typeof(T) == typeof(double))
+            return Vec4<T>.From256(Vector256.Clamp(AsVec256(), min.AsVec256(), max.AsVec256()));
+
+        return SoftClamp(this, min, max);
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly Vec4<T> Lerp(Vec4<T> vec, T amount)
+    {
+        if (typeof(T) == typeof(float))
         {
-            if (sizeof(T) == 8)
-            {
-                return Vector256.Lerp()
-                (
-                    Unsafe.As<Vector4<T>, Vector256<T>>(ref vec1),
-                    Unsafe.As<Vector4<T>, Vector256<T>>(ref vec2),
-                    Vector256.Create(amount)
-                );
-            }
-            else if (sizeof(T) == 4)
-            {
-                return Vector256.Lerp()
-                (
-                    Unsafe.As<Vector4<T>, Vector128<T>>(ref vec1),
-                    Unsafe.As<Vector4<T>, Vector128<T>>(ref vec2),
-                    Vector128.Create(amount)
-                );
-            }
+            return Vec4<T>.From128(Vector128.Lerp // maybe Lerp<T> (and including integers)?
+            (
+                AsVec128F(),
+                vec.AsVec128F(),
+                Vector128.Create((float)(object)amount)
+            ));
         }
-        throw new NotSupportedException();
+        if (typeof(T) == typeof(double))
+        {
+            return Vec4<T>.From256(Vector256.Lerp
+            (
+                AsVec256D(),
+                vec.AsVec256D(),
+                Vector256.Create((double)(object)amount)
+            ));
+        }
+        return SoftLerp(this, vec, amount);
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly Vec4<T> MultiplyAdd(Vec4<T> vec, Vec4<T> add)
+    {
+        if (typeof(T) == typeof(float))
+            return Vec4<T>.From128(Vector128.FusedMultiplyAdd(AsVec128F(), vec.AsVec128F(), add.AsVec128F()));
+
+        if (typeof(T) == typeof(double))
+            return Vec4<T>.From256(Vector256.FusedMultiplyAdd(AsVec256D(), vec.AsVec256D(), add.AsVec256D()));
+
+        return SoftMultiplyAdd(this, vec, add);
+    }
+
+    /*[MethodImpl(AggressiveInlining)]
+    public readonly Vec4<T> Transform(Mat44<T> mat)
+    {
+        var result = mat.X * X;
+
+        result = mat.Y.MultiplyAdd(new(Y), result);
+        result = mat.Z.MultiplyAdd(new(Z), result);
+        result = mat.W.MultiplyAdd(new(W), result);
+
+        return result;
     }*/
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Max(Vec4<T> left, Vec4<T> right)
+    public readonly Vec4<T> Transform(Mat44<T> mat)
     {
-        unsafe
+        if (typeof(T) == typeof(float))
         {
-            return sizeof(T) switch
-            {
-                //2 => Vec4<T>.From64(Vector64.Max(left.AsVec64(), right.AsVec64())),
-                4 => Vec4<T>.From128(Vector128.Max(left.AsVec128(), right.AsVec128())),
-                8 => Vec4<T>.From256(Vector256.Max(left.AsVec256(), right.AsVec256())),
-                _ => throw new NotSupportedException()
-            };
+            var result = (mat.X * X).AsVec128F();
+
+            result = Vector128.MultiplyAddEstimate(mat.Y.AsVec128F(), Vector128.Create((float)(object)Y), result);
+            result = Vector128.MultiplyAddEstimate(mat.Z.AsVec128F(), Vector128.Create((float)(object)Z), result);
+            result = Vector128.MultiplyAddEstimate(mat.W.AsVec128F(), Vector128.Create((float)(object)W), result);
+
+            return Vec4<T>.From128(result);
+        }
+        else if (typeof(T) == typeof(double))
+        {
+            var result = (mat.X * X).AsVec256D();
+
+            result = Vector256.MultiplyAddEstimate(mat.Y.AsVec256D(), Vector256.Create((double)(object)Y), result);
+            result = Vector256.MultiplyAddEstimate(mat.Z.AsVec256D(), Vector256.Create((double)(object)Z), result);
+            result = Vector256.MultiplyAddEstimate(mat.W.AsVec256D(), Vector256.Create((double)(object)W), result);
+
+            return Vec4<T>.From256(result);
+        }
+        else
+        {
+            var result = mat.X * X;
+
+            result = SoftMultiplyAdd(mat.Y, new(Y), result);
+            result = SoftMultiplyAdd(mat.Z, new(Z), result);
+            result = SoftMultiplyAdd(mat.W, new(W), result);
+
+            return result;
         }
     }
 
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Min(Vec4<T> left, Vec4<T> right)
-    {
-        unsafe
-        {
-            return sizeof(T) switch
-            {
-                //2 => Vec4<T>.From64(Vector64.Max(left.AsVec64(), right.AsVec64())),
-                4 => Vec4<T>.From128(Vector128.Max(left.AsVec128(), right.AsVec128())),
-                8 => Vec4<T>.From256(Vector256.Max(left.AsVec256(), right.AsVec256())),
-                _ => throw new NotSupportedException()
-            };
-        }
-    }
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> MultiplyAddEstimate(Vec4<T> left, Vec4<T> right, Vec4<T> add)
-    {
-        unsafe
-        {
-            return sizeof(T) switch
-            {
-                4 => Vec4<T>.From128(Vector128.FusedMultiplyAdd(left.AsVec128F(), right.AsVec128F(), add.AsVec128F())),
-                8 => Vec4<T>.From256(Vector256.FusedMultiplyAdd(left.AsVec256D(), right.AsVec256D(), add.AsVec256D())),
-                _ => throw new NotSupportedException()
-            };
-        }
-    }
-
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static Vec4<T> Transform(Vec4<T> vec, Mat44<T> mat)
-    {
-        unsafe
-        {
-            if (sizeof(T) == 4)
-            {
-                var result = (mat.X * vec.X).AsVec128F();
-
-                result = Vector128.MultiplyAddEstimate(mat.Y.AsVec128F(), Vector128.Create(vec.Y).AsSingle(), result);
-                result = Vector128.MultiplyAddEstimate(mat.Z.AsVec128F(), Vector128.Create(vec.Z).AsSingle(), result);
-                result = Vector128.MultiplyAddEstimate(mat.W.AsVec128F(), Vector128.Create(vec.W).AsSingle(), result);
-
-                return Vec4<T>.From128(result);
-            }
-            else if (sizeof(T) == 8)
-            {
-                var result = (mat.X * vec.X).AsVec256D();
-
-                result = Vector256.MultiplyAddEstimate(mat.Y.AsVec256D(), Vector256.Create(vec.Y).AsDouble(), result);
-                result = Vector256.MultiplyAddEstimate(mat.Z.AsVec256D(), Vector256.Create(vec.Z).AsDouble(), result);
-                result = Vector256.MultiplyAddEstimate(mat.W.AsVec256D(), Vector256.Create(vec.W).AsDouble(), result);
-
-                return Vec4<T>.From256(result);
-            }
-        }
-        throw new NotSupportedException();
-    }
-
+    [Obsolete("TODO")]
     public override readonly string ToString() => $"{X};{Y};{Z};{W}";
 
     public override readonly bool Equals(object? obj) => (obj is Vec4<T> other) && Equals(other);

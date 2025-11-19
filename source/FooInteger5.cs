@@ -1,9 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 
 namespace System.Numerics;
 
+// bullshit only for proof of concept
 [InlineArray(5)]
 public struct FooInteger5 : IBinaryInteger<FooInteger5>
 {
@@ -164,11 +164,11 @@ public struct FooInteger5 : IBinaryInteger<FooInteger5>
 
     public static FooInteger5 operator *(FooInteger5 left, FooInteger5 right)
     {
-        left[0] += right[0];
-        left[1] += right[1];
-        left[2] += right[2];
-        left[3] += right[3];
-        left[4] += right[4];
+        left[0] *= right[0];
+        left[1] *= right[1];
+        left[2] *= right[2];
+        left[3] *= right[3];
+        left[4] *= right[4];
 
         return left;
     }
