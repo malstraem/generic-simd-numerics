@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace System.Numerics;
 
-// bullshit only for proof of concept
+// bullshit proof of concept only
 [InlineArray(5)]
 public struct FooInteger5 : IBinaryInteger<FooInteger5>
 {

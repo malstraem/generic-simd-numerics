@@ -1,11 +1,14 @@
 using Silk.NET.Maths;
 
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Jobs;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob(RuntimeMoniker.Net10_0)]
+//[RyuJitX64Job]
+//[SimpleJob(RuntimeMoniker.Net10_0)]
+[DisassemblyDiagnoser(printInstructionAddresses: true, syntax: DisassemblySyntax.Masm)]
 public class Vector4Bench : BaseBench
 {
     private const int Count = 100_000;

@@ -4,6 +4,7 @@ namespace System.Numerics;
 
 #pragma warning disable CS8509
 
+// thats i believe the methods should be
 public partial struct Vec4<T>
 {
     [MethodImpl(AggressiveInlining)]
@@ -137,8 +138,8 @@ public partial struct Vec4<T>
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> MultiplyAdd(Vec4<T> vec, Vec4<T> add) => Guard.IsHardware<T>() ? Unsafe.SizeOf<T>() switch
     {
-        4 => Vec4<T>.From128(Vector128.FusedMultiplyAdd(AsVec128F(), vec.AsVec128F(), add.AsVec128F())),
-        8 => Vec4<T>.From256(Vector256.FusedMultiplyAdd(AsVec256D(), vec.AsVec256D(), add.AsVec256D())),
+        4 => Vec4<T>.From128(Vector128.MultiplyAddEstimate(AsVec128F(), vec.AsVec128F(), add.AsVec128F())),
+        8 => Vec4<T>.From256(Vector256.MultiplyAddEstimate(AsVec256D(), vec.AsVec256D(), add.AsVec256D())),
     } : SoftMultiplyAdd(this, vec, add);
 }
 #pragma warning restore CS8509

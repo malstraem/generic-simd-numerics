@@ -1,10 +1,8 @@
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 
 namespace System.Numerics;
 
-[DebuggerDisplay("{X};{Y};{Z};{W}")]
 [StructLayout(LayoutKind.Sequential)]
 public partial struct Vec4<T>(T x, T y, T z, T w) :
     IVector<Vec4<T>>,
@@ -16,35 +14,24 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     IDivisionOperators<Vec4<T>, T, Vec4<T>>,
     IUnaryNegationOperators<Vec4<T>, Vec4<T>>,
     IUnaryPlusOperators<Vec4<T>, Vec4<T>>
-        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>
+        //where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>
+        where T : unmanaged, INumber<T>
 {
     public T X = x, Y = y, Z = z, W = w;
 
     public Vec4(T value) : this(value, value, value, value) { }
 
-    [MethodImpl(AggressiveInlining)]
-    private readonly Vector128<T> AsVec128() => Unsafe.BitCast<Vec4<T>, Vector128<T>>(this);
+    public static Vec4<T> Zero { get; } = new(T.Zero);
 
-    [MethodImpl(AggressiveInlining)]
-    private readonly Vector256<T> AsVec256() => Unsafe.BitCast<Vec4<T>, Vector256<T>>(this);
+    public static Vec4<T> One { get; } = new(T.One, T.One, T.One, T.One);
 
-    [MethodImpl(AggressiveInlining)]
-    private readonly Vector128<float> AsVec128F() => Unsafe.BitCast<Vec4<T>, Vector128<float>>(this);
+    public static Vec4<T> UnitX { get; } = new(T.One, T.Zero, T.Zero, T.Zero);
 
-    [MethodImpl(AggressiveInlining)]
-    private readonly Vector256<double> AsVec256D() => Unsafe.BitCast<Vec4<T>, Vector256<double>>(this);
+    public static Vec4<T> UnitY { get; } = new(T.Zero, T.One, T.Zero, T.Zero);
 
-    [MethodImpl(AggressiveInlining)]
-    private static Vec4<T> From128(Vector128<T> vec) => Unsafe.BitCast<Vector128<T>, Vec4<T>>(vec);
+    public static Vec4<T> UnitZ { get; } = new(T.Zero, T.Zero, T.One, T.Zero);
 
-    [MethodImpl(AggressiveInlining)]
-    private static Vec4<T> From256(Vector256<T> vec) => Unsafe.BitCast<Vector256<T>, Vec4<T>>(vec);
-
-    [MethodImpl(AggressiveInlining)]
-    private static Vec4<T> From128(Vector128<float> vec) => Unsafe.BitCast<Vector128<float>, Vec4<T>>(vec);
-
-    [MethodImpl(AggressiveInlining)]
-    private static Vec4<T> From256(Vector256<double> vec) => Unsafe.BitCast<Vector256<double>, Vec4<T>>(vec);
+    public static Vec4<T> UnitW { get; } = new(T.Zero, T.Zero, T.Zero, T.One);
 
     #region Operators
     [MethodImpl(AggressiveInlining)]
@@ -140,7 +127,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (typeof(T) == typeof(double))
             return Vec4<T>.From256(left.AsVec256() / right.AsVec256());
 
-        return SoftMultiply(left, right);
+        return SoftDivide(left, right);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -159,50 +146,14 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public static bool operator !=(Vec4<T> left, Vec4<T> right)
     {
         if (typeof(T) == typeof(float))
-            return left.AsVec128() == right.AsVec128();
+            return left.AsVec128() != right.AsVec128();
 
         if (typeof(T) == typeof(double))
-            return left.AsVec256() == right.AsVec256();
+            return left.AsVec256() != right.AsVec256();
 
         return SoftNotEqual(left, right);
     }
     #endregion
-
-    public static Vec4<T> Zero { get; } = new(T.Zero);
-
-    public static Vec4<T> One { get; } = new(T.One, T.One, T.One, T.One);
-
-    public static Vec4<T> UnitX { get; } = new(T.One, T.Zero, T.Zero, T.Zero);
-
-    public static Vec4<T> UnitY { get; } = new(T.Zero, T.One, T.Zero, T.Zero);
-
-    public static Vec4<T> UnitZ { get; } = new(T.Zero, T.Zero, T.One, T.Zero);
-
-    public static Vec4<T> UnitW { get; } = new(T.Zero, T.Zero, T.Zero, T.One);
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Add(Vec4<T> left, Vec4<T> right) => left + right;
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Subtract(Vec4<T> left, Vec4<T> right) => left - right;
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Multiply(Vec4<T> left, Vec4<T> right) => left * right;
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Multiply(Vec4<T> left, T value) => left * value;
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Multiply(T value, Vec4<T> right) => right * value;
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Divide(Vec4<T> left, Vec4<T> right) => left / right;
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Divide(Vec4<T> left, T divisor) => left / divisor;
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Negate(Vec4<T> vec) => -vec;
 
     [MethodImpl(AggressiveInlining)]
     public readonly T Sum()
@@ -225,14 +176,25 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec4<T> vec) => (this - vec).LengthSquared();
 
-    [MethodImpl(AggressiveInlining)]
-    public readonly T Length() => T.Sqrt(LengthSquared());
+    /*[MethodImpl(AggressiveInlining)]
+    public readonly T Length<TRoot>() => T.Sqrt(LengthSquared());
 
     [MethodImpl(AggressiveInlining)]
     public readonly T Distance(Vec4<T> vec) => T.Sqrt(DistanceSquared(vec));
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec4<T> Normalize() => this / Distance(Zero);
+    public readonly Vec4<T> Normalize() => this / Distance(Zero);*/
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly T Length<TRoot>() where TRoot : IRootFunctions<TRoot>
+        => T.CreateTruncating(TRoot.Sqrt(TRoot.CreateSaturating(LengthSquared())));
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly T Distance<TRoot>(Vec4<T> vec) where TRoot : IRootFunctions<TRoot>
+        => T.CreateTruncating(TRoot.Sqrt(TRoot.CreateSaturating(DistanceSquared(vec))));
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly Vec4<T> Normalize<TRoot>() where TRoot : IRootFunctions<TRoot> => this / Distance<TRoot>(Zero);
 
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Abs()
@@ -318,18 +280,6 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         return SoftMultiplyAdd(this, vec, add);
     }
 
-    /*[MethodImpl(AggressiveInlining)]
-    public readonly Vec4<T> Transform(Mat44<T> mat)
-    {
-        var result = mat.X * X;
-
-        result = mat.Y.MultiplyAdd(new(Y), result);
-        result = mat.Z.MultiplyAdd(new(Z), result);
-        result = mat.W.MultiplyAdd(new(W), result);
-
-        return result;
-    }*/
-
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Transform(Mat44<T> mat)
     {
@@ -365,8 +315,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         }
     }
 
-    [Obsolete("TODO")]
-    public override readonly string ToString() => $"{X};{Y};{Z};{W}";
+    public override readonly string ToString() => $"({X}, {Y}, {Z}, {W})";
 
     public override readonly bool Equals(object? obj) => (obj is Vec4<T> other) && Equals(other);
 

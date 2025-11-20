@@ -1,13 +1,9 @@
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 
 namespace System.Numerics;
 
-// Proposal to expose floating behavior for Length and Distance
-
-[DebuggerDisplay("{X};{Y};{Z};{W}")]
+// proposal to expose floating behavior for Length and Distance
 [StructLayout(LayoutKind.Sequential)]
 public partial struct Vec4<TI, TF>(TI x, TI y, TI z, TI w)
     where TI : unmanaged, INumber<TI>
@@ -16,7 +12,7 @@ public partial struct Vec4<TI, TF>(TI x, TI y, TI z, TI w)
     public TI X = x, Y = y, Z = z, W = w;
 
     #region Operators
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<TI, TF> operator +(Vec4<TI, TF> left, Vec4<TI, TF> right)
     {
         unsafe
@@ -37,7 +33,7 @@ public partial struct Vec4<TI, TF>(TI x, TI y, TI z, TI w)
         throw new NotSupportedException();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<TI, TF> operator -(Vec4<TI, TF> left, Vec4<TI, TF> right)
     {
         unsafe
@@ -58,7 +54,7 @@ public partial struct Vec4<TI, TF>(TI x, TI y, TI z, TI w)
         throw new NotSupportedException();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<TI, TF> operator -(Vec4<TI, TF> value)
     {
         unsafe
@@ -79,7 +75,7 @@ public partial struct Vec4<TI, TF>(TI x, TI y, TI z, TI w)
         throw new NotSupportedException();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<TI, TF> operator *(Vec4<TI, TF> left, Vec4<TI, TF> right)
     {
         unsafe
@@ -100,7 +96,7 @@ public partial struct Vec4<TI, TF>(TI x, TI y, TI z, TI w)
         throw new NotSupportedException();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<TI, TF> operator *(Vec4<TI, TF> left, TI value)
     {
         unsafe
@@ -121,7 +117,7 @@ public partial struct Vec4<TI, TF>(TI x, TI y, TI z, TI w)
         throw new NotSupportedException();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<TI, TF> operator /(Vec4<TI, TF> left, Vec4<TI, TF> right)
     {
         unsafe
@@ -142,7 +138,7 @@ public partial struct Vec4<TI, TF>(TI x, TI y, TI z, TI w)
         throw new NotSupportedException();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<TI, TF> operator /(Vec4<TI, TF> left, TI value)
     {
         unsafe
@@ -163,10 +159,10 @@ public partial struct Vec4<TI, TF>(TI x, TI y, TI z, TI w)
         throw new NotSupportedException();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<TI, TF> operator *(TI value, Vec4<TI, TF> right) => right * value;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static bool operator ==(Vec4<TI, TF> left, Vec4<TI, TF> right)
     {
         unsafe
@@ -183,7 +179,7 @@ public partial struct Vec4<TI, TF>(TI x, TI y, TI z, TI w)
         throw new NotSupportedException();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static bool operator !=(Vec4<TI, TF> left, Vec4<TI, TF> right)
     {
         unsafe
@@ -213,38 +209,38 @@ public partial struct Vec4<TI, TF>(TI x, TI y, TI z, TI w)
 
     public static Vec4<TI, TF> UnitW { get; } = new(TI.Zero, TI.Zero, TI.Zero, TI.One);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<TI, TF> Add(Vec4<TI, TF> left, Vec4<TI, TF> right) => left + right;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<TI, TF> Subtract(Vec4<TI, TF> left, Vec4<TI, TF> right) => left - right;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<TI, TF> Multiply(Vec4<TI, TF> left, Vec4<TI, TF> right) => left * right;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<TI, TF> Multiply(Vec4<TI, TF> left, TI value) => left * value;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<TI, TF> Multiply(TI value, Vec4<TI, TF> right) => right * value;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<TI, TF> Divide(Vec4<TI, TF> left, Vec4<TI, TF> right) => left / right;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<TI, TF> Divide(Vec4<TI, TF> left, TI divisor) => left / divisor;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<TI, TF> Negate(Vec4<TI, TF> vec) => -vec;
 
     /* Thinking...
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector4<TI, TF> Normalize(Vector4<TI, TF> vec) => vec / Distance(vec, Zero);*/
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static TI Dot(Vec4<TI, TF> vec1, Vec4<TI, TF> vec2) => Sum(vec1 * vec2);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static TF Distance(Vec4<TI, TF> vec1, Vec4<TI, TF> vec2)
     {
         unsafe
@@ -261,17 +257,17 @@ public partial struct Vec4<TI, TF>(TI x, TI y, TI z, TI w)
         throw new NotSupportedException();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static TI DistanceSquared(Vec4<TI, TF> vec1, Vec4<TI, TF> vec2)
     {
         var sub = vec2 - vec1;
         return Dot(sub, sub);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public readonly TI LengthSquared() => Dot(this, this);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public readonly TF Length()
     {
         unsafe
@@ -288,7 +284,7 @@ public partial struct Vec4<TI, TF>(TI x, TI y, TI z, TI w)
         throw new NotSupportedException();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<TI, TF> Abs(Vec4<TI, TF> vec)
     {
         unsafe
@@ -309,7 +305,7 @@ public partial struct Vec4<TI, TF>(TI x, TI y, TI z, TI w)
         throw new NotSupportedException();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static TI Sum(Vec4<TI, TF> vec)
     {
         unsafe
@@ -326,7 +322,7 @@ public partial struct Vec4<TI, TF>(TI x, TI y, TI z, TI w)
         throw new NotSupportedException();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<TI, TF> Clamp(Vec4<TI, TF> vec, Vec4<TI, TF> min, Vec4<TI, TF> max)
     {
         unsafe
@@ -384,7 +380,7 @@ public partial struct Vec4<TI, TF>(TI x, TI y, TI z, TI w)
         throw new NotSupportedException();
     }*/
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<TI, TF> Max(Vec4<TI, TF> vec1, Vec4<TI, TF> vec2)
     {
         unsafe
@@ -411,7 +407,7 @@ public partial struct Vec4<TI, TF>(TI x, TI y, TI z, TI w)
         throw new NotSupportedException();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<TI, TF> Min(Vec4<TI, TF> vec1, Vec4<TI, TF> vec2)
     {
         unsafe

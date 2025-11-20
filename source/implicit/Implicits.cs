@@ -2,8 +2,7 @@ using Silk.NET.Maths;
 
 namespace System.Numerics;
 
-/* Only for tests, drop */
-
+/* only for tests, drop */
 public partial struct Mat44<T>
 {
     public static implicit operator Matrix4X4<T>(Mat44<T> mat) => new
