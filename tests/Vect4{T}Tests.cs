@@ -2,16 +2,26 @@ using Silk.NET.Maths;
 
 namespace System.Numerics.Tests;
 
-#if EXPOSE_RATIONAL
+#if EXPOSE_ROOT
 [InheritsTests]
-public class Vec4Float : Vec4Tests<float>;
+public class Vec4IntFloatExposedRootMethod : Vec4Tests<int, float>;
 
 [InheritsTests]
-public class Vec4Double : Vec4Tests<double>;
+public class Vec4IntDoubleExposedRootMethod : Vec4Tests<int, double>;
 
-public abstract class Vec4Tests<T>
+[InheritsTests]
+public class Vec4FloatExposedRootMethod : Vec4Tests<float, float>;
+
+[InheritsTests]
+public class Vec4DoubleExposedRootMethod : Vec4Tests<double, double>;
+
+public abstract class Vec4Tests<T, TRoot>
     where T : unmanaged, INumber<T>
+    where TRoot : IRootFunctions<TRoot>
 #else
+[InheritsTests]
+public class Vec4Half : Vec4Tests<Half>;
+
 [InheritsTests]
 public class Vec4Float : Vec4Tests<float>;
 
@@ -187,7 +197,34 @@ public abstract class Vec4Tests<T>
         await Assert.That(distance).IsEqualTo(expected);
         await Assert.That(distance).IsEqualTo(Vec4<T>.DistanceSquared(a, b));
     }
+#if EXPOSE_ROOT
+    [Test]
+    public async Task Length()
+    {
+        var a = Vec4<T>.Gen(T.One);
 
+        var length = a.Length<TRoot>();
+
+        var expected = ((Vector4D<T>)a).Length;
+
+        await Assert.That(length).IsEqualTo(expected);
+        await Assert.That(length).IsEqualTo(Vec4<T>.Length<TRoot>(a));
+    }
+
+    [Test]
+    public async Task Distance()
+    {
+        var a = Vec4<T>.Gen(T.One);
+        var b = Vec4<T>.Gen(T.One + T.One);
+
+        var distance = a.Distance<TRoot>(b);
+
+        var expected = Vector4D.Distance((Vector4D<T>)a, (Vector4D<T>)b);
+
+        await Assert.That(distance).IsEqualTo(expected);
+        await Assert.That(distance).IsEqualTo(Vec4<T>.Distance<TRoot>(a, b));
+    }
+#else
     [Test]
     public async Task Length()
     {
@@ -214,7 +251,7 @@ public abstract class Vec4Tests<T>
         await Assert.That(distance).IsEqualTo(expected);
         await Assert.That(distance).IsEqualTo(Vec4<T>.Distance(a, b));
     }
-
+#endif
     [Test]
     public async Task Lerp()
     {

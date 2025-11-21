@@ -14,11 +14,12 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     IDivisionOperators<Vec4<T>, T, Vec4<T>>,
     IUnaryNegationOperators<Vec4<T>, Vec4<T>>,
     IUnaryPlusOperators<Vec4<T>, Vec4<T>>
-#if EXPOSE_RATIONAL
+#if EXPOSE_ROOT // vector works with all types and square root behavior is exposed only where needed
     where T : unmanaged, INumber<T>
 #else
-    // may be we need some `IFixedPoint` and then `IRationalNumber` that includes `IFloatingPoint`, `IFixedPoint` and `IRootFunctions`?
-    where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, IFormattable, IEquatable<T>, IComparable<T>
+    // vector works with types where Square Root is applicable, and type <T, TRoot> is proposed to process other cases
+    // constraint actually is IRootFunctions<T>, but IFloatingPoint<T> is used for easier dummy tests with Silk.NET
+    where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>
 #endif
 {
     public T X = x, Y = y, Z = z, W = w;
@@ -179,7 +180,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
 
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec4<T> vec) => (this - vec).LengthSquared();
-#if EXPOSE_RATIONAL
+#if EXPOSE_ROOT
     // not sure
     [MethodImpl(AggressiveInlining)]
     public readonly T Length<TRoot>()
@@ -278,18 +279,6 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         }
         return SoftLerp(this, vec, amount);
     }
-
-    /*[MethodImpl(AggressiveInlining)]
-    public readonly Vec4<T> MultiplyAdd(Vec4<T> vec, Vec4<T> add)
-    {
-        if (typeof(T) == typeof(float))
-            return Vec4<T>.From128(Vector128.FusedMultiplyAdd(AsVec128F(), vec.AsVec128F(), add.AsVec128F()));
-
-        if (typeof(T) == typeof(double))
-            return Vec4<T>.From256(Vector256.FusedMultiplyAdd(AsVec256D(), vec.AsVec256D(), add.AsVec256D()));
-
-        return SoftMultiplyAdd(this, vec, add);
-    }*/
 
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Transform(Mat44<T> mat)

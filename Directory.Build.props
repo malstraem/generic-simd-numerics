@@ -19,11 +19,11 @@
 
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 
-    <Configurations>Debug_Expose_Rational;Release_Expose_Rational;$(Configurations)</Configurations>
+    <Configurations>Debug;Release;Debug_Expose_Root;Release_Expose_Root</Configurations>
 
     <DefineConstants>$(DefineConstants)</DefineConstants>
-    <DefineConstants Condition="'$(Configuration)' == 'Debug_Expose_Rational' Or '$(Configuration)' == 'Release_Expose_Rational'">
-      EXPOSE_RATIONAL;$(DefineConstants)
+    <DefineConstants Condition="'$(Configuration)' == 'Debug_Expose_Root' Or '$(Configuration)' == 'Release_Expose_Root'">
+      EXPOSE_ROOT;$(DefineConstants)
     </DefineConstants>
   </PropertyGroup>
 
