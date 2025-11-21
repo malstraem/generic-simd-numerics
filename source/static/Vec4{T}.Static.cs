@@ -38,15 +38,31 @@ public partial struct Vec4<T>
     [MethodImpl(AggressiveInlining)]
     public static T DistanceSquared(Vec4<T> left, Vec4<T> right) => left.DistanceSquared(right);
 
-    /*[MethodImpl(AggressiveInlining)]
+#if !EXPOSE_RATIONAL
+    [MethodImpl(AggressiveInlining)]
     public static T Length(Vec4<T> vec) => vec.Length();
 
     [MethodImpl(AggressiveInlining)]
     public static T Distance(Vec4<T> left, Vec4<T> right) => left.Distance(right);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Normalize(Vec4<T> vec) => vec.Normalize();*/
+    public static Vec4<T> Normalize(Vec4<T> vec) => vec.Normalize();
+#else
+    [MethodImpl(AggressiveInlining)]
+    public static T Length<TRoot>(Vec4<T> vec)
+        where TRoot : IRootFunctions<TRoot>
+            => vec.Length<TRoot>();
 
+    [MethodImpl(AggressiveInlining)]
+    public static T Distance<TRoot>(Vec4<T> left, Vec4<T> right)
+        where TRoot : IRootFunctions<TRoot>
+            => left.Distance<TRoot>(right);
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec4<T> Normalize<TRoot>(Vec4<T> vec)
+        where TRoot : IRootFunctions<TRoot>
+            => vec.Normalize<TRoot>();
+#endif
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> Abs(Vec4<T> vec) => vec.Abs();
 

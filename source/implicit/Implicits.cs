@@ -1,8 +1,9 @@
-using Silk.NET.Maths;
-
 namespace System.Numerics;
 
-/* only for tests, drop */
+using Silk.NET.Maths;
+
+// only for Silk.NET convertabilty, drop
+
 public partial struct Mat44<T>
 {
     public static implicit operator Matrix4X4<T>(Mat44<T> mat) => new

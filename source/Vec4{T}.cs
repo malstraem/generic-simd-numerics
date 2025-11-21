@@ -14,8 +14,12 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     IDivisionOperators<Vec4<T>, T, Vec4<T>>,
     IUnaryNegationOperators<Vec4<T>, Vec4<T>>,
     IUnaryPlusOperators<Vec4<T>, Vec4<T>>
-        //where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>
-        where T : unmanaged, INumber<T>
+#if EXPOSE_RATIONAL
+    where T : unmanaged, INumber<T>
+#else
+    // may be we need some `IFixedPoint` and then `IRationalNumber` that includes `IFloatingPoint`, `IFixedPoint` and `IRootFunctions`?
+    where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, IFormattable, IEquatable<T>, IComparable<T>
+#endif
 {
     public T X = x, Y = y, Z = z, W = w;
 
@@ -175,27 +179,34 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
 
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec4<T> vec) => (this - vec).LengthSquared();
+#if EXPOSE_RATIONAL
+    // not sure
+    [MethodImpl(AggressiveInlining)]
+    public readonly T Length<TRoot>()
+        where TRoot : IRootFunctions<TRoot>
+            => T.CreateTruncating(TRoot.Sqrt(TRoot.CreateSaturating(LengthSquared())));
 
-    /*[MethodImpl(AggressiveInlining)]
-    public readonly T Length<TRoot>() => T.Sqrt(LengthSquared());
+    // not sure
+    [MethodImpl(AggressiveInlining)]
+    public readonly T Distance<TRoot>(Vec4<T> vec)
+        where TRoot : IRootFunctions<TRoot>
+            => T.CreateTruncating(TRoot.Sqrt(TRoot.CreateSaturating(DistanceSquared(vec))));
+
+    // not sure
+    [MethodImpl(AggressiveInlining)]
+    public readonly Vec4<T> Normalize<TRoot>()
+        where TRoot : IRootFunctions<TRoot>
+            => this / Distance<TRoot>(Zero);
+#else
+    [MethodImpl(AggressiveInlining)]
+    public readonly T Length() => T.Sqrt(LengthSquared());
 
     [MethodImpl(AggressiveInlining)]
     public readonly T Distance(Vec4<T> vec) => T.Sqrt(DistanceSquared(vec));
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec4<T> Normalize() => this / Distance(Zero);*/
-
-    [MethodImpl(AggressiveInlining)]
-    public readonly T Length<TRoot>() where TRoot : IRootFunctions<TRoot>
-        => T.CreateTruncating(TRoot.Sqrt(TRoot.CreateSaturating(LengthSquared())));
-
-    [MethodImpl(AggressiveInlining)]
-    public readonly T Distance<TRoot>(Vec4<T> vec) where TRoot : IRootFunctions<TRoot>
-        => T.CreateTruncating(TRoot.Sqrt(TRoot.CreateSaturating(DistanceSquared(vec))));
-
-    [MethodImpl(AggressiveInlining)]
-    public readonly Vec4<T> Normalize<TRoot>() where TRoot : IRootFunctions<TRoot> => this / Distance<TRoot>(Zero);
-
+    public readonly Vec4<T> Normalize() => this / Distance(Zero);
+#endif
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Abs()
     {
@@ -268,7 +279,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         return SoftLerp(this, vec, amount);
     }
 
-    [MethodImpl(AggressiveInlining)]
+    /*[MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> MultiplyAdd(Vec4<T> vec, Vec4<T> add)
     {
         if (typeof(T) == typeof(float))
@@ -278,7 +289,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
             return Vec4<T>.From256(Vector256.FusedMultiplyAdd(AsVec256D(), vec.AsVec256D(), add.AsVec256D()));
 
         return SoftMultiplyAdd(this, vec, add);
-    }
+    }*/
 
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Transform(Mat44<T> mat)
@@ -287,6 +298,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         {
             var result = (mat.X * X).AsVec128F();
 
+            // MultiplyAddEstimate<T> needed?
             result = Vector128.MultiplyAddEstimate(mat.Y.AsVec128F(), Vector128.Create((float)(object)Y), result);
             result = Vector128.MultiplyAddEstimate(mat.Z.AsVec128F(), Vector128.Create((float)(object)Z), result);
             result = Vector128.MultiplyAddEstimate(mat.W.AsVec128F(), Vector128.Create((float)(object)W), result);

@@ -4,7 +4,7 @@ namespace System.Numerics;
 
 #pragma warning disable CS8509
 
-// thats i believe the methods should be
+// believe the methods should be like this
 public partial struct Vec4<T>
 {
     [MethodImpl(AggressiveInlining)]
@@ -17,8 +17,10 @@ public partial struct Vec4<T>
         //2 => Vec4<T>.From64(+value.AsVec64()), // any vector instructions for IEEE's binary16?
         4 => Vec4<T>.From128(+value.AsVec128()),
         8 => Vec4<T>.From256(+value.AsVec256()),
-        _ => throw new NotSupportedException() // should it be even with guarantee of "IsHardware" and generic constraints?
+        _ => throw new NotSupportedException() // should it be even with guarantee of "IsHardware" and generic constraints? probably not
     } : SoftPlus(value);
+
+    // all of next are pessimized
 
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator -(Vec4<T> value) => Guard.IsHardware<T>() ? Unsafe.SizeOf<T>() switch

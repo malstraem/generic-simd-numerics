@@ -4,8 +4,11 @@ namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
 public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
-    //where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>
+#if EXPOSE_RATIONAL
     where T : unmanaged, INumber<T>
+#else
+    where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, IFormattable, IEquatable<T>, IComparable<T>
+#endif
 {
     public Vec4<T> X = x, Y = y, Z = z, W = w;
 
@@ -104,32 +107,6 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
         left.Z.Transform(right),
         left.W.Transform(right)
     );
-
-    /*[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static Mat44<T> operator *(Mat44<T> left, Mat44<T> right)
-    {
-        var x = right.X * left.X.X;
-        x += right.Y * left.X.Y;
-        x += right.Z * left.X.Z;
-        x += right.W * left.X.W;
-
-        var y = right.X * left.Y.X;
-        y += right.Y * left.Y.Y;
-        y += right.Z * left.Y.Z;
-        y += right.W * left.Y.W;
-
-        var z = right.X * left.Z.X;
-        z += right.Y * left.Z.Y;
-        z += right.Z * left.Z.Z;
-        z += right.W * left.Z.W;
-
-        var w = right.X * left.W.X;
-        w += right.Y * left.W.Y;
-        w += right.Z * left.W.Z;
-        w += right.W * left.W.W;
-
-        return new(x, y, z, w);
-    }*/
 
     [MethodImpl(AggressiveInlining)]
     public static bool operator ==(Mat44<T> left, Mat44<T> right) => left.X == right.X

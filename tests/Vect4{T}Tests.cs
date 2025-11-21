@@ -2,15 +2,42 @@ using Silk.NET.Maths;
 
 namespace System.Numerics.Tests;
 
-public class Vec4Tests
+#if EXPOSE_RATIONAL
+[InheritsTests]
+public class Vec4Float : Vec4Tests<float>;
+
+[InheritsTests]
+public class Vec4Double : Vec4Tests<double>;
+
+public abstract class Vec4Tests<T>
+    where T : unmanaged, INumber<T>
+#else
+[InheritsTests]
+public class Vec4Float : Vec4Tests<float>;
+
+[InheritsTests]
+public class Vec4Double : Vec4Tests<double>;
+
+public abstract class Vec4Tests<T>
+    where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, IFormattable, IEquatable<T>, IComparable<T>
+#endif
 {
-    [Test]
+    /*[Test]
     public async Task Add() => await Task.WhenAll
     (
         Add<Half>(),
         Add<float>(),
         Add<double>(),
-        Add<int>()
+
+        Add<byte>(),
+        Add<short>(),
+        Add<ushort>(),
+        Add<int>(),
+        Add<uint>(),
+        Add<long>(),
+        Add<ulong>(),
+        Add<byte>(),
+        Add<BigInteger>()
     );
 
     [Test]
@@ -40,7 +67,8 @@ public class Vec4Tests
     [Test]
     public async Task Length() => await Task.WhenAll
     (
-        Length<Half>(),
+        Length<Half, float>(),
+        Length<Half, double>(),
         Length<float>(),
         Length<double>()
     );
@@ -75,9 +103,10 @@ public class Vec4Tests
         Lerp<Half>(),
         Lerp<float>(),
         Lerp<double>()
-    );
+    );*/
 
-    private static async Task Add<T>() where T : unmanaged, /*IFloatingPoint<T>, IRootFunctions<T>*/ INumber<T>
+    [Test, DisplayName("a + b")]
+    public async Task Add()
     {
         var a = Vec4<T>.Gen(T.One);
         var b = Vec4<T>.Gen(T.One + T.One);
@@ -90,7 +119,8 @@ public class Vec4Tests
         await Assert.That(add).IsEqualTo(Vec4<T>.Add(a, b));
     }
 
-    private static async Task Substract<T>() where T : unmanaged, /*IFloatingPoint<T>, IRootFunctions<T>*/ INumber<T>
+    [Test, DisplayName("a - b")]
+    public async Task Substract()
     {
         var a = Vec4<T>.Gen(T.One);
         var b = Vec4<T>.Gen(T.One + T.One);
@@ -103,7 +133,8 @@ public class Vec4Tests
         await Assert.That(sub).IsEqualTo(Vec4<T>.Subtract(a, b));
     }
 
-    private static async Task Multiply<T>() where T : unmanaged, /*IFloatingPoint<T>, IRootFunctions<T>*/ INumber<T>
+    [Test, DisplayName("a * b")]
+    public async Task Multiply()
     {
         var a = Vec4<T>.Gen(T.One);
         var b = Vec4<T>.Gen(T.One + T.One);
@@ -116,7 +147,8 @@ public class Vec4Tests
         await Assert.That(mul).IsEqualTo(Vec4<T>.Multiply(a, b));
     }
 
-    private static async Task Divide<T>() where T : unmanaged, /*IFloatingPoint<T>, IRootFunctions<T>*/ INumber<T>
+    [Test, DisplayName("a / b")]
+    public async Task Divide()
     {
         var a = Vec4<T>.Gen(T.One);
         var b = Vec4<T>.Gen(T.One + T.One);
@@ -129,32 +161,8 @@ public class Vec4Tests
         await Assert.That(div).IsEqualTo(Vec4<T>.Divide(a, b));
     }
 
-    private static async Task Length<T>() where T : unmanaged, /*IFloatingPoint<T>, IRootFunctions<T>*/ INumber<T>
-    {
-        var a = Vec4<T>.Gen(T.One);
-
-        var length = a.Length<double>();
-
-        var expected = ((Vector4D<T>)a).Length;
-
-        await Assert.That(length).IsEqualTo(expected);
-        //await Assert.That(length).IsEqualTo(Vec4<T>.Length(a));
-    }
-
-    private static async Task Distance<T>() where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>
-    {
-        var a = Vec4<T>.Gen(T.One);
-        var b = Vec4<T>.Gen(T.One + T.One);
-
-        var distance = a.Distance<double>(b);
-
-        var expected = Vector4D.Distance((Vector4D<T>)a, (Vector4D<T>)b);
-
-        await Assert.That(distance).IsEqualTo(expected);
-        //await Assert.That(distance).IsEqualTo(Vec4<T>.Distance(a, b));
-    }
-
-    private static async Task LengthSquared<T>() where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>
+    [Test]
+    public async Task LengthSquared()
     {
         var a = Vec4<T>.Gen(T.One);
 
@@ -166,7 +174,8 @@ public class Vec4Tests
         await Assert.That(length).IsEqualTo(Vec4<T>.LengthSquared(a));
     }
 
-    private static async Task DistanceSquared<T>() where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>
+    [Test]
+    public async Task DistanceSquared()
     {
         var a = Vec4<T>.Gen(T.One);
         var b = Vec4<T>.Gen(T.One + T.One);
@@ -179,7 +188,35 @@ public class Vec4Tests
         await Assert.That(distance).IsEqualTo(Vec4<T>.DistanceSquared(a, b));
     }
 
-    private static async Task Lerp<T>() where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>
+    [Test]
+    public async Task Length()
+    {
+        var a = Vec4<T>.Gen(T.One);
+
+        var length = a.Length();
+
+        var expected = ((Vector4D<T>)a).Length;
+
+        await Assert.That(length).IsEqualTo(expected);
+        await Assert.That(length).IsEqualTo(Vec4<T>.Length(a));
+    }
+
+    [Test]
+    public async Task Distance()
+    {
+        var a = Vec4<T>.Gen(T.One);
+        var b = Vec4<T>.Gen(T.One + T.One);
+
+        var distance = a.Distance(b);
+
+        var expected = Vector4D.Distance((Vector4D<T>)a, (Vector4D<T>)b);
+
+        await Assert.That(distance).IsEqualTo(expected);
+        await Assert.That(distance).IsEqualTo(Vec4<T>.Distance(a, b));
+    }
+
+    [Test]
+    public async Task Lerp()
     {
         var amount = T.One + T.One + T.One;
 

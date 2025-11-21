@@ -1,16 +1,12 @@
 <Project>
   <PropertyGroup>
     <Platforms>AnyCPU</Platforms>
+    <LangVersion>latest</LangVersion>
     <TargetFramework>net10.0</TargetFramework>
-
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-
-    <LangVersion>latest</LangVersion>
-
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
     <IsPackable>false</IsPackable>
     <IsPublishable>false</IsPublishable>
@@ -19,8 +15,16 @@
     <UseArtifactsOutput>true</UseArtifactsOutput>
 
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+    <Configurations>Debug_Expose_Rational;Release_Expose_Rational;$(Configurations)</Configurations>
+
+    <DefineConstants>$(DefineConstants)</DefineConstants>
+    <DefineConstants Condition="'$(Configuration)' == 'Debug_Expose_Rational' Or '$(Configuration)' == 'Release_Expose_Rational'">
+      EXPOSE_RATIONAL;$(DefineConstants)
+    </DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

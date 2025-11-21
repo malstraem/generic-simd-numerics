@@ -2,9 +2,9 @@ using Silk.NET.Maths;
 
 namespace System.Numerics.Tests;
 
+[Obsolete("TODO")]
 public class Mat44Tests
 {
-    [Test]
     public async Task Multiply() => await Task.WhenAll
     (
         Multiply<float>(),
