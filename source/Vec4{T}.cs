@@ -6,20 +6,15 @@ namespace System.Numerics;
 [StructLayout(LayoutKind.Sequential)]
 public partial struct Vec4<T>(T x, T y, T z, T w) :
     IVector<Vec4<T>>,
-    IAdditionOperators<Vec4<T>, Vec4<T>, Vec4<T>>,
-    ISubtractionOperators<Vec4<T>, Vec4<T>, Vec4<T>>,
-    IMultiplyOperators<Vec4<T>, Vec4<T>, Vec4<T>>,
-    IDivisionOperators<Vec4<T>, Vec4<T>, Vec4<T>>,
-    IMultiplyOperators<Vec4<T>, T, Vec4<T>>,
-    IDivisionOperators<Vec4<T>, T, Vec4<T>>,
-    IUnaryNegationOperators<Vec4<T>, Vec4<T>>,
-    IUnaryPlusOperators<Vec4<T>, Vec4<T>>
-#if EXPOSE_ROOT // vector works with all types and square root behavior is exposed only where needed
+    IVectorOperators<Vec4<T>>,
+    IVectorScalarOperators<Vec4<T>, T>
+#if EXPOSE_ROOT
+    // vector works with all types and square root behavior is exposed only where needed
     where T : unmanaged, INumber<T>
 #else
     // vector works with types where Square Root is applicable, and type <T, TRoot> is proposed to process other cases
     // constraint actually is IRootFunctions<T>, but IFloatingPoint<T> is used for easier dummy tests with Silk.NET
-    where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>
+    where T : unmanaged, IRootFunctions<T>, IFloatingPoint<T>
 #endif
 {
     public T X = x, Y = y, Z = z, W = w;
@@ -29,6 +24,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public static Vec4<T> Zero { get; } = new(T.Zero);
 
     public static Vec4<T> One { get; } = new(T.One, T.One, T.One, T.One);
+
+    static Vec4<T> IAdditiveIdentity<Vec4<T>, Vec4<T>>.AdditiveIdentity => Zero;
+
+    static Vec4<T> IMultiplicativeIdentity<Vec4<T>, Vec4<T>>.MultiplicativeIdentity => One;
 
     public static Vec4<T> UnitX { get; } = new(T.One, T.Zero, T.Zero, T.Zero);
 

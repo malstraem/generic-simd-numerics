@@ -10,10 +10,45 @@ public class Vec4IntFloatExposedRootMethod : Vec4Tests<int, float>;
 public class Vec4IntDoubleExposedRootMethod : Vec4Tests<int, double>;
 
 [InheritsTests]
-public class Vec4FloatExposedRootMethod : Vec4Tests<float, float>;
+public class Vec4LongDoubleExposedRootMethod : Vec4Tests<long, double>;
 
 [InheritsTests]
-public class Vec4DoubleExposedRootMethod : Vec4Tests<double, double>;
+public class Vec4FloatExposedRootMethod : Vec4Tests<float>;
+
+[InheritsTests]
+public class Vec4DoubleExposedRootMethod : Vec4Tests<double>;
+
+[InheritsTests]
+public abstract class Vec4Tests<T> : Vec4Tests<T, T>
+    where T : unmanaged, INumber<T>, IRootFunctions<T>
+{
+    [Test, DisplayName("Length (sealed variant)")]
+    public async Task LengthSealedVariant()
+    {
+        var a = Vec4<T>.Gen(T.One);
+
+        var length = a.Length();
+
+        var expected = ((Vector4D<T>)a).Length;
+
+        await Assert.That(length).IsEqualTo(expected);
+        await Assert.That(length).IsEqualTo(Vec4<T>.Length(a));
+    }
+
+    [Test, DisplayName("Distance (sealed variant)")]
+    public async Task DistanceSealedVariant()
+    {
+        var a = Vec4<T>.Gen(T.One);
+        var b = Vec4<T>.Gen(T.One + T.One);
+
+        var distance = a.Distance(b);
+
+        var expected = Vector4D.Distance((Vector4D<T>)a, (Vector4D<T>)b);
+
+        await Assert.That(distance).IsEqualTo(expected);
+        await Assert.That(distance).IsEqualTo(Vec4<T>.Distance(a, b));
+    }
+}
 
 public abstract class Vec4Tests<T, TRoot>
     where T : unmanaged, INumber<T>
@@ -32,89 +67,6 @@ public abstract class Vec4Tests<T>
     where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, IFormattable, IEquatable<T>, IComparable<T>
 #endif
 {
-    /*[Test]
-    public async Task Add() => await Task.WhenAll
-    (
-        Add<Half>(),
-        Add<float>(),
-        Add<double>(),
-
-        Add<byte>(),
-        Add<short>(),
-        Add<ushort>(),
-        Add<int>(),
-        Add<uint>(),
-        Add<long>(),
-        Add<ulong>(),
-        Add<byte>(),
-        Add<BigInteger>()
-    );
-
-    [Test]
-    public async Task Substract() => await Task.WhenAll
-    (
-        Substract<Half>(),
-        Substract<float>(),
-        Substract<double>()
-    );
-
-    [Test]
-    public async Task Multiply() => await Task.WhenAll
-    (
-        Multiply<Half>(),
-        Multiply<float>(),
-        Multiply<double>()
-    );
-
-    [Test]
-    public async Task Divide() => await Task.WhenAll
-    (
-        Divide<Half>(),
-        Divide<float>(),
-        Divide<double>()
-    );
-
-    [Test]
-    public async Task Length() => await Task.WhenAll
-    (
-        Length<Half, float>(),
-        Length<Half, double>(),
-        Length<float>(),
-        Length<double>()
-    );
-
-    [Test]
-    public async Task Distance() => await Task.WhenAll
-    (
-        Distance<Half>(),
-        Distance<float>(),
-        Distance<double>()
-    );
-
-    [Test]
-    public async Task LengthSquared() => await Task.WhenAll
-    (
-        LengthSquared<Half>(),
-        LengthSquared<float>(),
-        LengthSquared<double>()
-    );
-
-    [Test]
-    public async Task DistanceSquared() => await Task.WhenAll
-    (
-        DistanceSquared<Half>(),
-        DistanceSquared<float>(),
-        DistanceSquared<double>()
-    );
-
-    [Test]
-    public async Task Lerp() => await Task.WhenAll
-    (
-        Lerp<Half>(),
-        Lerp<float>(),
-        Lerp<double>()
-    );*/
-
     [Test, DisplayName("a + b")]
     public async Task Add()
     {
