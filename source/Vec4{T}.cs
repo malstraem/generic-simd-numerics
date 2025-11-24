@@ -180,23 +180,50 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec4<T> vec) => (this - vec).LengthSquared();
 #if EXPOSE_ROOT
-    // not sure
+    // not sure, but look good?
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly TRoot LengthSaturate<TRoot>()
+        where TRoot : IRootFunctions<TRoot>
+            => TRoot.Sqrt(TRoot.CreateSaturating(LengthSquared()));
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly TRoot LengthTruncate<TRoot>()
+        where TRoot : IRootFunctions<TRoot>
+            => TRoot.Sqrt(TRoot.CreateTruncating(LengthSquared()));
+
     [MethodImpl(AggressiveInlining)]
     public readonly T Length<TRoot>()
         where TRoot : IRootFunctions<TRoot>
-            => T.CreateTruncating(TRoot.Sqrt(TRoot.CreateSaturating(LengthSquared())));
+            => T.CreateTruncating(LengthSaturate<TRoot>());
 
-    // not sure
     [MethodImpl(AggressiveInlining)]
     public readonly T Distance<TRoot>(Vec4<T> vec)
         where TRoot : IRootFunctions<TRoot>
             => T.CreateTruncating(TRoot.Sqrt(TRoot.CreateSaturating(DistanceSquared(vec))));
 
-    // not sure
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Normalize<TRoot>()
         where TRoot : IRootFunctions<TRoot>
             => this / Distance<TRoot>(Zero);
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly Vec4<T> SquareRoot<TRoot>() where TRoot : IRootFunctions<TRoot>
+    {
+        if (typeof(T) == typeof(float))
+            return Vec4<T>.From128(Vector128.Sqrt(AsVec128()));
+
+        if (typeof(T) == typeof(double))
+            return Vec4<T>.From256(Vector256.Sqrt(AsVec256()));
+
+        return new
+        (
+            T.CreateTruncating(TRoot.Sqrt(TRoot.CreateSaturating(X))),
+            T.CreateTruncating(TRoot.Sqrt(TRoot.CreateSaturating(Y))),
+            T.CreateTruncating(TRoot.Sqrt(TRoot.CreateSaturating(Z))),
+            T.CreateTruncating(TRoot.Sqrt(TRoot.CreateSaturating(W)))
+        );
+    }
 #else
     [MethodImpl(AggressiveInlining)]
     public readonly T Length() => T.Sqrt(LengthSquared());
@@ -206,7 +233,20 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
 
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Normalize() => this / Distance(Zero);
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly Vec4<T> SquareRoot()
+    {
+        if (typeof(T) == typeof(float))
+            return Vec4<T>.From128(Vector128.Sqrt(AsVec128()));
+
+        if (typeof(T) == typeof(double))
+            return Vec4<T>.From256(Vector256.Sqrt(AsVec256()));
+
+        return new(T.Sqrt(X), T.Sqrt(Y), T.Sqrt(Z), T.Sqrt(W));
+    }
 #endif
+
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Abs()
     {

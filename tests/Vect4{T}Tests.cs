@@ -25,14 +25,14 @@ public abstract class Vec4Tests<T> : Vec4Tests<T, T>
     [Test, DisplayName("Length (sealed variant)")]
     public async Task LengthSealedVariant()
     {
-        var a = Vec4<T>.Gen(T.One);
+        var vec = Vec4<T>.Gen(T.One);
 
-        var length = a.Length();
+        var length = vec.Length();
 
-        var expected = ((Vector4D<T>)a).Length;
+        var expected = ((Vector4D<T>)vec).Length;
 
         await Assert.That(length).IsEqualTo(expected);
-        await Assert.That(length).IsEqualTo(Vec4<T>.Length(a));
+        await Assert.That(length).IsEqualTo(Vec4<T>.Length(vec));
     }
 
     [Test, DisplayName("Distance (sealed variant)")]
@@ -126,14 +126,14 @@ public abstract class Vec4Tests<T>
     [Test]
     public async Task LengthSquared()
     {
-        var a = Vec4<T>.Gen(T.One);
+        var vec = Vec4<T>.Gen(T.One);
 
-        var length = a.LengthSquared();
+        var length = vec.LengthSquared();
 
-        var expected = ((Vector4D<T>)a).LengthSquared;
+        var expected = ((Vector4D<T>)vec).LengthSquared;
 
         await Assert.That(length).IsEqualTo(expected);
-        await Assert.That(length).IsEqualTo(Vec4<T>.LengthSquared(a));
+        await Assert.That(length).IsEqualTo(Vec4<T>.LengthSquared(vec));
     }
 
     [Test]
@@ -149,45 +149,21 @@ public abstract class Vec4Tests<T>
         await Assert.That(distance).IsEqualTo(expected);
         await Assert.That(distance).IsEqualTo(Vec4<T>.DistanceSquared(a, b));
     }
+
+    [Test]
+    public async Task Length()
+    {
+        var vec = Vec4<T>.Gen(T.One);
+
+        var expected = ((Vector4D<T>)vec).Length;
 #if EXPOSE_ROOT
-    [Test]
-    public async Task Length()
-    {
-        var a = Vec4<T>.Gen(T.One);
-
-        var length = a.Length<TRoot>();
-
-        var expected = ((Vector4D<T>)a).Length;
-
-        await Assert.That(length).IsEqualTo(expected);
-        await Assert.That(length).IsEqualTo(Vec4<T>.Length<TRoot>(a));
-    }
-
-    [Test]
-    public async Task Distance()
-    {
-        var a = Vec4<T>.Gen(T.One);
-        var b = Vec4<T>.Gen(T.One + T.One);
-
-        var distance = a.Distance<TRoot>(b);
-
-        var expected = Vector4D.Distance((Vector4D<T>)a, (Vector4D<T>)b);
-
-        await Assert.That(distance).IsEqualTo(expected);
-        await Assert.That(distance).IsEqualTo(Vec4<T>.Distance<TRoot>(a, b));
-    }
+        var length = vec.Length<TRoot>();
+        await Assert.That(length).IsEqualTo(Vec4<T>.Length<TRoot>(vec));
 #else
-    [Test]
-    public async Task Length()
-    {
-        var a = Vec4<T>.Gen(T.One);
-
-        var length = a.Length();
-
-        var expected = ((Vector4D<T>)a).Length;
-
+        var length = vec.Length();
+        await Assert.That(length).IsEqualTo(Vec4<T>.Length(vec));
+#endif
         await Assert.That(length).IsEqualTo(expected);
-        await Assert.That(length).IsEqualTo(Vec4<T>.Length(a));
     }
 
     [Test]
@@ -196,14 +172,49 @@ public abstract class Vec4Tests<T>
         var a = Vec4<T>.Gen(T.One);
         var b = Vec4<T>.Gen(T.One + T.One);
 
-        var distance = a.Distance(b);
-
         var expected = Vector4D.Distance((Vector4D<T>)a, (Vector4D<T>)b);
-
-        await Assert.That(distance).IsEqualTo(expected);
+#if EXPOSE_ROOT
+        var distance = a.Distance<TRoot>(b);
+        await Assert.That(distance).IsEqualTo(Vec4<T>.Distance<TRoot>(a, b));
+#else
+        var distance = a.Distance(b);
         await Assert.That(distance).IsEqualTo(Vec4<T>.Distance(a, b));
-    }
 #endif
+        await Assert.That(distance).IsEqualTo(expected);
+    }
+
+    [Test]
+    public async Task Normalize()
+    {
+        var vec = Vec4<T>.Gen(T.One + T.One);
+
+        var expected = Vector4D.Normalize((Vector4D<T>)vec);
+#if EXPOSE_ROOT
+        var normal = vec.Normalize<TRoot>();
+        await Assert.That(normal).IsEqualTo(Vec4<T>.Normalize<TRoot>(vec));
+#else
+        var normal = vec.Normalize();
+        await Assert.That(normal).IsEqualTo(Vec4<T>.Normalize(vec));
+#endif
+        await Assert.That(normal).IsEqualTo(expected);
+    }
+
+    [Test]
+    public async Task SquareRoot()
+    {
+        var vec = Vec4<T>.Gen(T.One + T.One);
+
+        var expected = Vector4D.SquareRoot((Vector4D<T>)vec);
+#if EXPOSE_ROOT
+        var root = vec.SquareRoot<TRoot>();
+        await Assert.That(root).IsEqualTo(Vec4<T>.SquareRoot<TRoot>(vec));
+#else
+        var root = vec.SquareRoot();
+        await Assert.That(root).IsEqualTo(Vec4<T>.SquareRoot(vec));
+#endif
+        await Assert.That(root).IsEqualTo(expected);
+    }
+
     [Test]
     public async Task Lerp()
     {

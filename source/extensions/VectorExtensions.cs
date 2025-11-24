@@ -13,6 +13,9 @@ public static class Vec4Extensions
 
         [MethodImpl(AggressiveInlining)]
         public Vec4<T> Normalize() => vec.Normalize<T>();
+
+        [MethodImpl(AggressiveInlining)]
+        public Vec4<T> SquareRoot() => vec.SquareRoot<T>();
     }
 }
 
@@ -28,6 +31,9 @@ public static class Vec4ExtensionsStatic // god that extensions behavior sucks
 
         [MethodImpl(AggressiveInlining)]
         public static Vec4<T> Normalize(Vec4<T> vec) => Vec4<T>.Normalize<T>(vec);
+
+        [MethodImpl(AggressiveInlining)]
+        public static Vec4<T> SquareRoot(Vec4<T> vec) => Vec4<T>.SquareRoot<T>(vec);
     }
 }
 #endif

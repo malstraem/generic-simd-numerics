@@ -52,6 +52,10 @@ public partial struct Vec4<T>
     public static Vec4<T> Normalize<TRoot>(Vec4<T> vec)
         where TRoot : IRootFunctions<TRoot>
             => vec.Normalize<TRoot>();
+
+    public static Vec4<T> SquareRoot<TRoot>(Vec4<T> vec)
+        where TRoot : IRootFunctions<TRoot>
+            => vec.SquareRoot<TRoot>();
 #else
     [MethodImpl(AggressiveInlining)]
     public static T Length(Vec4<T> vec) => vec.Length();
@@ -61,6 +65,9 @@ public partial struct Vec4<T>
 
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> Normalize(Vec4<T> vec) => vec.Normalize();
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec4<T> SquareRoot(Vec4<T> vec) => vec.SquareRoot();
 #endif
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> Abs(Vec4<T> vec) => vec.Abs();
