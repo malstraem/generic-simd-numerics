@@ -27,6 +27,10 @@
     </DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)' == 'Release_Expose_Root'">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
   <ItemGroup>
     <InternalsVisibleTo Include="$(MSBuildProjectName).Tests;$(MSBuildProjectName).Bench"/>
   </ItemGroup>
