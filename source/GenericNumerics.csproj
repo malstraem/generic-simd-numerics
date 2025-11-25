@@ -1,7 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="Silk.NET.Maths" />
-
     <None Include="pessimized/*.cs" />
     <Compile Remove="pessimized/*.cs" />
   </ItemGroup>

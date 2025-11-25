@@ -2,7 +2,6 @@ using BenchmarkDotNet.Running;
 
 using System.Numerics.Bench;
 
-BenchmarkRunner.Run<MatrixMultiplication>();
-//BenchmarkRunner.Run<Vector4Bench>();
+BenchmarkRunner.Run<AsmVec4<float, float>>();
 
 Console.ReadLine();

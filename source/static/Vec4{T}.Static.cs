@@ -37,7 +37,7 @@ public partial struct Vec4<T>
 
     [MethodImpl(AggressiveInlining)]
     public static T DistanceSquared(Vec4<T> left, Vec4<T> right) => left.DistanceSquared(right);
-#if EXPOSE_ROOT
+
     [MethodImpl(AggressiveInlining)]
     public static T Length<TRoot>(Vec4<T> vec)
         where TRoot : IRootFunctions<TRoot>
@@ -56,19 +56,7 @@ public partial struct Vec4<T>
     public static Vec4<T> SquareRoot<TRoot>(Vec4<T> vec)
         where TRoot : IRootFunctions<TRoot>
             => vec.SquareRoot<TRoot>();
-#else
-    [MethodImpl(AggressiveInlining)]
-    public static T Length(Vec4<T> vec) => vec.Length();
 
-    [MethodImpl(AggressiveInlining)]
-    public static T Distance(Vec4<T> left, Vec4<T> right) => left.Distance(right);
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Normalize(Vec4<T> vec) => vec.Normalize();
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> SquareRoot(Vec4<T> vec) => vec.SquareRoot();
-#endif
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> Abs(Vec4<T> vec) => vec.Abs();
 

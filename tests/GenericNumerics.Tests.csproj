@@ -3,5 +3,7 @@
     <PackageReference Include="Silk.NET.Maths" />
 
     <ProjectReference Include="../source/GenericNumerics.csproj" />
+
+    <Compile Include="../extensions/*.cs" LinkBase="extensions" />
   </ItemGroup>
 </Project>

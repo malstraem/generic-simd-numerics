@@ -4,12 +4,7 @@ namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
 public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
-#if EXPOSE_ROOT
     where T : unmanaged, INumber<T>
-#else
-    //constraints by vector, IFloatingPoint<T> to drop
-    where T : unmanaged, IRootFunctions<T>, IFloatingPoint<T>
-#endif
 {
     public Vec4<T> X = x, Y = y, Z = z, W = w;
 
@@ -23,7 +18,7 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
                   new(m41, m42, m43, m44))
     { }
 
-    public static Mat44<T> Identity => new
+    public static Mat44<T> Identity { get; } = new
     (
         Vec4<T>.UnitX,
         Vec4<T>.UnitY,

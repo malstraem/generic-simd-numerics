@@ -119,29 +119,5 @@ public partial struct Vec4<T>
         4 => Vec4<T>.From128(Vector128.Clamp(AsVec128(), min.AsVec128(), max.AsVec128())),
         8 => Vec4<T>.From256(Vector256.Clamp(AsVec256(), min.AsVec256(), max.AsVec256())),
     } : SoftClamp(this, min, max);
-
-    [MethodImpl(AggressiveInlining)]
-    public readonly Vec4<T> Lerp(Vec4<T> vec, T amount) => Guard.IsHardware<T>() ? Unsafe.SizeOf<T>() switch
-    {
-        4 => Vec4<T>.From128(Vector128.Lerp // maybe Lerp<T> including integers?
-        (
-            AsVec128F(),
-            vec.AsVec128F(),
-            Vector128.Create((float)(object)amount)
-        )),
-        8 => Vec4<T>.From256(Vector256.Lerp
-        (
-            AsVec256D(),
-            vec.AsVec256D(),
-            Vector256.Create((double)(object)amount)
-        ))
-    } : SoftLerp(this, vec, amount);
-
-    [MethodImpl(AggressiveInlining)]
-    public readonly Vec4<T> MultiplyAdd(Vec4<T> vec, Vec4<T> add) => Guard.IsHardware<T>() ? Unsafe.SizeOf<T>() switch
-    {
-        4 => Vec4<T>.From128(Vector128.MultiplyAddEstimate(AsVec128F(), vec.AsVec128F(), add.AsVec128F())),
-        8 => Vec4<T>.From256(Vector256.MultiplyAddEstimate(AsVec256D(), vec.AsVec256D(), add.AsVec256D())),
-    } : SoftMultiplyAdd(this, vec, add);
 }
 #pragma warning restore CS8509

@@ -1,10 +1,4 @@
 <Solution>
-  <Configurations>
-    <BuildType Name="Debug" />
-    <BuildType Name="Debug_Expose_Root" />
-    <BuildType Name="Release" />
-    <BuildType Name="Release_Expose_Root" />
-  </Configurations>
 
   <Folder Name="/_solution/">
     <File Path=".editorconfig" />
@@ -17,17 +11,9 @@
   
   <Project Path="benchmarks/GenericNumerics.Bench.csproj">
     <Build Solution="Debug|*" Project="false" />
-    <Build Solution="Debug_Expose_Root|*" Project="false" />
-    <BuildType Solution="Release_Expose_Root|*" Project="Release_Expose_Root" />
   </Project>
 
-  <Project Path="source/GenericNumerics.csproj">
-    <BuildType Solution="Debug_Expose_Root|*" Project="Debug_Expose_Root" />
-    <BuildType Solution="Release_Expose_Root|*" Project="Release_Expose_Root" />
-  </Project>
+  <Project Path="source/GenericNumerics.csproj" />
 
-  <Project Path="tests/GenericNumerics.Tests.csproj">
-    <BuildType Solution="Debug_Expose_Root|*" Project="Debug_Expose_Root" />
-    <BuildType Solution="Release_Expose_Root|*" Project="Release_Expose_Root" />
-  </Project>
+  <Project Path="tests/GenericNumerics.Tests.csproj" />
 </Solution>

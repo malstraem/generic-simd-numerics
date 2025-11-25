@@ -13,12 +13,12 @@ public class Mat44Tests
 
     private static async Task Multiply<T>() where T : unmanaged, IBinaryFloatingPointIeee754<T>
     {
-        var a = Mat44<T>.Generate(T.One);
-        var b = Mat44<T>.Generate(T.One + T.One);
+        var a = Mat44<T>.Gen(T.One);
+        var b = Mat44<T>.Gen(T.One + T.One);
 
         var mul = a * b;
 
-        Mat44<T> expected = (Matrix4X4<T>)a * (Matrix4X4<T>)b;
+        var expected = (a.Silk() * b.Silk()).Mat44();
 
         await Assert.That(mul).IsEqualTo(expected);
     }

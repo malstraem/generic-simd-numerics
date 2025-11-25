@@ -11,6 +11,9 @@
     <IsPackable>false</IsPackable>
     <IsPublishable>false</IsPublishable>
 
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+
     <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath>
     <UseArtifactsOutput>true</UseArtifactsOutput>
 
@@ -18,17 +21,6 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-
-    <Configurations>Debug;Release;Debug_Expose_Root;Release_Expose_Root</Configurations>
-
-    <DefineConstants>$(DefineConstants)</DefineConstants>
-    <DefineConstants Condition="'$(Configuration)' == 'Debug_Expose_Root' Or '$(Configuration)' == 'Release_Expose_Root'">
-      EXPOSE_ROOT;$(DefineConstants)
-    </DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)' == 'Release_Expose_Root'">
-    <Optimize>true</Optimize>
   </PropertyGroup>
 
   <ItemGroup>

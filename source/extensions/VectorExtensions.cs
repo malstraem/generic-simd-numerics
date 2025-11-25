@@ -1,4 +1,3 @@
-#if EXPOSE_ROOT
 namespace System.Numerics;
 
 public static class Vec4Extensions
@@ -19,7 +18,7 @@ public static class Vec4Extensions
     }
 }
 
-public static class Vec4ExtensionsStatic // god that extensions behavior sucks
+public static class Vec4StaticExtensions // god that extensions behavior sucks
 {
     extension<T>(Vec4<T>) where T : unmanaged, INumber<T>, IRootFunctions<T>
     {
@@ -36,4 +35,3 @@ public static class Vec4ExtensionsStatic // god that extensions behavior sucks
         public static Vec4<T> SquareRoot(Vec4<T> vec) => Vec4<T>.SquareRoot<T>(vec);
     }
 }
-#endif
