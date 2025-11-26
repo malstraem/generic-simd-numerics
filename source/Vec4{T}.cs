@@ -35,10 +35,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator +(Vec4<T> vec)
     {
-        if (typeof(T) == typeof(float))
+        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return Vec4<T>.From128(+vec.AsVec128());
 
-        if (typeof(T) == typeof(double))
+        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(+vec.AsVec256());
 
         return SoftPlus(vec);
@@ -47,10 +47,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator -(Vec4<T> vec)
     {
-        if (typeof(T) == typeof(float))
+        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return Vec4<T>.From128(-vec.AsVec128());
 
-        if (typeof(T) == typeof(double))
+        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(-vec.AsVec256());
 
         return SoftNegate(vec);
@@ -59,10 +59,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator *(Vec4<T> vec, T value)
     {
-        if (typeof(T) == typeof(float))
+        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return Vec4<T>.From128(vec.AsVec128() * value);
 
-        if (typeof(T) == typeof(double))
+        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(vec.AsVec256() * value);
 
         return SoftMultiply(vec, value);
@@ -71,10 +71,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator /(Vec4<T> vec, T value)
     {
-        if (typeof(T) == typeof(float))
+        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return Vec4<T>.From128(vec.AsVec128() / value);
 
-        if (typeof(T) == typeof(double))
+        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(vec.AsVec256() / value);
 
         return SoftDivide(vec, value);
@@ -95,10 +95,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator -(Vec4<T> left, Vec4<T> right)
     {
-        if (typeof(T) == typeof(float))
+        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return Vec4<T>.From128(left.AsVec128() - right.AsVec128());
 
-        if (typeof(T) == typeof(double))
+        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(left.AsVec256() - right.AsVec256());
 
         return SoftSubstract(left, right);
@@ -107,10 +107,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator *(Vec4<T> left, Vec4<T> right)
     {
-        if (typeof(T) == typeof(float))
+        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return Vec4<T>.From128(left.AsVec128() * right.AsVec128());
 
-        if (typeof(T) == typeof(double))
+        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(left.AsVec256() * right.AsVec256());
 
         return SoftMultiply(left, right);
@@ -119,10 +119,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator /(Vec4<T> left, Vec4<T> right)
     {
-        if (typeof(T) == typeof(float))
+        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return Vec4<T>.From128(left.AsVec128() / right.AsVec128());
 
-        if (typeof(T) == typeof(double))
+        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(left.AsVec256() / right.AsVec256());
 
         return SoftDivide(left, right);
@@ -131,10 +131,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static bool operator ==(Vec4<T> left, Vec4<T> right)
     {
-        if (typeof(T) == typeof(float))
+        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return left.AsVec128() == right.AsVec128();
 
-        if (typeof(T) == typeof(double))
+        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return left.AsVec256() == right.AsVec256();
 
         return SoftEqual(left, right);
@@ -143,10 +143,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static bool operator !=(Vec4<T> left, Vec4<T> right)
     {
-        if (typeof(T) == typeof(float))
+        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return left.AsVec128() != right.AsVec128();
 
-        if (typeof(T) == typeof(double))
+        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return left.AsVec256() != right.AsVec256();
 
         return SoftNotEqual(left, right);
@@ -156,10 +156,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly T Sum()
     {
-        if (typeof(T) == typeof(float))
+        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return Vector128.Sum(AsVec128());
 
-        if (typeof(T) == typeof(double))
+        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vector256.Sum(AsVec256());
 
         return SoftSum(this);
@@ -215,7 +215,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> SquareRoot<TRoot>() where TRoot : IRootFunctions<TRoot>
     {
-        if (typeof(T) == typeof(float))
+        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return Vec4<T>.From128(Vector128.Sqrt(AsVec128()));
 
         if (typeof(T) == typeof(double))
@@ -233,10 +233,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Abs()
     {
-        if (typeof(T) == typeof(float))
+        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return Vec4<T>.From128(Vector128.Abs(AsVec128()));
 
-        if (typeof(T) == typeof(double))
+        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(Vector256.Abs(AsVec256()));
 
         return SoftAbs(this);
@@ -245,10 +245,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Min(Vec4<T> vec)
     {
-        if (typeof(T) == typeof(float))
+        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return Vec4<T>.From128(Vector128.Min(AsVec128(), vec.AsVec128()));
 
-        if (typeof(T) == typeof(double))
+        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(Vector256.Min(AsVec256(), vec.AsVec256()));
 
         return SoftMin(this, vec);
@@ -257,10 +257,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Max(Vec4<T> vec)
     {
-        if (typeof(T) == typeof(float))
+        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return Vec4<T>.From128(Vector128.Max(AsVec128(), vec.AsVec128()));
 
-        if (typeof(T) == typeof(double))
+        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(Vector256.Max(AsVec256(), vec.AsVec256()));
 
         return SoftMax(this, vec);
@@ -269,10 +269,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Clamp(Vec4<T> min, Vec4<T> max)
     {
-        if (typeof(T) == typeof(float))
+        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return Vec4<T>.From128(Vector128.Clamp(AsVec128(), min.AsVec128(), max.AsVec128()));
 
-        if (typeof(T) == typeof(double))
+        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(Vector256.Clamp(AsVec256(), min.AsVec256(), max.AsVec256()));
 
         return SoftClamp(this, min, max);
@@ -283,7 +283,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     {
         if (typeof(T) == typeof(float))
         {
-            return Vec4<T>.From128(Vector128.Lerp // maybe Lerp<T> (and including integers)?
+            return Vec4<T>.From128(Vector128.Lerp // maybe Lerp<T> (including integers)?
             (
                 AsVec128F(),
                 vec.AsVec128F(),

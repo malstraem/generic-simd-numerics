@@ -52,6 +52,12 @@ public class AsmVec4<T, TRoot> : BaseBench
     public T DistanceSquared() => a.DistanceSquared(b);
 
     [Benchmark]
+    public T Length() => vec.Length<TRoot>();
+
+    [Benchmark]
+    public T Distance() => a.Distance<TRoot>(b);
+
+    [Benchmark]
     public Vec4<T> Abs() => negative.Abs();
 
     [Benchmark]
