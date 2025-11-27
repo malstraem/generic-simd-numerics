@@ -8,12 +8,9 @@
     <File Path="Directory.Packages.props" />
     <File Path="readme.md" />
   </Folder>
-  
   <Project Path="benchmarks/GenericNumerics.Bench.csproj">
     <Build Solution="Debug|*" Project="false" />
   </Project>
-
   <Project Path="source/GenericNumerics.csproj" />
-
   <Project Path="tests/GenericNumerics.Tests.csproj" />
 </Solution>

@@ -1,29 +1,22 @@
-using Silk.NET.Maths;
+namespace System.Numerics.Tests.Matrix;
 
-namespace System.Numerics.Tests;
-
-[Obsolete("TODO")]
-public class Mat44Tests
+public class Mat44Base<T> where T : unmanaged, INumber<T>
 {
-    public async Task Multiply() => await Task.WhenAll
-    (
-        Multiply<float>(),
-        Multiply<double>()
-    );
+    protected static readonly Mat44<T>
+       x = Mat44<T>.Gen(T.One),
+       y = Mat44<T>.Gen(T.One + T.One);
 
-    private static async Task Multiply<T>() where T : unmanaged, IBinaryFloatingPointIeee754<T>
+    [Test]
+    public async Task Multiply()
     {
-        var a = Mat44<T>.Gen(T.One);
-        var b = Mat44<T>.Gen(T.One + T.One);
+        var mul = x * y;
 
-        var mul = a * b;
-
-        var expected = (a.Silk() * b.Silk()).Mat44();
+        var expected = (x.Silk() * y.Silk()).Mat44();
 
         await Assert.That(mul).IsEqualTo(expected);
     }
 
-    /*private static async Task MultiplyByVector<T>() where T : unmanaged, IBinaryNumber<T>
+    public async Task MultiplyByVector()
     {
         var mat = Matrix44<T>.Generate(T.One);
         var vec = Vector4<T>.Generate(T.One + T.One);
@@ -33,5 +26,5 @@ public class Mat44Tests
         var expected = (Vector4D<T>)vec * (Matrix4X4<T>)mat;
 
         await Assert.That(vec).IsEqualTo(expected);
-    }*/
+    }
 }

@@ -1,65 +1,55 @@
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Diagnosers;
 
 namespace System.Numerics.Bench;
 
-public class AsmConfig : ManualConfig
-{
-    public AsmConfig() => AddJob().AddDiagnoser(new DisassemblyDiagnoser(new DisassemblyDiagnoserConfig
-    (
-        maxDepth: 5,
-        syntax: DisassemblySyntax.Intel,
-        formatterOptions: Iced.Intel.FormatterOptions.CreateIntel()
-    )));
-}
-
-[DisassemblyDiagnoser(maxDepth: 10), RyuJitX64Job]
-public class AsmVec4<T, TRoot> : BaseBench
+public abstract class AsmVec4<T, TRoot> : BaseBench
     where T : unmanaged, INumber<T>
     where TRoot : IRootFunctions<TRoot>
 {
     private static readonly Vec4<T>
-        a = Vec4<T>.Gen(T.One),
-        b = Vec4<T>.Gen(T.One + T.One),
+        x = Vec4<T>.Gen(T.One),
+        y = Vec4<T>.Gen(T.One + T.One),
         vec = Vec4<T>.Gen(T.One + T.One + T.One),
         negative = -vec;
 
     private static readonly Mat44<T> mat = Mat44<T>.Gen(T.One);
 
-    [Benchmark(Description = "a + b")]
-    public Vec4<T> Add() => a + b;
+    [Benchmark]
+    public Vec4<T> Add() => x + y;
 
-    [Benchmark(Description = "a - b")]
-    public Vec4<T> Substract() => a - b;
+    [Benchmark]
+    public Vec4<T> Substract() => x - y;
 
-    [Benchmark(Description = "a * b")]
-    public Vec4<T> Multiply() => a * b;
+    /*[Benchmark]
+    public Vec4<T> Multiply() => x * y;
 
-    [Benchmark(Description = "a / b")]
-    public Vec4<T> Divide() => a / b;
+    [Benchmark]
+    public Vec4<T> Divide() => x / y;
 
     [Benchmark]
     public T Sum() => vec.Sum();
 
     [Benchmark]
-    public T Dot() => a.Dot(b);
+    public T Dot() => x.Dot(y);
 
     [Benchmark]
     public T LengthSquared() => vec.LengthSquared();
 
     [Benchmark]
-    public T DistanceSquared() => a.DistanceSquared(b);
+    public T DistanceSquared() => x.DistanceSquared(y);
 
     [Benchmark]
     public T Length() => vec.Length<TRoot>();
 
     [Benchmark]
-    public T Distance() => a.Distance<TRoot>(b);
+    public T Distance() => x.Distance<TRoot>(y);
+
+    [Benchmark]
+    public Vec4<T> Normalize() => vec.Normalize<TRoot>();
 
     [Benchmark]
     public Vec4<T> Abs() => negative.Abs();
 
     [Benchmark]
-    public Vec4<T> Transform() => vec.Transform(mat);
+    public Vec4<T> Transform() => vec.Transform(mat);*/
 }

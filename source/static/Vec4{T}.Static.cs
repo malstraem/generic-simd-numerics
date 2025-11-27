@@ -9,22 +9,19 @@ public partial struct Vec4<T>
     public static Vec4<T> Subtract(Vec4<T> left, Vec4<T> right) => left - right;
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Multiply(Vec4<T> left, Vec4<T> right) => left * right;
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Multiply(Vec4<T> left, T value) => left * value;
+    public static Vec4<T> Multiply(Vec4<T> vec, T num) => vec * num;
 
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> Multiply(T value, Vec4<T> right) => right * value;
 
     [MethodImpl(AggressiveInlining)]
+    public static Vec4<T> Divide(Vec4<T> vec, T num) => vec / num;
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec4<T> Multiply(Vec4<T> left, Vec4<T> right) => left * right;
+
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<T> Divide(Vec4<T> left, Vec4<T> right) => left / right;
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Divide(Vec4<T> left, T divisor) => left / divisor;
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Negate(Vec4<T> vec) => -vec;
 
     [MethodImpl(AggressiveInlining)]
     public static T Sum(Vec4<T> vec) => vec.Sum();

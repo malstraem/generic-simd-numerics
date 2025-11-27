@@ -1,45 +1,55 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Diagnosers;
 
 namespace System.Numerics.Bench;
 
-[Config(typeof(AsmConfig))]
+[DisassemblyDiagnoser(syntax: DisassemblySyntax.Att)]
 public class AsmVector4
 {
     private static readonly Vector4
-        a = Vector4.Gen(1f),
-        b = Vector4.Gen(2f),
+        x = Vector4.Gen(1f),
+        y = Vector4.Gen(2f),
         vec = Vector4.Gen(3f),
         negative = -vec;
 
     private static readonly Matrix4x4 mat = Matrix4x4.Gen(1f);
 
-    [Benchmark(Description = "a + b")]
-    public Vector4 Add() => a + b;
+    [Benchmark]
+    public Vector4 Add() => x + y;
 
-    [Benchmark(Description = "a - b")]
-    public Vector4 Substract() => a - b;
+    [Benchmark]
+    public Vector4 Substract() => x - y;
 
-    [Benchmark(Description = "a * b")]
-    public Vector4 Multiply() => a * b;
+    [Benchmark]
+    public Vector4 Multiply() => x * y;
 
-    [Benchmark(Description = "a / b")]
-    public Vector4 Divide() => a / b;
+    [Benchmark]
+    public Vector4 Divide() => x / y;
+
+    [Benchmark]
+    public Vector4 Transform() => Vector4.Transform(vec, mat);
 
     [Benchmark]
     public float Sum() => Vector4.Sum(vec);
 
     [Benchmark]
-    public float Dot() => Vector4.Dot(a, b);
+    public Vector4 Abs() => Vector4.Abs(negative);
+
+    [Benchmark]
+    public float Dot() => Vector4.Dot(x, y);
 
     [Benchmark]
     public float LengthSquared() => vec.LengthSquared();
 
     [Benchmark]
-    public float DistanceSquared() => Vector4.DistanceSquared(a, b);
+    public float DistanceSquared() => Vector4.DistanceSquared(x, y);
 
     [Benchmark]
-    public Vector4 Abs() => Vector4.Abs(negative);
+    public float Length() => vec.Length();
 
     [Benchmark]
-    public Vector4 Transform() => Vector4.Transform(vec, mat);
+    public float Distance() => Vector4.Distance(x, y);
+
+    [Benchmark]
+    public Vector4 Normalize() => Vector4.Normalize(vec);
 }

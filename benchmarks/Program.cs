@@ -2,6 +2,12 @@ using BenchmarkDotNet.Running;
 
 using System.Numerics.Bench;
 
-BenchmarkRunner.Run<AsmVec4<float, float>>();
+/*Environment.SetEnvironmentVariable("DOTNET_JitDisasm",
+    "op_Addition"
+);
+Environment.SetEnvironmentVariable("DOTNET_JitDisasmOnlyOptimized", "1");*/
+
+BenchmarkRunner.Run<StressVector4>();
+//BenchmarkRunner.Run<StressVec4<float, float>>();
 
 Console.ReadLine();
