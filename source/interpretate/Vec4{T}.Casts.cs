@@ -5,16 +5,16 @@ namespace System.Numerics;
 public partial struct Vec4<T>
 {
     [MethodImpl(AggressiveInlining)]
-    private readonly Vector128<T> AsVec128() => Unsafe.BitCast<Vec4<T>, Vector128<T>>(this);
+    private readonly Vector128<T> As128() => Unsafe.BitCast<Vec4<T>, Vector128<T>>(this);
 
     [MethodImpl(AggressiveInlining)]
-    private readonly Vector256<T> AsVec256() => Unsafe.BitCast<Vec4<T>, Vector256<T>>(this);
+    private readonly Vector256<T> As256() => Unsafe.BitCast<Vec4<T>, Vector256<T>>(this);
 
     [MethodImpl(AggressiveInlining)]
-    private readonly Vector128<float> AsVec128F() => Unsafe.BitCast<Vec4<T>, Vector128<float>>(this);
+    private readonly Vector128<float> As128F() => Unsafe.BitCast<Vec4<T>, Vector128<float>>(this);
 
     [MethodImpl(AggressiveInlining)]
-    private readonly Vector256<double> AsVec256D() => Unsafe.BitCast<Vec4<T>, Vector256<double>>(this);
+    private readonly Vector256<double> As256D() => Unsafe.BitCast<Vec4<T>, Vector256<double>>(this);
 
     [MethodImpl(AggressiveInlining)]
     private static Vec4<T> From128(Vector128<T> vec) => Unsafe.BitCast<Vector128<T>, Vec4<T>>(vec);

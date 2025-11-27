@@ -36,10 +36,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public static Vec4<T> operator +(Vec4<T> vec)
     {
         if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(+vec.AsVec128());
+            return Vec4<T>.From128(+vec.As128());
 
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(+vec.AsVec256());
+            return Vec4<T>.From256(+vec.As256());
 
         return SoftPlus(vec);
     }
@@ -48,10 +48,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public static Vec4<T> operator -(Vec4<T> vec)
     {
         if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(-vec.AsVec128());
+            return Vec4<T>.From128(-vec.As128());
 
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(-vec.AsVec256());
+            return Vec4<T>.From256(-vec.As256());
 
         return SoftNegate(vec);
     }
@@ -60,10 +60,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public static Vec4<T> operator *(Vec4<T> vec, T num)
     {
         if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(vec.AsVec128() * num);
+            return Vec4<T>.From128(vec.As128() * num);
 
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(vec.AsVec256() * num);
+            return Vec4<T>.From256(vec.As256() * num);
 
         return SoftMultiply(vec, num);
     }
@@ -72,10 +72,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public static Vec4<T> operator /(Vec4<T> vec, T num)
     {
         if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(vec.AsVec128() / num);
+            return Vec4<T>.From128(vec.As128() / num);
 
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(vec.AsVec256() / num);
+            return Vec4<T>.From256(vec.As256() / num);
 
         return SoftDivide(vec, num);
     }
@@ -84,10 +84,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public static Vec4<T> operator +(Vec4<T> left, Vec4<T> right)
     {
         if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(left.AsVec128() + right.AsVec128());
+            return Vec4<T>.From128(left.As128() + right.As128());
 
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(left.AsVec256() + right.AsVec256());
+            return Vec4<T>.From256(left.As256() + right.As256());
 
         return SoftAdd(left, right);
     }
@@ -96,10 +96,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public static Vec4<T> operator -(Vec4<T> left, Vec4<T> right)
     {
         if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(left.AsVec128() - right.AsVec128());
+            return Vec4<T>.From128(left.As128() - right.As128());
 
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(left.AsVec256() - right.AsVec256());
+            return Vec4<T>.From256(left.As256() - right.As256());
 
         return SoftSubstract(left, right);
     }
@@ -108,10 +108,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public static Vec4<T> operator *(Vec4<T> left, Vec4<T> right)
     {
         if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(left.AsVec128() * right.AsVec128());
+            return Vec4<T>.From128(left.As128() * right.As128());
 
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(left.AsVec256() * right.AsVec256());
+            return Vec4<T>.From256(left.As256() * right.As256());
 
         return SoftMultiply(left, right);
     }
@@ -120,10 +120,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public static Vec4<T> operator /(Vec4<T> left, Vec4<T> right)
     {
         if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(left.AsVec128() / right.AsVec128());
+            return Vec4<T>.From128(left.As128() / right.As128());
 
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(left.AsVec256() / right.AsVec256());
+            return Vec4<T>.From256(left.As256() / right.As256());
 
         return SoftDivide(left, right);
     }
@@ -132,10 +132,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public static bool operator ==(Vec4<T> left, Vec4<T> right)
     {
         if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return left.AsVec128() == right.AsVec128();
+            return left.As128() == right.As128();
 
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return left.AsVec256() == right.AsVec256();
+            return left.As256() == right.As256();
 
         return SoftEqual(left, right);
     }
@@ -144,10 +144,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public static bool operator !=(Vec4<T> left, Vec4<T> right)
     {
         if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return left.AsVec128() != right.AsVec128();
+            return left.As128() != right.As128();
 
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return left.AsVec256() != right.AsVec256();
+            return left.As256() != right.As256();
 
         return SoftNotEqual(left, right);
     }
@@ -157,10 +157,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public readonly T Sum()
     {
         if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vector128.Sum(AsVec128());
+            return Vector128.Sum(As128());
 
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vector256.Sum(AsVec256());
+            return Vector256.Sum(As256());
 
         return SoftSum(this);
     }
@@ -169,10 +169,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public readonly Vec4<T> Abs()
     {
         if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(Vector128.Abs(AsVec128()));
+            return Vec4<T>.From128(Vector128.Abs(As128()));
 
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(Vector256.Abs(AsVec256()));
+            return Vec4<T>.From256(Vector256.Abs(As256()));
 
         return SoftAbs(this);
     }
@@ -181,10 +181,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public readonly Vec4<T> Min(Vec4<T> vec)
     {
         if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(Vector128.Min(AsVec128(), vec.AsVec128()));
+            return Vec4<T>.From128(Vector128.Min(As128(), vec.As128()));
 
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(Vector256.Min(AsVec256(), vec.AsVec256()));
+            return Vec4<T>.From256(Vector256.Min(As256(), vec.As256()));
 
         return SoftMin(this, vec);
     }
@@ -193,10 +193,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public readonly Vec4<T> Max(Vec4<T> vec)
     {
         if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(Vector128.Max(AsVec128(), vec.AsVec128()));
+            return Vec4<T>.From128(Vector128.Max(As128(), vec.As128()));
 
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(Vector256.Max(AsVec256(), vec.AsVec256()));
+            return Vec4<T>.From256(Vector256.Max(As256(), vec.As256()));
 
         return SoftMax(this, vec);
     }
@@ -205,10 +205,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public readonly Vec4<T> Clamp(Vec4<T> min, Vec4<T> max)
     {
         if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(Vector128.Clamp(AsVec128(), min.AsVec128(), max.AsVec128()));
+            return Vec4<T>.From128(Vector128.Clamp(As128(), min.As128(), max.As128()));
 
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(Vector256.Clamp(AsVec256(), min.AsVec256(), max.AsVec256()));
+            return Vec4<T>.From256(Vector256.Clamp(As256(), min.As256(), max.As256()));
 
         return SoftClamp(this, min, max);
     }
@@ -216,12 +216,14 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Lerp(Vec4<T> vec, T amount)
     {
+        // Lerp<T> may be needed
+
         if (typeof(T) == typeof(float))
         {
-            return Vec4<T>.From128(Vector128.Lerp // maybe Lerp<T> (including integers)?
+            return Vec4<T>.From128(Vector128.Lerp
             (
-                AsVec128F(),
-                vec.AsVec128F(),
+                As128F(),
+                vec.As128F(),
                 Vector128.Create((float)(object)amount)
             ));
         }
@@ -229,8 +231,8 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         {
             return Vec4<T>.From256(Vector256.Lerp
             (
-                AsVec256D(),
-                vec.AsVec256D(),
+                As256D(),
+                vec.As256D(),
                 Vector256.Create((double)(object)amount)
             ));
         }
@@ -240,23 +242,25 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Transform(Mat44<T> mat)
     {
+        // MultiplyAddEstimate<T> may be needed
+
         if (typeof(T) == typeof(float))
         {
-            var result = (mat.X * X).AsVec128F();
+            var result = (mat.X * X).As128F();
 
-            result = Vector128.MultiplyAddEstimate(mat.Y.AsVec128F(), Vector128.Create((float)(object)Y), result);
-            result = Vector128.MultiplyAddEstimate(mat.Z.AsVec128F(), Vector128.Create((float)(object)Z), result);
-            result = Vector128.MultiplyAddEstimate(mat.W.AsVec128F(), Vector128.Create((float)(object)W), result);
+            result = Vector128.MultiplyAddEstimate(mat.Y.As128F(), Vector128.Create((float)(object)Y), result);
+            result = Vector128.MultiplyAddEstimate(mat.Z.As128F(), Vector128.Create((float)(object)Z), result);
+            result = Vector128.MultiplyAddEstimate(mat.W.As128F(), Vector128.Create((float)(object)W), result);
 
             return Vec4<T>.From128(result);
         }
         else if (typeof(T) == typeof(double))
         {
-            var result = (mat.X * X).AsVec256D();
+            var result = (mat.X * X).As256D();
 
-            result = Vector256.MultiplyAddEstimate(mat.Y.AsVec256D(), Vector256.Create((double)(object)Y), result);
-            result = Vector256.MultiplyAddEstimate(mat.Z.AsVec256D(), Vector256.Create((double)(object)Z), result);
-            result = Vector256.MultiplyAddEstimate(mat.W.AsVec256D(), Vector256.Create((double)(object)W), result);
+            result = Vector256.MultiplyAddEstimate(mat.Y.As256D(), Vector256.Create((double)(object)Y), result);
+            result = Vector256.MultiplyAddEstimate(mat.Z.As256D(), Vector256.Create((double)(object)Z), result);
+            result = Vector256.MultiplyAddEstimate(mat.W.As256D(), Vector256.Create((double)(object)W), result);
 
             return Vec4<T>.From256(result);
         }
@@ -331,10 +335,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
             return Vec4<T>.From256(Vector256.Sqrt(AsVec256()));*/
 
         if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(Vector128.Sqrt(AsVec128()));
+            return Vec4<T>.From128(Vector128.Sqrt(As128()));
 
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(Vector256.Sqrt(AsVec256()));
+            return Vec4<T>.From256(Vector256.Sqrt(As256()));
 
         return new
         (
