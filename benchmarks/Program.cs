@@ -8,6 +8,7 @@ using System.Numerics.Bench;
 Environment.SetEnvironmentVariable("DOTNET_JitDisasmOnlyOptimized", "1");*/
 
 BenchmarkRunner.Run<StressVector4>();
-//BenchmarkRunner.Run<StressVec4<float, float>>();
+BenchmarkRunner.Run<StressVec4<float>>();
+//BenchmarkRunner.Run<StressVector4D<float>>();
 
 Console.ReadLine();

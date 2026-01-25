@@ -41,7 +41,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(+vec.As256());
 
-        return SoftPlus(vec);
+        return new(+vec.X, +vec.Y, +vec.Z, +vec.W);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -53,7 +53,31 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(-vec.As256());
 
-        return SoftNegate(vec);
+        return new(-vec.X, -vec.Y, -vec.Z, -vec.W);
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec4<T> operator +(Vec4<T> vec, T num)
+    {
+        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return Vec4<T>.From128(vec.As128() + Vector128.Create(num));
+
+        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return Vec4<T>.From256(vec.As256() + Vector256.Create(num));
+
+        return new(vec.X + num, vec.Y + num, vec.Z + num, vec.W + num);
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec4<T> operator -(Vec4<T> vec, T num)
+    {
+        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return Vec4<T>.From128(vec.As128() - Vector128.Create(num));
+
+        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return Vec4<T>.From256(vec.As256() - Vector256.Create(num));
+
+        return new(vec.X - num, vec.Y - num, vec.Z - num, vec.W - num);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -65,7 +89,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(vec.As256() * num);
 
-        return SoftMultiply(vec, num);
+        return new(vec.X * num, vec.Y * num, vec.Z * num, vec.W * num);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -77,7 +101,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(vec.As256() / num);
 
-        return SoftDivide(vec, num);
+        return new(vec.X / num, vec.Y / num, vec.Z / num, vec.W / num);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -162,7 +186,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vector256.Sum(As256());
 
-        return SoftSum(this);
+        return X + Y + Z + W;
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -174,7 +198,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(Vector256.Abs(As256()));
 
-        return SoftAbs(this);
+        return new(T.Abs(X), T.Abs(Y), T.Abs(Z), T.Abs(W));
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -210,7 +234,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(Vector256.Clamp(As256(), min.As256(), max.As256()));
 
-        return SoftClamp(this, min, max);
+        return max.Min(Max(min));
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -236,7 +260,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
                 Vector256.Create((double)(object)amount)
             ));
         }
-        return SoftLerp(this, vec, amount);
+        return (this * (T.One - amount)) + (vec * amount);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -268,9 +292,9 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         {
             var result = mat.X * X;
 
-            result = SoftMultiplyAdd(mat.Y, new(Y), result);
-            result = SoftMultiplyAdd(mat.Z, new(Z), result);
-            result = SoftMultiplyAdd(mat.W, new(W), result);
+            result = (mat.Y * new Vec4<T>(Y)) + result;
+            result = (mat.Z * new Vec4<T>(Z)) + result;
+            result = (mat.W * new Vec4<T>(W)) + result;
 
             return result;
         }

@@ -1,6 +1,6 @@
 namespace System.Numerics;
 
-// shitty
+// shitty?
 
 public interface IVector<TSelf> :
     IAdditiveIdentity<TSelf, TSelf>,
@@ -22,6 +22,8 @@ public interface IVectorOperators<TSelf> :
         where TSelf : IVector<TSelf>, IVectorOperators<TSelf>;
 
 public interface IVectorScalarOperators<TSelf, TScalar> :
+    IAdditionOperators<TSelf, TScalar, TSelf>,
+    ISubtractionOperators<TSelf, TScalar, TSelf>,
     IMultiplyOperators<TSelf, TScalar, TSelf>,
     IDivisionOperators<TSelf, TScalar, TSelf>
         where TSelf : IVector<TSelf>, IVectorScalarOperators<TSelf, TScalar>;

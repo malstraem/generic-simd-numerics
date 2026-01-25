@@ -26,12 +26,10 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
         Vec4<T>.UnitW
     );
 
-    public readonly bool IsIdentity =>
-           X == Vec4<T>.UnitX
-        && Y == Vec4<T>.UnitY
-        && Z == Vec4<T>.UnitZ
-        && W == Vec4<T>.UnitW;
-
+    public readonly bool IsIdentity => X == Vec4<T>.UnitX
+                                    && Y == Vec4<T>.UnitY
+                                    && Z == Vec4<T>.UnitZ
+                                    && W == Vec4<T>.UnitW;
     public readonly T TransX => W.X;
 
     public readonly T TransY => W.Y;
@@ -87,12 +85,12 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
     );
 
     [MethodImpl(AggressiveInlining)]
-    public static Mat44<T> operator *(Mat44<T> mat, T value) => new
+    public static Mat44<T> operator *(Mat44<T> mat, T num) => new
     (
-        mat.X * value,
-        mat.Y * value,
-        mat.Z * value,
-        mat.W * value
+        mat.X * num,
+        mat.Y * num,
+        mat.Z * num,
+        mat.W * num
     );
 
     [MethodImpl(AggressiveInlining)]
@@ -114,7 +112,6 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
                                                                   || left.Y != right.Y
                                                                   || left.Z != right.Z
                                                                   || left.W != right.W;
-
     public override readonly bool Equals(object? obj) => (obj is Mat44<T> mat) && mat == this;
 
     public override readonly int GetHashCode() => HashCode.Combine(X, Y, Z, W);

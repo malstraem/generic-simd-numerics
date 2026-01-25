@@ -2,157 +2,109 @@ using BenchmarkDotNet.Attributes;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob]
-public abstract class StressVector4 : BaseBench
+[SimpleJob, DisassemblyDiagnoser]
+public class StressVector4 : BaseBench
 {
-    private Vector4
-        x = Vec4<float>.Gen(5f).System(),
-        y = Vec4<float>.Gen(5f).System(),
-        vec = Vec4<float>.Gen(5f).System(),
-        negative = -Vec4<float>.Gen(5f).System();
+    private static readonly float[] nums = new float[Count];
 
-    private static readonly Matrix4x4 mat = Mat44<float>.Gen(5f).System();
+    private static readonly Vector4[] vecs = new Vector4[Count];
 
-    [Benchmark]
-    public Vector4 Add()
+    private static readonly Matrix4x4 mat = Mat44<float>.Gen(1f).System();
+
+    public StressVector4()
     {
-        var add = Vector4.One;
-
-        for (int i = 0; i < Count; i++)
-            add += vec;
-
-        return add;
+        for (int i = 0; i < vecs.Length; i++)
+            vecs[i] = Vec4<float>.Gen(Random.Shared.Next(10, 100)).System();
     }
 
     [Benchmark]
-    public Vector4 Substract()
+    public void Add()
     {
-        var sub = Vector4.One;
-
-        for (int i = 0; i < Count; i++)
-            sub -= vec;
-
-        return sub;
+        for (int i = 0; i < Count - 1; i++)
+            vecs[i] = vecs[i] + vecs[i + 1];
     }
 
     [Benchmark]
-    public Vector4 Multiply()
+    public void Substract()
     {
-        var mul = Vector4.One;
-
-        for (int i = 0; i < Count; i++)
-            mul *= y;
-
-        return mul;
+        for (int i = 0; i < Count - 1; i++)
+            vecs[i] = vecs[i] - vecs[i + 1];
     }
 
     [Benchmark]
-    public Vector4 Divide()
+    public void Multiply()
     {
-        var div = Vector4.One;
-
-        for (int i = 0; i < Count; i++)
-            div /= y;
-
-        return div;
+        for (int i = 0; i < Count - 1; i++)
+            vecs[i] = vecs[i] * vecs[i + 1];
     }
 
     [Benchmark]
-    public float Sum()
+    public void Divide()
     {
-        float sum = 0f;
-
-        for (int i = 0; i < Count; i++)
-            sum = Vector4.Sum(vec);
-
-        return sum;
+        for (int i = 0; i < Count - 1; i++)
+            vecs[i] = vecs[i] / vecs[i + 1];
     }
 
     [Benchmark]
-    public float Dot()
+    public void Abs()
     {
-        float dot = 0f;
-
         for (int i = 0; i < Count; i++)
-            dot = Vector4.Dot(x, y);
-
-        return dot;
+            vecs[i] = Vector4.Abs(vecs[i]);
     }
 
     [Benchmark]
-    public float LengthSquared()
+    public void Sum()
     {
-        float len = 0f;
-
         for (int i = 0; i < Count; i++)
-            len = vec.LengthSquared();
-
-        return len;
+            nums[i] = Vector4.Sum(vecs[i]);
     }
 
     [Benchmark]
-    public float DistanceSquared()
+    public void Dot()
     {
-        float dist = 0f;
-
-        for (int i = 0; i < Count; i++)
-            dist = Vector4.DistanceSquared(x, y);
-
-        return dist;
+        for (int i = 0; i < Count - 1; i++)
+            nums[i] = Vector4.Dot(vecs[i], vecs[i + 1]);
     }
 
     [Benchmark]
-    public float Length()
+    public void LengthSquared()
     {
-        float len = 0f;
-
         for (int i = 0; i < Count; i++)
-            len = x.Length();
-
-        return len;
+            nums[i] = vecs[i].LengthSquared();
     }
 
     [Benchmark]
-    public float Distance()
+    public void DistanceSquared()
     {
-        float dist = 0f;
-
-        for (int i = 0; i < Count; i++)
-            dist = Vector4.Distance(x, y);
-
-        return dist;
+        for (int i = 0; i < Count - 1; i++)
+            nums[i] = Vector4.DistanceSquared(vecs[i], vecs[i + 1]);
     }
 
     [Benchmark]
-    public Vector4 Normalize()
+    public void Length()
     {
-        var norm = Vector4.One;
-
         for (int i = 0; i < Count; i++)
-            norm = Vector4.Normalize(vec);
-
-        return norm;
+            nums[i] = vecs[i].Length();
     }
 
     [Benchmark]
-    public Vector4 Abs()
+    public void Distance()
     {
-        var abs = Vector4.One;
-
-        for (int i = 0; i < Count; i++)
-            abs = Vector4.Abs(negative);
-
-        return abs;
+        for (int i = 0; i < Count - 1; i++)
+            nums[i] = Vector4.Distance(vecs[i], vecs[i + 1]);
     }
 
     [Benchmark]
-    public Vector4 Transform()
+    public void Normalize()
     {
-        var vec = Vector4.One;
-
         for (int i = 0; i < Count; i++)
-            vec = Vector4.Transform(vec, mat);
+            vecs[i] = Vector4.Normalize(vecs[i]);
+    }
 
-        return vec;
+    [Benchmark]
+    public void Transform()
+    {
+        for (int i = 0; i < Count; i++)
+            vecs[i] = Vector4.Transform(vecs[i], mat);
     }
 }

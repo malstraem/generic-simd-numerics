@@ -117,7 +117,6 @@ public abstract class Vec4Root<T, TRoot> : Vec4Base<T>
 
         await Assert.That(root).IsEqualTo(expected);
         await Assert.That(root).IsEqualTo(Vec4<T>.SquareRoot<TRoot>(vec));
-
     }
 }
 

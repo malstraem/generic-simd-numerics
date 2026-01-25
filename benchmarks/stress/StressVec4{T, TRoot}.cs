@@ -2,144 +2,110 @@ using BenchmarkDotNet.Attributes;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob]
-public abstract class StressVec4<T, TRoot> : BaseBench
-    where T : unmanaged, INumber<T>
-    where TRoot : IRootFunctions<TRoot>
+[SimpleJob, DisassemblyDiagnoser]
+public abstract class StressVec4<T> : BaseBench
+    where T : unmanaged, INumber<T>, IRootFunctions<T>
 {
-    private T number = T.One;
+    private static readonly T[] nums = new T[Count];
 
-    private static Vec4<T>
-        x = Vec4<T>.Gen(T.One),
-        y = Vec4<T>.Gen(T.One + T.One),
-        vec = Vec4<T>.Gen(T.One + T.One + T.One),
-        negative = -vec;
+    private static readonly Vec4<T>[] vecs = new Vec4<T>[Count];
 
     private static readonly Mat44<T> mat = Mat44<T>.Gen(T.One);
 
-    /*[IterationSetup]
-    public void Setup()
+    public StressVec4()
     {
-        x = Vec4<T>.Gen(T.One);
-        y = Vec4<T>.Gen(T.One + T.One);
-        vec = Vec4<T>.Gen(T.One + T.One + T.One);
-        negative = -vec;
-    }*/
-
-    [Benchmark]
-    public Vec4<T> Add()
-    {
-        for (int i = 0; i < Count; i++)
-            x += y;
-
-        return x;
+        for (int i = 0; i < vecs.Length; i++)
+            vecs[i] = Vec4<T>.Gen(T.CreateTruncating(Random.Shared.Next(10, 100)));
     }
 
     [Benchmark]
-    public Vec4<T> Substract()
+    public void Add()
     {
-        for (int i = 0; i < Count; i++)
-            x -= y;
-
-        return x;
+        for (int i = 0; i < Count - 1; i++)
+            vecs[i] = vecs[i] + vecs[i + 1];
     }
 
     [Benchmark]
-    public Vec4<T> Multiply()
+    public void Substract()
     {
-        for (int i = 0; i < Count; i++)
-            x *= y;
-
-        return x;
+        for (int i = 0; i < Count - 1; i++)
+            vecs[i] = vecs[i] - vecs[i + 1];
     }
 
     [Benchmark]
-    public Vec4<T> Divide()
+    public void Multiply()
     {
-        for (int i = 0; i < Count; i++)
-            x /= y;
-
-        return x;
+        for (int i = 0; i < Count - 1; i++)
+            vecs[i] = vecs[i] * vecs[i + 1];
     }
 
     [Benchmark]
-    public T Sum()
+    public void Divide()
     {
-        for (int i = 0; i < Count; i++)
-            number = vec.Sum();
-
-        return number;
+        for (int i = 0; i < Count - 1; i++)
+            vecs[i] = vecs[i] / vecs[i + 1];
     }
 
     [Benchmark]
-    public T Dot()
+    public void Abs()
     {
         for (int i = 0; i < Count; i++)
-            number = x.Dot(y);
-
-        return number;
+            vecs[i] = vecs[i].Abs();
     }
 
     [Benchmark]
-    public T LengthSquared()
+    public void Sum()
     {
         for (int i = 0; i < Count; i++)
-            number = vec.LengthSquared();
-
-        return number;
+            nums[i] = vecs[i].Sum();
     }
 
     [Benchmark]
-    public T DistanceSquared()
+    public void Dot()
     {
-        for (int i = 0; i < Count; i++)
-            number = x.DistanceSquared(y);
-
-        return number;
+        for (int i = 0; i < Count - 1; i++)
+            nums[i] = vecs[i].Dot(vecs[i + 1]);
     }
 
     [Benchmark]
-    public T Length()
+    public void LengthSquared()
     {
         for (int i = 0; i < Count; i++)
-            number = x.Length<TRoot>();
-
-        return number;
+            nums[i] = vecs[i].LengthSquared();
     }
 
     [Benchmark]
-    public T Distance()
+    public void DistanceSquared()
     {
-        for (int i = 0; i < Count; i++)
-            number = x.Distance<TRoot>(y);
-
-        return number;
+        for (int i = 0; i < Count - 1; i++)
+            nums[i] = vecs[i].DistanceSquared(vecs[i + 1]);
     }
 
     [Benchmark]
-    public Vec4<T> Normalize()
+    public void Length()
     {
         for (int i = 0; i < Count; i++)
-            vec = vec.Normalize<TRoot>();
-
-        return vec;
+            nums[i] = vecs[i].Length();
     }
 
     [Benchmark]
-    public Vec4<T> Abs()
+    public void Distance()
     {
-        for (int i = 0; i < Count; i++)
-            vec = negative.Abs();
-
-        return vec;
+        for (int i = 0; i < Count - 1; i++)
+            nums[i] = vecs[i].Distance(vecs[i + 1]);
     }
 
     [Benchmark]
-    public Vec4<T> Transform()
+    public void Normalize()
     {
         for (int i = 0; i < Count; i++)
-            vec = vec.Transform(mat);
+            vecs[i] = vecs[i].Normalize();
+    }
 
-        return vec;
+    [Benchmark]
+    public void Transform()
+    {
+        for (int i = 0; i < Count; i++)
+            vecs[i] = vecs[i].Transform(mat);
     }
 }

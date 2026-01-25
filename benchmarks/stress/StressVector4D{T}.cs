@@ -8,130 +8,99 @@ namespace System.Numerics.Bench;
 public abstract class StressVector4D<T> : BaseBench
     where T : unmanaged, INumber<T>
 {
-    private T number = T.One;
+    private static readonly T[] nums = new T[Count];
 
-    private static Vector4D<T>
-        x = Vec4<T>.Gen(T.One).Silk(),
-        y = Vec4<T>.Gen(T.One + T.One).Silk(),
-        vec = Vec4<T>.Gen(T.One + T.One + T.One).Silk(),
-        negative = -vec;
+    private static readonly Vector4D<T>[] vecs = new Vector4D<T>[Count];
 
     private static readonly Matrix4X4<T> mat = Mat44<T>.Gen(T.One).Silk();
 
-    /*[IterationSetup]
-    public void Setup()
+    public StressVector4D()
     {
-        x = Vec4<T>.Gen(T.One);
-        y = Vec4<T>.Gen(T.One + T.One);
-        vec = Vec4<T>.Gen(T.One + T.One + T.One);
-        negative = -vec;
-    }*/
-
-    [Benchmark]
-    public Vector4D<T> Add()
-    {
-        for (int i = 0; i < Count; i++)
-            x += y;
-
-        return x;
+        for (int i = 0; i < vecs.Length; i++)
+            vecs[i] = Vec4<T>.Gen(T.CreateTruncating(Random.Shared.Next(10, 100))).Silk();
     }
 
     [Benchmark]
-    public Vector4D<T> Substract()
+    public void Add()
     {
-        for (int i = 0; i < Count; i++)
-            x -= y;
-
-        return x;
+        for (int i = 0; i < Count - 1; i++)
+            vecs[i] = vecs[i] + vecs[i + 1];
     }
 
     [Benchmark]
-    public Vector4D<T> Multiply()
+    public void Substract()
     {
-        for (int i = 0; i < Count; i++)
-            x *= y;
-
-        return x;
+        for (int i = 0; i < Count - 1; i++)
+            vecs[i] = vecs[i] - vecs[i + 1];
     }
 
     [Benchmark]
-    public Vector4D<T> Divide()
+    public void Multiply()
     {
-        for (int i = 0; i < Count; i++)
-            x /= y;
-
-        return x;
+        for (int i = 0; i < Count - 1; i++)
+            vecs[i] = vecs[i] * vecs[i + 1];
     }
 
     [Benchmark]
-    public T Dot()
+    public void Divide()
     {
-        for (int i = 0; i < Count; i++)
-            number = Vector4D.Dot(x, y);
-
-        return number;
+        for (int i = 0; i < Count - 1; i++)
+            vecs[i] = vecs[i] / vecs[i + 1];
     }
 
     [Benchmark]
-    public T LengthSquared()
+    public void Abs()
     {
         for (int i = 0; i < Count; i++)
-            number = vec.LengthSquared;
-
-        return number;
+            vecs[i] = Vector4D.Abs(vecs[i]);
     }
 
     [Benchmark]
-    public T DistanceSquared()
+    public void Dot()
     {
-        for (int i = 0; i < Count; i++)
-            number = Vector4D.DistanceSquared(x, y);
-
-        return number;
+        for (int i = 0; i < Count - 1; i++)
+            nums[i] = Vector4D.Dot(vecs[i], vecs[i + 1]);
     }
 
     [Benchmark]
-    public T Length()
+    public void LengthSquared()
     {
         for (int i = 0; i < Count; i++)
-            number = x.Length;
-
-        return number;
+            nums[i] = vecs[i].LengthSquared;
     }
 
     [Benchmark]
-    public T Distance()
+    public void DistanceSquared()
     {
-        for (int i = 0; i < Count; i++)
-            number = Vector4D.Distance(x, y);
-
-        return number;
+        for (int i = 0; i < Count - 1; i++)
+            nums[i] = Vector4D.DistanceSquared(vecs[i], vecs[i + 1]);
     }
 
     [Benchmark]
-    public Vector4D<T> Normalize()
+    public void Length()
     {
         for (int i = 0; i < Count; i++)
-            vec = Vector4D.Normalize(vec);
-
-        return vec;
+            nums[i] = vecs[i].Length;
     }
 
     [Benchmark]
-    public Vector4D<T> Abs()
+    public void Distance()
     {
-        for (int i = 0; i < Count; i++)
-            vec = Vector4D.Abs(negative);
-
-        return vec;
+        for (int i = 0; i < Count - 1; i++)
+            nums[i] = Vector4D.Distance(vecs[i], vecs[i + 1]);
     }
 
     [Benchmark]
-    public Vector4D<T> Transform()
+    public void Normalize()
     {
         for (int i = 0; i < Count; i++)
-            vec = Vector4D.Transform(vec, mat);
+            vecs[i] = Vector4D.Normalize(vecs[i]);
+    }
 
-        return vec;
+    [Benchmark]
+    public void Transform()
+    {
+        for (int i = 0; i < Count; i++)
+            vecs[i] = Vector4D.Transform(vecs[i], mat);
     }
 }

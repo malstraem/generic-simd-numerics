@@ -2,8 +2,8 @@
   <ItemGroup>
     <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.1.0" />
     <PackageVersion Include="Microsoft.Testing.Extensions.TrxReport" Version="2.0.2" />
-    <PackageVersion Include="Silk.NET.Maths" Version="2.22.0" />
-    <PackageVersion Include="TUnit" Version="1.2.11" />
-    <PackageVersion Include="BenchmarkDotNet" Version="0.15.6" />
+    <PackageVersion Include="Silk.NET.Maths" Version="2.23.0" />
+    <PackageVersion Include="TUnit" Version="1.12.43" />
+    <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
   </ItemGroup>
 </Project>
