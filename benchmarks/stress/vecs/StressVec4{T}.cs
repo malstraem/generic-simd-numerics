@@ -3,8 +3,13 @@ using BenchmarkDotNet.Attributes;
 namespace System.Numerics.Bench;
 
 [SimpleJob, DisassemblyDiagnoser]
-public abstract class StressVec4<T> : BaseBench
-    where T : unmanaged, INumber<T>, IRootFunctions<T>
+public abstract class StressVec4<T> : StressVec4<T, T>
+    where T : unmanaged, INumber<T>, IRootFunctions<T>;
+
+[SimpleJob, DisassemblyDiagnoser]
+public abstract class StressVec4<T, R> : BaseBench
+    where T : unmanaged, INumber<T>
+    where R : unmanaged, IRootFunctions<R>
 {
     private static readonly T[] nums = new T[Count];
 
@@ -85,21 +90,21 @@ public abstract class StressVec4<T> : BaseBench
     public void Length()
     {
         for (int i = 0; i < Count; i++)
-            nums[i] = vecs[i].Length();
+            nums[i] = vecs[i].Length<R>();
     }
 
     [Benchmark]
     public void Distance()
     {
         for (int i = 0; i < Count - 1; i++)
-            nums[i] = vecs[i].Distance(vecs[i + 1]);
+            nums[i] = vecs[i].Distance<R>(vecs[i + 1]);
     }
 
     [Benchmark]
     public void Normalize()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = vecs[i].Normalize();
+            vecs[i] = vecs[i].Normalize<R>();
     }
 
     [Benchmark]

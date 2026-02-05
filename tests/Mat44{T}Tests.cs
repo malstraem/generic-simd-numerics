@@ -1,10 +1,23 @@
-namespace System.Numerics.Tests;
+namespace System.Numerics.Tests.Matrix44;
+
+[InheritsTests]
+public class Mat44f32 : Mat44Base<float>;
 
 public abstract class Mat44Base<T> where T : unmanaged, INumber<T>
 {
     protected static readonly Mat44<T>
        x = Mat44<T>.Gen(T.One),
        y = Mat44<T>.Gen(T.One + T.One);
+
+    [Test]
+    public async Task Add()
+    {
+        var mul = x + y;
+
+        var expected = (x.Silk() + y.Silk()).Mat44();
+
+        await Assert.That(mul).IsEqualTo(expected);
+    }
 
     [Test]
     public async Task Multiply()

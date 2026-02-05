@@ -113,7 +113,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(left.As256() + right.As256());
 
-        return SoftAdd(left, right);
+        return new(left.X + right.X, left.Y + right.Y, left.Z + right.Z, left.W + right.W);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -125,7 +125,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(left.As256() - right.As256());
 
-        return SoftSubstract(left, right);
+        return new(left.X - right.X, left.Y - right.Y, left.Z - right.Z, left.W - right.W);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -137,7 +137,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(left.As256() * right.As256());
 
-        return SoftMultiply(left, right);
+        return new(left.X * right.X, left.Y * right.Y, left.Z * right.Z, left.W * right.W);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -149,7 +149,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(left.As256() / right.As256());
 
-        return SoftDivide(left, right);
+        return new(left.X / right.X, left.Y / right.Y, left.Z / right.Z, left.W / right.W);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -161,7 +161,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return left.As256() == right.As256();
 
-        return SoftEqual(left, right);
+        return left.X == right.X
+            && left.Y == right.Y
+            && left.Z == right.Z
+            && left.W == right.W;
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -173,7 +176,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return left.As256() != right.As256();
 
-        return SoftNotEqual(left, right);
+        return left.X != right.X
+            && left.Y != right.Y
+            && left.Z != right.Z
+            && left.W != right.W;
     }
     #endregion
 
@@ -210,7 +216,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(Vector256.Min(As256(), vec.As256()));
 
-        return SoftMin(this, vec);
+        return new(T.Min(X, vec.X),
+                   T.Min(Y, vec.Y),
+                   T.Min(Z, vec.Z),
+                   T.Min(W, vec.W));
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -222,7 +231,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(Vector256.Max(As256(), vec.As256()));
 
-        return SoftMax(this, vec);
+        return new(T.Max(X, vec.X),
+                   T.Max(Y, vec.Y),
+                   T.Max(Z, vec.Z),
+                   T.Max(W, vec.W));
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -310,45 +322,45 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public readonly T LengthSquared() => Dot(this);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly TRoot LengthSaturating<TRoot>()
-        where TRoot : IRootFunctions<TRoot>
-            => TRoot.Sqrt(TRoot.CreateSaturating(LengthSquared()));
+    public readonly R LengthSaturating<R>()
+        where R : IRootFunctions<R>
+            => R.Sqrt(R.CreateSaturating(LengthSquared()));
 
     [MethodImpl(AggressiveInlining)]
-    public readonly TRoot LengthTruncating<TRoot>()
-        where TRoot : IRootFunctions<TRoot>
-            => TRoot.Sqrt(TRoot.CreateTruncating(LengthSquared()));
+    public readonly R LengthTruncating<R>()
+        where R : IRootFunctions<R>
+            => R.Sqrt(R.CreateTruncating(LengthSquared()));
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T Length<TRoot>()
-        where TRoot : IRootFunctions<TRoot>
-            => T.CreateTruncating(LengthSaturating<TRoot>());
+    public readonly T Length<R>()
+        where R : IRootFunctions<R>
+            => T.CreateTruncating(LengthSaturating<R>());
 
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec4<T> vec) => (this - vec).LengthSquared();
 
     [MethodImpl(AggressiveInlining)]
-    public readonly TRoot DistanceSaturating<TRoot>(Vec4<T> vec)
-        where TRoot : IRootFunctions<TRoot>
-            => TRoot.Sqrt(TRoot.CreateSaturating(DistanceSquared(vec)));
+    public readonly R DistanceSaturating<R>(Vec4<T> vec)
+        where R : IRootFunctions<R>
+            => R.Sqrt(R.CreateSaturating(DistanceSquared(vec)));
 
     [MethodImpl(AggressiveInlining)]
-    public readonly TRoot DistanceTruncating<TRoot>(Vec4<T> vec)
-        where TRoot : IRootFunctions<TRoot>
-            => TRoot.CreateTruncating(DistanceSquared(vec));
+    public readonly R DistanceTruncating<R>(Vec4<T> vec)
+        where R : IRootFunctions<R>
+            => R.CreateTruncating(DistanceSquared(vec));
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T Distance<TRoot>(Vec4<T> vec)
-        where TRoot : IRootFunctions<TRoot>
-            => T.CreateTruncating(DistanceSaturating<TRoot>(vec));
+    public readonly T Distance<R>(Vec4<T> vec)
+        where R : IRootFunctions<R>
+            => T.CreateTruncating(DistanceSaturating<R>(vec));
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec4<T> Normalize<TRoot>()
-        where TRoot : IRootFunctions<TRoot>
-            => this / Distance<TRoot>(Zero);
+    public readonly Vec4<T> Normalize<R>()
+        where R : IRootFunctions<R>
+            => this / Distance<R>(Zero);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec4<T> SquareRoot<TRoot>() where TRoot : IRootFunctions<TRoot>
+    public readonly Vec4<T> SquareRoot<R>() where R : IRootFunctions<R>
     {
         //its look like Vector128/256 supports integers but how to expose?
 
@@ -364,13 +376,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vec4<T>.From256(Vector256.Sqrt(As256()));
 
-        return new
-        (
-            T.CreateTruncating(TRoot.Sqrt(TRoot.CreateSaturating(X))),
-            T.CreateTruncating(TRoot.Sqrt(TRoot.CreateSaturating(Y))),
-            T.CreateTruncating(TRoot.Sqrt(TRoot.CreateSaturating(Z))),
-            T.CreateTruncating(TRoot.Sqrt(TRoot.CreateSaturating(W)))
-        );
+        return new(T.CreateTruncating(R.Sqrt(R.CreateSaturating(X))),
+                   T.CreateTruncating(R.Sqrt(R.CreateSaturating(Y))),
+                   T.CreateTruncating(R.Sqrt(R.CreateSaturating(Z))),
+                   T.CreateTruncating(R.Sqrt(R.CreateSaturating(W))));
     }
 
     public override readonly string ToString() => $"({X}, {Y}, {Z}, {W})";

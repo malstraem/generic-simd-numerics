@@ -1,23 +1,30 @@
 using BenchmarkDotNet.Attributes;
 
-using Silk.NET.Maths;
-
 namespace System.Numerics.Bench;
 
-[SimpleJob]
-public abstract class StressVector4D<T> : BaseBench
+[SimpleJob, DisassemblyDiagnoser]
+public abstract class StressVec2<T> : StressVec2<T, T>
+    where T : unmanaged, INumber<T>, IRootFunctions<T>;
+
+[SimpleJob, DisassemblyDiagnoser]
+public abstract class StressVec2<T, R> : BaseBench
     where T : unmanaged, INumber<T>
+    where R : unmanaged, IRootFunctions<R>
 {
     private static readonly T[] nums = new T[Count];
 
-    private static readonly Vector4D<T>[] vecs = new Vector4D<T>[Count];
+    private static readonly Vec2<T>[] vecs = new Vec2<T>[Count];
 
-    private static readonly Matrix4X4<T> mat = Mat44<T>.Gen(T.One).Silk();
+    private static readonly Mat44<T> mat = Mat44<T>.Gen(T.One);
 
-    public StressVector4D()
+    [GlobalSetup]
+    public void Setup()
     {
-        for (int i = 0; i < vecs.Length; i++)
-            vecs[i] = Vec4<T>.Gen(T.CreateTruncating(Random.Shared.Next(10, 100))).Silk();
+        for (int i = 0; i < Count; i++)
+        {
+            nums[i] = T.CreateTruncating(Random.Shared.Next(1, 10));
+            vecs[i] = Vec2<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
+        }
     }
 
     [Benchmark]
@@ -52,55 +59,62 @@ public abstract class StressVector4D<T> : BaseBench
     public void Abs()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vector4D.Abs(vecs[i]);
+            vecs[i] = vecs[i].Abs();
+    }
+
+    [Benchmark]
+    public void Sum()
+    {
+        for (int i = 0; i < Count; i++)
+            nums[i] = vecs[i].Sum();
     }
 
     [Benchmark]
     public void Dot()
     {
         for (int i = 0; i < Count - 1; i++)
-            nums[i] = Vector4D.Dot(vecs[i], vecs[i + 1]);
+            nums[i] = vecs[i].Dot(vecs[i + 1]);
     }
 
     [Benchmark]
     public void LengthSquared()
     {
         for (int i = 0; i < Count; i++)
-            nums[i] = vecs[i].LengthSquared;
+            nums[i] = vecs[i].LengthSquared();
     }
 
     [Benchmark]
     public void DistanceSquared()
     {
         for (int i = 0; i < Count - 1; i++)
-            nums[i] = Vector4D.DistanceSquared(vecs[i], vecs[i + 1]);
+            nums[i] = vecs[i].DistanceSquared(vecs[i + 1]);
     }
 
     [Benchmark]
     public void Length()
     {
         for (int i = 0; i < Count; i++)
-            nums[i] = vecs[i].Length;
+            nums[i] = vecs[i].Length<R>();
     }
 
     [Benchmark]
     public void Distance()
     {
         for (int i = 0; i < Count - 1; i++)
-            nums[i] = Vector4D.Distance(vecs[i], vecs[i + 1]);
+            nums[i] = vecs[i].Distance<R>(vecs[i + 1]);
     }
 
     [Benchmark]
     public void Normalize()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vector4D.Normalize(vecs[i]);
+            vecs[i] = vecs[i].Normalize<R>();
     }
 
-    [Benchmark]
+    /*[Benchmark]
     public void Transform()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vector4D.Transform(vecs[i], mat);
-    }
+            vecs[i] = vecs[i].Transform(mat);
+    }*/
 }

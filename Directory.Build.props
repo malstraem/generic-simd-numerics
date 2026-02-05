@@ -11,9 +11,6 @@
     <IsPackable>false</IsPackable>
     <IsPublishable>false</IsPublishable>
 
-    <DebugType>pdbonly</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-
     <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath>
     <UseArtifactsOutput>true</UseArtifactsOutput>
 
@@ -21,10 +18,6 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <Optimize>true</Optimize>
   </PropertyGroup>
 
   <ItemGroup>

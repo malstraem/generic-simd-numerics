@@ -1,39 +1,39 @@
 using Silk.NET.Maths;
 
-namespace System.Numerics.Tests.Vector4;
+namespace System.Numerics.Tests.Vector2;
 
 [InheritsTests]
-public class Vec4f32 : Vec4Root<float>;
+public class Vec2f32 : Vec2Root<float>;
 
 [InheritsTests]
-public class Vec4f64 : Vec4Root<double>;
+public class Vec2f64 : Vec2Root<double>;
 
 [InheritsTests]
-public class Vec4i8 : Vec4Root<sbyte, float>;
+public class Vec2i8 : Vec2Root<sbyte, float>;
 
 [InheritsTests]
-public class Vec4ui8 : Vec4Root<byte, float>;
+public class Vec2ui8 : Vec2Root<byte, float>;
 
 [InheritsTests]
-public class Vec4i16 : Vec4Root<short, float>;
+public class Vec2i16 : Vec2Root<short, float>;
 
 [InheritsTests]
-public class Vec4ui16 : Vec4Root<ushort, float>;
+public class Vec2ui16 : Vec2Root<ushort, float>;
 
 [InheritsTests]
-public class Vec4i32 : Vec4Root<int, float>;
+public class Vec2i32 : Vec2Root<int, float>;
 
 [InheritsTests]
-public class Vec4ui32 : Vec4Root<uint, float>;
+public class Vec2ui32 : Vec2Root<uint, float>;
 
 [InheritsTests]
-public class Vec4i64 : Vec4Root<long, double>;
+public class Vec2i64 : Vec2Root<long, double>;
 
 [InheritsTests]
-public class Vec4ui64 : Vec4Root<ulong, double>;
+public class Vec2ui64 : Vec2Root<ulong, double>;
 
 [InheritsTests]
-public abstract class Vec4Root<T> : Vec4Root<T, T>
+public abstract class Vec2Root<T> : Vec2Root<T, T>
     where T : unmanaged, INumber<T>, IRootFunctions<T>
 {
     [Test, DisplayName("len (sealed variant)")]
@@ -44,7 +44,7 @@ public abstract class Vec4Root<T> : Vec4Root<T, T>
         var expected = vec.Silk().Length;
 
         await Assert.That(length).IsEqualTo(expected);
-        await Assert.That(length).IsEqualTo(Vec4<T>.Length(vec));
+        await Assert.That(length).IsEqualTo(Vec2<T>.Length(vec));
     }
 
     [Test, DisplayName("dist (sealed variant)")]
@@ -52,10 +52,10 @@ public abstract class Vec4Root<T> : Vec4Root<T, T>
     {
         var distance = x.Distance(y);
 
-        var expected = Vector4D.Distance(x.Silk(), y.Silk());
+        var expected = Vector2D.Distance(x.Silk(), y.Silk());
 
         await Assert.That(distance).IsEqualTo(expected);
-        await Assert.That(distance).IsEqualTo(Vec4<T>.Distance(x, y));
+        await Assert.That(distance).IsEqualTo(Vec2<T>.Distance(x, y));
     }
 
     [Test, DisplayName("norm (sealed variant)")]
@@ -63,15 +63,15 @@ public abstract class Vec4Root<T> : Vec4Root<T, T>
     {
         var normal = vec.Normalize();
 
-        var expected = Vector4D.Normalize(vec.Silk()).Vec4();
+        var expected = Vector2D.Normalize(vec.Silk()).Vec2();
 
         await Assert.That(normal).IsEqualTo(expected);
-        await Assert.That(normal).IsEqualTo(Vec4<T>.Normalize(vec));
+        await Assert.That(normal).IsEqualTo(Vec2<T>.Normalize(vec));
     }
 }
 
 [InheritsTests]
-public abstract class Vec4Root<T, TRoot> : Vec4Base<T>
+public abstract class Vec2Root<T, TRoot> : Vec2Base<T>
     where T : unmanaged, INumber<T>
     where TRoot : IRootFunctions<TRoot>
 {
@@ -82,7 +82,7 @@ public abstract class Vec4Root<T, TRoot> : Vec4Base<T>
 
         var length = vec.Length<TRoot>();
 
-        await Assert.That(length).IsEqualTo(Vec4<T>.Length<TRoot>(vec));
+        await Assert.That(length).IsEqualTo(Vec2<T>.Length<TRoot>(vec));
         await Assert.That(length).IsEqualTo(expected);
     }
 
@@ -91,10 +91,10 @@ public abstract class Vec4Root<T, TRoot> : Vec4Base<T>
     {
         var distance = x.Distance<TRoot>(y);
 
-        var expected = Vector4D.Distance(x.Silk(), y.Silk());
+        var expected = Vector2D.Distance(x.Silk(), y.Silk());
 
         await Assert.That(distance).IsEqualTo(expected);
-        await Assert.That(distance).IsEqualTo(Vec4<T>.Distance<TRoot>(x, y));
+        await Assert.That(distance).IsEqualTo(Vec2<T>.Distance<TRoot>(x, y));
     }
 
     [Test, DisplayName("norm")]
@@ -102,10 +102,10 @@ public abstract class Vec4Root<T, TRoot> : Vec4Base<T>
     {
         var normal = vec.Normalize<TRoot>();
 
-        var expected = Vector4D.Normalize(vec.Silk()).Vec4();
+        var expected = Vector2D.Normalize(vec.Silk()).Vec2();
 
         await Assert.That(normal).IsEqualTo(expected);
-        await Assert.That(normal).IsEqualTo(Vec4<T>.Normalize<TRoot>(vec));
+        await Assert.That(normal).IsEqualTo(Vec2<T>.Normalize<TRoot>(vec));
     }
 
     [Test, DisplayName("sqrt")]
@@ -113,22 +113,22 @@ public abstract class Vec4Root<T, TRoot> : Vec4Base<T>
     {
         var root = vec.SquareRoot<TRoot>();
 
-        var expected = Vector4D.SquareRoot(vec.Silk()).Vec4();
+        var expected = Vector2D.SquareRoot(vec.Silk()).Vec2();
 
         await Assert.That(root).IsEqualTo(expected);
-        await Assert.That(root).IsEqualTo(Vec4<T>.SquareRoot<TRoot>(vec));
+        await Assert.That(root).IsEqualTo(Vec2<T>.SquareRoot<TRoot>(vec));
     }
 }
 
-public abstract class Vec4Base<T>
+public abstract class Vec2Base<T>
     where T : unmanaged, INumber<T>
 {
-    protected static readonly Vec4<T>
-       x = Vec4<T>.Gen(T.One),
-       y = Vec4<T>.Gen(T.One + T.One),
-       min = Vec4<T>.Gen(-T.One),
-       max = Vec4<T>.Gen(T.One + T.One + T.One),
-       vec = Vec4<T>.Gen(T.One + T.One + T.One + T.One),
+    protected static readonly Vec2<T>
+       x = Vec2<T>.Gen(T.One),
+       y = Vec2<T>.Gen(T.One + T.One),
+       min = Vec2<T>.Gen(-T.One),
+       max = Vec2<T>.Gen(T.One + T.One + T.One),
+       vec = Vec2<T>.Gen(T.One + T.One + T.One + T.One),
        negative = -vec;
 
     [Test, DisplayName("x + y")]
@@ -136,10 +136,10 @@ public abstract class Vec4Base<T>
     {
         var add = x + y;
 
-        var expected = (x.Silk() + y.Silk()).Vec4();
+        var expected = (x.Silk() + y.Silk()).Vec2();
 
         await Assert.That(add).IsEqualTo(expected);
-        await Assert.That(add).IsEqualTo(Vec4<T>.Add(x, y));
+        await Assert.That(add).IsEqualTo(Vec2<T>.Add(x, y));
     }
 
     [Test, DisplayName("x - y")]
@@ -147,10 +147,10 @@ public abstract class Vec4Base<T>
     {
         var sub = x - y;
 
-        var expected = (x.Silk() - y.Silk()).Vec4();
+        var expected = (x.Silk() - y.Silk()).Vec2();
 
         await Assert.That(sub).IsEqualTo(expected);
-        await Assert.That(sub).IsEqualTo(Vec4<T>.Subtract(x, y));
+        await Assert.That(sub).IsEqualTo(Vec2<T>.Subtract(x, y));
     }
 
     [Test, DisplayName("x * y")]
@@ -158,10 +158,10 @@ public abstract class Vec4Base<T>
     {
         var mul = x * y;
 
-        var expected = (x.Silk() * y.Silk()).Vec4();
+        var expected = (x.Silk() * y.Silk()).Vec2();
 
         await Assert.That(mul).IsEqualTo(expected);
-        await Assert.That(mul).IsEqualTo(Vec4<T>.Multiply(x, y));
+        await Assert.That(mul).IsEqualTo(Vec2<T>.Multiply(x, y));
     }
 
     [Test, DisplayName("x / y")]
@@ -169,10 +169,10 @@ public abstract class Vec4Base<T>
     {
         var div = x / y;
 
-        var expected = (x.Silk() / y.Silk()).Vec4();
+        var expected = (x.Silk() / y.Silk()).Vec2();
 
         await Assert.That(div).IsEqualTo(expected);
-        await Assert.That(div).IsEqualTo(Vec4<T>.Divide(x, y));
+        await Assert.That(div).IsEqualTo(Vec2<T>.Divide(x, y));
     }
 
     [Test, DisplayName("abs")]
@@ -180,10 +180,10 @@ public abstract class Vec4Base<T>
     {
         var abs = negative.Abs();
 
-        var expected = Vector4D.Abs(negative.Silk()).Vec4();
+        var expected = Vector2D.Abs(negative.Silk()).Vec2();
 
         await Assert.That(abs).IsEqualTo(expected);
-        await Assert.That(abs).IsEqualTo(Vec4<T>.Abs(negative));
+        await Assert.That(abs).IsEqualTo(Vec2<T>.Abs(negative));
     }
 
     [Test, DisplayName("min")]
@@ -191,17 +191,17 @@ public abstract class Vec4Base<T>
     {
         var m = min.Min(max);
 
-        var expected = Vector4D.Min(min.Silk(), max.Silk()).Vec4();
+        var expected = Vector2D.Min(min.Silk(), max.Silk()).Vec2();
 
         await Assert.That(m).IsEqualTo(expected);
-        await Assert.That(m).IsEqualTo(Vec4<T>.Min(min, max));
+        await Assert.That(m).IsEqualTo(Vec2<T>.Min(min, max));
 
         m = max.Min(min);
 
-        expected = Vector4D.Min(max.Silk(), min.Silk()).Vec4();
+        expected = Vector2D.Min(max.Silk(), min.Silk()).Vec2();
 
         await Assert.That(m).IsEqualTo(expected);
-        await Assert.That(m).IsEqualTo(Vec4<T>.Min(max, min));
+        await Assert.That(m).IsEqualTo(Vec2<T>.Min(max, min));
     }
 
     [Test, DisplayName("max")]
@@ -209,17 +209,17 @@ public abstract class Vec4Base<T>
     {
         var m = min.Max(max);
 
-        var expected = Vector4D.Max(min.Silk(), max.Silk()).Vec4();
+        var expected = Vector2D.Max(min.Silk(), max.Silk()).Vec2();
 
         await Assert.That(m).IsEqualTo(expected);
-        await Assert.That(m).IsEqualTo(Vec4<T>.Max(min, max));
+        await Assert.That(m).IsEqualTo(Vec2<T>.Max(min, max));
 
         m = max.Max(min);
 
-        expected = Vector4D.Max(max.Silk(), min.Silk()).Vec4();
+        expected = Vector2D.Max(max.Silk(), min.Silk()).Vec2();
 
         await Assert.That(m).IsEqualTo(expected);
-        await Assert.That(m).IsEqualTo(Vec4<T>.Max(max, min));
+        await Assert.That(m).IsEqualTo(Vec2<T>.Max(max, min));
     }
 
     [Test, DisplayName("clamp")]
@@ -227,10 +227,10 @@ public abstract class Vec4Base<T>
     {
         var clamp = vec.Clamp(min, max);
 
-        var expected = Vector4D.Clamp(vec.Silk(), min.Silk(), max.Silk()).Vec4();
+        var expected = Vector2D.Clamp(vec.Silk(), min.Silk(), max.Silk()).Vec2();
 
         await Assert.That(clamp).IsEqualTo(expected);
-        await Assert.That(clamp).IsEqualTo(Vec4<T>.Clamp(vec, min, max));
+        await Assert.That(clamp).IsEqualTo(Vec2<T>.Clamp(vec, min, max));
     }
 
     [Test, DisplayName("lerp")]
@@ -240,34 +240,34 @@ public abstract class Vec4Base<T>
 
         var lerp = x.Lerp(y, amount);
 
-        var expected = Vector4D.Lerp(x.Silk(), y.Silk(), amount).Vec4();
+        var expected = Vector2D.Lerp(x.Silk(), y.Silk(), amount).Vec2();
 
         await Assert.That(lerp).IsEqualTo(expected);
-        await Assert.That(lerp).IsEqualTo(Vec4<T>.Lerp(x, y, amount));
+        await Assert.That(lerp).IsEqualTo(Vec2<T>.Lerp(x, y, amount));
     }
 
-    [Test, DisplayName("transform")]
+    /*[Test, DisplayName("transform")]
     public async Task Transform()
     {
         var mat = Mat44<T>.Gen(T.One);
 
         var transform = vec.Transform(mat);
 
-        var expected = Vector4D.Transform(vec.Silk(), mat.Silk()).Vec4();
+        var expected = Vector2D.Transform(vec.Silk(), mat.Silk()).Vec2();
 
         await Assert.That(transform).IsEqualTo(expected);
-        await Assert.That(transform).IsEqualTo(Vec4<T>.Transform(vec, mat));
-    }
+        await Assert.That(transform).IsEqualTo(Vec2<T>.Transform(vec, mat));
+    }*/
 
     [Test, DisplayName("dot")]
     public async Task Dot()
     {
         var dot = x.Dot(y);
 
-        var expected = Vector4D.Dot(x.Silk(), y.Silk());
+        var expected = Vector2D.Dot(x.Silk(), y.Silk());
 
         await Assert.That(dot).IsEqualTo(expected);
-        await Assert.That(dot).IsEqualTo(Vec4<T>.Dot(x, y));
+        await Assert.That(dot).IsEqualTo(Vec2<T>.Dot(x, y));
     }
 
     [Test, DisplayName("len²")]
@@ -278,7 +278,7 @@ public abstract class Vec4Base<T>
         var expected = vec.Silk().LengthSquared;
 
         await Assert.That(length).IsEqualTo(expected);
-        await Assert.That(length).IsEqualTo(Vec4<T>.LengthSquared(vec));
+        await Assert.That(length).IsEqualTo(Vec2<T>.LengthSquared(vec));
     }
 
     [Test, DisplayName("dist²")]
@@ -286,9 +286,9 @@ public abstract class Vec4Base<T>
     {
         var distance = x.DistanceSquared(y);
 
-        var expected = Vector4D.DistanceSquared(x.Silk(), y.Silk());
+        var expected = Vector2D.DistanceSquared(x.Silk(), y.Silk());
 
         await Assert.That(distance).IsEqualTo(expected);
-        await Assert.That(distance).IsEqualTo(Vec4<T>.DistanceSquared(x, y));
+        await Assert.That(distance).IsEqualTo(Vec2<T>.DistanceSquared(x, y));
     }
 }
