@@ -28,80 +28,80 @@ public abstract class StressVec3<T, R> : BaseBench
             vecs[i] = vecs[i] + vecs[i + 1];
     }
 
-    [Benchmark]
-    public void Substract()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] - vecs[i + 1];
-    }
+    //[Benchmark]
+    //public void Substract()
+    //{
+    //    for (int i = 0; i < Count - 1; i++)
+    //        vecs[i] = vecs[i] - vecs[i + 1];
+    //}
 
-    [Benchmark]
-    public void Multiply()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] * vecs[i + 1];
-    }
+    //[Benchmark]
+    //public void Multiply()
+    //{
+    //    for (int i = 0; i < Count - 1; i++)
+    //        vecs[i] = vecs[i] * vecs[i + 1];
+    //}
 
-    [Benchmark]
-    public void Divide()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] / vecs[i + 1];
-    }
+    //[Benchmark]
+    //public void Divide()
+    //{
+    //    for (int i = 0; i < Count - 1; i++)
+    //        vecs[i] = vecs[i] / vecs[i + 1];
+    //}
 
-    [Benchmark]
-    public void Abs()
-    {
-        for (int i = 0; i < Count; i++)
-            vecs[i] = vecs[i].Abs();
-    }
+    //[Benchmark]
+    //public void Abs()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        vecs[i] = vecs[i].Abs();
+    //}
 
-    [Benchmark]
-    public void Sum()
-    {
-        for (int i = 0; i < Count; i++)
-            nums[i] = vecs[i].Sum();
-    }
+    //[Benchmark]
+    //public void Sum()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        nums[i] = vecs[i].Sum();
+    //}
 
-    [Benchmark]
-    public void Dot()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            nums[i] = vecs[i].Dot(vecs[i + 1]);
-    }
+    //[Benchmark]
+    //public void Dot()
+    //{
+    //    for (int i = 0; i < Count - 1; i++)
+    //        nums[i] = vecs[i].Dot(vecs[i + 1]);
+    //}
 
-    [Benchmark]
-    public void LengthSquared()
-    {
-        for (int i = 0; i < Count; i++)
-            nums[i] = vecs[i].LengthSquared();
-    }
+    //[Benchmark]
+    //public void LengthSquared()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        nums[i] = vecs[i].LengthSquared();
+    //}
 
-    [Benchmark]
-    public void DistanceSquared()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            nums[i] = vecs[i].DistanceSquared(vecs[i + 1]);
-    }
+    //[Benchmark]
+    //public void DistanceSquared()
+    //{
+    //    for (int i = 0; i < Count - 1; i++)
+    //        nums[i] = vecs[i].DistanceSquared(vecs[i + 1]);
+    //}
 
-    [Benchmark]
-    public void Length()
-    {
-        for (int i = 0; i < Count; i++)
-            nums[i] = vecs[i].Length<R>();
-    }
+    //[Benchmark]
+    //public void Length()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        nums[i] = vecs[i].Length<R>();
+    //}
 
-    [Benchmark]
-    public void Distance()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            nums[i] = vecs[i].Distance<R>(vecs[i + 1]);
-    }
+    //[Benchmark]
+    //public void Distance()
+    //{
+    //    for (int i = 0; i < Count - 1; i++)
+    //        nums[i] = vecs[i].Distance<R>(vecs[i + 1]);
+    //}
 
-    [Benchmark]
-    public void Normalize()
-    {
-        for (int i = 0; i < Count; i++)
-            vecs[i] = vecs[i].Normalize<R>();
-    }
+    //[Benchmark]
+    //public void Normalize()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        vecs[i] = vecs[i].Normalize<R>();
+    //}
 }
