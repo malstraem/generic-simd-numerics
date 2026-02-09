@@ -51,3 +51,28 @@ internal static class Vec4Extensions
         public static Vector4 Gen(float num) => new(num++, num++, num++, num++);
     }
 }
+
+internal static class Vec3Extensions
+{
+    extension<T>(Vec3<T> vec) where T : unmanaged, INumber<T>
+    {
+        public static Vec3<T> Gen(T num) => new(num++, num++, num++);
+
+        public Vector3D<T> Silk() => new(vec.X, vec.Y, vec.Z);
+    }
+
+    extension<T>(Vector3D<T> vec) where T : unmanaged, INumber<T>
+    {
+        public Vec3<T> Vec4() => new(vec.X, vec.Y, vec.Z);
+    }
+
+    extension(Vec3<float> vec)
+    {
+        public Vector3 System() => new(vec.X, vec.Y, vec.Z);
+    }
+
+    extension(Vector3 vec)
+    {
+        public static Vector3 Gen(float num) => new(num++, num++, num++);
+    }
+}
