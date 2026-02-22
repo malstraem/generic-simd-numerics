@@ -3,6 +3,9 @@ namespace System.Numerics.Tests.Matrix44;
 [InheritsTests]
 public class Mat44f32 : Mat44Base<float>;
 
+[InheritsTests]
+public class Mat44f64 : Mat44Base<double>;
+
 public abstract class Mat44Base<T> where T : unmanaged, INumber<T>
 {
     protected static readonly Mat44<T>

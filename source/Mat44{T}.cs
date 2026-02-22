@@ -30,11 +30,6 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
                                     && Y == Vec4<T>.UnitY
                                     && Z == Vec4<T>.UnitZ
                                     && W == Vec4<T>.UnitW;
-    public readonly T TransX => W.X;
-
-    public readonly T TransY => W.Y;
-
-    public readonly T TransZ => W.Z;
 
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Mat44<T> operator +(Mat44<T> left, Mat44<T> right)
@@ -47,15 +42,15 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
                        left.W + right.W);
         }
 
-        var l = Unsafe.BitCast<Mat44<T>, Vector512<T>>(left);
-        var r = Unsafe.BitCast<Mat44<T>, Vector512<T>>(right);
-
-        return Unsafe.BitCast<Vector512<T>, Mat44<T>>(l + r);
-
-        /*return new(Vec4<T>.From128(add.GetLower().GetLower()),
-                   Vec4<T>.From128(add.GetLower().GetUpper()),
-                   Vec4<T>.From128(add.GetUpper().GetLower()),
-                   Vec4<T>.From128(add.GetUpper().GetUpper()));*/
+        if (Unsafe.SizeOf<T>() == 4 && Vector512<T>.IsSupported)
+        {
+            return Unsafe.BitCast<Vector512<T>, Mat44<T>>(Unsafe.BitCast<Mat44<T>, Vector512<T>>(left)
+                                                        + Unsafe.BitCast<Mat44<T>, Vector512<T>>(right));
+        }
+        return new(left.X + right.X,
+                   left.Y + right.Y,
+                   left.Z + right.Z,
+                   left.W + right.W);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -76,7 +71,7 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
         mat.W * num
     );
 
-    [MethodImpl(AggressiveInlining)]
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Mat44<T> operator *(Mat44<T> left, Mat44<T> right)
     {
         if (typeof(T) != typeof(float))
@@ -86,45 +81,7 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
                        left.Z.Transform(right),
                        left.W.Transform(right));
         }
-
-        var result = Vector256.Create((right.X * left.X.X).As128F(), (right.X * left.Y.X).As128F());
-
-        result = Vector256.MultiplyAddEstimate(
-            Vector256.Create(right.Y.As128F(), right.Y.As128F()),
-            Vector256.Create(Vector128.Create((float)(object)left.X.Y), Vector128.Create((float)(object)left.Y.Y)),
-            result);
-
-        result = Vector256.MultiplyAddEstimate(
-            Vector256.Create(right.Z.As128F(), right.Z.As128F()),
-            Vector256.Create(Vector128.Create((float)(object)left.X.Z), Vector128.Create((float)(object)left.Y.Z)),
-            result);
-
-        result = Vector256.MultiplyAddEstimate(
-            Vector256.Create(right.W.As128F(), right.W.As128F()),
-            Vector256.Create(Vector128.Create((float)(object)left.X.W), Vector128.Create((float)(object)left.Y.W)),
-            result);
-
-        var result2 = Vector256.Create((right.X * left.Z.X).As128F(), (right.X * left.W.X).As128F());
-
-        result2 = Vector256.MultiplyAddEstimate(
-            Vector256.Create(right.Y.As128F(), right.Y.As128F()),
-            Vector256.Create(Vector128.Create((float)(object)left.Z.Y), Vector128.Create((float)(object)left.W.Y)),
-            result2);
-
-        result2 = Vector256.MultiplyAddEstimate(
-            Vector256.Create(right.Z.As128F(), right.Z.As128F()),
-            Vector256.Create(Vector128.Create((float)(object)left.Z.Z), Vector128.Create((float)(object)left.W.Z)),
-            result2);
-
-        result2 = Vector256.MultiplyAddEstimate(
-            Vector256.Create(right.W.As128F(), right.W.As128F()),
-            Vector256.Create(Vector128.Create((float)(object)left.Z.W), Vector128.Create((float)(object)left.W.W)),
-            result2);
-
-        return new Mat44<T>(Vec4<T>.From128(result.GetLower()),
-                            Vec4<T>.From128(result.GetUpper()),
-                            Vec4<T>.From128(result2.GetLower()),
-                            Vec4<T>.From128(result2.GetUpper()));
+        return MultiplyFloat(left, right);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -137,17 +94,6 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
                                                                   || left.Y != right.Y
                                                                   || left.Z != right.Z
                                                                   || left.W != right.W;
-
-    /* Wait for Vector4<T>.Lerp...
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Matrix44<T> Lerp(Matrix44<T> mat1, Matrix44<T> mat2, T amount) => new
-    (
-        Vector4<T>.Lerp(mat1.Row0, mat2.Row0, amount),
-        Vector4<T>.Lerp(mat1.Row1, mat2.Row1, amount),
-        Vector4<T>.Lerp(mat1.Row2, mat2.Row2, amount),
-        Vector4<T>.Lerp(mat1.Row3, mat2.Row3, amount)
-    );
-    */
 
     [Obsolete("TODO")]
     [MethodImpl(AggressiveInlining)]

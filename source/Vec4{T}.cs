@@ -1,6 +1,8 @@
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 
+using static System.Runtime.CompilerServices.Unsafe;
+
 namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
@@ -35,11 +37,11 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator +(Vec4<T> vec)
     {
-        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(+vec.As128());
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return From128(+vec.As128());
 
-        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(+vec.As256());
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return From256(+vec.As256());
 
         return new(+vec.X, +vec.Y, +vec.Z, +vec.W);
     }
@@ -47,11 +49,11 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator -(Vec4<T> vec)
     {
-        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(-vec.As128());
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return From128(-vec.As128());
 
-        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(-vec.As256());
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return From256(-vec.As256());
 
         return new(-vec.X, -vec.Y, -vec.Z, -vec.W);
     }
@@ -59,11 +61,11 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator +(Vec4<T> vec, T num)
     {
-        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(vec.As128() + Vector128.Create(num));
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return From128(vec.As128() + Vector128.Create(num));
 
-        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(vec.As256() + Vector256.Create(num));
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return From256(vec.As256() + Vector256.Create(num));
 
         return new(vec.X + num, vec.Y + num, vec.Z + num, vec.W + num);
     }
@@ -71,11 +73,11 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator -(Vec4<T> vec, T num)
     {
-        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(vec.As128() - Vector128.Create(num));
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return From128(vec.As128() - Vector128.Create(num));
 
-        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(vec.As256() - Vector256.Create(num));
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return From256(vec.As256() - Vector256.Create(num));
 
         return new(vec.X - num, vec.Y - num, vec.Z - num, vec.W - num);
     }
@@ -83,11 +85,11 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator *(Vec4<T> vec, T num)
     {
-        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(vec.As128() * num);
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return From128(vec.As128() * num);
 
-        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(vec.As256() * num);
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return From256(vec.As256() * num);
 
         return new(vec.X * num, vec.Y * num, vec.Z * num, vec.W * num);
     }
@@ -95,11 +97,11 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator /(Vec4<T> vec, T num)
     {
-        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(vec.As128() / num);
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return From128(vec.As128() / num);
 
-        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(vec.As256() / num);
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return From256(vec.As256() / num);
 
         return new(vec.X / num, vec.Y / num, vec.Z / num, vec.W / num);
     }
@@ -107,11 +109,11 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator +(Vec4<T> left, Vec4<T> right)
     {
-        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(left.As128() + right.As128());
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return From128(left.As128() + right.As128());
 
-        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(left.As256() + right.As256());
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return From256(left.As256() + right.As256());
 
         return new(left.X + right.X, left.Y + right.Y, left.Z + right.Z, left.W + right.W);
     }
@@ -119,11 +121,11 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator -(Vec4<T> left, Vec4<T> right)
     {
-        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(left.As128() - right.As128());
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return From128(left.As128() - right.As128());
 
-        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(left.As256() - right.As256());
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return From256(left.As256() - right.As256());
 
         return new(left.X - right.X, left.Y - right.Y, left.Z - right.Z, left.W - right.W);
     }
@@ -131,11 +133,11 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator *(Vec4<T> left, Vec4<T> right)
     {
-        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(left.As128() * right.As128());
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return From128(left.As128() * right.As128());
 
-        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(left.As256() * right.As256());
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return From256(left.As256() * right.As256());
 
         return new(left.X * right.X, left.Y * right.Y, left.Z * right.Z, left.W * right.W);
     }
@@ -143,11 +145,11 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator /(Vec4<T> left, Vec4<T> right)
     {
-        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(left.As128() / right.As128());
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return From128(left.As128() / right.As128());
 
-        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(left.As256() / right.As256());
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return From256(left.As256() / right.As256());
 
         return new(left.X / right.X, left.Y / right.Y, left.Z / right.Z, left.W / right.W);
     }
@@ -155,10 +157,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static bool operator ==(Vec4<T> left, Vec4<T> right)
     {
-        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return left.As128() == right.As128();
 
-        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return left.As256() == right.As256();
 
         return left.X == right.X
@@ -170,10 +172,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static bool operator !=(Vec4<T> left, Vec4<T> right)
     {
-        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return left.As128() != right.As128();
 
-        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return left.As256() != right.As256();
 
         return left.X != right.X
@@ -186,10 +188,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly T Sum()
     {
-        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return Vector128.Sum(As128());
 
-        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vector256.Sum(As256());
 
         return X + Y + Z + W;
@@ -198,11 +200,11 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Abs()
     {
-        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(Vector128.Abs(As128()));
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return From128(Vector128.Abs(As128()));
 
-        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(Vector256.Abs(As256()));
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return From256(Vector256.Abs(As256()));
 
         return new(T.Abs(X), T.Abs(Y), T.Abs(Z), T.Abs(W));
     }
@@ -210,11 +212,11 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Min(Vec4<T> vec)
     {
-        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(Vector128.Min(As128(), vec.As128()));
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return From128(Vector128.Min(As128(), vec.As128()));
 
-        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(Vector256.Min(As256(), vec.As256()));
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return From256(Vector256.Min(As256(), vec.As256()));
 
         return new(T.Min(X, vec.X),
                    T.Min(Y, vec.Y),
@@ -225,11 +227,11 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Max(Vec4<T> vec)
     {
-        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(Vector128.Max(As128(), vec.As128()));
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return From128(Vector128.Max(As128(), vec.As128()));
 
-        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(Vector256.Max(As256(), vec.As256()));
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return From256(Vector256.Max(As256(), vec.As256()));
 
         return new(T.Max(X, vec.X),
                    T.Max(Y, vec.Y),
@@ -240,11 +242,11 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Clamp(Vec4<T> min, Vec4<T> max)
     {
-        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(Vector128.Clamp(As128(), min.As128(), max.As128()));
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return From128(Vector128.Clamp(As128(), min.As128(), max.As128()));
 
-        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(Vector256.Clamp(As256(), min.As256(), max.As256()));
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return From256(Vector256.Clamp(As256(), min.As256(), max.As256()));
 
         return max.Min(Max(min));
     }
@@ -252,11 +254,11 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Lerp(Vec4<T> vec, T amount)
     {
-        // Lerp<T> may be needed
+        // Vector128/256/512 Lerp<T> needed
 
-        if (typeof(T) == typeof(float))
+        /*if (typeof(T) == typeof(float))
         {
-            return Vec4<T>.From128(Vector128.Lerp
+            return From128(Vector128.Lerp
             (
                 As128F(),
                 vec.As128F(),
@@ -265,22 +267,23 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         }
         if (typeof(T) == typeof(double))
         {
-            return Vec4<T>.From256(Vector256.Lerp
+            return From256(Vector256.Lerp
             (
                 As256D(),
                 vec.As256D(),
                 Vector256.Create((double)(object)amount)
             ));
-        }
-        return (this * (T.One - amount)) + (vec * amount);
+        }*/
+        return (this * (T.One - amount))
+             + (vec * amount);
     }
 
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Transform(Mat44<T> mat)
     {
-        // MultiplyAddEstimate<T> may be needed
+        // Vector128/256/512 MultiplyAdd<T> needed
 
-        if (typeof(T) == typeof(float))
+        /*if (typeof(T) == typeof(float))
         {
             var result = (mat.X * X).As128F();
 
@@ -288,7 +291,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
             result = Vector128.MultiplyAddEstimate(mat.Z.As128F(), Vector128.Create((float)(object)Z), result);
             result = Vector128.MultiplyAddEstimate(mat.W.As128F(), Vector128.Create((float)(object)W), result);
 
-            return Vec4<T>.From128(result);
+            return From128(result);
         }
         else if (typeof(T) == typeof(double))
         {
@@ -298,18 +301,15 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
             result = Vector256.MultiplyAddEstimate(mat.Z.As256D(), Vector256.Create((double)(object)Z), result);
             result = Vector256.MultiplyAddEstimate(mat.W.As256D(), Vector256.Create((double)(object)W), result);
 
-            return Vec4<T>.From256(result);
-        }
-        else
-        {
-            var result = mat.X * X;
+            return From256(result);
+        }*/
+        var result = mat.X * X;
 
-            result = (mat.Y * new Vec4<T>(Y)) + result;
-            result = (mat.Z * new Vec4<T>(Z)) + result;
-            result = (mat.W * new Vec4<T>(W)) + result;
+        result += mat.Y * Y;
+        result += mat.Z * Z;
+        result += mat.W * W;
 
-            return result;
-        }
+        return result;
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -362,7 +362,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> SquareRoot<R>() where R : IRootFunctions<R>
     {
-        //its look like Vector128/256 supports integers but how to expose?
+        //it looks like Vector128/256 supports integers but how to expose?
 
         /*if (typeof(T) == typeof(float))
             return Vec4<T>.From128(Vector128.Sqrt(AsVec128()));
@@ -370,11 +370,11 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (typeof(T) == typeof(double))
             return Vec4<T>.From256(Vector256.Sqrt(AsVec256()));*/
 
-        if (Unsafe.SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vec4<T>.From128(Vector128.Sqrt(As128()));
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return From128(Vector128.Sqrt(As128()));
 
-        if (Unsafe.SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vec4<T>.From256(Vector256.Sqrt(As256()));
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return From256(Vector256.Sqrt(As256()));
 
         return new(T.CreateTruncating(R.Sqrt(R.CreateSaturating(X))),
                    T.CreateTruncating(R.Sqrt(R.CreateSaturating(Y))),

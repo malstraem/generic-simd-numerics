@@ -19,6 +19,6 @@ Environment.SetEnvironmentVariable("DOTNET_JitDisasmOnlyOptimized", "1");*/
 //BenchmarkRunner.Run<StressMatrix4x4>();
 
 BenchmarkRunner.Run<StressMat44<float>>();
-BenchmarkRunner.Run<StressMatrix4X4<float>>();
+//BenchmarkRunner.Run<StressMatrix4X4<float>>();
 
 Console.ReadLine();
