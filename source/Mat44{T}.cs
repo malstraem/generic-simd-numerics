@@ -1,6 +1,3 @@
-using System.Runtime.InteropServices;
-using System.Runtime.Intrinsics;
-
 namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
@@ -18,14 +15,12 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
                                                     new(m41, m42, m43, m44))
     { }
 
-    public static Mat44<T> Identity { get; } = new
-    (
-        Vec4<T>.UnitX,
-        Vec4<T>.UnitY,
-        Vec4<T>.UnitZ,
-        Vec4<T>.UnitW
-    );
+    public static Mat44<T> Identity { get; } = new(Vec4<T>.UnitX,
+                                                   Vec4<T>.UnitY,
+                                                   Vec4<T>.UnitZ,
+                                                   Vec4<T>.UnitW);
 
+    [Obsolete("to vectorize")]
     public readonly bool IsIdentity => X == Vec4<T>.UnitX
                                     && Y == Vec4<T>.UnitY
                                     && Z == Vec4<T>.UnitZ
@@ -34,18 +29,10 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Mat44<T> operator +(Mat44<T> left, Mat44<T> right)
     {
-        if (typeof(T) != typeof(float))
+        if (SizeOf<T>() == 4 && Vector512<T>.IsSupported)
         {
-            return new(left.X + right.X,
-                       left.Y + right.Y,
-                       left.Z + right.Z,
-                       left.W + right.W);
-        }
-
-        if (Unsafe.SizeOf<T>() == 4 && Vector512<T>.IsSupported)
-        {
-            return Unsafe.BitCast<Vector512<T>, Mat44<T>>(Unsafe.BitCast<Mat44<T>, Vector512<T>>(left)
-                                                        + Unsafe.BitCast<Mat44<T>, Vector512<T>>(right));
+            return BitCast<Vector512<T>, Mat44<T>>(BitCast<Mat44<T>, Vector512<T>>(left)
+                                                 + BitCast<Mat44<T>, Vector512<T>>(right));
         }
         return new(left.X + right.X,
                    left.Y + right.Y,
@@ -53,6 +40,7 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
                    left.W + right.W);
     }
 
+    [Obsolete("to vectorize")]
     [MethodImpl(AggressiveInlining)]
     public static Mat44<T> operator -(Mat44<T> left, Mat44<T> right) => new
     (
@@ -62,6 +50,7 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
         left.W - right.W
     );
 
+    [Obsolete("to vectorize")]
     [MethodImpl(AggressiveInlining)]
     public static Mat44<T> operator *(Mat44<T> mat, T num) => new
     (
@@ -74,27 +63,27 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Mat44<T> operator *(Mat44<T> left, Mat44<T> right)
     {
-        if (typeof(T) != typeof(float))
-        {
-            return new(left.X.Transform(right),
-                       left.Y.Transform(right),
-                       left.Z.Transform(right),
-                       left.W.Transform(right));
-        }
-        return MultiplyFloat(left, right);
+        if (SizeOf<T>() == 4 && Vector512<T>.IsSupported)
+            return MultiplySize4(left, right);
+
+        return new(left.X.Transform(right),
+                   left.Y.Transform(right),
+                   left.Z.Transform(right),
+                   left.W.Transform(right));
     }
 
+    [Obsolete("to vectorize")]
     [MethodImpl(AggressiveInlining)]
     public static bool operator ==(Mat44<T> left, Mat44<T> right) => left.X == right.X
                                                                   && left.Y == right.Y
                                                                   && left.Z == right.Z
                                                                   && left.W == right.W;
+    [Obsolete("to vectorize")]
     [MethodImpl(AggressiveInlining)]
     public static bool operator !=(Mat44<T> left, Mat44<T> right) => left.X != right.X
                                                                   || left.Y != right.Y
                                                                   || left.Z != right.Z
                                                                   || left.W != right.W;
-
     [Obsolete("TODO")]
     [MethodImpl(AggressiveInlining)]
     public Mat44<T> Transpose() => new

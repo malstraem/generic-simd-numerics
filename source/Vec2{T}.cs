@@ -1,8 +1,3 @@
-using System.Runtime.InteropServices;
-using System.Runtime.Intrinsics;
-
-using static System.Runtime.CompilerServices.Unsafe;
-
 namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
@@ -309,45 +304,45 @@ public partial struct Vec2<T>(T x, T y) :
     public readonly T LengthSquared() => Dot(this);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly TRoot LengthSaturating<TRoot>()
-        where TRoot : IRootFunctions<TRoot>
-            => TRoot.Sqrt(TRoot.CreateSaturating(LengthSquared()));
+    public readonly R LengthSaturating<R>()
+        where R : IRootFunctions<R>
+            => R.Sqrt(R.CreateSaturating(LengthSquared()));
 
     [MethodImpl(AggressiveInlining)]
-    public readonly TRoot LengthTruncating<TRoot>()
-        where TRoot : IRootFunctions<TRoot>
-            => TRoot.Sqrt(TRoot.CreateTruncating(LengthSquared()));
+    public readonly R LengthTruncating<R>()
+        where R : IRootFunctions<R>
+            => R.Sqrt(R.CreateTruncating(LengthSquared()));
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T Length<TRoot>()
-        where TRoot : IRootFunctions<TRoot>
-            => T.CreateTruncating(LengthSaturating<TRoot>());
+    public readonly T Length<R>()
+        where R : IRootFunctions<R>
+            => T.CreateTruncating(LengthSaturating<R>());
 
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec2<T> vec) => (this - vec).LengthSquared();
 
     [MethodImpl(AggressiveInlining)]
-    public readonly TRoot DistanceSaturating<TRoot>(Vec2<T> vec)
-        where TRoot : IRootFunctions<TRoot>
-            => TRoot.Sqrt(TRoot.CreateSaturating(DistanceSquared(vec)));
+    public readonly R DistanceSaturating<R>(Vec2<T> vec)
+        where R : IRootFunctions<R>
+            => R.Sqrt(R.CreateSaturating(DistanceSquared(vec)));
 
     [MethodImpl(AggressiveInlining)]
-    public readonly TRoot DistanceTruncating<TRoot>(Vec2<T> vec)
-        where TRoot : IRootFunctions<TRoot>
-            => TRoot.CreateTruncating(DistanceSquared(vec));
+    public readonly R DistanceTruncating<R>(Vec2<T> vec)
+        where R : IRootFunctions<R>
+            => R.CreateTruncating(DistanceSquared(vec));
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T Distance<TRoot>(Vec2<T> vec)
-        where TRoot : IRootFunctions<TRoot>
-            => T.CreateTruncating(DistanceSaturating<TRoot>(vec));
+    public readonly T Distance<R>(Vec2<T> vec)
+        where R : IRootFunctions<R>
+            => T.CreateTruncating(DistanceSaturating<R>(vec));
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec2<T> Normalize<TRoot>()
-        where TRoot : IRootFunctions<TRoot>
-            => this / Distance<TRoot>(Zero);
+    public readonly Vec2<T> Normalize<R>()
+        where R : IRootFunctions<R>
+            => this / Distance<R>(Zero);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec2<T> SquareRoot<TRoot>() where TRoot : IRootFunctions<TRoot>
+    public readonly Vec2<T> SquareRoot<R>() where R : IRootFunctions<R>
     {
         //its look like Vector128/256 supports integers but how to expose?
 
@@ -365,8 +360,8 @@ public partial struct Vec2<T>(T x, T y) :
 
         return new
         (
-            T.CreateTruncating(TRoot.Sqrt(TRoot.CreateSaturating(X))),
-            T.CreateTruncating(TRoot.Sqrt(TRoot.CreateSaturating(Y)))
+            T.CreateTruncating(R.Sqrt(R.CreateSaturating(X))),
+            T.CreateTruncating(R.Sqrt(R.CreateSaturating(Y)))
         );
     }
 

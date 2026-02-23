@@ -1,12 +1,10 @@
-using System.Runtime.Intrinsics;
-
 namespace System.Numerics;
 
 public partial struct Mat44<T>
 {
     // better naming?
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    private static Mat44<T> MultiplyFloat(Mat44<T> left, Mat44<T> right)
+    private static Mat44<T> MultiplySize4(Mat44<T> left, Mat44<T> right)
     {
         var mul = Vector512.Create(
                     Vector256.Create((right.X * left.X.X).As128(), (right.X * left.Y.X).As128()),
@@ -28,6 +26,6 @@ public partial struct Mat44<T>
         mul += Vector512.Create(right.Z.As128()) * a2;
         mul += Vector512.Create(right.W.As128()) * a3;
 
-        return Unsafe.BitCast<Vector512<T>, Mat44<T>>(mul);
+        return BitCast<Vector512<T>, Mat44<T>>(mul);
     }
 }
