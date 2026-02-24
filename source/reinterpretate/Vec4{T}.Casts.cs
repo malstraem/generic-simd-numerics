@@ -3,6 +3,9 @@ namespace System.Numerics;
 public partial struct Vec4<T>
 {
     [MethodImpl(AggressiveInlining)]
+    internal readonly Vector64<T> As64() => BitCast<Vec4<T>, Vector64<T>>(this);
+
+    [MethodImpl(AggressiveInlining)]
     internal readonly Vector128<T> As128() => BitCast<Vec4<T>, Vector128<T>>(this);
 
     [MethodImpl(AggressiveInlining)]

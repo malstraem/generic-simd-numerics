@@ -71,52 +71,52 @@ public abstract class Vec3Root<T> : Vec3Root<T, T>
 }
 
 [InheritsTests]
-public abstract class Vec3Root<T, TRoot> : Vec3Base<T>
+public abstract class Vec3Root<T, R> : Vec3Base<T>
     where T : unmanaged, INumber<T>
-    where TRoot : IRootFunctions<TRoot>
+    where R : IRootFunctions<R>
 {
     [Test, DisplayName("len")]
     public async Task Length()
     {
         var expected = vec.Silk().Length;
 
-        var length = vec.Length<TRoot>();
+        var length = vec.Length<R>();
 
-        await Assert.That(length).IsEqualTo(Vec3<T>.Length<TRoot>(vec));
+        await Assert.That(length).IsEqualTo(Vec3<T>.Length<R>(vec));
         await Assert.That(length).IsEqualTo(expected);
     }
 
     [Test, DisplayName("dist")]
     public async Task Distance()
     {
-        var distance = x.Distance<TRoot>(y);
+        var distance = x.Distance<R>(y);
 
         var expected = Vector3D.Distance(x.Silk(), y.Silk());
 
         await Assert.That(distance).IsEqualTo(expected);
-        await Assert.That(distance).IsEqualTo(Vec3<T>.Distance<TRoot>(x, y));
+        await Assert.That(distance).IsEqualTo(Vec3<T>.Distance<R>(x, y));
     }
 
     [Test, DisplayName("norm")]
     public async Task Normalize()
     {
-        var normal = vec.Normalize<TRoot>();
+        var normal = vec.Normalize<R>();
 
         var expected = Vector3D.Normalize(vec.Silk()).Vec4();
 
         await Assert.That(normal).IsEqualTo(expected);
-        await Assert.That(normal).IsEqualTo(Vec3<T>.Normalize<TRoot>(vec));
+        await Assert.That(normal).IsEqualTo(Vec3<T>.Normalize<R>(vec));
     }
 
     [Test, DisplayName("sqrt")]
     public async Task SquareRoot()
     {
-        var root = vec.SquareRoot<TRoot>();
+        var root = vec.SquareRoot<R>();
 
         var expected = Vector3D.SquareRoot(vec.Silk()).Vec4();
 
         await Assert.That(root).IsEqualTo(expected);
-        await Assert.That(root).IsEqualTo(Vec3<T>.SquareRoot<TRoot>(vec));
+        await Assert.That(root).IsEqualTo(Vec3<T>.SquareRoot<R>(vec));
     }
 }
 

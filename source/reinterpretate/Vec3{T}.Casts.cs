@@ -5,6 +5,8 @@ public partial struct Vec3<T>
     [MethodImpl(AggressiveInlining)]
     internal readonly Vector128<T> As128()
     {
+        // something smarter?
+
         var vec = this;
         return Vector128.Create(As<Vec3<T>, Vector64<T>>(ref vec), Vector64.Create(vec.Z));
     }

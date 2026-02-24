@@ -297,8 +297,7 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public readonly T Dot(Vec2<T> vec) => (this * vec).Sum();
 
-    // not sure about the next one, but looks good?
-    // float and double cases are sealed with extension
+    // not sure about the next one, but looks good? float and double are sealed using extensions
 
     [MethodImpl(AggressiveInlining)]
     public readonly T LengthSquared() => Dot(this);

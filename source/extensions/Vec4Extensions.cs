@@ -2,7 +2,8 @@ namespace System.Numerics;
 
 public static class Vec4Extensions
 {
-    extension<T>(Vec4<T> vec) where T : unmanaged, INumber<T>, IRootFunctions<T>
+    extension<T>(Vec4<T> vec)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>
     {
         [MethodImpl(AggressiveInlining)]
         public T Length() => vec.Length<T>();
@@ -18,9 +19,10 @@ public static class Vec4Extensions
     }
 }
 
-public static class Vec4StaticExtensions // god that extensions behavior sucks
+public static class Vec4StaticExtensions
 {
-    extension<T>(Vec4<T>) where T : unmanaged, INumber<T>, IRootFunctions<T>
+    extension<T>(Vec4<T>)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>
     {
         [MethodImpl(AggressiveInlining)]
         public static T Length(Vec4<T> vec) => Vec4<T>.Length<T>(vec);
