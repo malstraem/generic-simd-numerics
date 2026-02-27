@@ -46,7 +46,7 @@ public abstract class StressVector3D<T> : BaseBench
             vecs[i] = vecs[i] / vecs[i + 1];
     }
 
-    [Benchmark]
+    /*[Benchmark]
     public void Abs()
     {
         for (int i = 0; i < Count; i++)
@@ -93,5 +93,5 @@ public abstract class StressVector3D<T> : BaseBench
     {
         for (int i = 0; i < Count; i++)
             vecs[i] = Vector3D.Normalize(vecs[i]);
-    }
+    }*/
 }
