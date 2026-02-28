@@ -4,11 +4,10 @@ using Silk.NET.Maths;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob, DisassemblyDiagnoser]
 public abstract class StressMatrix4X4<T> : BaseBench
     where T : unmanaged, INumber<T>
 {
-    private static readonly Matrix4X4<T>[] mats = new Matrix4X4<T>[Count];
+    private readonly Matrix4X4<T>[] mats = new Matrix4X4<T>[Count];
 
     public StressMatrix4X4()
     {

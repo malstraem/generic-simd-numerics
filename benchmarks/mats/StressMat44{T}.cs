@@ -2,11 +2,10 @@ using BenchmarkDotNet.Attributes;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob, DisassemblyDiagnoser]
 public abstract class StressMat44<T> : BaseBench
     where T : unmanaged, INumber<T>
 {
-    private static readonly Mat44<T>[] mats = new Mat44<T>[Count];
+    private readonly Mat44<T>[] mats = new Mat44<T>[Count];
 
     public StressMat44()
     {

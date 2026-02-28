@@ -26,6 +26,21 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
                                     && Z == Vec4<T>.UnitZ
                                     && W == Vec4<T>.UnitW;
 
+    [MethodImpl(AggressiveInlining)]
+    public static Mat44<T> operator *(Mat44<T> mat, T num)
+    {
+        if (SizeOf<T>() == 2 && Vector256<T>.IsSupported)
+            return From256(mat.As256() * Vector256.Create(num));
+
+        if (SizeOf<T>() == 4 && Vector512<T>.IsSupported)
+            return From512(mat.As512() * Vector512.Create(num));
+
+        return new(mat.X * num,
+                   mat.Y * num,
+                   mat.Z * num,
+                   mat.W * num);
+    }
+
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Mat44<T> operator +(Mat44<T> left, Mat44<T> right)
     {
@@ -54,21 +69,6 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
                    left.Y - right.Y,
                    left.Z - right.Z,
                    left.W - right.W);
-    }
-
-    [MethodImpl(AggressiveInlining)]
-    public static Mat44<T> operator *(Mat44<T> mat, T num)
-    {
-        if (SizeOf<T>() == 2 && Vector256<T>.IsSupported)
-            return From256(mat.As256() * Vector256.Create(num));
-
-        if (SizeOf<T>() == 4 && Vector512<T>.IsSupported)
-            return From512(mat.As512() * Vector512.Create(num));
-
-        return new(mat.X * num,
-                   mat.Y * num,
-                   mat.Z * num,
-                   mat.W * num);
     }
 
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]

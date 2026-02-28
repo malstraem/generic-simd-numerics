@@ -2,10 +2,9 @@ using BenchmarkDotNet.Attributes;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob, DisassemblyDiagnoser]
 public class StressMatrix4x4 : BaseBench
 {
-    private static readonly Matrix4x4[] mats = new Matrix4x4[Count];
+    private readonly Matrix4x4[] mats = new Matrix4x4[Count];
 
     public StressMatrix4x4()
     {

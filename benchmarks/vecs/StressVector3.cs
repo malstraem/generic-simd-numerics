@@ -2,7 +2,6 @@ using BenchmarkDotNet.Attributes;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob, DisassemblyDiagnoser]
 public class StressVector3 : BaseBench
 {
     private static readonly float[] nums = new float[Count];
