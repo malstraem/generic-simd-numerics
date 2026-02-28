@@ -1,4 +1,6 @@
-# .NET 10.0.3 (10.0.326.7603), X64 RyuJIT x86-64-v4
+# .NET (10.0.326.7603), X64 RyuJIT x86-64-v4, Windows 11 (10.0.26200.7922)
+
+## AMD Ryzen 9 7900X 4.70GHz
 
 ```mermaid
 xychart
@@ -7,6 +9,11 @@ xychart
     y-axis "time (μs)" 0 --> 5000
     bar [300.2, 653.1, 4625.2]
 ```
+
+## System.Matrix4x4
+
+<details>
+<summary>asm</summary>
 
 ```assembly
 ; System.Numerics.Bench.StressMatrix4x4.Multiply()
@@ -98,6 +105,12 @@ M00_L01:
        int       3
 ; Total bytes of code 420
 ```
+</details>
+
+## draft Mat44
+
+<details>
+<summary>asm</summary>
 
 ```assembly
 ; System.Numerics.Bench.StressMat44`1[[System.Single, System.Private.CoreLib]].Multiply()
@@ -226,6 +239,12 @@ M00_L01:
        int       3
 ; Total bytes of code 729
 ```
+</details>
+
+## Silk.NET.Matrix4X4
+
+<details>
+<summary>asm</summary>
 
 ```assembly
 ; System.Numerics.Bench.StressMatrix4X4`1[[System.Single, System.Private.CoreLib]].Multiply()
@@ -537,3 +556,4 @@ M00_L01:
        int       3
 ; Total bytes of code 1861
 ```
+</details>
