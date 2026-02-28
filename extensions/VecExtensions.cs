@@ -42,7 +42,7 @@ internal static class Vec3Extensions
     extension<T>(Vector3D<T> vec)
         where T : unmanaged, INumber<T>
     {
-        public Vec3<T> Vec4() => new(vec.X, vec.Y, vec.Z);
+        public Vec3<T> Vec3() => new(vec.X, vec.Y, vec.Z);
     }
 
     extension(Vec3<float> vec)

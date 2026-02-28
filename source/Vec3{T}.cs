@@ -9,11 +9,9 @@ public partial struct Vec3<T>(T x, T y, T z) :
 {
     public T X = x, Y = y, Z = z;
 
-    public static Vec3<T> Zero => new(T.Zero, T.Zero, T.Zero);
-
     public static Vec3<T> One => new(T.One, T.One, T.One);
 
-    public static Vec3<T> AdditiveIdentity => One;
+    public static Vec3<T> Zero => new(T.Zero, T.Zero, T.Zero);
 
     public static Vec3<T> MultiplicativeIdentity => Zero;
 
@@ -22,6 +20,10 @@ public partial struct Vec3<T>(T x, T y, T z) :
     public static Vec3<T> UnitY { get; } = new(T.Zero, T.One, T.Zero);
 
     public static Vec3<T> UnitZ { get; } = new(T.Zero, T.Zero, T.One);
+
+    static Vec3<T> IAdditiveIdentity<Vec3<T>, Vec3<T>>.AdditiveIdentity => Zero;
+
+    static Vec3<T> IMultiplicativeIdentity<Vec3<T>, Vec3<T>>.MultiplicativeIdentity => One;
 
     #region Operators
     [MethodImpl(AggressiveInlining)]
@@ -228,68 +230,14 @@ public partial struct Vec3<T>(T x, T y, T z) :
         return max.Min(Max(min));
     }
 
-    //[MethodImpl(AggressiveInlining)]
-    //public readonly Vec3<T> Lerp(Vec3<T> vec, T amount)
-    //{
-    //    // Lerp<T> may be needed
+    [MethodImpl(AggressiveInlining)]
+    public readonly Vec3<T> Lerp(Vec3<T> vec, T amount)
+    {
+        // Lerp<T> may be needed
 
-    //    if (typeof(T) == typeof(float))
-    //    {
-    //        return Vec3<T>.From128(Vector128.Lerp
-    //        (
-    //            As128F(),
-    //            vec.As128F(),
-    //            Vector128.Create((float)(object)amount)
-    //        ));
-    //    }
-    //    if (typeof(T) == typeof(double))
-    //    {
-    //        return Vec3<T>.From256(Vector256.Lerp
-    //        (
-    //            As256D(),
-    //            vec.As256D(),
-    //            Vector256.Create((double)(object)amount)
-    //        ));
-    //    }
-    //    return (this * (T.One - amount)) + (vec * amount);
-    //}
-
-    //[MethodImpl(AggressiveInlining)]
-    //public readonly Vec3<T> Transform(Mat44<T> mat)
-    //{
-    //    // MultiplyAddEstimate<T> may be needed
-
-    //    if (typeof(T) == typeof(float))
-    //    {
-    //        var result = (mat.X * X).As128F();
-
-    //        result = Vector128.MultiplyAddEstimate(mat.Y.As128F(), Vector128.Create((float)(object)Y), result);
-    //        result = Vector128.MultiplyAddEstimate(mat.Z.As128F(), Vector128.Create((float)(object)Z), result);
-    //        result = Vector128.MultiplyAddEstimate(mat.W.As128F(), Vector128.Create((float)(object)W), result);
-
-    //        return Vec4<T>.From128(result);
-    //    }
-    //    else if (typeof(T) == typeof(double))
-    //    {
-    //        var result = (mat.X * X).As256D();
-
-    //        result = Vector256.MultiplyAddEstimate(mat.Y.As256D(), Vector256.Create((double)(object)Y), result);
-    //        result = Vector256.MultiplyAddEstimate(mat.Z.As256D(), Vector256.Create((double)(object)Z), result);
-    //        result = Vector256.MultiplyAddEstimate(mat.W.As256D(), Vector256.Create((double)(object)W), result);
-
-    //        return Vec4<T>.From256(result);
-    //    }
-    //    else
-    //    {
-    //        var result = mat.X * X;
-
-    //        result = (mat.Y * new Vec4<T>(Y)) + result;
-    //        result = (mat.Z * new Vec4<T>(Z)) + result;
-    //        result = (mat.W * new Vec4<T>(W)) + result;
-
-    //        return result;
-    //    }
-    //}
+        return (this * (T.One - amount))
+             + (vec * amount);
+    }
 
     [MethodImpl(AggressiveInlining)]
     public readonly T Dot(Vec3<T> vec) => (this * vec).Sum();

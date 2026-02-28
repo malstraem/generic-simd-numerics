@@ -2,6 +2,8 @@ namespace System.Numerics;
 
 public partial struct Mat44<T>
 {
+    // called in right cases
+
     [MethodImpl(AggressiveInlining)]
     private readonly Vector256<T> As256() => BitCast<Mat44<T>, Vector256<T>>(this);
 

@@ -2,6 +2,8 @@ namespace System.Numerics;
 
 public partial struct Vec2<T>
 {
+    // called in right cases
+
     [MethodImpl(AggressiveInlining)]
     private readonly Vector64<T> As64() => BitCast<Vec2<T>, Vector64<T>>(this);
 

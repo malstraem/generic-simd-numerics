@@ -16,10 +16,6 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
 
     public static Vec4<T> One { get; } = new(T.One, T.One, T.One, T.One);
 
-    static Vec4<T> IAdditiveIdentity<Vec4<T>, Vec4<T>>.AdditiveIdentity => Zero;
-
-    static Vec4<T> IMultiplicativeIdentity<Vec4<T>, Vec4<T>>.MultiplicativeIdentity => One;
-
     public static Vec4<T> UnitX { get; } = new(T.One, T.Zero, T.Zero, T.Zero);
 
     public static Vec4<T> UnitY { get; } = new(T.Zero, T.One, T.Zero, T.Zero);
@@ -27,6 +23,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public static Vec4<T> UnitZ { get; } = new(T.Zero, T.Zero, T.One, T.Zero);
 
     public static Vec4<T> UnitW { get; } = new(T.Zero, T.Zero, T.Zero, T.One);
+
+    static Vec4<T> IAdditiveIdentity<Vec4<T>, Vec4<T>>.AdditiveIdentity => Zero;
+
+    static Vec4<T> IMultiplicativeIdentity<Vec4<T>, Vec4<T>>.MultiplicativeIdentity => One;
 
     #region Operators
     [MethodImpl(AggressiveInlining)]
@@ -251,24 +251,6 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     {
         // Vector128/256/512 Lerp<T> needed
 
-        /*if (typeof(T) == typeof(float))
-        {
-            return From128(Vector128.Lerp
-            (
-                As128F(),
-                vec.As128F(),
-                Vector128.Create((float)(object)amount)
-            ));
-        }
-        if (typeof(T) == typeof(double))
-        {
-            return From256(Vector256.Lerp
-            (
-                As256D(),
-                vec.As256D(),
-                Vector256.Create((double)(object)amount)
-            ));
-        }*/
         return (this * (T.One - amount))
              + (vec * amount);
     }
@@ -298,13 +280,13 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
 
             return From256(result);
         }*/
-        var result = mat.X * X;
+        var vec = mat.X * X;
 
-        result += mat.Y * Y;
-        result += mat.Z * Z;
-        result += mat.W * W;
+        vec += mat.Y * Y;
+        vec += mat.Z * Z;
+        vec += mat.W * W;
 
-        return result;
+        return vec;
     }
 
     [MethodImpl(AggressiveInlining)]

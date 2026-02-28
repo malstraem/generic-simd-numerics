@@ -66,9 +66,6 @@ public partial struct Vec3<T>
     [MethodImpl(AggressiveInlining)]
     public static Vec3<T> Clamp(Vec3<T> vec, Vec3<T> min, Vec3<T> max) => vec.Clamp(min, max);
 
-    //[MethodImpl(AggressiveInlining)]
-    //public static Vec3<T> Lerp(Vec3<T> left, Vec3<T> right, T amount) => left.Lerp(right, amount);
-
-    //[MethodImpl(AggressiveInlining)]
-    //public static Vec3<T> Transform(Vec3<T> vec, Mat44<T> mat) => vec.Transform(mat);
+    [MethodImpl(AggressiveInlining)]
+    public static Vec3<T> Lerp(Vec3<T> left, Vec3<T> right, T amount) => left.Lerp(right, amount);
 }

@@ -2,8 +2,7 @@ namespace System.Numerics;
 
 public partial struct Mat44<T>
 {
-    // something smarter?
-    // Shuffle<T> & Permute<T> for transposed multiply?
+    // something smarter? Shuffle<T> & Permute<T> for transposed multiply?
 
     // this is totally pessimistic of JIT, 4 transforms are now better
     [MethodImpl(AggressiveInlining)]
@@ -32,6 +31,7 @@ public partial struct Mat44<T>
         return From256(mul);
     }
 
+    // not optimal asm, but much better than Silk.NET
     [MethodImpl(AggressiveInlining)]
     private static Mat44<T> MultiplySize4(Mat44<T> left, Mat44<T> right)
     {
