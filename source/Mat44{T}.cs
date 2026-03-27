@@ -1,3 +1,5 @@
+using System.Runtime.Intrinsics.X86;
+
 namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
@@ -74,6 +76,9 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Mat44<T> operator *(Mat44<T> left, Mat44<T> right)
     {
+        if (typeof(T) == typeof(double) & Avx.IsSupported & Fma.IsSupported)
+            return Multiply_F64_AVX_FMA_2(left, right);
+
         if (SizeOf<T>() == 2 && Vector256<T>.IsSupported)
             return MultiplySize2(left, right);
 
@@ -125,6 +130,8 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
         X.Z, Y.Z, Z.Z, W.Z,
         X.W, Y.W, Z.W, W.W
     );
+
+    public override readonly string ToString() => $"{X} \n{Y} \n{Z} \n{W}";
 
     public override readonly bool Equals(object? obj) => (obj is Mat44<T> mat) && mat == this;
 

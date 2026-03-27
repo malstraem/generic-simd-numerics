@@ -1,10 +1,10 @@
 namespace System.Numerics;
 
+// something smarter? Shuffle<T>? Permute<T>?
+
 public partial struct Mat44<T>
 {
-    // something smarter? Shuffle<T> & Permute<T> for transposed multiply?
-
-    // this is totally pessimistic of JIT, 4 transforms are now better
+    // this is totally pessimistic of JIT, 4 transforms are better now
     [MethodImpl(AggressiveInlining)]
     private static Mat44<T> MultiplySize2(Mat44<T> left, Mat44<T> right)
     {

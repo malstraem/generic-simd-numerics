@@ -14,6 +14,9 @@ public partial struct Vec4<T>
     internal readonly Vector256<T> As256() => BitCast<Vec4<T>, Vector256<T>>(this);
 
     [MethodImpl(AggressiveInlining)]
+    internal readonly Vector256<double> As256D() => BitCast<Vec4<T>, Vector256<double>>(this);
+
+    [MethodImpl(AggressiveInlining)]
     internal static Vec4<T> From128(Vector128<T> vec) => BitCast<Vector128<T>, Vec4<T>>(vec);
 
     [MethodImpl(AggressiveInlining)]

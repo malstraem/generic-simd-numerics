@@ -13,14 +13,14 @@ public abstract class StressMat44<T> : BaseBench
             mats[i] = Mat44<T>.Gen(T.CreateTruncating(Random.Shared.Next(10, 100)));
     }
 
-    [Benchmark]
+    //[Benchmark]
     public void Add()
     {
         for (int i = 0; i < Count - 1; i++)
             mats[i] = mats[i] + mats[i + 1];
     }
 
-    [Benchmark]
+    //[Benchmark]
     public void Substract()
     {
         for (int i = 0; i < Count - 1; i++)

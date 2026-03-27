@@ -35,7 +35,7 @@ public abstract class Mat44Base<T>
 {
     protected static readonly Mat44<T>
        x = Mat44<T>.Gen(T.One),
-       y = Mat44<T>.Gen(T.One + T.One);
+       y = Mat44<T>.Gen(T.One + T.One + T.One);
 
     [Test, DisplayName("x + y")]
     public async Task Add()
