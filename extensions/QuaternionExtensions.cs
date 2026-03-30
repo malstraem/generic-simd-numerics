@@ -19,27 +19,11 @@ public static class QuatExtensions
         );
     }
 
-    extension<T>(Quaternion<T> mat) where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+    extension<T>(Quaternion<T> value) where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
     {
         public Quat<T> Quat() => new
         (
-            mat.X, mat.Y, mat.Z, mat.W
-        );
-    }
-
-    extension(Quat<float> mat)
-    {
-        public Quaternion System() => new
-        (
-            mat.X, mat.Y, mat.Z, mat.W
-        );
-    }
-
-    extension(Quaternion mat)
-    {
-        public static Quaternion Gen(float num) => new
-        (
-            num++, num++, num++, num / num
+            value.X, value.Y, value.Z, value.W
         );
     }
 }
