@@ -1,6 +1,6 @@
-using System.Numerics;
+using System.Threading.Tasks.Dataflow;
 
-namespace GenericNumerics;
+namespace System.Numerics;
 
 public partial struct Quat<T>
     where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
@@ -23,7 +23,7 @@ public partial struct Quat<T>
 
     internal Quat(Vec4<T> vec) => this.vec = vec;
 
-    public static Quat<T> Identity => new(Vec4<T>.Zero);
+    public static Quat<T> Identity => new(Vec3<T>.Zero, T.One);
 
     public readonly bool IsIdentity => this == Identity;
 
@@ -43,6 +43,31 @@ public partial struct Quat<T>
 
     public static Quat<T> operator *(Quat<T> left, Quat<T> right)
     {
+        if (typeof(float) == typeof(T))
+        {
+            var rVec = right.vec.As128F();
+
+            var result = rVec * float.CreateTruncating(left.W);
+            result = Vector128.MultiplyAddEstimate(Vector128.Shuffle(rVec, Vector128.Create(3, 2, 1, 0)) * float.CreateTruncating(left.X), Vector128.Create(1, -1, 1, -1f), result);
+            result = Vector128.MultiplyAddEstimate(Vector128.Shuffle(rVec, Vector128.Create(2, 3, 0, 1)) * float.CreateTruncating(left.Y), Vector128.Create(1, 1, -1, -1f), result);
+            result = Vector128.MultiplyAddEstimate(Vector128.Shuffle(rVec, Vector128.Create(1, 0, 3, 2)) * float.CreateTruncating(left.Z), Vector128.Create(-1, 1, 1, -1f), result);
+
+            return BitCast<Vector128<float>, Quat<T>>(result);
+        }
+
+        // similar to fallback
+        //if (typeof(double) == typeof(T))
+        //{
+        //    var rVec = right.vec.As256D();
+
+        //    var result = rVec * double.CreateTruncating(left.W);
+        //    result = Vector256.MultiplyAddEstimate(Vector256.Shuffle(rVec, Vector256.Create(3, 2, 1, 0)) * double.CreateTruncating(left.X), Vector256.Create(1, -1, 1, -1f), result);
+        //    result = Vector256.MultiplyAddEstimate(Vector256.Shuffle(rVec, Vector256.Create(2, 3, 0, 1)) * double.CreateTruncating(left.Y), Vector256.Create(1, 1, -1, -1f), result);
+        //    result = Vector256.MultiplyAddEstimate(Vector256.Shuffle(rVec, Vector256.Create(1, 0, 3, 2)) * double.CreateTruncating(left.Z), Vector256.Create(-1, 1, 1, -1f), result);
+
+        //    return BitCast<Vector256<double>, Quat<T>>(result);
+        //}
+
         return new(
             left.W * right.X + left.X * right.W + left.Y * right.Z - left.Z * right.Y,
             left.W * right.Y - left.X * right.Z + left.Y * right.W + left.Z * right.X,

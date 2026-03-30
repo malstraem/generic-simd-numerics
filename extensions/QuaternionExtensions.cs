@@ -26,4 +26,20 @@ public static class QuatExtensions
             value.X, value.Y, value.Z, value.W
         );
     }
+
+    extension(Quat<float> value)
+    {
+        public Quaternion System() => new
+        (
+            value.X, value.Y, value.Z, value.W
+        );
+    }
+
+    extension(Quaternion value)
+    {
+        public static Quaternion Gen(float num) => new
+        (
+            num++, num++, num++, num / num
+        );
+    }
 }

@@ -1,6 +1,6 @@
 using BenchmarkDotNet.Running;
 
-using System.Numerics.Bench;
+using GenericNumerics.Bench;
 
 //BenchmarkRunner.Run<StressVec2<float>>();
 //BenchmarkRunner.Run<StressVec2<byte, float>>();
@@ -29,12 +29,21 @@ BenchmarkRunner.Run<StressVector3D<float>>();*/
 //BenchmarkRunner.Run<StressMat44<int>>();
 
 //BenchmarkRunner.Run<StressMat44<float>>();
-BenchmarkRunner.Run<StressMat44<double>>();
+//BenchmarkRunner.Run<StressMat44<double>>();
 
 //BenchmarkRunner.Run<StressMatrix4X4<short>>();
 //BenchmarkRunner.Run<StressMatrix4X4<int>>();
 
 //BenchmarkRunner.Run<StressMatrix4X4<float>>();
 //BenchmarkRunner.Run<StressMatrix4X4<double>>();
+
+BenchmarkRunner.Run<StressQuat<float>>();
+BenchmarkRunner.Run<StressQuat<double>>();
+
+BenchmarkRunner.Run<StressQuaternion>();
+
+BenchmarkRunner.Run<StressSilkQuat<float>>();
+BenchmarkRunner.Run<StressSilkQuat<double>>();
+
 
 Console.ReadLine();
