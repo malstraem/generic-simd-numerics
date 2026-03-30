@@ -1,5 +1,3 @@
-using System.Runtime.Intrinsics.X86;
-
 namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
@@ -76,14 +74,14 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Mat44<T> operator *(Mat44<T> left, Mat44<T> right)
     {
-        if (typeof(T) == typeof(double) & Avx.IsSupported & Fma.IsSupported)
-            return Multiply_F64_AVX_FMA_2(left, right);
+        /*if (SizeOf<T>() == 2 && Vector128<T>.IsSupported)
+            return MultiplySize2(left, right);*/
 
-        if (SizeOf<T>() == 2 && Vector256<T>.IsSupported)
-            return MultiplySize2(left, right);
-
-        if (SizeOf<T>() == 4 && Vector512<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return MultiplySize4(left, right);
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return MultiplySize8(left, right);
 
         return new(left.X.Transform(right),
                    left.Y.Transform(right),

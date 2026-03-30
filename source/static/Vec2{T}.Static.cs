@@ -12,9 +12,6 @@ public partial struct Vec2<T>
     public static Vec2<T> Multiply(Vec2<T> vec, T num) => vec * num;
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> Multiply(T value, Vec2<T> right) => right * value;
-
-    [MethodImpl(AggressiveInlining)]
     public static Vec2<T> Divide(Vec2<T> vec, T num) => vec / num;
 
     [MethodImpl(AggressiveInlining)]
@@ -36,23 +33,23 @@ public partial struct Vec2<T>
     public static T DistanceSquared(Vec2<T> left, Vec2<T> right) => left.DistanceSquared(right);
 
     [MethodImpl(AggressiveInlining)]
-    public static T Length<TRoot>(Vec2<T> vec)
-        where TRoot : IRootFunctions<TRoot>
-            => vec.Length<TRoot>();
+    public static T Length<R>(Vec2<T> vec)
+        where R : IRootFunctions<R>
+            => vec.Length<R>();
 
     [MethodImpl(AggressiveInlining)]
-    public static T Distance<TRoot>(Vec2<T> left, Vec2<T> right)
-        where TRoot : IRootFunctions<TRoot>
-            => left.Distance<TRoot>(right);
+    public static T Distance<R>(Vec2<T> left, Vec2<T> right)
+        where R : IRootFunctions<R>
+            => left.Distance<R>(right);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> Normalize<TRoot>(Vec2<T> vec)
-        where TRoot : IRootFunctions<TRoot>
-            => vec.Normalize<TRoot>();
+    public static Vec2<T> Normalize<R>(Vec2<T> vec)
+        where R : IRootFunctions<R>
+            => vec.Normalize<R>();
 
-    public static Vec2<T> SquareRoot<TRoot>(Vec2<T> vec)
-        where TRoot : IRootFunctions<TRoot>
-            => vec.SquareRoot<TRoot>();
+    public static Vec2<T> SquareRoot<R>(Vec2<T> vec)
+        where R : IRootFunctions<R>
+            => vec.SquareRoot<R>();
 
     [MethodImpl(AggressiveInlining)]
     public static Vec2<T> Abs(Vec2<T> vec) => vec.Abs();
