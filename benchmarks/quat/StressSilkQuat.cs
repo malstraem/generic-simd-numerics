@@ -1,11 +1,8 @@
-using System.Numerics;
-using System.Numerics.Bench;
-
 using BenchmarkDotNet.Attributes;
 
 using Silk.NET.Maths;
 
-namespace GenericNumerics.Bench;
+namespace System.Numerics.Bench;
 
 public abstract class StressSilkQuat<T> : BaseBench
     where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>

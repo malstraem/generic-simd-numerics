@@ -12,7 +12,7 @@ public abstract class StressMatrix4X4<T> : BaseBench
     public StressMatrix4X4()
     {
         for (int i = 0; i < mats.Length; i++)
-            mats[i] = Mat44<T>.Gen(T.CreateTruncating(Random.Shared.Next(10, 100))).Silk();
+            mats[i] = Mat44<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10))).Silk();
     }
 
     //[Benchmark]

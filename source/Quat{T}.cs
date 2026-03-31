@@ -66,7 +66,7 @@ public partial struct Quat<T>
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> operator *(Quat<T> left, Quat<T> right)
     {
-        if (typeof(float) == typeof(T))
+        if (typeof(T) == typeof(float))
         {
             var rVec = right.vec.As128F();
 
@@ -80,7 +80,8 @@ public partial struct Quat<T>
             return BitCast<Vector128<float>, Quat<T>>(result);
         }
 
-        if (typeof(double) == typeof(T))
+        // similar to default implementation
+        /*if (typeof(T) == typeof(double))
         {
             var rVec = right.vec.As256D();
 
@@ -92,7 +93,7 @@ public partial struct Quat<T>
             result = Vector256.MultiplyAddEstimate(Vector256.Shuffle(rVec * Vector256.Create(1, -1, -1, 1f), Vector256.Create(1, 0, 3, 2)), zz, result);
 
             return BitCast<Vector256<double>, Quat<T>>(result);
-        }
+        }*/
 
         return new(
             left.W * right.X + left.X * right.W + left.Y * right.Z - left.Z * right.Y,

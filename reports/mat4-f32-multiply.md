@@ -5,9 +5,9 @@
 ```mermaid
 xychart
     title "float x * y 100k"
-    x-axis [System.Numercs.Matrix4x4, "Mat44", Silk.NET.Matrix4X4]
+    x-axis [System.Numercs.Matrix4x4, Mat44, Silk.NET.Matrix4X4]
     y-axis "time (μs)" 0 --> 5000
-    bar [300.2, 653.1, 4625.2]
+    bar [287.5, 298.0, 4551]
 ```
 
 ## System.Matrix4x4
@@ -107,141 +107,109 @@ M00_L01:
 ```
 </details>
 
-## draft Mat44
+## draft Mat44&lt;float&gt;
 
 <details>
 <summary>asm</summary>
 
 ```assembly
 ; System.Numerics.Bench.StressMat44`1[[System.Single, System.Private.CoreLib]].Multiply()
-       sub       rsp,118
-       vmovaps   [rsp+100],xmm6
-       vmovaps   [rsp+0F0],xmm7
-       vmovaps   [rsp+0E0],xmm8
-       vmovaps   [rsp+0D0],xmm9
-       vmovaps   [rsp+0C0],xmm10
-       vxorps    xmm0,xmm0,xmm0
-       vmovaps   xmm1,xmm0
-       vmovaps   xmm2,xmm0
-       vmovaps   xmm3,xmm0
-       vmovaps   xmm4,xmm0
-       vmovaps   xmm5,xmm0
-       vmovaps   xmm16,xmm0
-       mov       rax,[rcx+8]
-       xor       ecx,ecx
+       sub       rsp,28
+       xor       eax,eax
 M00_L00:
-       mov       rdx,rax
-       mov       r8d,[rdx+8]
-       cmp       ecx,r8d
+       mov       rdx,[rcx+8]
+       mov       r8,rdx
+       mov       r10d,[r8+8]
+       cmp       eax,r10d
        jae       near ptr M00_L01
-       mov       r10,rcx
+       mov       r9,rax
+       shl       r9,6
+       lea       r8,[r8+r9+10]
+       mov       r9,r8
+       vmovups   xmm0,[r9]
+       vmovups   xmm1,[r9+10]
+       vmovups   xmm2,[r9+20]
+       vmovups   xmm3,[r9+30]
+       inc       eax
+       cmp       eax,r10d
+       jae       near ptr M00_L01
+       mov       r10d,eax
        shl       r10,6
        lea       rdx,[rdx+r10+10]
-       mov       r10,rdx
-       vmovss    xmm17,dword ptr [r10]
-       vmovss    xmm18,dword ptr [r10+4]
-       vmovss    xmm19,dword ptr [r10+8]
-       vmovss    xmm20,dword ptr [r10+0C]
-       vmovss    xmm21,dword ptr [r10+10]
-       vmovss    xmm22,dword ptr [r10+14]
-       vmovss    xmm23,dword ptr [r10+18]
-       vmovss    xmm24,dword ptr [r10+1C]
-       vmovss    xmm25,dword ptr [r10+20]
-       vmovss    xmm26,dword ptr [r10+24]
-       vmovss    xmm27,dword ptr [r10+28]
-       vmovss    xmm28,dword ptr [r10+2C]
-       vmovss    xmm29,dword ptr [r10+30]
-       vmovss    xmm30,dword ptr [r10+34]
-       vmovss    xmm31,dword ptr [r10+38]
-       vmovss    xmm6,dword ptr [r10+3C]
-       mov       r10,rax
-       inc       ecx
-       cmp       ecx,r8d
-       jae       near ptr M00_L01
-       mov       r8d,ecx
-       shl       r8,6
-       lea       r8,[r10+r8+10]
-       vmovups   xmm7,[r8]
-       vmovups   xmm8,[r8+10]
-       vmovups   xmm9,[r8+20]
-       vmovups   xmm10,[r8+30]
-       vbroadcastss xmm17,xmm17
-       vmulps    xmm17,xmm17,xmm7
-       vbroadcastss xmm21,xmm21
-       vmulps    xmm21,xmm21,xmm7
-       vinsertf32x4 ymm17,ymm17,xmm21,1
-       vbroadcastss xmm21,xmm25
-       vmulps    xmm21,xmm21,xmm7
-       vbroadcastss xmm25,xmm29
-       vmulps    xmm25,xmm25,xmm7
-       vinsertf32x4 ymm21,ymm21,xmm25,1
-       vinsertf32x8 zmm0,zmm0,ymm17,0
-       vinsertf32x8 zmm0,zmm0,ymm21,1
-       vbroadcastss xmm17,xmm18
-       vbroadcastss xmm18,xmm22
-       vinsertf32x4 ymm17,ymm17,xmm18,1
-       vbroadcastss xmm18,xmm26
-       vbroadcastss xmm21,xmm30
-       vinsertf32x4 ymm18,ymm18,xmm21,1
-       vinsertf32x8 zmm1,zmm1,ymm17,0
-       vinsertf32x8 zmm1,zmm1,ymm18,1
-       vbroadcastss xmm17,xmm19
-       vbroadcastss xmm18,xmm23
-       vinsertf32x4 ymm17,ymm17,xmm18,1
-       vbroadcastss xmm18,xmm27
-       vbroadcastss xmm19,xmm31
-       vinsertf32x4 ymm18,ymm18,xmm19,1
-       vinsertf32x8 zmm2,zmm2,ymm17,0
-       vinsertf32x8 zmm2,zmm2,ymm18,1
-       vbroadcastss xmm17,xmm20
-       vbroadcastss xmm18,xmm24
-       vinsertf32x4 ymm17,ymm17,xmm18,1
-       vbroadcastss xmm18,xmm28
-       vbroadcastss xmm19,xmm6
-       vinsertf32x4 ymm18,ymm18,xmm19,1
-       vinsertf32x8 zmm3,zmm3,ymm17,0
-       vinsertf32x8 zmm3,zmm3,ymm18,1
-       vmovaps   ymm17,ymm8
-       vinsertf32x4 ymm17,ymm17,xmm8,1
-       vinsertf32x8 zmm4,zmm4,ymm17,0
-       vinsertf32x8 zmm4,zmm4,ymm17,1
-       vmovaps   ymm17,ymm9
-       vinsertf32x4 ymm17,ymm17,xmm9,1
-       vinsertf32x8 zmm5,zmm5,ymm17,0
-       vinsertf32x8 zmm5,zmm5,ymm17,1
-       vmulps    zmm17,zmm4,zmm1
-       vaddps    zmm17,zmm17,zmm0
-       vmulps    zmm18,zmm2,zmm5
-       vaddps    zmm17,zmm18,zmm17
-       vmovaps   ymm18,ymm10
-       vinsertf32x4 ymm18,ymm18,xmm10,1
-       vinsertf32x8 zmm16,zmm16,ymm18,0
-       vinsertf32x8 zmm16,zmm16,ymm18,1
-       vmulps    zmm18,zmm3,zmm16
-       vaddps    zmm17,zmm18,zmm17
-       vmovups   [rsp+20],zmm17
-       vmovdqu32 zmm17,[rsp+20]
-       vmovdqu32 [rsp+80],zmm17
-       vmovdqu32 [rdx],zmm17
-       mov       ecx,ecx
-       cmp       ecx,1869F
+       vmovups   xmm4,[rdx]
+       vmovups   xmm5,[rdx+10]
+       vmovups   xmm16,[rdx+20]
+       vmovups   xmm17,[rdx+30]
+       vmovaps   xmm18,xmm0
+       vbroadcastss xmm18,xmm18
+       vmovshdup xmm19,xmm0
+       vbroadcastss xmm19,xmm19
+       vmulps    xmm19,xmm19,xmm5
+       vfmadd231ps xmm19,xmm18,xmm4
+       vunpckhps xmm18,xmm0,xmm0
+       vbroadcastss xmm18,xmm18
+       vshufps   xmm0,xmm0,xmm0,0FF
+       vbroadcastss xmm0,xmm0
+       vmulps    xmm0,xmm0,xmm17
+       vfmadd231ps xmm0,xmm18,xmm16
+       vaddps    xmm0,xmm0,xmm19
+       vmovaps   xmm18,xmm1
+       vbroadcastss xmm18,xmm18
+       vmovshdup xmm19,xmm1
+       vbroadcastss xmm19,xmm19
+       vmulps    xmm19,xmm19,xmm5
+       vfmadd231ps xmm19,xmm18,xmm4
+       vunpckhps xmm18,xmm1,xmm1
+       vbroadcastss xmm18,xmm18
+       vshufps   xmm1,xmm1,xmm1,0FF
+       vbroadcastss xmm1,xmm1
+       vmulps    xmm1,xmm1,xmm17
+       vfmadd231ps xmm1,xmm18,xmm16
+       vaddps    xmm1,xmm1,xmm19
+       vmovaps   xmm18,xmm2
+       vbroadcastss xmm18,xmm18
+       vmovshdup xmm19,xmm2
+       vbroadcastss xmm19,xmm19
+       vmulps    xmm19,xmm19,xmm5
+       vfmadd231ps xmm19,xmm18,xmm4
+       vunpckhps xmm18,xmm2,xmm2
+       vbroadcastss xmm18,xmm18
+       vshufps   xmm2,xmm2,xmm2,0FF
+       vbroadcastss xmm2,xmm2
+       vmulps    xmm2,xmm2,xmm17
+       vfmadd231ps xmm2,xmm18,xmm16
+       vaddps    xmm2,xmm2,xmm19
+       vmovaps   xmm18,xmm3
+       vbroadcastss xmm18,xmm18
+       vmovshdup xmm19,xmm3
+       vbroadcastss xmm19,xmm19
+       vmulps    xmm5,xmm19,xmm5
+       vfmadd213ps xmm4,xmm18,xmm5
+       vunpckhps xmm5,xmm3,xmm3
+       vbroadcastss xmm5,xmm5
+       vshufps   xmm3,xmm3,xmm3,0FF
+       vbroadcastss xmm3,xmm3
+       vmulps    xmm3,xmm3,xmm17
+       vfmadd213ps xmm16,xmm5,xmm3
+       vaddps    xmm3,xmm16,xmm4
+       vmovups   [r8],xmm0
+       vmovups   [r8+10],xmm1
+       vmovups   [r8+20],xmm2
+       vmovups   [r8+30],xmm3
+       mov       eax,eax
+       cmp       eax,1869F
        jl        near ptr M00_L00
-       vzeroupper
-       vmovaps   xmm6,[rsp+100]
-       vmovaps   xmm7,[rsp+0F0]
-       vmovaps   xmm8,[rsp+0E0]
-       vmovaps   xmm9,[rsp+0D0]
-       vmovaps   xmm10,[rsp+0C0]
-       add       rsp,118
+       add       rsp,28
        ret
 M00_L01:
        call      CORINFO_HELP_RNGCHKFAIL
        int       3
-; Total bytes of code 729
+; Total bytes of code 458
 ```
+
 </details>
 
-## Silk.NET.Matrix4X4
+## Silk.NET.Matrix4X4&lt;float&gt;
 
 <details>
 <summary>asm</summary>

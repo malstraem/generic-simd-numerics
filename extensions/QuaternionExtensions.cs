@@ -1,5 +1,3 @@
-using GenericNumerics;
-
 using Silk.NET.Maths;
 
 namespace System.Numerics;

@@ -9,7 +9,7 @@ public class StressMatrix4x4 : BaseBench
     public StressMatrix4x4()
     {
         for (int i = 0; i < mats.Length; i++)
-            mats[i] = Mat44<float>.Gen(Random.Shared.Next(10, 100)).System();
+            mats[i] = Mat44<float>.Gen(Random.Shared.Next(1, 10)).System();
     }
 
     //[Benchmark]

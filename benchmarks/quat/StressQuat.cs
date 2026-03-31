@@ -1,9 +1,6 @@
-using System.Numerics;
-using System.Numerics.Bench;
-
 using BenchmarkDotNet.Attributes;
 
-namespace GenericNumerics.Bench;
+namespace System.Numerics.Bench;
 
 public abstract class StressQuat<T> : BaseBench
     where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>

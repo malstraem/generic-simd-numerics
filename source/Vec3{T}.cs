@@ -233,7 +233,7 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec3<T> Lerp(Vec3<T> vec, T amount)
     {
-        // Lerp<T> may be needed
+        // intrinsic Lerp<T> should exist
 
         return (this * (T.One - amount))
              + (vec * amount);
@@ -242,7 +242,8 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public readonly T Dot(Vec3<T> vec) => (this * vec).Sum();
 
-    // not sure about the next one, but looks good? float and double are sealed using extensions
+    // not sure about the next one, but looks good?
+    // float and double are sealed using extensions
 
     [MethodImpl(AggressiveInlining)]
     public readonly T LengthSquared() => Dot(this);
@@ -263,7 +264,8 @@ public partial struct Vec3<T>(T x, T y, T z) :
             => T.CreateTruncating(LengthSaturating<R>());
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T DistanceSquared(Vec3<T> vec) => (this - vec).LengthSquared();
+    public readonly T DistanceSquared(Vec3<T> vec)
+        => (this - vec).LengthSquared();
 
     [MethodImpl(AggressiveInlining)]
     public readonly R DistanceSaturating<R>(Vec3<T> vec)
@@ -288,13 +290,8 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec3<T> SquareRoot<R>() where R : IRootFunctions<R>
     {
-        //its look like Vector128/256 supports integers but how to expose?
-
-        /*if (typeof(T) == typeof(float))
-            return Vec4<T>.From128(Vector128.Sqrt(AsVec128()));
-
-        if (typeof(T) == typeof(double))
-            return Vec4<T>.From256(Vector256.Sqrt(AsVec256()));*/
+        // looks like intrinsics works with integers
+        // but maybe it would be better to make VecN<T>.SquareRoot<R> return VecN<R>?
 
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return From128(Vector128.Sqrt(As128()));

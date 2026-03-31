@@ -249,7 +249,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Lerp(Vec4<T> vec, T amount)
     {
-        // Vector128/256/512 Lerp<T> needed
+        // intrinsic Lerp<T> should exist
 
         return (this * (T.One - amount))
              + (vec * amount);
@@ -258,28 +258,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Transform(Mat44<T> mat)
     {
-        // Vector128/256/512 MultiplyAdd<T> needed
-
-        /*if (typeof(T) == typeof(float))
-        {
-            var result = (mat.X * X).As128F();
-
-            result = Vector128.MultiplyAddEstimate(mat.Y.As128F(), Vector128.Create((float)(object)Y), result);
-            result = Vector128.MultiplyAddEstimate(mat.Z.As128F(), Vector128.Create((float)(object)Z), result);
-            result = Vector128.MultiplyAddEstimate(mat.W.As128F(), Vector128.Create((float)(object)W), result);
-
-            return From128(result);
-        }
-        else if (typeof(T) == typeof(double))
-        {
-            var result = (mat.X * X).As256D();
-
-            result = Vector256.MultiplyAddEstimate(mat.Y.As256D(), Vector256.Create((double)(object)Y), result);
-            result = Vector256.MultiplyAddEstimate(mat.Z.As256D(), Vector256.Create((double)(object)Z), result);
-            result = Vector256.MultiplyAddEstimate(mat.W.As256D(), Vector256.Create((double)(object)W), result);
-
-            return From256(result);
-        }*/
+        // intrinsic MultiplyAdd<T> should exist
         var vec = mat.X * X;
 
         vec += mat.Y * Y;
@@ -292,7 +271,8 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly T Dot(Vec4<T> vec) => (this * vec).Sum();
 
-    // not sure about the next one, but looks good? float and double are sealed using extensions
+    // not sure about the next one, but looks good?
+    // float and double are sealed using extensions
 
     [MethodImpl(AggressiveInlining)]
     public readonly T LengthSquared() => Dot(this);
@@ -313,7 +293,8 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
             => T.CreateTruncating(LengthSaturating<R>());
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T DistanceSquared(Vec4<T> vec) => (this - vec).LengthSquared();
+    public readonly T DistanceSquared(Vec4<T> vec)
+        => (this - vec).LengthSquared();
 
     [MethodImpl(AggressiveInlining)]
     public readonly R DistanceSaturating<R>(Vec4<T> vec)
@@ -338,13 +319,8 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> SquareRoot<R>() where R : IRootFunctions<R>
     {
-        //it looks like Vector128/256 supports integers but how to expose?
-
-        /*if (typeof(T) == typeof(float))
-            return Vec4<T>.From128(Vector128.Sqrt(AsVec128()));
-
-        if (typeof(T) == typeof(double))
-            return Vec4<T>.From256(Vector256.Sqrt(AsVec256()));*/
+        // looks like intrinsics works with integers
+        // but maybe it would be better to make VecN<T>.SquareRoot<R> return VecN<R>?
 
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return From128(Vector128.Sqrt(As128()));
