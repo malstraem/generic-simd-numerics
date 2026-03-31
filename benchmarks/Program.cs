@@ -31,7 +31,7 @@ BenchmarkRunner.Run<StressVector3D<float>>();*/
 //BenchmarkRunner.Run<StressMatrix4X4<int>>();
 
 //BenchmarkRunner.Run<StressMatrix4x4>();
-//BenchmarkRunner.Run<StressMat44<float>>();
+BenchmarkRunner.Run<StressMat44<float>>();
 BenchmarkRunner.Run<StressMat44<double>>();
 //BenchmarkRunner.Run<StressMatrix4X4<float>>();
 //BenchmarkRunner.Run<StressMatrix4X4<double>>();
