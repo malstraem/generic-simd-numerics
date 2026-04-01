@@ -2,21 +2,16 @@ using BenchmarkDotNet.Attributes;
 
 namespace System.Numerics.Bench;
 
-public abstract class StressVec3<T> : StressVec3<T, T>
-    where T : unmanaged, INumber<T>, IRootFunctions<T>;
-
-public abstract class StressVec3<T, R> : BaseBench
-    where T : unmanaged, INumber<T>
-    where R : unmanaged, IRootFunctions<R>
+public class StressVector2 : BaseBench
 {
-    private static readonly T[] nums = new T[Count];
+    private static readonly float[] nums = new float[Count];
 
-    private static readonly Vec3<T>[] vecs = new Vec3<T>[Count];
+    private static readonly Vector2[] vecs = new Vector2[Count];
 
-    public StressVec3()
+    public StressVector2()
     {
         for (int i = 0; i < vecs.Length; i++)
-            vecs[i] = Vec3<T>.Gen(T.CreateTruncating(Random.Shared.Next(10, 100)));
+            vecs[i] = Vec2<float>.Gen(Random.Shared.Next(10, 100)).System();
     }
 
     [Benchmark]
@@ -51,21 +46,21 @@ public abstract class StressVec3<T, R> : BaseBench
     public void Abs()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = vecs[i].Abs();
+            vecs[i] = Vector2.Abs(vecs[i]);
     }
 
     [Benchmark]
     public void Sum()
     {
         for (int i = 0; i < Count; i++)
-            nums[i] = vecs[i].Sum();
+            nums[i] = Vector2.Sum(vecs[i]);
     }
 
     [Benchmark]
     public void Dot()
     {
         for (int i = 0; i < Count - 1; i++)
-            nums[i] = vecs[i].Dot(vecs[i + 1]);
+            nums[i] = Vector2.Dot(vecs[i], vecs[i + 1]);
     }
 
     [Benchmark]
@@ -79,27 +74,27 @@ public abstract class StressVec3<T, R> : BaseBench
     public void DistanceSquared()
     {
         for (int i = 0; i < Count - 1; i++)
-            nums[i] = vecs[i].DistanceSquared(vecs[i + 1]);
+            nums[i] = Vector2.DistanceSquared(vecs[i], vecs[i + 1]);
     }
 
     [Benchmark]
     public void Length()
     {
         for (int i = 0; i < Count; i++)
-            nums[i] = vecs[i].Length<R>();
+            nums[i] = vecs[i].Length();
     }
 
     [Benchmark]
     public void Distance()
     {
         for (int i = 0; i < Count - 1; i++)
-            nums[i] = vecs[i].Distance<R>(vecs[i + 1]);
+            nums[i] = Vector2.Distance(vecs[i], vecs[i + 1]);
     }
 
     [Benchmark]
     public void Normalize()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = vecs[i].Normalize<R>();
+            vecs[i] = Vector2.Normalize(vecs[i]);
     }*/
 }

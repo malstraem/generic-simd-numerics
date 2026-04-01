@@ -1,8 +1,21 @@
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
 
 using System.Numerics.Bench;
 
-//BenchmarkRunner.Run<StressVec2<float>>();
+var vecs = BenchmarkSwitcher.FromTypes([
+    //typeof(StressVector2),
+    //typeof(StressVector2D<float>),
+
+    typeof(StressVec2<float>),
+    //typeof(StressVec2<double>),
+    typeof(StressVec2<int, float>),
+    //typeof(StressVec2<short, float>),
+    //typeof(StressVector2D<float>),
+]);
+
+vecs.RunAll(DefaultConfig.Instance);
+
 //BenchmarkRunner.Run<StressVec2<byte, float>>();
 //BenchmarkRunner.Run<StressVec2<short, float>>();
 //BenchmarkRunner.Run<StressVec2<int, float>>();
@@ -31,8 +44,8 @@ BenchmarkRunner.Run<StressVector3D<float>>();*/
 //BenchmarkRunner.Run<StressMatrix4X4<int>>();
 
 //BenchmarkRunner.Run<StressMatrix4x4>();
-BenchmarkRunner.Run<StressMat44<float>>();
-BenchmarkRunner.Run<StressMat44<double>>();
+//BenchmarkRunner.Run<StressMat44<float>>();
+//BenchmarkRunner.Run<StressMat44<double>>();
 //BenchmarkRunner.Run<StressMatrix4X4<float>>();
 //BenchmarkRunner.Run<StressMatrix4X4<double>>();
 

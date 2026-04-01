@@ -65,7 +65,4 @@ public partial struct Vec2<T>
 
     [MethodImpl(AggressiveInlining)]
     public static Vec2<T> Lerp(Vec2<T> left, Vec2<T> right, T amount) => left.Lerp(right, amount);
-
-    /*[MethodImpl(AggressiveInlining)]
-    public static Vec2<T> Transform(Vec2<T> vec, Mat44<T> mat) => vec.Transform(mat);*/
 }

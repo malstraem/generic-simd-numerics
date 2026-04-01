@@ -28,8 +28,8 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public static Vec2<T> operator +(Vec2<T> vec)
     {
-        if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
-            return From64(+vec.As64());
+        /*if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
+            return From64(+vec.As64());*/
 
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
             return From128(+vec.As128());
@@ -40,8 +40,8 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public static Vec2<T> operator -(Vec2<T> vec)
     {
-        if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
-            return From64(-vec.As64());
+        /*if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
+            return From64(-vec.As64());*/
 
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
             return From128(-vec.As128());
@@ -52,8 +52,8 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public static Vec2<T> operator +(Vec2<T> vec, T num)
     {
-        if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
-            return From64(vec.As64() + Vector64.Create(num));
+        /*if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
+            return From64(vec.As64() + Vector64.Create(num));*/
 
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
             return From128(vec.As128() + Vector128.Create(num));
@@ -64,8 +64,8 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public static Vec2<T> operator -(Vec2<T> vec, T num)
     {
-        if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
-            return From64(vec.As64() - Vector64.Create(num));
+        /*if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
+            return From64(vec.As64() - Vector64.Create(num));*/
 
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
             return From128(vec.As128() - Vector128.Create(num));
@@ -76,8 +76,8 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public static Vec2<T> operator *(Vec2<T> vec, T num)
     {
-        if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
-            return From64(vec.As64() * num);
+        /*if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
+            return From64(vec.As64() * num);*/
 
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
             return From128(vec.As128() * num);
@@ -88,8 +88,8 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public static Vec2<T> operator /(Vec2<T> vec, T num)
     {
-        if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
-            return From64(vec.As64() / num);
+        /*if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
+            return From64(vec.As64() / num);*/
 
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
             return From128(vec.As128() / num);
@@ -97,23 +97,34 @@ public partial struct Vec2<T>(T x, T y) :
         return new(vec.X / num, vec.Y / num);
     }
 
-    [MethodImpl(AggressiveInlining)]
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Vec2<T> operator +(Vec2<T> left, Vec2<T> right)
     {
-        if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
-            return From64(left.As64() + right.As64());
+        if (Vector128<T>.IsSupported)
+        {
+            /*if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
+                return From64(left.As64() + right.As64());*/
 
-        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(left.As128() + right.As128());
+            if (SizeOf<T>() == 8)
+                return From128(left.As128() + right.As128());
 
+            if (typeof(T) == typeof(float))
+            {
+                return From128S<double>(left.As128S<double>() + right.As128S<double>());
+            }
+            if (typeof(T) == typeof(int))
+            {
+                return From128S<double>(left.As128S<double>() + right.As128S<double>());
+            }
+        }
         return new(left.X + right.X, left.Y + right.Y);
     }
 
     [MethodImpl(AggressiveInlining)]
     public static Vec2<T> operator -(Vec2<T> left, Vec2<T> right)
     {
-        if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
-            return From64(left.As64() - right.As64());
+        /*if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
+            return From64(left.As64() - right.As64());*/
 
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
             return From128(left.As128() - right.As128());
@@ -124,8 +135,8 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public static Vec2<T> operator *(Vec2<T> left, Vec2<T> right)
     {
-        if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
-            return From64(left.As64() * right.As64());
+        /*if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
+            return From64(left.As64() * right.As64());*/
 
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
             return From128(left.As128() * right.As128());
@@ -136,8 +147,8 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public static Vec2<T> operator /(Vec2<T> left, Vec2<T> right)
     {
-        if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
-            return From64(left.As64() / right.As64());
+        /*if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
+            return From64(left.As64() / right.As64());*/
 
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
             return From128(left.As128() / right.As128());
@@ -148,8 +159,8 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public static bool operator ==(Vec2<T> left, Vec2<T> right)
     {
-        if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
-            return left.As64() == right.As64();
+        /*if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
+            return left.As64() == right.As64();*/
 
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
             return left.As128() == right.As128();
@@ -160,8 +171,8 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public static bool operator !=(Vec2<T> left, Vec2<T> right)
     {
-        if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
-            return left.As64() != right.As64();
+        /*if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
+            return left.As64() != right.As64();*/
 
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
             return left.As128() != right.As128();
@@ -173,8 +184,8 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public readonly T Sum()
     {
-        if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
-            return Vector64.Sum(As64());
+        /*if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
+            return Vector64.Sum(As64());*/
 
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
             return Vector128.Sum(As128());
@@ -185,8 +196,8 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec2<T> Abs()
     {
-        if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
-            return From64(Vector64.Abs(As64()));
+        /*if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
+            return From64(Vector64.Abs(As64()));*/
 
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
             return From128(Vector128.Abs(As128()));
@@ -197,8 +208,8 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec2<T> Min(Vec2<T> vec)
     {
-        if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
-            return From64(Vector64.Min(As64(), vec.As64()));
+        /*if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
+            return From64(Vector64.Min(As64(), vec.As64()));*/
 
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
             return From128(Vector128.Min(As128(), vec.As128()));
@@ -209,8 +220,8 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec2<T> Max(Vec2<T> vec)
     {
-        if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
-            return From64(Vector64.Max(As64(), vec.As64()));
+        /*if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
+            return From64(Vector64.Max(As64(), vec.As64()));*/
 
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
             return From128(Vector128.Max(As128(), vec.As128()));
@@ -221,8 +232,8 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec2<T> Clamp(Vec2<T> min, Vec2<T> max)
     {
-        if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
-            return From64(Vector64.Clamp(As64(), min.As64(), max.As64()));
+        /*if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
+            return From64(Vector64.Clamp(As64(), min.As64(), max.As64()));*/
 
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
             return From128(Vector128.Clamp(As128(), min.As128(), max.As128()));
@@ -293,8 +304,8 @@ public partial struct Vec2<T>(T x, T y) :
         // looks like intrinsics works with integers
         // but maybe it would be better to make VecN<T>.SquareRoot<R> return VecN<R>?
 
-        if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
-            return From64(Vector64.Sqrt(As64()));
+        /*if (SizeOf<T>() == 4 && Vector64<T>.IsSupported)
+            return From64(Vector64.Sqrt(As64()));*/
 
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
             return From128(Vector128.Sqrt(As128()));

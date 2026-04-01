@@ -62,7 +62,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return From256(vec.As256() + Vector256.Create(num));
 
-        return new(vec.X + num, vec.Y + num, vec.Z + num, vec.W + num);
+        return new(vec.X + num,
+                   vec.Y + num,
+                   vec.Z + num,
+                   vec.W + num);
     }
 
     [MethodImpl(AggressiveInlining)]

@@ -34,8 +34,8 @@ public partial struct Vec3<T>
     }
 
     [MethodImpl(AggressiveInlining)]
-    internal static Vec3<T> From128(Vector128<T> vec) => As<Vector128<T>, Vec3<T>>(ref vec);
+    internal static Vec3<T> From128(Vector128<T> xmm) => As<Vector128<T>, Vec3<T>>(ref xmm);
 
     [MethodImpl(AggressiveInlining)]
-    internal static Vec3<T> From256(Vector256<T> vec) => As<Vector256<T>, Vec3<T>>(ref vec);
+    internal static Vec3<T> From256(Vector256<T> ymm) => As<Vector256<T>, Vec3<T>>(ref ymm);
 }

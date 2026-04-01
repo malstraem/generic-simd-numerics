@@ -6,10 +6,6 @@ public partial struct Mat44<T>
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     private static Mat44<T> MultiplySize4(Mat44<T> left, Mat44<T> right)
     {
-        /* slower for now
-        if (Vector256<T>.IsSupported)
-            return Multiply4x256(left, right);*/
-
         var x = right.X.As128();
         var y = right.Y.As128();
         var z = right.Z.As128();
