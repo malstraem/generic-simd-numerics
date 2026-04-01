@@ -1,12 +1,13 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob, DisassemblyDiagnoser]
+[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
 public class StressVec2<T> : StressVec2<T, T>
     where T : unmanaged, INumber<T>, IRootFunctions<T>;
 
-[SimpleJob, DisassemblyDiagnoser]
+[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
 public class StressVec2<T, R> : BaseBench
     where T : unmanaged, INumber<T>
     where R : unmanaged, IRootFunctions<R>
@@ -28,7 +29,7 @@ public class StressVec2<T, R> : BaseBench
             vecs[i] = vecs[i] + vecs[i + 1];
     }
 
-    /*[Benchmark]
+    [Benchmark]
     public void Substract()
     {
         for (int i = 0; i < Count - 1; i++)
@@ -49,7 +50,7 @@ public class StressVec2<T, R> : BaseBench
             vecs[i] = vecs[i] / vecs[i + 1];
     }
 
-    [Benchmark]
+    /*[Benchmark]
     public void Abs()
     {
         for (int i = 0; i < Count; i++)

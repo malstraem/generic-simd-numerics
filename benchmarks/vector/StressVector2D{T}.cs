@@ -1,9 +1,11 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 using Silk.NET.Maths;
 
 namespace System.Numerics.Bench;
 
+[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
 public class StressVector2D<T> : BaseBench
     where T : unmanaged, INumber<T>
 {
@@ -24,7 +26,7 @@ public class StressVector2D<T> : BaseBench
             vecs[i] = vecs[i] + vecs[i + 1];
     }
 
-    /*[Benchmark]
+    [Benchmark]
     public void Substract()
     {
         for (int i = 0; i < Count - 1; i++)
@@ -45,7 +47,7 @@ public class StressVector2D<T> : BaseBench
             vecs[i] = vecs[i] / vecs[i + 1];
     }
 
-    [Benchmark]
+    /*[Benchmark]
     public void Abs()
     {
         for (int i = 0; i < Count; i++)

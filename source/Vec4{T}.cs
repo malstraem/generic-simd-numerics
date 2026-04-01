@@ -77,7 +77,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return From256(vec.As256() - Vector256.Create(num));
 
-        return new(vec.X - num, vec.Y - num, vec.Z - num, vec.W - num);
+        return new(vec.X - num,
+                   vec.Y - num,
+                   vec.Z - num,
+                   vec.W - num);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -89,7 +92,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return From256(vec.As256() * num);
 
-        return new(vec.X * num, vec.Y * num, vec.Z * num, vec.W * num);
+        return new(vec.X * num,
+                   vec.Y * num,
+                   vec.Z * num,
+                   vec.W * num);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -101,7 +107,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return From256(vec.As256() / num);
 
-        return new(vec.X / num, vec.Y / num, vec.Z / num, vec.W / num);
+        return new(vec.X / num,
+                   vec.Y / num,
+                   vec.Z / num,
+                   vec.W / num);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -113,7 +122,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return From256(left.As256() + right.As256());
 
-        return new(left.X + right.X, left.Y + right.Y, left.Z + right.Z, left.W + right.W);
+        return new(left.X + right.X,
+                   left.Y + right.Y,
+                   left.Z + right.Z,
+                   left.W + right.W);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -125,7 +137,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return From256(left.As256() - right.As256());
 
-        return new(left.X - right.X, left.Y - right.Y, left.Z - right.Z, left.W - right.W);
+        return new(left.X - right.X,
+                   left.Y - right.Y,
+                   left.Z - right.Z,
+                   left.W - right.W);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -137,7 +152,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return From256(left.As256() * right.As256());
 
-        return new(left.X * right.X, left.Y * right.Y, left.Z * right.Z, left.W * right.W);
+        return new(left.X * right.X,
+                   left.Y * right.Y,
+                   left.Z * right.Z,
+                   left.W * right.W);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -149,7 +167,10 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return From256(left.As256() / right.As256());
 
-        return new(left.X / right.X, left.Y / right.Y, left.Z / right.Z, left.W / right.W);
+        return new(left.X / right.X,
+                   left.Y / right.Y,
+                   left.Z / right.Z,
+                   left.W / right.W);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -323,7 +344,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public readonly Vec4<T> SquareRoot<R>() where R : IRootFunctions<R>
     {
         // looks like intrinsics works with integers
-        // but maybe it would be better to make VecN<T>.SquareRoot<R> return VecN<R>?
+        // but maybe it would be better to make Vec{N}<T>.SquareRoot<R> return Vec{N}<R>?
 
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return From128(Vector128.Sqrt(As128()));

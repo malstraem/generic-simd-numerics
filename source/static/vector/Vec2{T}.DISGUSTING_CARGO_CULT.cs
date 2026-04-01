@@ -4,13 +4,13 @@ public partial struct Vec2<T>
 {
     /* ???
 
-    this CARGO CULT SHIT tries tp mirror Vector2 hand asm to produce scalar movs as expected in call cases
+    this CARGO CULT SHIT tries to mirror Vector2 handy asm to produce scalar moves as expected in call cases
 
-    `vmovs{true size} -> right ops -> vmovs{true size}` -> feels good
+    `vmovs{scalar size}` to xmm -> right ops -> `vmovs{scalar size} to ptr` -> feels good
 
-    but whole code slower in stress cause JIT cant proof offsets
+    slower in stress cause JIT can't prove offsets on ptrs and use regs
 
-    pls let me know JIT or me is DUMB IDIOT */
+    pls let me know JIT or ME is DUMB IDIOT */
 
     [MethodImpl(AggressiveInlining)]
     private readonly Vector128<T> As128S<S>()
@@ -33,5 +33,37 @@ public partial struct Vec2<T>
             *(S*)&vec = Vector128.As<T, S>(xmm).ToScalar();
             return vec;
         }
+    }
+
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    public static Vec2<T> operator +(Vec2<T> left, Vec2<T> right)
+    {
+        if (Vector128<T>.IsSupported)
+        {
+            if (SizeOf<T>() == 8)
+                return From128(left.As128() + right.As128());
+
+            /* ???
+            float <-> 32-bit word
+            double <-> 64-bit word
+
+            && Vector128<size x2 type>.IsSupported is pointless? */
+
+            if (typeof(T) == typeof(short) /*&& Vector128<float>.IsSupported*/)
+                return From128S<float>(left.As128S<float>() + right.As128S<float>());
+
+            if (typeof(T) == typeof(ushort))
+                return From128S<float>(left.As128S<float>() + right.As128S<float>());
+
+            if (typeof(T) == typeof(int))
+                return From128S<double>(left.As128S<double>() + right.As128S<double>());
+
+            if (typeof(T) == typeof(uint))
+                return From128S<double>(left.As128S<double>() + right.As128S<double>());
+
+            if (typeof(T) == typeof(float))
+                return From128S<double>(left.As128S<double>() + right.As128S<double>());
+        }
+        return new(left.X + right.X, left.Y + right.Y);
     }
 }

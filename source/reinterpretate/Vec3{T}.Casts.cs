@@ -13,15 +13,6 @@ public partial struct Vec3<T>
             .WithElement(0, X)
             .WithElement(1, Y)
             .WithElement(2, Z);
-
-        /*SkipInit(out Vector128<T> vec);
-
-        Unsafe.Add(ref As<Vector128<T>, T>(ref AsRef(in vec)), 0) = X;
-        Unsafe.Add(ref As<Vector128<T>, T>(ref AsRef(in vec)), 1) = Y;
-        Unsafe.Add(ref As<Vector128<T>, T>(ref AsRef(in vec)), 2) = Z;
-        Unsafe.Add(ref As<Vector128<T>, T>(ref AsRef(in vec)), 3) = T.One;
-
-        return vec;*/
     }
 
     [MethodImpl(AggressiveInlining)]
