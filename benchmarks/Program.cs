@@ -2,26 +2,7 @@ using System.Numerics.Bench;
 
 using BenchmarkDotNet.Running;
 
-//to do: post process result to form reports
-
-var vecs = BenchmarkSwitcher.FromTypes([
-    //typeof(StressVector2),
-
-    typeof(StressVec2<float>),
-    //typeof(StressVec2<double>),
-    //typeof(StressVec2<byte, float>),
-    //typeof(StressVec2<sbyte, float>),
-    typeof(StressVec2<short, float>),
-    //typeof(StressVec2<ushort, float>),
-    typeof(StressVec2<int, float>),
-    //typeof(StressVec2<uint, float>),
-
-   /*typeof(StressVector2D<float>),
-    typeof(StressVector2D<double>),
-    typeof(StressVector2D<int>)*/
-]);
-vecs.RunAll();
-
+//BenchmarkRunner.Run<StressVec2<float>>();
 //BenchmarkRunner.Run<StressVec2<byte, float>>();
 //BenchmarkRunner.Run<StressVec2<short, float>>();
 //BenchmarkRunner.Run<StressVec2<int, float>>();
@@ -54,5 +35,14 @@ BenchmarkRunner.Run<StressVector3D<float>>();*/
 //BenchmarkRunner.Run<StressMat44<double>>();
 //BenchmarkRunner.Run<StressMatrix4X4<float>>();
 //BenchmarkRunner.Run<StressMatrix4X4<double>>();
+
+BenchmarkRunner.Run<StressQuat<float>>();
+BenchmarkRunner.Run<StressQuat<double>>();
+
+BenchmarkRunner.Run<StressQuaternion>();
+
+BenchmarkRunner.Run<StressSilkQuat<float>>();
+BenchmarkRunner.Run<StressSilkQuat<double>>();
+
 
 Console.ReadLine();
