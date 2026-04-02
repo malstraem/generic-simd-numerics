@@ -3,7 +3,8 @@ namespace System.Numerics;
 public partial struct Quat<T>
     where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
 {
-    private static readonly T two = T.One + T.One;
+    private static readonly T two = T.One + T.One,
+                              half = T.One / two;
 
     internal Vec4<T> vec;
 
@@ -25,11 +26,11 @@ public partial struct Quat<T>
 
     public readonly bool IsIdentity => this == Identity;
 
-    [MethodImpl((MethodImplOptions)768)]
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> operator +(Quat<T> left, Quat<T> right)
         => new(left.vec + right.vec);
 
-    [MethodImpl((MethodImplOptions)768)]
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> operator /(Quat<T> left, Quat<T> right)
         => left * Quat<T>.Inverse(right);
 
@@ -46,8 +47,6 @@ public partial struct Quat<T>
         {
             unsafe
             {
-                SkipInit<Quat<T>>(out var value);
-
                 var rVec = right.As128F();
 
                 Broadcast128F(left, out var xx, out var yy, out var zz, out var ww);
@@ -57,8 +56,8 @@ public partial struct Quat<T>
                 result = Vector128.MultiplyAddEstimate(Vector128.Shuffle(rVec * Vector128.Create(-1, -1, 1, 1f), Vector128.Create(2, 3, 0, 1)), yy, result);
                 result = Vector128.MultiplyAddEstimate(Vector128.Shuffle(rVec * Vector128.Create(1, -1, -1, 1f), Vector128.Create(1, 0, 3, 2)), zz, result);
 
-                Vector128.Store(result.As<float, T>(), (T*)&value);
-                return value;
+                Vector128.Store(result.As<float, T>(), (T*)&right);
+                return right;
             }
         }
 
@@ -66,8 +65,6 @@ public partial struct Quat<T>
         {
             unsafe
             {
-                SkipInit<Quat<T>>(out var value);
-
                 var rVec = right.As256D();
 
                 Broadcast256D(left, out var xx, out var yy, out var zz, out var ww);
@@ -77,8 +74,8 @@ public partial struct Quat<T>
                 result = Vector256.MultiplyAddEstimate(Vector256.Shuffle(rVec * Vector256.Create(-1, -1, 1, 1f), Vector256.Create(2, 3, 0, 1)), yy, result);
                 result = Vector256.MultiplyAddEstimate(Vector256.Shuffle(rVec * Vector256.Create(1, -1, -1, 1f), Vector256.Create(1, 0, 3, 2)), zz, result);
 
-                Vector256.Store(result.As<double, T>(), (T*)&value);
-                return value;
+                Vector256.Store(result.As<double, T>(), (T*)&right);
+                return right;
             }
         }
 
@@ -89,23 +86,23 @@ public partial struct Quat<T>
             left.W * right.W - left.X * right.X - left.Y * right.Y - left.Z * right.Z);
     }
 
-    [MethodImpl((MethodImplOptions)768)]
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> operator *(Quat<T> quat, T value)
         => new(quat.vec * value);
 
-    [MethodImpl((MethodImplOptions)768)]
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> operator -(Quat<T> left, Quat<T> right)
         => new(left.vec - right.vec);
 
-    [MethodImpl((MethodImplOptions)768)]
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> operator -(Quat<T> value) => new(-value.vec);
 
-    [MethodImpl((MethodImplOptions)768)]
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> Add(Quat<T> left, Quat<T> right) => left + right;
 
     public static Quat<T> Conjugate(Quat<T> value) => new(-value.X, -value.Y, -value.Z, value.W);
 
-    [MethodImpl((MethodImplOptions)768)]
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> CreateFromAxisAngle(Vec3<T> axis, T angle)
     {
         var (s, c) = T.SinCos(angle / two);
@@ -122,22 +119,22 @@ public partial struct Quat<T>
         if (trace > T.Zero)
         {
             root = T.Sqrt(trace + T.One);
-            c = T.One / (two * root);
+            c = half / root;
 
             return new(
                 (matrix.Y.Z - matrix.Z.Y) * c,
                 (matrix.Z.X - matrix.X.Z) * c,
                 (matrix.X.Y - matrix.Y.X) * c,
-                root / two);
+                root * half);
         }
 
         if (matrix.X.X >= matrix.Y.Y && matrix.X.X >= matrix.Z.Z)
         {
             root = T.Sqrt(T.One + matrix.X.X - matrix.Y.Y - matrix.Z.Z);
-            c = T.One / (two * root);
+            c = half / root;
 
             return new(
-                root / two,
+                root * half,
                 (matrix.X.Y + matrix.Y.X) * c,
                 (matrix.X.Z + matrix.Z.X) * c,
                 (matrix.Y.Z - matrix.Z.Y) * c);
@@ -146,30 +143,30 @@ public partial struct Quat<T>
         if (matrix.Y.Y >= matrix.Z.Z)
         {
             root = T.Sqrt(T.One + matrix.Y.Y - matrix.X.X - matrix.Z.Z);
-            c = T.One / (two * root);
+            c = half / root;
 
             return new(
                 (matrix.Y.X + matrix.X.Y) * c,
-                root / two,
+                root * half,
                 (matrix.Z.Y + matrix.Y.Z) * c,
                 (matrix.Z.X - matrix.X.Z) * c);
         }
 
         root = T.Sqrt(T.One + matrix.Z.Z - matrix.X.X - matrix.Y.Y);
-        c = T.One / (two * root);
+        c = half / root;
 
         return new(
             (matrix.Z.X + matrix.X.Z) * c,
             (matrix.Z.Y + matrix.Y.Z) * c,
-            root / two,
+            root * half,
             (matrix.X.Y - matrix.Y.Z) * c);
     }
 
     public static Quat<T> CreateFromYawPitchRoll(T yaw, T pitch, T roll)
     {
-        var (sr, cr) = T.SinCos(roll / two);
-        var (sp, cp) = T.SinCos(pitch / two);
-        var (sy, cy) = T.SinCos(yaw / two);
+        var (sr, cr) = T.SinCos(roll * half);
+        var (sp, cp) = T.SinCos(pitch * half);
+        var (sy, cy) = T.SinCos(yaw * half);
 
         return new(
             cy * sp * cr + sy * cp * sr,
@@ -178,10 +175,10 @@ public partial struct Quat<T>
             cy * cp * cr + sy * sp * sr);
     }
 
-    [MethodImpl((MethodImplOptions)768)]
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> Divide(Quat<T> left, Quat<T> right) => left / right;
 
-    [MethodImpl((MethodImplOptions)768)]
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static T Dot(Quat<T> left, Quat<T> right) => Vec4<T>.Dot(left.vec, right.vec);
 
     //  -1   (       a              -v       )
@@ -198,18 +195,18 @@ public partial struct Quat<T>
         return new((left.vec * (T.One - amount) - right.vec * amount).Normalize());
     }
 
-    [MethodImpl((MethodImplOptions)768)]
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> Multiply(Quat<T> left, Quat<T> right) => left * right;
 
-    [MethodImpl((MethodImplOptions)768)]
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> Multiply(Quat<T> left, T right) => left * right;
 
-    [MethodImpl((MethodImplOptions)768)]
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> Negate(Quat<T> value) => -value;
 
     public static Quat<T> Normalize(Quat<T> value) => new(value.vec.Normalize());
 
-    [MethodImpl((MethodImplOptions)768)]
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> Subtract(Quat<T> left, Quat<T> right) => left - right;
 
     public override readonly bool Equals(object? obj) => (obj is Quat<T> other) && Equals(other);

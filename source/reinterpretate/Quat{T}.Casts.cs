@@ -32,8 +32,8 @@ public partial struct Quat<T>
     }
 
     [MethodImpl(AggressiveInlining)]
-    private readonly Vector128<float> As128F() => BitCast<Quat<T>, Vector128<float>>(this);
+    internal readonly Vector128<float> As128F() => BitCast<Quat<T>, Vector128<float>>(this);
 
     [MethodImpl(AggressiveInlining)]
-    private readonly Vector256<double> As256D() => BitCast<Quat<T>, Vector256<double>>(this);
+    internal readonly Vector256<double> As256D() => BitCast<Quat<T>, Vector256<double>>(this);
 }

@@ -36,13 +36,21 @@ BenchmarkRunner.Run<StressVector3D<float>>();*/
 //BenchmarkRunner.Run<StressMatrix4X4<float>>();
 //BenchmarkRunner.Run<StressMatrix4X4<double>>();
 
-BenchmarkRunner.Run<StressQuat<float>>();
-BenchmarkRunner.Run<StressQuat<double>>();
+//BenchmarkRunner.Run<StressQuat<float>>();
+//BenchmarkRunner.Run<StressQuat<double>>();
 
-BenchmarkRunner.Run<StressQuaternion>();
+//BenchmarkRunner.Run<StressQuaternion>();
 
-BenchmarkRunner.Run<StressQuaternion<float>>();
-BenchmarkRunner.Run<StressQuaternion<double>>();
+//BenchmarkRunner.Run<StressQuaternion<float>>();
+//BenchmarkRunner.Run<StressQuaternion<double>>();
+
+BenchmarkRunner.Run<Mat44Methods<float>>();
+BenchmarkRunner.Run<Mat44Methods<double>>();
+
+BenchmarkRunner.Run<Matrix4x4Methods>();
+
+BenchmarkRunner.Run<Matrix4X4Methods<float>>();
+BenchmarkRunner.Run<Matrix4X4Methods<double>>();
 
 
 Console.ReadLine();
