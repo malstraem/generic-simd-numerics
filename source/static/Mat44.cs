@@ -3,6 +3,59 @@ namespace System.Numerics;
 #pragma warning disable IDE0055, IDE0007
 public static class Mat44
 {
+    public static Mat44<T> Transfrom<T>(Mat44<T> mat, Quat<T> q)
+        where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+    {
+        T two = T.One + T.One;
+
+        T xx = q.X * q.X;
+        T yy = q.Y * q.Y;
+        T zz = q.Z * q.Z;
+
+        T xy = q.X * q.Y;
+        T zw = q.Z * q.W;
+        T zx = q.Z * q.X;
+        T yw = q.Y * q.W;
+        T yz = q.Y * q.Z;
+        T xw = q.X * q.W;
+
+        T q11 = T.One - two * (yy + zz),
+          q12 = two * (xy + zw),
+          q13 = two * (zx - yw),
+          q21 = two * (xy - zw),
+          q22 = T.One - two * (zz + xx),
+          q23 = two * (yz + xw),
+          q31 = two * (zx + yw),
+          q32 = two * (yz - xw),
+          q33 = T.One - two * (yy + xx);
+
+        Vec4<T> vec1 = new(
+            mat.X.X * q11 + mat.X.Y * q21 + mat.X.Z * q31,
+            mat.X.X * q12 + mat.X.Y * q22 + mat.X.Z * q32,
+            mat.X.X * q13 + mat.X.Y* q23 + mat.X.Z * q33,
+            mat.X.W);
+
+        Vec4<T> vec2 = new(
+            mat.Y.X * q11 + mat.Y.Y * q21 + mat.Y.Z * q31,
+            mat.Y.X * q12 + mat.Y.Y * q22 + mat.Y.Z * q32,
+            mat.Y.X * q13 + mat.Y.Y * q23 + mat.Y.Z * q33,
+            mat.Y.W);
+
+        Vec4<T> vec3 = new(
+            mat.Z.X * q11 + mat.Z.Y * q21 + mat.Z.Z * q31,
+            mat.Z.X * q12 + mat.Z.Y * q22 + mat.Z.Z * q32,
+            mat.Z.X * q13 + mat.Z.Y * q23 + mat.Z.Z * q33,
+            mat.Z.W);
+
+        Vec4<T> vec4 = new(
+            mat.W.X * q11 + mat.W.Y * q21 + mat.W.Z * q31,
+            mat.W.X * q12 + mat.W.Y * q22 + mat.W.Z * q32,
+            mat.W.X * q13 + mat.W.Y * q23 + mat.W.Z * q33,
+            mat.W.W);
+
+        return new(vec1, vec2, vec3, vec4);
+    }
+
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Mat44<T> CreateFromScale<T>(T value)
         where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>

@@ -12,8 +12,7 @@ public abstract class Mat44CreateBase<T>
     where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
 {
     protected static readonly Mat44<T>
-       x = Mat44<T>.Gen(T.One),
-       y = Mat44<T>.Gen(T.One + T.One + T.One);
+       mat = Mat44<T>.Gen(T.One);
 
     protected static readonly Quat<T>
        quat = Quat<T>.Gen(T.One);
@@ -47,6 +46,16 @@ public abstract class Mat44CreateBase<T>
         var res = Mat44.CreateFromScale(vec);
 
         var expected = Matrix4X4.CreateScale(vec.Silk()).Mat44();
+
+        await Assert.That(res).IsEqualTo(expected);
+    }
+
+    [Test, DisplayName("transfrom")]
+    public async Task Transform()
+    {
+        var res = Mat44.Transfrom(mat, quat);
+
+        var expected = Matrix4X4.Transform(mat.Silk(), quat.Silk()).Mat44();
 
         await Assert.That(res).IsEqualTo(expected);
     }
