@@ -25,20 +25,20 @@ public static class Vector256Extensions
         }
     }
 
-    extension(Vector256)
-    {
-        // should exist in System.Numerics
-        [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-        public static Vector256<T> Shuffle<T>(Vector256<T> b, Vector256<long> c)
-        {
-            if (typeof(T) == typeof(double))
-            {
-                return Vector256.ShuffleNative(b.AsDouble(), c).As<double, T>();
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
-    }
+    //extension(Vector256)
+    //{
+    //    // should exist in System.Numerics
+    //    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    //    public static Vector256<T> Shuffle<T>(Vector256<T> b, Vector256<long> c)
+    //    {
+    //        if (typeof(T) == typeof(double))
+    //        {
+    //            return Vector256.ShuffleNative(b.AsDouble(), c).As<double, T>();
+    //        }
+    //        else
+    //        {
+    //            throw new NotImplementedException();
+    //        }
+    //    }
+    //}
 }
