@@ -1,6 +1,7 @@
 .vs/
 .idea/
 artifacts/
+testresults/**
 
 *.user
 *.manifest

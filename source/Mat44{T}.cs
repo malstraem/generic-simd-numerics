@@ -15,16 +15,10 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
                                                     new(m41, m42, m43, m44))
     { }
 
-    public static Mat44<T> Identity { get; } = new(Vec4<T>.UnitX,
-                                                   Vec4<T>.UnitY,
-                                                   Vec4<T>.UnitZ,
-                                                   Vec4<T>.UnitW);
-
-    [Obsolete("to vectorize")]
-    public readonly bool IsIdentity => X == Vec4<T>.UnitX
-                                    && Y == Vec4<T>.UnitY
-                                    && Z == Vec4<T>.UnitZ
-                                    && W == Vec4<T>.UnitW;
+    public static Mat44<T> Identity { get; } = new(T.One, T.Zero, T.Zero, T.Zero,
+                                                   T.Zero, T.One, T.Zero, T.Zero,
+                                                   T.Zero, T.Zero, T.One, T.Zero,
+                                                   T.Zero, T.Zero, T.Zero, T.One);
 
     [MethodImpl(AggressiveInlining)]
     public static Mat44<T> operator *(Mat44<T> mat, T num)
@@ -74,9 +68,6 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Mat44<T> operator *(Mat44<T> left, Mat44<T> right)
     {
-        /*if (SizeOf<T>() == 2 && Vector128<T>.IsSupported)
-            return MultiplySize2(left, right);*/
-
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return MultiplySize4(left, right);
 
@@ -119,7 +110,7 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
             || left.W != right.W;
     }
 
-    [Obsolete("vectorize")]
+    [Obsolete("vectorize?")]
     [MethodImpl(AggressiveInlining)]
     public Mat44<T> Transpose() => new
     (
@@ -129,6 +120,7 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
         X.W, Y.W, Z.W, W.W
     );
 
+    // for tests readability
     public override readonly string ToString() => $"{X} \n{Y} \n{Z} \n{W}";
 
     public override readonly bool Equals(object? obj) => (obj is Mat44<T> mat) && mat == this;

@@ -40,37 +40,13 @@ public partial struct Quat<T>
         => left.vec != right.vec;
 
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    private static unsafe void Broadcast128F(Vec4<T> row,
-        out Vector128<float> b0, out Vector128<float> b1, out Vector128<float> b2, out Vector128<float> b3)
-    {
-        var xmm = row.As128F();
-
-        b0 = Vector128.Create(*(float*)&xmm);
-        b1 = Vector128.Create(*((float*)&xmm + 1));
-        b2 = Vector128.Create(*((float*)&xmm + 2));
-        b3 = Vector128.Create(*((float*)&xmm + 3));
-    }
-
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    private static unsafe void Broadcast256D(Vec4<T> row,
-        out Vector256<double> b0, out Vector256<double> b1, out Vector256<double> b2, out Vector256<double> b3)
-    {
-        var xmm = row.As256D();
-
-        b0 = Vector256.Create(*(double*)&xmm);
-        b1 = Vector256.Create(*((double*)&xmm + 1));
-        b2 = Vector256.Create(*((double*)&xmm + 2));
-        b3 = Vector256.Create(*((double*)&xmm + 3));
-    }
-
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> operator *(Quat<T> left, Quat<T> right)
     {
         if (typeof(T) == typeof(float))
         {
-            var rVec = right.vec.As128F();
+            var rVec = right.As128F();
 
-            Broadcast128F(left.vec, out var xx, out var yy, out var zz, out var ww);
+            Broadcast128F(left, out var xx, out var yy, out var zz, out var ww);
 
             var result = rVec * ww;
             result = Vector128.MultiplyAddEstimate(Vector128.Shuffle(rVec * Vector128.Create(-1, 1, -1, 1f), Vector128.Create(3, 2, 1, 0)), xx, result);
@@ -83,9 +59,9 @@ public partial struct Quat<T>
         // similar to default implementation
         /*if (typeof(T) == typeof(double))
         {
-            var rVec = right.vec.As256D();
+            var rVec = right.As256D();
 
-            Broadcast256D(left.vec, out var xx, out var yy, out var zz, out var ww);
+            Broadcast256D(left, out var xx, out var yy, out var zz, out var ww);
 
             var result = rVec * ww;
             result = Vector256.MultiplyAddEstimate(Vector256.Shuffle(rVec * Vector256.Create(-1, 1, -1, 1f), Vector256.Create(3, 2, 1, 0)), xx, result);

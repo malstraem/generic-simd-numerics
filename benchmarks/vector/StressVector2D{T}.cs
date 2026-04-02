@@ -1,22 +1,22 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
+
+using Silk.NET.Maths;
 
 namespace System.Numerics.Bench;
 
-public abstract class StressVec3<T> : StressVec3<T, T>
-    where T : unmanaged, INumber<T>, IRootFunctions<T>;
-
-public abstract class StressVec3<T, R> : BaseBench
+[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
+public class StressVector2D<T> : BaseBench
     where T : unmanaged, INumber<T>
-    where R : unmanaged, IRootFunctions<R>
 {
     private static readonly T[] nums = new T[Count];
 
-    private static readonly Vec3<T>[] vecs = new Vec3<T>[Count];
+    private static readonly Vector2D<T>[] vecs = new Vector2D<T>[Count];
 
-    public StressVec3()
+    public StressVector2D()
     {
         for (int i = 0; i < vecs.Length; i++)
-            vecs[i] = Vec3<T>.Gen(T.CreateTruncating(Random.Shared.Next(10, 100)));
+            vecs[i] = Vec2<T>.Gen(T.CreateTruncating(Random.Shared.Next(10, 100))).Silk();
     }
 
     [Benchmark]
@@ -51,55 +51,48 @@ public abstract class StressVec3<T, R> : BaseBench
     public void Abs()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = vecs[i].Abs();
-    }
-
-    [Benchmark]
-    public void Sum()
-    {
-        for (int i = 0; i < Count; i++)
-            nums[i] = vecs[i].Sum();
+            vecs[i] = Vector2D.Abs(vecs[i]);
     }
 
     [Benchmark]
     public void Dot()
     {
         for (int i = 0; i < Count - 1; i++)
-            nums[i] = vecs[i].Dot(vecs[i + 1]);
+            nums[i] = Vector2D.Dot(vecs[i], vecs[i + 1]);
     }
 
     [Benchmark]
     public void LengthSquared()
     {
         for (int i = 0; i < Count; i++)
-            nums[i] = vecs[i].LengthSquared();
+            nums[i] = vecs[i].LengthSquared;
     }
 
     [Benchmark]
     public void DistanceSquared()
     {
         for (int i = 0; i < Count - 1; i++)
-            nums[i] = vecs[i].DistanceSquared(vecs[i + 1]);
+            nums[i] = Vector2D.DistanceSquared(vecs[i], vecs[i + 1]);
     }
 
     [Benchmark]
     public void Length()
     {
         for (int i = 0; i < Count; i++)
-            nums[i] = vecs[i].Length<R>();
+            nums[i] = vecs[i].Length;
     }
 
     [Benchmark]
     public void Distance()
     {
         for (int i = 0; i < Count - 1; i++)
-            nums[i] = vecs[i].Distance<R>(vecs[i + 1]);
+            nums[i] = Vector2D.Distance(vecs[i], vecs[i + 1]);
     }
 
     [Benchmark]
     public void Normalize()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = vecs[i].Normalize<R>();
+            vecs[i] = Vector2D.Normalize(vecs[i]);
     }*/
 }

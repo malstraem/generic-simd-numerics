@@ -291,7 +291,7 @@ public partial struct Vec3<T>(T x, T y, T z) :
     public readonly Vec3<T> SquareRoot<R>() where R : IRootFunctions<R>
     {
         // looks like intrinsics works with integers
-        // but maybe it would be better to make VecN<T>.SquareRoot<R> return VecN<R>?
+        // but maybe it would be better to make Vec{N}<T>.SquareRoot<R> return Vec{N}<R>?
 
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return From128(Vector128.Sqrt(As128()));

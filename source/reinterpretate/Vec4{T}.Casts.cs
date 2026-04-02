@@ -5,23 +5,14 @@ public partial struct Vec4<T>
     // called in right cases
 
     [MethodImpl(AggressiveInlining)]
-    internal readonly Vector64<T> As64() => BitCast<Vec4<T>, Vector64<T>>(this);
-
-    [MethodImpl(AggressiveInlining)]
     internal readonly Vector128<T> As128() => BitCast<Vec4<T>, Vector128<T>>(this);
 
     [MethodImpl(AggressiveInlining)]
     internal readonly Vector256<T> As256() => BitCast<Vec4<T>, Vector256<T>>(this);
 
     [MethodImpl(AggressiveInlining)]
-    internal readonly Vector256<double> As256D() => BitCast<Vec4<T>, Vector256<double>>(this);
+    internal static Vec4<T> From128(Vector128<T> xmm) => BitCast<Vector128<T>, Vec4<T>>(xmm);
 
     [MethodImpl(AggressiveInlining)]
-    internal readonly Vector128<float> As128F() => BitCast<Vec4<T>, Vector128<float>>(this);
-
-    [MethodImpl(AggressiveInlining)]
-    internal static Vec4<T> From128(Vector128<T> vec) => BitCast<Vector128<T>, Vec4<T>>(vec);
-
-    [MethodImpl(AggressiveInlining)]
-    internal static Vec4<T> From256(Vector256<T> vec) => BitCast<Vector256<T>, Vec4<T>>(vec);
+    internal static Vec4<T> From256(Vector256<T> ymm) => BitCast<Vector256<T>, Vec4<T>>(ymm);
 }

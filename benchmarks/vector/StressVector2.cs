@@ -1,20 +1,19 @@
 using BenchmarkDotNet.Attributes;
-
-using Silk.NET.Maths;
+using BenchmarkDotNet.Jobs;
 
 namespace System.Numerics.Bench;
 
-public abstract class StressVector3D<T> : BaseBench
-    where T : unmanaged, INumber<T>
+[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
+public class StressVector2 : BaseBench
 {
-    private static readonly T[] nums = new T[Count];
+    private static readonly float[] nums = new float[Count];
 
-    private static readonly Vector3D<T>[] vecs = new Vector3D<T>[Count];
+    private static readonly Vector2[] vecs = new Vector2[Count];
 
-    public StressVector3D()
+    public StressVector2()
     {
         for (int i = 0; i < vecs.Length; i++)
-            vecs[i] = Vec3<T>.Gen(T.CreateTruncating(Random.Shared.Next(10, 100))).Silk();
+            vecs[i] = Vec2<float>.Gen(Random.Shared.Next(10, 100)).System();
     }
 
     [Benchmark]
@@ -49,48 +48,55 @@ public abstract class StressVector3D<T> : BaseBench
     public void Abs()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vector3D.Abs(vecs[i]);
+            vecs[i] = Vector2.Abs(vecs[i]);
+    }
+
+    [Benchmark]
+    public void Sum()
+    {
+        for (int i = 0; i < Count; i++)
+            nums[i] = Vector2.Sum(vecs[i]);
     }
 
     [Benchmark]
     public void Dot()
     {
         for (int i = 0; i < Count - 1; i++)
-            nums[i] = Vector3D.Dot(vecs[i], vecs[i + 1]);
+            nums[i] = Vector2.Dot(vecs[i], vecs[i + 1]);
     }
 
     [Benchmark]
     public void LengthSquared()
     {
         for (int i = 0; i < Count; i++)
-            nums[i] = vecs[i].LengthSquared;
+            nums[i] = vecs[i].LengthSquared();
     }
 
     [Benchmark]
     public void DistanceSquared()
     {
         for (int i = 0; i < Count - 1; i++)
-            nums[i] = Vector3D.DistanceSquared(vecs[i], vecs[i + 1]);
+            nums[i] = Vector2.DistanceSquared(vecs[i], vecs[i + 1]);
     }
 
     [Benchmark]
     public void Length()
     {
         for (int i = 0; i < Count; i++)
-            nums[i] = vecs[i].Length;
+            nums[i] = vecs[i].Length();
     }
 
     [Benchmark]
     public void Distance()
     {
         for (int i = 0; i < Count - 1; i++)
-            nums[i] = Vector3D.Distance(vecs[i], vecs[i + 1]);
+            nums[i] = Vector2.Distance(vecs[i], vecs[i + 1]);
     }
 
     [Benchmark]
     public void Normalize()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vector3D.Normalize(vecs[i]);
+            vecs[i] = Vector2.Normalize(vecs[i]);
     }*/
 }

@@ -13,15 +13,6 @@ public partial struct Vec3<T>
             .WithElement(0, X)
             .WithElement(1, Y)
             .WithElement(2, Z);
-
-        /*SkipInit(out Vector128<T> vec);
-
-        Unsafe.Add(ref As<Vector128<T>, T>(ref AsRef(in vec)), 0) = X;
-        Unsafe.Add(ref As<Vector128<T>, T>(ref AsRef(in vec)), 1) = Y;
-        Unsafe.Add(ref As<Vector128<T>, T>(ref AsRef(in vec)), 2) = Z;
-        Unsafe.Add(ref As<Vector128<T>, T>(ref AsRef(in vec)), 3) = T.One;
-
-        return vec;*/
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -34,8 +25,8 @@ public partial struct Vec3<T>
     }
 
     [MethodImpl(AggressiveInlining)]
-    internal static Vec3<T> From128(Vector128<T> vec) => As<Vector128<T>, Vec3<T>>(ref vec);
+    internal static Vec3<T> From128(Vector128<T> xmm) => As<Vector128<T>, Vec3<T>>(ref xmm);
 
     [MethodImpl(AggressiveInlining)]
-    internal static Vec3<T> From256(Vector256<T> vec) => As<Vector256<T>, Vec3<T>>(ref vec);
+    internal static Vec3<T> From256(Vector256<T> ymm) => As<Vector256<T>, Vec3<T>>(ref ymm);
 }
