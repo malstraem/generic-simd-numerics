@@ -3,7 +3,7 @@ namespace System.Numerics;
 public partial struct Mat44<T>
 {
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    private static unsafe void Broadcast128(
+    internal static unsafe void Broadcast128(
         Vec4<T> row,
         out Vector128<T> b0,
         out Vector128<T> b1,
@@ -19,7 +19,7 @@ public partial struct Mat44<T>
     }
 
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    private static unsafe void Broadcast256(
+    internal static unsafe void Broadcast256(
         Vec4<T> row,
         out Vector256<T> b0,
         out Vector256<T> b1,

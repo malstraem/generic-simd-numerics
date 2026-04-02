@@ -18,12 +18,17 @@ public partial struct Quat<T>
     private static unsafe void Broadcast256D(Quat<T> row,
         out Vector256<double> b0, out Vector256<double> b1, out Vector256<double> b2, out Vector256<double> b3)
     {
-        var xmm = row.As256D();
+        b0 = Vector256.Create(row.X).AsDouble();
+        b1 = Vector256.Create(row.Y).AsDouble();
+        b2 = Vector256.Create(row.Z).AsDouble();
+        b3 = Vector256.Create(row.W).AsDouble();
+
+        /*var xmm = row.As256D();
 
         b0 = Vector256.Create(*(double*)&xmm);
         b1 = Vector256.Create(*((double*)&xmm + 1));
         b2 = Vector256.Create(*((double*)&xmm + 2));
-        b3 = Vector256.Create(*((double*)&xmm + 3));
+        b3 = Vector256.Create(*((double*)&xmm + 3));*/
     }
 
     [MethodImpl(AggressiveInlining)]

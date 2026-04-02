@@ -56,19 +56,24 @@ public partial struct Quat<T>
             return BitCast<Vector128<float>, Quat<T>>(result);
         }
 
-        // similar to default implementation
         /*if (typeof(T) == typeof(double))
         {
-            var rVec = right.As256D();
+            var rVec = right.vec.As256();
 
-            Broadcast256D(left, out var xx, out var yy, out var zz, out var ww);
+            Mat44<T>.Broadcast256(left.vec, out var xx, out var yy, out var zz, out var ww);
 
             var result = rVec * ww;
-            result = Vector256.MultiplyAddEstimate(Vector256.Shuffle(rVec * Vector256.Create(-1, 1, -1, 1f), Vector256.Create(3, 2, 1, 0)), xx, result);
-            result = Vector256.MultiplyAddEstimate(Vector256.Shuffle(rVec * Vector256.Create(-1, -1, 1, 1f), Vector256.Create(2, 3, 0, 1)), yy, result);
-            result = Vector256.MultiplyAddEstimate(Vector256.Shuffle(rVec * Vector256.Create(1, -1, -1, 1f), Vector256.Create(1, 0, 3, 2)), zz, result);
 
-            return BitCast<Vector256<double>, Quat<T>>(result);
+            result = Vector256.Shuffle(rVec * Vector256.Create([-T.One, T.One, -T.One, T.One]), Vector256.Create(3, 2, 1, 0))
+                    .MultiplyAdd(xx, result);
+
+            result = Vector256.Shuffle(rVec * Vector256.Create([-T.One, -T.One, T.One, T.One]), Vector256.Create(2, 3, 0, 1))
+                    .MultiplyAdd(yy, result);
+
+            result = Vector256.Shuffle(rVec * Vector256.Create([T.One, -T.One, -T.One, T.One]), Vector256.Create(1, 0, 3, 2))
+                    .MultiplyAdd(zz, result);
+
+            return BitCast<Vector256<T>, Quat<T>>(result);
         }*/
 
         return new(

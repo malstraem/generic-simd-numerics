@@ -20,4 +20,22 @@ public static class Vector128Extensions
             }
         }
     }
+
+    extension(Vector128)
+    {
+
+        // should exist in System.Numerics
+        [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+        public static Vector128<T> Shuffle<T>(Vector128<T> b, Vector128<int> c)
+        {
+            if (typeof(T) == typeof(float))
+            {
+                return Vector128.Shuffle(b.AsSingle(), c).As<float, T>();
+            }
+            else
+            {
+                return Vector128.Create([b[c[0]], b[c[1]], b[c[2]], b[c[3]]]);
+            }
+        }
+    }
 }
