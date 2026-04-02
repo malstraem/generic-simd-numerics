@@ -1,18 +1,16 @@
 using System.Runtime.CompilerServices;
 
-using GenericNumerics;
-
 using Silk.NET.Maths;
 
 namespace System.Numerics.Tests.Quaternion;
 
 [InheritsTests]
-public class Quatf32 : QuatRoot<float>;
+public class Quatf32 : Quat<float>;
 
 [InheritsTests]
-public class Quatf64 : QuatRoot<double>;
+public class Quatf64 : Quat<double>;
 
-public abstract class QuatRoot<T>
+public abstract class Quat<T>
     where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
 {
     protected static readonly T ten = T.One + T.One + T.One + T.One + T.One + T.One + T.One + T.One + T.One + T.One;
@@ -25,12 +23,12 @@ public abstract class QuatRoot<T>
                                 pitch = (T.One + T.One) / ten,
                                 roll = (T.One + T.One + T.One) / ten;
 
-    protected static readonly Quat<T>
-       x = Quat<T>.Gen(T.One),
-       y = Quat<T>.Gen(T.One + T.One),
-       min = Quat<T>.Gen(-T.One),
-       max = Quat<T>.Gen(T.One + T.One + T.One),
-       vec = Quat<T>.Gen(T.One + T.One + T.One + T.One),
+    protected static readonly Numerics.Quat<T>
+       x = Numerics.Quat<T>.Gen(T.One),
+       y = Numerics.Quat<T>.Gen(T.One + T.One),
+       min = Numerics.Quat<T>.Gen(-T.One),
+       max = Numerics.Quat<T>.Gen(T.One + T.One + T.One),
+       vec = Numerics.Quat<T>.Gen(T.One + T.One + T.One + T.One),
        negative = -vec;
 
     [Test, DisplayName("x + y")]
@@ -41,7 +39,7 @@ public abstract class QuatRoot<T>
         var expected = (x.Silk() + y.Silk()).Quat();
 
         await Assert.That(add).IsEqualTo(expected);
-        await Assert.That(add).IsEqualTo(Quat<T>.Add(x, y));
+        await Assert.That(add).IsEqualTo(Numerics.Quat<T>.Add(x, y));
     }
 
     [Test, DisplayName("x - y")]
@@ -52,7 +50,7 @@ public abstract class QuatRoot<T>
         var expected = (x.Silk() - y.Silk()).Quat();
 
         await Assert.That(sub).IsEqualTo(expected);
-        await Assert.That(sub).IsEqualTo(Quat<T>.Subtract(x, y));
+        await Assert.That(sub).IsEqualTo(Numerics.Quat<T>.Subtract(x, y));
     }
 
     [Test, DisplayName("x * y")]
@@ -63,7 +61,7 @@ public abstract class QuatRoot<T>
         var expected = (x.Silk() * y.Silk()).Quat();
 
         await Assert.That(mul).IsEqualTo(expected);
-        await Assert.That(mul).IsEqualTo(Quat<T>.Multiply(x, y));
+        await Assert.That(mul).IsEqualTo(Numerics.Quat<T>.Multiply(x, y));
     }
 
     [Test, DisplayName("x / y")]
@@ -85,7 +83,7 @@ public abstract class QuatRoot<T>
         await Assert.That(res.W).IsLessThan(expected.W + eps);
         await Assert.That(res.W).IsGreaterThan(expected.W - eps);
 
-        expected = Quat<T>.Divide(x, y);
+        expected = Numerics.Quat<T>.Divide(x, y);
 
         await Assert.That(res.X).IsLessThan(expected.X + eps);
         await Assert.That(res.X).IsGreaterThan(expected.X - eps);
@@ -103,7 +101,7 @@ public abstract class QuatRoot<T>
     [Test, DisplayName("dot")]
     public async Task Dot()
     {
-        var dot = Quat<T>.Dot(x, y);
+        var dot = Numerics.Quat<T>.Dot(x, y);
 
         var expected = Quaternion<T>.Dot(x.Silk(), y.Silk());
 
@@ -133,7 +131,7 @@ public abstract class QuatRoot<T>
     [Test, DisplayName("norm")]
     public async Task Normalize()
     {
-        var normal = Quat<T>.Normalize(vec);
+        var normal = Numerics.Quat<T>.Normalize(vec);
 
         var expected = Quaternion<T>.Normalize(vec.Silk()).Quat();
 
@@ -145,7 +143,7 @@ public abstract class QuatRoot<T>
     {
         var amount = T.One + T.One + T.One;
 
-        var lerp = Quat<T>.Lerp(x, y, amount);
+        var lerp = Numerics.Quat<T>.Lerp(x, y, amount);
 
         var expected = Quaternion<T>.Lerp(x.Silk(), y.Silk(), amount).Quat();
 
@@ -155,7 +153,7 @@ public abstract class QuatRoot<T>
     [Test, DisplayName("inverse")]
     public async Task Inverse()
     {
-        var res = Quat<T>.Inverse(x);
+        var res = Numerics.Quat<T>.Inverse(x);
 
         var expected = Quaternion<T>.Inverse(x.Silk()).Quat();
 
@@ -175,7 +173,7 @@ public abstract class QuatRoot<T>
     [Test, DisplayName("conjugate")]
     public async Task Conjugate()
     {
-        var res = Quat<T>.Conjugate(x);
+        var res = Numerics.Quat<T>.Conjugate(x);
 
         var expected = Quaternion<T>.Conjugate(x.Silk()).Quat();
 
@@ -195,7 +193,7 @@ public abstract class QuatRoot<T>
     [Test, DisplayName("from axis angle")]
     public async Task FromAxisAngle()
     {
-        var res = Quat<T>.CreateFromAxisAngle(axis, yaw);
+        var res = Numerics.Quat<T>.CreateFromAxisAngle(axis, yaw);
 
         var expected = Quaternion<T>.CreateFromAxisAngle(Unsafe.BitCast<Vec3<T>, Vector3D<T>>(axis), yaw).Quat();
 
@@ -215,7 +213,7 @@ public abstract class QuatRoot<T>
     [Test, DisplayName("from yaw pitch roll")]
     public async Task FromYawPitchRoll()
     {
-        var res = Quat<T>.CreateFromYawPitchRoll(yaw, pitch, roll);
+        var res = Numerics.Quat<T>.CreateFromYawPitchRoll(yaw, pitch, roll);
 
         var expected = Quaternion<T>.CreateFromYawPitchRoll(yaw, pitch, roll).Quat();
 
@@ -237,7 +235,7 @@ public abstract class QuatRoot<T>
     {
         var matr = Matrix4X4.CreateRotationX(yaw) * Matrix4X4.CreateRotationX(pitch) * Matrix4X4.CreateScale(T.One + T.One);
 
-        var res = Quat<T>.CreateFromRotationMatrix(matr.Mat44());
+        var res = Numerics.Quat<T>.CreateFromRotationMatrix(matr.Mat44());
 
         var expected = Quaternion<T>.CreateFromRotationMatrix(matr).Quat();
 

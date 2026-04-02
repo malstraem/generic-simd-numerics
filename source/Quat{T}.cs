@@ -112,56 +112,57 @@ public partial struct Quat<T>
         return new(axis * s, c);
     }
 
+    [Obsolete("vectorize?")]
     public static Quat<T> CreateFromRotationMatrix(Mat44<T> matrix)
     {
         var trace = matrix.X.X + matrix.Y.Y + matrix.Z.Z;
 
-        T s, invS;
+        T root, c;
 
         if (trace > T.Zero)
         {
-            s = T.Sqrt(trace + T.One);
-            invS = T.One / (two * s);
+            root = T.Sqrt(trace + T.One);
+            c = T.One / (two * root);
 
             return new(
-                (matrix.Y.Z - matrix.Z.Y) * invS,
-                (matrix.Z.X - matrix.X.Z) * invS,
-                (matrix.X.Y - matrix.Y.X) * invS,
-                s / two);
+                (matrix.Y.Z - matrix.Z.Y) * c,
+                (matrix.Z.X - matrix.X.Z) * c,
+                (matrix.X.Y - matrix.Y.X) * c,
+                root / two);
         }
 
         if (matrix.X.X >= matrix.Y.Y && matrix.X.X >= matrix.Z.Z)
         {
-            s = T.Sqrt(T.One + matrix.X.X - matrix.Y.Y - matrix.Z.Z);
-            invS = T.One / (two * s);
+            root = T.Sqrt(T.One + matrix.X.X - matrix.Y.Y - matrix.Z.Z);
+            c = T.One / (two * root);
 
             return new(
-                s / two,
-                (matrix.X.Y + matrix.Y.X) * invS,
-                (matrix.X.Z + matrix.Z.X) * invS,
-                (matrix.Y.Z - matrix.Z.Y) * invS);
+                root / two,
+                (matrix.X.Y + matrix.Y.X) * c,
+                (matrix.X.Z + matrix.Z.X) * c,
+                (matrix.Y.Z - matrix.Z.Y) * c);
         }
 
         if (matrix.Y.Y >= matrix.Z.Z)
         {
-            s = T.Sqrt(T.One + matrix.Y.Y - matrix.X.X - matrix.Z.Z);
-            invS = T.One / (two * s);
+            root = T.Sqrt(T.One + matrix.Y.Y - matrix.X.X - matrix.Z.Z);
+            c = T.One / (two * root);
 
             return new(
-                (matrix.Y.X + matrix.X.Y) * invS,
-                s / two,
-                (matrix.Z.Y + matrix.Y.Z) * invS,
-                (matrix.Z.X - matrix.X.Z) * invS);
+                (matrix.Y.X + matrix.X.Y) * c,
+                root / two,
+                (matrix.Z.Y + matrix.Y.Z) * c,
+                (matrix.Z.X - matrix.X.Z) * c);
         }
 
-        s = T.Sqrt(T.One + matrix.Z.Z - matrix.X.X - matrix.Y.Y);
-        invS = T.One / (two * s);
+        root = T.Sqrt(T.One + matrix.Z.Z - matrix.X.X - matrix.Y.Y);
+        c = T.One / (two * root);
 
         return new(
-            (matrix.Z.X + matrix.X.Z) * invS,
-            (matrix.Z.Y + matrix.Y.Z) * invS,
-            s / two,
-            (matrix.X.Y - matrix.Y.Z) * invS);
+            (matrix.Z.X + matrix.X.Z) * c,
+            (matrix.Z.Y + matrix.Y.Z) * c,
+            root / two,
+            (matrix.X.Y - matrix.Y.Z) * c);
     }
 
     public static Quat<T> CreateFromYawPitchRoll(T yaw, T pitch, T roll)

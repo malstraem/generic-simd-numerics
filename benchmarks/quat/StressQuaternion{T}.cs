@@ -4,12 +4,12 @@ using Silk.NET.Maths;
 
 namespace System.Numerics.Bench;
 
-public abstract class StressSilkQuat<T> : BaseBench
+public abstract class StressQuaternion<T> : BaseBench
     where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
 {
     private readonly Quaternion<T>[] quats = new Quaternion<T>[Count];
 
-    public StressSilkQuat()
+    public StressQuaternion()
     {
         for (int i = 0; i < quats.Length; i++)
             quats[i] = Quat<T>.Gen(T.CreateTruncating(Random.Shared.Next(10, 100))).Silk();

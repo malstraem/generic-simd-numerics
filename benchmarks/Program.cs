@@ -41,8 +41,8 @@ BenchmarkRunner.Run<StressQuat<double>>();
 
 BenchmarkRunner.Run<StressQuaternion>();
 
-BenchmarkRunner.Run<StressSilkQuat<float>>();
-BenchmarkRunner.Run<StressSilkQuat<double>>();
+BenchmarkRunner.Run<StressQuaternion<float>>();
+BenchmarkRunner.Run<StressQuaternion<double>>();
 
 
 Console.ReadLine();
