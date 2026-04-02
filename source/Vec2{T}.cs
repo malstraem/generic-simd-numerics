@@ -12,9 +12,9 @@ public partial struct Vec2<T>(T x, T y) :
 
     public Vec2(T num) : this(num, num) { }
 
-    public static Vec2<T> Zero { get; } = new(T.Zero);
+    public static Vec2<T> One { get; } = new(T.One);
 
-    public static Vec2<T> One { get; } = new(T.One, T.One);
+    public static Vec2<T> Zero { get; } = new(T.Zero);
 
     public static Vec2<T> UnitX { get; } = new(T.One, T.Zero);
 

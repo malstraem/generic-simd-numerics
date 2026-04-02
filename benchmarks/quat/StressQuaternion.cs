@@ -1,7 +1,9 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 namespace System.Numerics.Bench;
 
+[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
 public class StressQuaternion : BaseBench
 {
     private readonly Quaternion[] quats = new Quaternion[Count];
@@ -9,7 +11,7 @@ public class StressQuaternion : BaseBench
     public StressQuaternion()
     {
         for (int i = 0; i < quats.Length; i++)
-            quats[i] = Quaternion.Gen(Random.Shared.Next(10, 100));
+            quats[i] = Quat<float>.Gen(Random.Shared.Next(10, 100)).System();
     }
 
     //[Benchmark]

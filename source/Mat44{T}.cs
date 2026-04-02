@@ -15,10 +15,10 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
                                                     new(m41, m42, m43, m44))
     { }
 
-    public static Mat44<T> Identity { get; } = new(T.One, T.Zero, T.Zero, T.Zero,
-                                                   T.Zero, T.One, T.Zero, T.Zero,
-                                                   T.Zero, T.Zero, T.One, T.Zero,
-                                                   T.Zero, T.Zero, T.Zero, T.One);
+    public static Mat44<T> Identity { get; } = new(Vec4<T>.UnitX,
+                                                   Vec4<T>.UnitY,
+                                                   Vec4<T>.UnitZ,
+                                                   Vec4<T>.UnitW);
 
     [MethodImpl(AggressiveInlining)]
     public static Mat44<T> operator *(Mat44<T> mat, T num)

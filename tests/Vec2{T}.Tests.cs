@@ -78,9 +78,9 @@ public abstract class Vec2Root<T, R> : Vec2Base<T>
     [Test, DisplayName("len")]
     public async Task Length()
     {
-        var expected = vec.Silk().Length;
-
         var length = vec.Length<R>();
+
+        var expected = vec.Silk().Length;
 
         await Assert.That(length).IsEqualTo(Vec2<T>.Length<R>(vec));
         await Assert.That(length).IsEqualTo(expected);
@@ -245,19 +245,6 @@ public abstract class Vec2Base<T>
         await Assert.That(lerp).IsEqualTo(expected);
         await Assert.That(lerp).IsEqualTo(Vec2<T>.Lerp(x, y, amount));
     }
-
-    /*[Test, DisplayName("transform")]
-    public async Task Transform()
-    {
-        var mat = Mat44<T>.Gen(T.One);
-
-        var transform = vec.Transform(mat);
-
-        var expected = Vector2D.Transform(vec.Silk(), mat.Silk()).Vec2();
-
-        await Assert.That(transform).IsEqualTo(expected);
-        await Assert.That(transform).IsEqualTo(Vec2<T>.Transform(vec, mat));
-    }*/
 
     [Test, DisplayName("dot")]
     public async Task Dot()

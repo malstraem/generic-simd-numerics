@@ -1,11 +1,14 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 namespace System.Numerics.Bench;
 
-public abstract class StressVec3<T> : StressVec3<T, T>
+[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
+public class StressVec3<T> : StressVec3<T, T>
     where T : unmanaged, INumber<T>, IRootFunctions<T>;
 
-public abstract class StressVec3<T, R> : BaseBench
+[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
+public class StressVec3<T, R> : BaseBench
     where T : unmanaged, INumber<T>
     where R : unmanaged, IRootFunctions<R>
 {

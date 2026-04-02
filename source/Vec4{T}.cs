@@ -12,9 +12,9 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
 
     public Vec4(T num) : this(num, num, num, num) { }
 
-    public static Vec4<T> Zero { get; } = new(T.Zero);
+    public static Vec4<T> One { get; } = new(T.One);
 
-    public static Vec4<T> One { get; } = new(T.One, T.One, T.One, T.One);
+    public static Vec4<T> Zero { get; } = new(T.Zero);
 
     public static Vec4<T> UnitX { get; } = new(T.One, T.Zero, T.Zero, T.Zero);
 

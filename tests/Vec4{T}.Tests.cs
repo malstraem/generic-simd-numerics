@@ -78,9 +78,9 @@ public abstract class Vec4Root<T, R> : Vec4Base<T>
     [Test, DisplayName("len")]
     public async Task Length()
     {
-        var expected = vec.Silk().Length;
-
         var length = vec.Length<R>();
+
+        var expected = vec.Silk().Length;
 
         await Assert.That(length).IsEqualTo(Vec4<T>.Length<R>(vec));
         await Assert.That(length).IsEqualTo(expected);
