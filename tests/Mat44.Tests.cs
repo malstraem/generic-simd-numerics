@@ -16,14 +16,37 @@ public abstract class Mat44CreateBase<T>
        y = Mat44<T>.Gen(T.One + T.One + T.One);
 
     protected static readonly Quat<T>
-       xx = Quat<T>.Gen(T.One);
+       quat = Quat<T>.Gen(T.One);
+
+    protected static readonly Vec3<T>
+       vec = Vec3<T>.Gen(T.One);
 
     [Test, DisplayName("from quaternion")]
     public async Task CreateFromQuaternion()
     {
-        var res = Mat44.CreateFromQuat(xx);
+        var res = Mat44.CreateFromQuat(quat);
 
-        var expected = Matrix4X4.CreateFromQuaternion(xx.Silk()).Mat44();
+        var expected = Matrix4X4.CreateFromQuaternion(quat.Silk()).Mat44();
+
+        await Assert.That(res).IsEqualTo(expected);
+    }
+
+    [Test, DisplayName("from translation")]
+    public async Task CreateFromTranslation()
+    {
+        var res = Mat44.CreateFromTranslation(vec);
+
+        var expected = Matrix4X4.CreateTranslation(vec.Silk()).Mat44();
+
+        await Assert.That(res).IsEqualTo(expected);
+    }
+
+    [Test, DisplayName("from scale")]
+    public async Task CreateFromScale()
+    {
+        var res = Mat44.CreateFromScale(vec);
+
+        var expected = Matrix4X4.CreateScale(vec.Silk()).Mat44();
 
         await Assert.That(res).IsEqualTo(expected);
     }

@@ -23,4 +23,8 @@ public abstract class Matrix4X4Methods<T> : BaseBench
         for (int i = 0; i < Count - 1; i++)
             mats[i] = Matrix4X4.CreateFromQuaternion(quats[i]);
     }
+    /**{
+        for (int i = 0; i < Count - 1; i++)
+            mats[i] = Matrix4X4.Transform(mats[i], quats[i]);
+    }*/
 }

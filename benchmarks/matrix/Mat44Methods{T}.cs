@@ -21,4 +21,8 @@ public abstract class Mat44Methods<T> : BaseBench
         for (int i = 0; i < Count - 1; i++)
             mats[i] = Mat44.CreateFromQuat(quats[i]);
     }
+    /**    {
+        for (int i = 0; i < Count - 1; i++)
+            mats[i] *= Mat44.CreateFromQuat(quats[i]);
+    }*/
 }
