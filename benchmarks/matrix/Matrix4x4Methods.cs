@@ -19,8 +19,11 @@ public class Matrix4x4Methods : BaseBench
         for (int i = 0; i < Count - 1; i++)
             mats[i] = Matrix4x4.CreateFromQuaternion(quats[i]);
     }
-    /*{
+
+    [Benchmark]
+    public void Transform()
+    {
         for (int i = 0; i < Count - 1; i++)
             mats[i] = Matrix4x4.Transform(mats[i], quats[i]);
-    }*/
+    }
 }

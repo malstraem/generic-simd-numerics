@@ -8,16 +8,15 @@ public static class Mat44
     {
         T two = T.One + T.One;
 
-        T xx = q.X * q.X;
-        T yy = q.Y * q.Y;
-        T zz = q.Z * q.Z;
-
-        T xy = q.X * q.Y;
-        T zw = q.Z * q.W;
-        T zx = q.Z * q.X;
-        T yw = q.Y * q.W;
-        T yz = q.Y * q.Z;
-        T xw = q.X * q.W;
+        T xx = q.X * q.X,
+          yy = q.Y * q.Y,
+          zz = q.Z * q.Z,
+          xy = q.X * q.Y,
+          zw = q.Z * q.W,
+          zx = q.Z * q.X,
+          yw = q.Y * q.W,
+          yz = q.Y * q.Z,
+          xw = q.X * q.W;
 
         T q11 = T.One - two * (yy + zz),
           q12 = two * (xy + zw),
@@ -29,29 +28,27 @@ public static class Mat44
           q32 = two * (yz - xw),
           q33 = T.One - two * (yy + xx);
 
-        Vec4<T> vec1 = new(
-            mat.X.X * q11 + mat.X.Y * q21 + mat.X.Z * q31,
-            mat.X.X * q12 + mat.X.Y * q22 + mat.X.Z * q32,
-            mat.X.X * q13 + mat.X.Y* q23 + mat.X.Z * q33,
-            mat.X.W);
-
-        Vec4<T> vec2 = new(
-            mat.Y.X * q11 + mat.Y.Y * q21 + mat.Y.Z * q31,
-            mat.Y.X * q12 + mat.Y.Y * q22 + mat.Y.Z * q32,
-            mat.Y.X * q13 + mat.Y.Y * q23 + mat.Y.Z * q33,
-            mat.Y.W);
-
-        Vec4<T> vec3 = new(
-            mat.Z.X * q11 + mat.Z.Y * q21 + mat.Z.Z * q31,
-            mat.Z.X * q12 + mat.Z.Y * q22 + mat.Z.Z * q32,
-            mat.Z.X * q13 + mat.Z.Y * q23 + mat.Z.Z * q33,
-            mat.Z.W);
-
-        Vec4<T> vec4 = new(
-            mat.W.X * q11 + mat.W.Y * q21 + mat.W.Z * q31,
-            mat.W.X * q12 + mat.W.Y * q22 + mat.W.Z * q32,
-            mat.W.X * q13 + mat.W.Y * q23 + mat.W.Z * q33,
-            mat.W.W);
+        Vec4<T>
+            vec1 = new(
+                mat.X.X * q11 + mat.X.Y * q21 + mat.X.Z * q31,
+                mat.X.X * q12 + mat.X.Y * q22 + mat.X.Z * q32,
+                mat.X.X * q13 + mat.X.Y * q23 + mat.X.Z * q33,
+                mat.X.W),
+            vec2 = new(
+                mat.Y.X * q11 + mat.Y.Y * q21 + mat.Y.Z * q31,
+                mat.Y.X * q12 + mat.Y.Y * q22 + mat.Y.Z * q32,
+                mat.Y.X * q13 + mat.Y.Y * q23 + mat.Y.Z * q33,
+                mat.Y.W),
+            vec3 = new(
+                mat.Z.X * q11 + mat.Z.Y * q21 + mat.Z.Z * q31,
+                mat.Z.X * q12 + mat.Z.Y * q22 + mat.Z.Z * q32,
+                mat.Z.X * q13 + mat.Z.Y * q23 + mat.Z.Z * q33,
+                mat.Z.W),
+            vec4 = new(
+                mat.W.X * q11 + mat.W.Y * q21 + mat.W.Z * q31,
+                mat.W.X * q12 + mat.W.Y * q22 + mat.W.Z * q32,
+                mat.W.X * q13 + mat.W.Y * q23 + mat.W.Z * q33,
+                mat.W.W);
 
         return new(vec1, vec2, vec3, vec4);
     }
@@ -64,7 +61,7 @@ public static class Mat44
             value,  T.Zero, T.Zero, T.Zero,
             T.Zero, value,  T.Zero, T.Zero,
             T.Zero, T.Zero, value,  T.Zero,
-            T.Zero, T.Zero, T.Zero,  T.One);
+            T.Zero, T.Zero, T.Zero, T.One);
     }
 
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
@@ -75,7 +72,7 @@ public static class Mat44
             vec.X,  T.Zero, T.Zero, T.Zero,
             T.Zero, vec.Y,  T.Zero, T.Zero,
             T.Zero, T.Zero, vec.Z,  T.Zero,
-            T.Zero, T.Zero, T.Zero,  T.One);
+            T.Zero, T.Zero, T.Zero, T.One);
     }
 
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
@@ -95,16 +92,15 @@ public static class Mat44
     {
         T two = T.One + T.One;
 
-        T xx = q.X * q.X;
-        T yy = q.Y * q.Y;
-        T zz = q.Z * q.Z;
-
-        T xy = q.X * q.Y;
-        T zw = q.Z * q.W;
-        T zx = q.Z * q.X;
-        T yw = q.Y * q.W;
-        T yz = q.Y * q.Z;
-        T xw = q.X * q.W;
+        T xx = q.X * q.X,
+          yy = q.Y * q.Y,
+          zz = q.Z * q.Z,
+          xy = q.X * q.Y,
+          zw = q.Z * q.W,
+          zx = q.Z * q.X,
+          yw = q.Y * q.W,
+          yz = q.Y * q.Z,
+          xw = q.X * q.W;
 
         return new(
             T.One - two * (yy + zz), two * (xy + zw),         two * (zx - yw),         T.Zero,
