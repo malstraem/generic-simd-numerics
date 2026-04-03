@@ -43,7 +43,7 @@ public class RectBase<T>
        y = Rect<T>.Gen(T.One + T.One);
 
     [Test, DisplayName("contains point")]
-    public async Task Contains()
+    public async Task ContainsPoint()
     {
         var dot = x.Contains(vec);
 
@@ -53,7 +53,7 @@ public class RectBase<T>
     }
 
     [Test, DisplayName("contains rect")]
-    public async Task LengthSquared()
+    public async Task ContainsRect()
     {
         var length = x.Contains(y);
 
