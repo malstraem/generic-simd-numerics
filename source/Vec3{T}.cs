@@ -173,6 +173,54 @@ public partial struct Vec3<T>(T x, T y, T z) :
             && left.Y != right.Y
             && left.Z != right.Z;
     }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator <=(Vec3<T> left, Vec3<T> right)
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return Vector128.LessThanOrEqualAll(left.As128(), right.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return Vector256.LessThanOrEqualAll(left.As256(), right.As256());
+
+        return left.X <= right.X && left.Y <= right.Y && left.Z <= right.Z;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator >=(Vec3<T> left, Vec3<T> right)
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return Vector128.GreaterThanOrEqualAll(left.As128(), right.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return Vector256.GreaterThanOrEqualAll(left.As256(), right.As256());
+
+        return left.X >= right.X && left.Y >= right.Y && left.Z >= right.Z;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator >(Vec3<T> left, Vec3<T> right)
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return Vector128.GreaterThanAll(left.As128(), right.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return Vector256.GreaterThanAll(left.As256(), right.As256());
+
+        return left.X > right.X && left.Y > right.Y && left.Z > right.Z;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator <(Vec3<T> left, Vec3<T> right)
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return Vector128.LessThanAll(left.As128(), right.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return Vector256.LessThanAll(left.As256(), right.As256());
+
+        return left.X < right.X && left.Y < right.Y && left.Z < right.Z;
+    }
     #endregion
 
     [MethodImpl(AggressiveInlining)]

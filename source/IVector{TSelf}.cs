@@ -18,7 +18,8 @@ public interface IVectorOperators<TSelf> :
     IMultiplyOperators<TSelf, TSelf, TSelf>,
     IDivisionOperators<TSelf, TSelf, TSelf>,
     IUnaryNegationOperators<TSelf, TSelf>,
-    IUnaryPlusOperators<TSelf, TSelf>
+    IUnaryPlusOperators<TSelf, TSelf>,
+    IComparisonOperators<TSelf, TSelf, bool>
         where TSelf : IVector<TSelf>, IVectorOperators<TSelf>;
 
 public interface IVectorScalarOperators<TSelf, TScalar> :

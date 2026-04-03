@@ -15,4 +15,8 @@ public partial struct Vec4<T>
 
     [MethodImpl(AggressiveInlining)]
     internal static Vec4<T> From256(Vector256<T> ymm) => BitCast<Vector256<T>, Vec4<T>>(ymm);
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly Vec4<TOther> As<TOther>() where TOther : unmanaged, INumber<TOther>
+        => new(TOther.CreateTruncating(X), TOther.CreateTruncating(Y), TOther.CreateTruncating(Z), TOther.CreateTruncating(W));
 }

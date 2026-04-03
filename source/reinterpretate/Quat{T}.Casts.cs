@@ -36,4 +36,9 @@ public partial struct Quat<T>
 
     [MethodImpl(AggressiveInlining)]
     private readonly Vector256<double> As256D() => BitCast<Quat<T>, Vector256<double>>(this);
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly Quat<TOther> As<TOther>()
+        where TOther : unmanaged, ITrigonometricFunctions<TOther>, IRootFunctions<TOther>, INumber<TOther>
+            => new(TOther.CreateTruncating(X), TOther.CreateTruncating(Y), TOther.CreateTruncating(Z), TOther.CreateTruncating(W));
 }

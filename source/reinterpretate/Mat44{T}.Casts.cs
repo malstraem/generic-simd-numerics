@@ -15,4 +15,8 @@ public partial struct Mat44<T>
 
     [MethodImpl(AggressiveInlining)]
     private static Mat44<T> From512(Vector512<T> vec) => BitCast<Vector512<T>, Mat44<T>>(vec);
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly Mat44<TOther> As<TOther>() where TOther : unmanaged, INumber<TOther>
+        => new(X.As<TOther>(), Y.As<TOther>(), Z.As<TOther>(), W.As<TOther>());
 }

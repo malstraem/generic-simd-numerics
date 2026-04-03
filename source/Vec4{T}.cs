@@ -202,6 +202,54 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
             && left.Z != right.Z
             && left.W != right.W;
     }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator <=(Vec4<T> left, Vec4<T> right)
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return Vector128.LessThanOrEqualAll(left.As128(), right.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return Vector256.LessThanOrEqualAll(left.As256(), right.As256());
+
+        return left.X <= right.X && left.Y <= right.Y && left.Z <= right.Z && left.W <= right.W;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator >=(Vec4<T> left, Vec4<T> right)
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return Vector128.GreaterThanOrEqualAll(left.As128(), right.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return Vector256.GreaterThanOrEqualAll(left.As256(), right.As256());
+
+        return left.X >= right.X && left.Y >= right.Y && left.Z >= right.Z && left.W >= right.W;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator >(Vec4<T> left, Vec4<T> right)
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return Vector128.GreaterThanAll(left.As128(), right.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return Vector256.GreaterThanAll(left.As256(), right.As256());
+
+        return left.X > right.X && left.Y > right.Y && left.Z > right.Z && left.W > right.W;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator <(Vec4<T> left, Vec4<T> right)
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return Vector128.LessThanAll(left.As128(), right.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return Vector256.LessThanAll(left.As256(), right.As256());
+
+        return left.X < right.X && left.Y < right.Y && left.Z < right.Z && left.W < right.W;
+    }
     #endregion
 
     [MethodImpl(AggressiveInlining)]

@@ -29,4 +29,8 @@ public partial struct Vec3<T>
 
     [MethodImpl(AggressiveInlining)]
     internal static Vec3<T> From256(Vector256<T> ymm) => As<Vector256<T>, Vec3<T>>(ref ymm);
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly Vec3<TOther> As<TOther>() where TOther : unmanaged, INumber<TOther>
+        => new(TOther.CreateTruncating(X), TOther.CreateTruncating(Y), TOther.CreateTruncating(Z));
 }
