@@ -13,7 +13,7 @@ public class Matrix4x4Methods : BaseBench
             mats[i] = Mat44<float>.Gen(Random.Shared.Next(1, 10)).System();
     }
 
-    [Benchmark]
+    //[Benchmark]
     public void CreateFromQuat()
     {
         for (int i = 0; i < Count - 1; i++)

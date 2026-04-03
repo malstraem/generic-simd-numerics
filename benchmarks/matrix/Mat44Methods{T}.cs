@@ -15,7 +15,7 @@ public abstract class Mat44Methods<T> : BaseBench
             quats[i] = Quat<T>.Gen(T.CreateTruncating(Random.Shared.Next(10, 100)));
     }
 
-    [Benchmark]
+    //[Benchmark]
     public void CreateFromQuat()
     {
         for (int i = 0; i < Count - 1; i++)

@@ -49,7 +49,7 @@ BenchmarkRunner.Run<Mat44Methods<float>>();
 
 BenchmarkRunner.Run<Matrix4x4Methods>();
 
-BenchmarkRunner.Run<Matrix4X4Methods<float>>();
+//BenchmarkRunner.Run<Matrix4X4Methods<float>>();
 //BenchmarkRunner.Run<Matrix4X4Methods<double>>();
 
 

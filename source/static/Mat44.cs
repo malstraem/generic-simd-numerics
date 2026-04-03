@@ -3,11 +3,10 @@ namespace System.Numerics;
 #pragma warning disable IDE0055, IDE0007
 public static class Mat44
 {
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Mat44<T> Transfrom<T>(Mat44<T> mat, Quat<T> q)
         where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
     {
-        T two = T.One + T.One;
-
         T xx = q.X * q.X,
           yy = q.Y * q.Y,
           zz = q.Z * q.Z,
@@ -17,6 +16,71 @@ public static class Mat44
           yw = q.Y * q.W,
           yz = q.Y * q.Z,
           xw = q.X * q.W;
+
+        /*if (typeof(T) == typeof(float))
+        {
+            unsafe
+            {
+                var lastCol = (mat.X.W, mat.Y.W, mat.Z.W, mat.W.W);
+
+                var vec1 = Vector128.Create((float)(object)yw, (float)(object)zw, (float)(object)-yw, 0f)
+                         + Vector128.Create((float)(object)zx, (float)(object)xy, (float)(object)zx, 0f);
+
+                var vec2 = Vector128.Create((float)(object)-zw, (float)(object)-xw, (float)(object)xw, 0f)
+                         + Vector128.Create((float)(object)xy, (float)(object)yz, (float)(object)yz, 0f);
+
+                var vec3 = Vector128.Create((float)(object)zz, (float)(object)zz, (float)(object)xx, 0f)
+                         + Vector128.Create((float)(object)yy, (float)(object)xx, (float)(object)yy, 0f);
+
+                vec1 *= 2f;
+                vec2 *= 2f;
+                vec3 *= 2f;
+
+                vec3 = Vector128.Create(1f) - vec3;
+
+                float temp0 = vec1[0], temp1 = vec3[1];
+
+                var xmm1 = vec1.WithElement(0, vec3[0]);
+
+                var xmm3 = Vector128.Create(temp0, vec2[1], vec3[2], 0);
+
+                var xmm2 = vec2.WithElement(1, temp1);
+
+                var xmm4 = Vector128.Create((float)(object)mat.X.X) * xmm1;
+
+                xmm4 = Vector128.MultiplyAddEstimate(Vector128.Create((float)(object)mat.X.Y), xmm2, xmm4);
+                xmm4 = Vector128.MultiplyAddEstimate(Vector128.Create((float)(object)mat.X.Z), xmm3, xmm4);
+
+                Vector128.Store(xmm4.As<float, T>(), (T*)&mat.X);
+
+                xmm4 = Vector128.Create((float)(object)mat.Y.X) * xmm1;
+
+                xmm4 = Vector128.MultiplyAddEstimate(Vector128.Create((float)(object)mat.Y.Y), xmm2, xmm4);
+                xmm4 = Vector128.MultiplyAddEstimate(Vector128.Create((float)(object)mat.Y.Z), xmm3, xmm4);
+
+                Vector128.Store(xmm4.As<float, T>(), (T*)&mat.Y);
+
+                xmm4 = Vector128.Create((float)(object)mat.Z.X) * xmm1;
+
+                xmm4 = Vector128.MultiplyAddEstimate(Vector128.Create((float)(object)mat.Z.Y), xmm2, xmm4);
+                xmm4 = Vector128.MultiplyAddEstimate(Vector128.Create((float)(object)mat.Z.Z), xmm3, xmm4);
+
+                Vector128.Store(xmm4.As<float, T>(), (T*)&mat.Z);
+
+                xmm4 = Vector128.Create((float)(object)mat.W.X) * xmm1;
+
+                xmm4 = Vector128.MultiplyAddEstimate(Vector128.Create((float)(object)mat.W.Y), xmm2, xmm4);
+                xmm4 = Vector128.MultiplyAddEstimate(Vector128.Create((float)(object)mat.W.Z), xmm3, xmm4);
+
+                Vector128.Store(xmm4.As<float, T>(), (T*)&mat.W);
+
+                (mat.X.W, mat.Y.W, mat.Z.W, mat.W.W) = lastCol;
+            }
+
+            return mat;
+        }*/
+
+        T two = T.One + T.One;
 
         T q11 = T.One - two * (yy + zz),
           q12 = two * (xy + zw),
@@ -28,29 +92,27 @@ public static class Mat44
           q32 = two * (yz - xw),
           q33 = T.One - two * (yy + xx);
 
-        Vec4<T>
-            vec1 = new(
+        return new(
+            new(
                 mat.X.X * q11 + mat.X.Y * q21 + mat.X.Z * q31,
                 mat.X.X * q12 + mat.X.Y * q22 + mat.X.Z * q32,
                 mat.X.X * q13 + mat.X.Y * q23 + mat.X.Z * q33,
                 mat.X.W),
-            vec2 = new(
+            new(
                 mat.Y.X * q11 + mat.Y.Y * q21 + mat.Y.Z * q31,
                 mat.Y.X * q12 + mat.Y.Y * q22 + mat.Y.Z * q32,
                 mat.Y.X * q13 + mat.Y.Y * q23 + mat.Y.Z * q33,
                 mat.Y.W),
-            vec3 = new(
+            new(
                 mat.Z.X * q11 + mat.Z.Y * q21 + mat.Z.Z * q31,
                 mat.Z.X * q12 + mat.Z.Y * q22 + mat.Z.Z * q32,
                 mat.Z.X * q13 + mat.Z.Y * q23 + mat.Z.Z * q33,
                 mat.Z.W),
-            vec4 = new(
+            new(
                 mat.W.X * q11 + mat.W.Y * q21 + mat.W.Z * q31,
                 mat.W.X * q12 + mat.W.Y * q22 + mat.W.Z * q32,
                 mat.W.X * q13 + mat.W.Y * q23 + mat.W.Z * q33,
-                mat.W.W);
-
-        return new(vec1, vec2, vec3, vec4);
+                mat.W.W));
     }
 
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
@@ -138,7 +200,7 @@ public static class Mat44
 
             (res1.X, res3.X) = (res3.X, res1.X);
             (res2.Y, res3.Y) = (res3.Y, res2.Y);
-
+        
             res3.W = T.Zero;
 
             return new(res1, res2, res3, res4);
