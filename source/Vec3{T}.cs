@@ -9,11 +9,11 @@ public partial struct Vec3<T>(T x, T y, T z) :
 {
     public T X = x, Y = y, Z = z;
 
-    public static Vec3<T> One => new(T.One, T.One, T.One);
+    public Vec3(T num) : this(num, num, num) { }
 
-    public static Vec3<T> Zero => new(T.Zero, T.Zero, T.Zero);
+    public static Vec3<T> One => new(T.One);
 
-    public static Vec3<T> MultiplicativeIdentity => Zero;
+    public static Vec3<T> Zero => new(T.Zero);
 
     public static Vec3<T> UnitX { get; } = new(T.One, T.Zero, T.Zero);
 

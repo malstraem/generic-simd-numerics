@@ -4,7 +4,7 @@ namespace System.Numerics;
 
 public static class QuatExtensions
 {
-    extension<T>(Quat<T> value) where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+    extension<T>(Quat<T> q) where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
     {
         public static Quat<T> Gen(T num) => new
         (
@@ -13,31 +13,23 @@ public static class QuatExtensions
 
         public Quaternion<T> Silk() => new
         (
-            value.X, value.Y, value.Z, value.W
+            q.X, q.Y, q.Z, q.W
         );
     }
 
-    extension<T>(Quaternion<T> value) where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+    extension<T>(Quaternion<T> q) where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
     {
         public Quat<T> Quat() => new
         (
-            value.X, value.Y, value.Z, value.W
+            q.X, q.Y, q.Z, q.W
         );
     }
 
-    extension(Quat<float> value)
+    extension(Quat<float> q)
     {
         public Quaternion System() => new
         (
-            value.X, value.Y, value.Z, value.W
-        );
-    }
-
-    extension(Quaternion value)
-    {
-        public static Quaternion Gen(float num) => new
-        (
-            num++, num++, num++, num / num
+            q.X, q.Y, q.Z, q.W
         );
     }
 }

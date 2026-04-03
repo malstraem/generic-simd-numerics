@@ -2,7 +2,7 @@ namespace System.Numerics;
 
 public partial struct Mat44<T>
 {
-    // need lil bit less asm
+    // need lilbit less asm
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     private static Mat44<T> MultiplySize8(Mat44<T> left, Mat44<T> right)
     {

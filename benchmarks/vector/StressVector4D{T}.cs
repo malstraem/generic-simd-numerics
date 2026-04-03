@@ -1,11 +1,12 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 using Silk.NET.Maths;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob, DisassemblyDiagnoser]
-public abstract class StressVector4D<T> : BaseBench
+[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
+public class StressVector4D<T> : BaseBench
     where T : unmanaged, INumber<T>
 {
     private static readonly T[] nums = new T[Count];
