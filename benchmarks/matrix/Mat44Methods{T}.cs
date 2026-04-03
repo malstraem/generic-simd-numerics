@@ -5,6 +5,9 @@ namespace System.Numerics.Bench;
 public abstract class Mat44Methods<T> : BaseBench
     where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
 {
+    private readonly Vec3<T>[] pos = new Vec3<T>[Count],
+                               scale = new Vec3<T>[Count];
+
     private readonly Quat<T>[] quats = new Quat<T>[Count];
 
     private readonly Mat44<T>[] mats = new Mat44<T>[Count];
@@ -12,7 +15,11 @@ public abstract class Mat44Methods<T> : BaseBench
     public Mat44Methods()
     {
         for (int i = 0; i < quats.Length; i++)
+        {
             quats[i] = Quat<T>.Gen(T.CreateTruncating(Random.Shared.Next(10, 100)));
+            pos[i] = Vec3<T>.Gen(T.CreateTruncating(Random.Shared.Next(10, 100)));
+            scale[i] = Vec3<T>.Gen(T.CreateTruncating(Random.Shared.Next(10, 100)));
+        }
     }
 
     //[Benchmark]
@@ -22,10 +29,17 @@ public abstract class Mat44Methods<T> : BaseBench
             mats[i] = Mat44.CreateFromQuat(quats[i]);
     }
 
-    [Benchmark]
+    //[Benchmark]
     public void Transform()
     {
         for (int i = 0; i < Count - 1; i++)
             mats[i] *= Mat44.CreateFromQuat(quats[i]);
+    }
+
+    [Benchmark]
+    public void CreateModelMatrix()
+    {
+        for (int i = 0; i < Count - 1; i++)
+            mats[i] = Mat44.FromTranslationRotationScale(pos[i], quats[i], scale[i]);
     }
 }

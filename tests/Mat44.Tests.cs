@@ -18,7 +18,8 @@ public abstract class Mat44CreateBase<T>
        quat = Quat<T>.Gen(T.One);
 
     protected static readonly Vec3<T>
-       vec = Vec3<T>.Gen(T.One);
+       vec = Vec3<T>.Gen(T.One),
+       scale = Vec3<T>.Gen(T.One + T.One);
 
     [Test, DisplayName("from quaternion")]
     public async Task CreateFromQuaternion()
@@ -56,6 +57,18 @@ public abstract class Mat44CreateBase<T>
         var res = Mat44.Transfrom(mat, quat);
 
         var expected = Matrix4X4.Transform(mat.Silk(), quat.Silk()).Mat44();
+
+        await Assert.That(res).IsEqualTo(expected);
+    }
+
+    [Test, DisplayName("create model matrix")]
+    public async Task FromTranslationRotationScale()
+    {
+        var res = Mat44.FromTranslationRotationScale(vec, quat, scale);
+
+        var expected = (Matrix4X4.CreateScale(scale.Silk())
+                      * Matrix4X4.CreateFromQuaternion(quat.Silk())
+                      * Matrix4X4.CreateTranslation(vec.Silk())).Mat44();
 
         await Assert.That(res).IsEqualTo(expected);
     }
