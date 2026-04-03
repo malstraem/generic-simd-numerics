@@ -39,34 +39,34 @@ public abstract class Vec3Root<T> : Vec3Root<T, T>
     [Test, DisplayName("len (sealed variant)")]
     public async Task LengthSealed()
     {
-        var length = vec.Length();
+        var length = a.Length();
 
-        var expected = vec.Silk().Length;
+        var expected = a.Silk().Length;
 
         await Assert.That(length).IsEqualTo(expected);
-        await Assert.That(length).IsEqualTo(Vec3.Length(vec));
+        await Assert.That(length).IsEqualTo(Vec3.Length(a));
     }
 
     [Test, DisplayName("dist (sealed variant)")]
     public async Task DistanceSealed()
     {
-        var distance = x.Distance(y);
+        var distance = a.Distance(b);
 
-        var expected = Vector3D.Distance(x.Silk(), y.Silk());
+        var expected = Vector3D.Distance(a.Silk(), b.Silk());
 
         await Assert.That(distance).IsEqualTo(expected);
-        await Assert.That(distance).IsEqualTo(Vec3.Distance(x, y));
+        await Assert.That(distance).IsEqualTo(Vec3.Distance(a, b));
     }
 
     [Test, DisplayName("norm (sealed variant)")]
     public async Task NormalizeSealed()
     {
-        var normal = vec.Normalize();
+        var normal = a.Normalize();
 
-        var expected = Vector3D.Normalize(vec.Silk()).Vec3();
+        var expected = Vector3D.Normalize(a.Silk()).Vec3();
 
         await Assert.That(normal).IsEqualTo(expected);
-        await Assert.That(normal).IsEqualTo(Vec3.Normalize(vec));
+        await Assert.That(normal).IsEqualTo(Vec3.Normalize(a));
     }
 }
 
@@ -78,45 +78,45 @@ public abstract class Vec3Root<T, R> : Vec3Base<T>
     [Test, DisplayName("len")]
     public async Task Length()
     {
-        var length = vec.Length<R>();
+        var length = a.Length<R>();
 
-        var expected = vec.Silk().Length;
+        var expected = a.Silk().Length;
 
-        await Assert.That(length).IsEqualTo(Vec3.Length<T, R>(vec));
+        await Assert.That(length).IsEqualTo(Vec3.Length<T, R>(a));
         await Assert.That(length).IsEqualTo(expected);
     }
 
     [Test, DisplayName("dist")]
     public async Task Distance()
     {
-        var distance = x.Distance<R>(y);
+        var distance = a.Distance<R>(b);
 
-        var expected = Vector3D.Distance(x.Silk(), y.Silk());
+        var expected = Vector3D.Distance(a.Silk(), b.Silk());
 
         await Assert.That(distance).IsEqualTo(expected);
-        await Assert.That(distance).IsEqualTo(Vec3.Distance<T, R>(x, y));
+        await Assert.That(distance).IsEqualTo(Vec3.Distance<T, R>(a, b));
     }
 
     [Test, DisplayName("norm")]
     public async Task Normalize()
     {
-        var normal = vec.Normalize<R>();
+        var normal = a.Normalize<R>();
 
-        var expected = Vector3D.Normalize(vec.Silk()).Vec3();
+        var expected = Vector3D.Normalize(a.Silk()).Vec3();
 
         await Assert.That(normal).IsEqualTo(expected);
-        await Assert.That(normal).IsEqualTo(Vec3.Normalize<T, R>(vec));
+        await Assert.That(normal).IsEqualTo(Vec3.Normalize<T, R>(a));
     }
 
     [Test, DisplayName("sqrt")]
     public async Task SquareRoot()
     {
-        var root = vec.SquareRoot<R>();
+        var root = a.SquareRoot<R>();
 
-        var expected = Vector3D.SquareRoot(vec.Silk()).Vec3();
+        var expected = Vector3D.SquareRoot(a.Silk()).Vec3();
 
         await Assert.That(root).IsEqualTo(expected);
-        await Assert.That(root).IsEqualTo(Vec3.SquareRoot<T, R>(vec));
+        await Assert.That(root).IsEqualTo(Vec3.SquareRoot<T, R>(a));
     }
 }
 
@@ -124,77 +124,75 @@ public abstract class Vec3Base<T>
     where T : unmanaged, INumber<T>
 {
     protected static readonly Vec3<T>
-       x = Vec3<T>.Gen(T.One),
-       y = Vec3<T>.Gen(T.One + T.One),
+       a = Vec3<T>.Gen(T.One + T.One),
+       b = Vec3<T>.Gen(T.One),
        min = Vec3<T>.Gen(-T.One),
-       max = Vec3<T>.Gen(T.One + T.One + T.One),
-       vec = Vec3<T>.Gen(T.One + T.One + T.One + T.One),
-       negative = -vec;
+       max = a;
 
-    [Test, DisplayName("x + y")]
+    [Test, DisplayName("a + b")]
     public async Task Add()
     {
-        var add = x + y;
+        var add = a + b;
 
-        var expected = (x.Silk() + y.Silk()).Vec3();
+        var expected = (a.Silk() + b.Silk()).Vec3();
 
         await Assert.That(add).IsEqualTo(expected);
-        await Assert.That(add).IsEqualTo(Vec3.Add(x, y));
+        await Assert.That(add).IsEqualTo(Vec3.Add(a, b));
     }
 
-    [Test, DisplayName("x - y")]
+    [Test, DisplayName("a - b")]
     public async Task Substract()
     {
-        var sub = x - y;
+        var sub = a - b;
 
-        var expected = (x.Silk() - y.Silk()).Vec3();
+        var expected = (a.Silk() - b.Silk()).Vec3();
 
         await Assert.That(sub).IsEqualTo(expected);
-        await Assert.That(sub).IsEqualTo(Vec3.Substract(x, y));
+        await Assert.That(sub).IsEqualTo(Vec3.Substract(a, b));
     }
 
-    [Test, DisplayName("x * y")]
+    [Test, DisplayName("a ⊙ b")]
     public async Task Multiply()
     {
-        var mul = x * y;
+        var mul = a * b;
 
-        var expected = (x.Silk() * y.Silk()).Vec3();
+        var expected = (a.Silk() * b.Silk()).Vec3();
 
         await Assert.That(mul).IsEqualTo(expected);
-        await Assert.That(mul).IsEqualTo(Vec3.Multiply(x, y));
+        await Assert.That(mul).IsEqualTo(Vec3.Multiply(a, b));
     }
 
-    [Test, DisplayName("x / y")]
+    [Test, DisplayName("a / b")]
     public async Task Divide()
     {
-        var div = x / y;
+        var div = a / b;
 
-        var expected = (x.Silk() / y.Silk()).Vec3();
+        var expected = (a.Silk() / b.Silk()).Vec3();
 
         await Assert.That(div).IsEqualTo(expected);
-        await Assert.That(div).IsEqualTo(Vec3.Divide(x, y));
+        await Assert.That(div).IsEqualTo(Vec3.Divide(a, b));
     }
 
     [Test, DisplayName("dot")]
     public async Task Dot()
     {
-        var dot = x.Dot(y);
+        var dot = a.Dot(b);
 
-        var expected = Vector3D.Dot(x.Silk(), y.Silk());
+        var expected = Vector3D.Dot(a.Silk(), b.Silk());
 
         await Assert.That(dot).IsEqualTo(expected);
-        await Assert.That(dot).IsEqualTo(Vec3.Dot(x, y));
+        await Assert.That(dot).IsEqualTo(Vec3.Dot(a, b));
     }
 
     [Test, DisplayName("abs")]
     public async Task Abs()
     {
-        var abs = negative.Abs();
+        var abs = (-a).Abs();
 
-        var expected = Vector3D.Abs(negative.Silk()).Vec3();
+        var expected = Vector3D.Abs((-a).Silk()).Vec3();
 
         await Assert.That(abs).IsEqualTo(expected);
-        await Assert.That(abs).IsEqualTo(Vec3.Abs(negative));
+        await Assert.That(abs).IsEqualTo(Vec3.Abs(-a));
     }
 
     [Test, DisplayName("min")]
@@ -236,12 +234,12 @@ public abstract class Vec3Base<T>
     [Test, DisplayName("clamp")]
     public async Task Clamp()
     {
-        var clamp = vec.Clamp(min, max);
+        var clamp = a.Clamp(min, max);
 
-        var expected = Vector3D.Clamp(vec.Silk(), min.Silk(), max.Silk()).Vec3();
+        var expected = Vector3D.Clamp(a.Silk(), min.Silk(), max.Silk()).Vec3();
 
         await Assert.That(clamp).IsEqualTo(expected);
-        await Assert.That(clamp).IsEqualTo(Vec3.Clamp(vec, min, max));
+        await Assert.That(clamp).IsEqualTo(Vec3.Clamp(a, min, max));
     }
 
     [Test, DisplayName("lerp")]
@@ -249,44 +247,44 @@ public abstract class Vec3Base<T>
     {
         var amount = T.One + T.One + T.One;
 
-        var lerp = x.Lerp(y, amount);
+        var lerp = a.Lerp(b, amount);
 
-        var expected = Vector3D.Lerp(x.Silk(), y.Silk(), amount).Vec3();
+        var expected = Vector3D.Lerp(a.Silk(), b.Silk(), amount).Vec3();
 
         await Assert.That(lerp).IsEqualTo(expected);
-        await Assert.That(lerp).IsEqualTo(Vec3.Lerp(x, y, amount));
+        await Assert.That(lerp).IsEqualTo(Vec3.Lerp(a, b, amount));
     }
 
     [Test, DisplayName("cross")]
     public async Task Cross()
     {
-        var cross = x.Cross(y);
+        var cross = a.Cross(b);
 
-        var expected = Vector3D.Cross(x.Silk(), y.Silk()).Vec3();
+        var expected = Vector3D.Cross(a.Silk(), b.Silk()).Vec3();
 
         await Assert.That(cross).IsEqualTo(expected);
-        await Assert.That(cross).IsEqualTo(Vec3.Cross(x, y));
+        await Assert.That(cross).IsEqualTo(Vec3.Cross(a, b));
     }
 
     [Test, DisplayName("len²")]
     public async Task LengthSquared()
     {
-        var length = vec.LengthSquared();
+        var length = a.LengthSquared();
 
-        var expected = vec.Silk().LengthSquared;
+        var expected = a.Silk().LengthSquared;
 
         await Assert.That(length).IsEqualTo(expected);
-        await Assert.That(length).IsEqualTo(Vec3.LengthSquared(vec));
+        await Assert.That(length).IsEqualTo(Vec3.LengthSquared(a));
     }
 
     [Test, DisplayName("dist²")]
     public async Task DistanceSquared()
     {
-        var distance = x.DistanceSquared(y);
+        var distance = a.DistanceSquared(b);
 
-        var expected = Vector3D.DistanceSquared(x.Silk(), y.Silk());
+        var expected = Vector3D.DistanceSquared(a.Silk(), b.Silk());
 
         await Assert.That(distance).IsEqualTo(expected);
-        await Assert.That(distance).IsEqualTo(Vec3.DistanceSquared(x, y));
+        await Assert.That(distance).IsEqualTo(Vec3.DistanceSquared(a, b));
     }
 }

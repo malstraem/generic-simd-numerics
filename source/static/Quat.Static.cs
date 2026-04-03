@@ -3,66 +3,66 @@ namespace System.Numerics;
 public static class Quat
 {
     [MethodImpl(AggressiveInlining)]
-    public static Quat<T> Add<T>(Quat<T> left, Quat<T> right)
+    public static Quat<T> Add<T>(Quat<T> a, Quat<T> b)
         where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
-            => left + right;
+            => a + b;
 
     [MethodImpl(AggressiveInlining)]
-    public static Quat<T> Substruct<T>(Quat<T> left, Quat<T> right)
+    public static Quat<T> Substruct<T>(Quat<T> a, Quat<T> b)
         where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
-            => left - right;
+            => a - b;
 
     [MethodImpl(AggressiveInlining)]
-    public static Quat<T> Multiply<T>(Quat<T> left, T num)
+    public static Quat<T> Multiply<T>(Quat<T> a, T n)
         where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
-            => left * num;
+            => a * n;
 
     [MethodImpl(AggressiveInlining)]
-    public static Quat<T> Multiply<T>(Quat<T> left, Quat<T> right)
+    public static Quat<T> Multiply<T>(Quat<T> a, Quat<T> b)
         where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
-            => left * right;
-
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static T Dot<T>(Quat<T> left, Quat<T> right)
-        where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
-            => left.Dot(right);
+            => a * b;
 
     [MethodImpl(AggressiveInlining)]
-    public static Quat<T> Divide<T>(Quat<T> left, Quat<T> right)
+    public static T Dot<T>(Quat<T> a, Quat<T> b)
         where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
-            => left / right;
+            => a.Dot(b);
 
     [MethodImpl(AggressiveInlining)]
-    public static T Length<T>(Quat<T> quat)
+    public static Quat<T> Divide<T>(Quat<T> a, Quat<T> b)
         where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
-            => quat.Length();
+            => a / b;
 
     [MethodImpl(AggressiveInlining)]
-    public static T LengthSquared<T>(Quat<T> quat)
+    public static T Length<T>(Quat<T> q)
         where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
-            => quat.LengthSquared();
+            => q.Length();
 
     [MethodImpl(AggressiveInlining)]
-    public static Quat<T> Normalize<T>(Quat<T> quat)
+    public static T LengthSquared<T>(Quat<T> q)
         where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
-            => quat.Normalize();
+            => q.LengthSquared();
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static Quat<T> Conjugate<T>(Quat<T> quat)
+    [MethodImpl(AggressiveInlining)]
+    public static Quat<T> Normalize<T>(Quat<T> q)
         where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
-            => quat.Conjugate();
+            => q.Normalize();
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static Quat<T> Inverse<T>(Quat<T> quat)
+    [MethodImpl(AggressiveInlining)]
+    public static Quat<T> Conjugate<T>(Quat<T> q)
         where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
-            => quat.Inverse();
+            => q.Conjugate();
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static Quat<T> Lerp<T>(Quat<T> left, Quat<T> right, T amount)
+    [MethodImpl(AggressiveInlining)]
+    public static Quat<T> Inverse<T>(Quat<T> q)
         where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
-            => left.Lerp(right, amount);
+            => q.Inverse();
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
+    public static Quat<T> Lerp<T>(Quat<T> a, Quat<T> b, T am)
+        where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+            => a.Lerp(b, am);
+
+    [MethodImpl(AggressiveInlining)]
     public static Quat<T> AxisAngle<T>(Vec3<T> axis, T angle)
         where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
     {

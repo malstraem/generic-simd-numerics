@@ -37,7 +37,7 @@ public abstract class Mat44Base<T>
        a = Mat44<T>.Gen(T.One),
        b = Mat44<T>.Gen(T.One + T.One + T.One);
 
-    [Test, DisplayName("x + y")]
+    [Test, DisplayName("a + b")]
     public async Task Add()
     {
         var add = a + b;
@@ -47,7 +47,7 @@ public abstract class Mat44Base<T>
         await Assert.That(add).IsEqualTo(expected);
     }
 
-    [Test, DisplayName("x - y")]
+    [Test, DisplayName("a - b")]
     public async Task Substract()
     {
         var sub = a - b;
@@ -57,7 +57,7 @@ public abstract class Mat44Base<T>
         await Assert.That(sub).IsEqualTo(expected);
     }
 
-    [Test, DisplayName("x * y")]
+    [Test, DisplayName("a * b")]
     public async Task Multiply()
     {
         var mul = a * b;

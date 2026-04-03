@@ -21,23 +21,20 @@ public partial struct Quat<T>(Vec4<T> vec)
 
     public readonly bool IsIdentity => this == Identity;
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     public static Quat<T> operator -(Quat<T> quat) => new(-quat.vec);
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static Quat<T> operator +(Quat<T> left, Quat<T> right)
-        => new(left.vec + right.vec);
+    [MethodImpl(AggressiveInlining)]
+    public static Quat<T> operator *(Quat<T> quat, T n) => new(quat.vec * n);
+
+    [MethodImpl(AggressiveInlining)]
+    public static Quat<T> operator +(Quat<T> a, Quat<T> b) => new(a.vec + b.vec);
+
+    [MethodImpl(AggressiveInlining)]
+    public static Quat<T> operator -(Quat<T> a, Quat<T> b) => new(a.vec - b.vec);
 
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static Quat<T> operator -(Quat<T> left, Quat<T> right)
-        => new(left.vec - right.vec);
-
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static Quat<T> operator *(Quat<T> quat, T num)
-        => new(quat.vec * num);
-
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static Quat<T> operator *(Quat<T> left, Quat<T> right)
+    public static Quat<T> operator *(Quat<T> a, Quat<T> b)
     {
         if (typeof(T) == typeof(float))
         {
@@ -45,9 +42,9 @@ public partial struct Quat<T>(Vec4<T> vec)
             {
                 SkipInit<Quat<T>>(out var value);
 
-                var rVec = right.As128F();
+                var rVec = b.As128F();
 
-                Broadcast128F(left, out var xx, out var yy, out var zz, out var ww);
+                Broadcast128F(a, out var xx, out var yy, out var zz, out var ww);
 
                 var result = rVec * ww;
                 result = Vector128.MultiplyAddEstimate(Vector128.Shuffle(rVec * Vector128.Create(-1, 1, -1, 1f), Vector128.Create(3, 2, 1, 0)), xx, result);
@@ -65,9 +62,9 @@ public partial struct Quat<T>(Vec4<T> vec)
             {
                 SkipInit<Quat<T>>(out var value);
 
-                var rVec = right.As256D();
+                var rVec = b.As256D();
 
-                Broadcast256D(left, out var xx, out var yy, out var zz, out var ww);
+                Broadcast256D(a, out var xx, out var yy, out var zz, out var ww);
 
                 var result = rVec * ww;
                 result = Vector256.MultiplyAddEstimate(Vector256.Shuffle(rVec * Vector256.Create(-1, 1, -1, 1f), Vector256.Create(3, 2, 1, 0)), xx, result);
@@ -78,49 +75,47 @@ public partial struct Quat<T>(Vec4<T> vec)
                 return value;
             }
         }
-        return new((left.W * right.X) + (left.X * right.W) + (left.Y * right.Z) - (left.Z * right.Y),
-                   (left.W * right.Y) - (left.X * right.Z) + (left.Y * right.W) + (left.Z * right.X),
-                   (left.W * right.Z) + (left.X * right.Y) - (left.Y * right.X) + (left.Z * right.W),
-                   (left.W * right.W) - (left.X * right.X) - (left.Y * right.Y) - (left.Z * right.Z));
+        return new((a.W * b.X) + (a.X * b.W) + (a.Y * b.Z) - (a.Z * b.Y),
+                   (a.W * b.Y) - (a.X * b.Z) + (a.Y * b.W) + (a.Z * b.X),
+                   (a.W * b.Z) + (a.X * b.Y) - (a.Y * b.X) + (a.Z * b.W),
+                   (a.W * b.W) - (a.X * b.X) - (a.Y * b.Y) - (a.Z * b.Z));
     }
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static bool operator ==(Quat<T> left, Quat<T> right)
-        => left.vec == right.vec;
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator ==(Quat<T> a, Quat<T> b) => a.vec == b.vec;
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static bool operator !=(Quat<T> left, Quat<T> right)
-        => left.vec != right.vec;
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator !=(Quat<T> a, Quat<T> b) => a.vec != b.vec;
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static Quat<T> operator /(Quat<T> left, Quat<T> right)
-        => left * right.Inverse();
+    [MethodImpl(AggressiveInlining)]
+    public static Quat<T> operator /(Quat<T> a, Quat<T> b) => a * b.Inverse();
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     public readonly T Dot(Quat<T> q) => vec.Dot(q.vec);
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     public readonly T Length() => vec.Length();
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     public readonly T LengthSquared() => vec.LengthSquared();
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     public readonly Quat<T> Conjugate() => new(-X, -Y, -Z, W);
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     public readonly Quat<T> Normalize() => new(vec.Normalize());
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     public readonly Quat<T> Inverse() => new(Conjugate().vec / LengthSquared());
 
+    [Obsolete("vectorize")]
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public readonly Quat<T> Lerp(Quat<T> quat, T amount)
+    public readonly Quat<T> Lerp(Quat<T> quat, T am)
     {
         if (Dot(quat) >= T.Zero)
-            return new(vec.Lerp(quat.vec, amount).Normalize());
+            return new(vec.Lerp(quat.vec, am).Normalize());
 
-        return new(((vec * (T.One - amount)) - (quat.vec * amount)).Normalize());
+        return new(((vec * (T.One - am)) - (quat.vec * am)).Normalize());
     }
 
     public override readonly bool Equals(object? obj) => (obj is Quat<T> other) && Equals(other);
