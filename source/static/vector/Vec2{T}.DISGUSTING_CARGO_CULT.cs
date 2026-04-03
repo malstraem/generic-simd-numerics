@@ -36,12 +36,12 @@ public partial struct Vec2<T>
     }
 
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static Vec2<T> operator +(Vec2<T> left, Vec2<T> right)
+    public static Vec2<T> operator +(Vec2<T> a, Vec2<T> b)
     {
         if (Vector128<T>.IsSupported)
         {
             if (SizeOf<T>() == 8)
-                return From128(left.As128() + right.As128());
+                return From128(a.As128() + b.As128());
 
             /* ???
             float <-> 32-bit word
@@ -50,20 +50,20 @@ public partial struct Vec2<T>
             && Vector128<size x2 type>.IsSupported is pointless? */
 
             if (typeof(T) == typeof(short) /*&& Vector128<float>.IsSupported*/)
-                return From128S<float>(left.As128S<float>() + right.As128S<float>());
+                return From128S<float>(a.As128S<float>() + b.As128S<float>());
 
             if (typeof(T) == typeof(ushort))
-                return From128S<float>(left.As128S<float>() + right.As128S<float>());
+                return From128S<float>(a.As128S<float>() + b.As128S<float>());
 
             if (typeof(T) == typeof(int))
-                return From128S<double>(left.As128S<double>() + right.As128S<double>());
+                return From128S<double>(a.As128S<double>() + b.As128S<double>());
 
             if (typeof(T) == typeof(uint))
-                return From128S<double>(left.As128S<double>() + right.As128S<double>());
+                return From128S<double>(a.As128S<double>() + b.As128S<double>());
 
             if (typeof(T) == typeof(float))
-                return From128S<double>(left.As128S<double>() + right.As128S<double>());
+                return From128S<double>(a.As128S<double>() + b.As128S<double>());
         }
-        return new(left.X + right.X, left.Y + right.Y);
+        return new(a.X + b.X, a.Y + b.Y);
     }
 }

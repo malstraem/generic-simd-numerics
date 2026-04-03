@@ -19,7 +19,7 @@ public class StressVec3<T, R> : BaseBench
     public StressVec3()
     {
         for (int i = 0; i < vecs.Length; i++)
-            vecs[i] = Vec3<T>.Gen(T.CreateTruncating(Random.Shared.Next(10, 100)));
+            vecs[i] = Vec3<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
     }
 
     [Benchmark]

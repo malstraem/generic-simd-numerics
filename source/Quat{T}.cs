@@ -97,7 +97,7 @@ public partial struct Quat<T>(Vec4<T> vec)
         => left * right.Inverse();
 
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public readonly T Dot(Quat<T> q) => Vec4<T>.Dot(vec, q.vec);
+    public readonly T Dot(Quat<T> q) => vec.Dot(q.vec);
 
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public readonly T Length() => vec.Length();

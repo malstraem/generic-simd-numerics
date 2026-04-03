@@ -21,93 +21,78 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
                                                    Vec4<T>.UnitW);
 
     [MethodImpl(AggressiveInlining)]
-    public static Mat44<T> operator *(Mat44<T> mat, T num)
+    public static Mat44<T> operator *(Mat44<T> m, T n)
     {
         if (SizeOf<T>() == 2 && Vector256<T>.IsSupported)
-            return From256(mat.As256() * Vector256.Create(num));
+            return From256(m.As256() * Vector256.Create(n));
 
         if (SizeOf<T>() == 4 && Vector512<T>.IsSupported)
-            return From512(mat.As512() * Vector512.Create(num));
+            return From512(m.As512() * Vector512.Create(n));
 
-        return new(mat.X * num,
-                   mat.Y * num,
-                   mat.Z * num,
-                   mat.W * num);
-    }
-
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static Mat44<T> operator +(Mat44<T> left, Mat44<T> right)
-    {
-        if (SizeOf<T>() == 2 && Vector256<T>.IsSupported)
-            return From256(left.As256() + right.As256());
-
-        if (SizeOf<T>() == 4 && Vector512<T>.IsSupported)
-            return From512(left.As512() + right.As512());
-
-        return new(left.X + right.X,
-                   left.Y + right.Y,
-                   left.Z + right.Z,
-                   left.W + right.W);
+        return new(m.X * n, m.Y * n, m.Z * n, m.W * n);
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static Mat44<T> operator -(Mat44<T> left, Mat44<T> right)
+    public static Mat44<T> operator +(Mat44<T> a, Mat44<T> b)
     {
         if (SizeOf<T>() == 2 && Vector256<T>.IsSupported)
-            return From256(left.As256() - right.As256());
+            return From256(a.As256() + b.As256());
 
         if (SizeOf<T>() == 4 && Vector512<T>.IsSupported)
-            return From512(left.As512() - right.As512());
+            return From512(a.As512() + b.As512());
 
-        return new(left.X - right.X,
-                   left.Y - right.Y,
-                   left.Z - right.Z,
-                   left.W - right.W);
+        return new(a.X + b.X, a.Y + b.Y, a.Z + b.Z, a.W + b.W);
     }
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static Mat44<T> operator *(Mat44<T> left, Mat44<T> right)
+    [MethodImpl(AggressiveInlining)]
+    public static Mat44<T> operator -(Mat44<T> a, Mat44<T> b)
+    {
+        if (SizeOf<T>() == 2 && Vector256<T>.IsSupported)
+            return From256(a.As256() - b.As256());
+
+        if (SizeOf<T>() == 4 && Vector512<T>.IsSupported)
+            return From512(a.As512() - b.As512());
+
+        return new(a.X - b.X, a.Y - b.Y, a.Z - b.Z, a.W - b.W);
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Mat44<T> operator *(Mat44<T> a, Mat44<T> b)
     {
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return MultiplySize4(left, right);
+            return MultiplySize4(a, b);
 
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return MultiplySize8(left, right);
+            return MultiplySize8(a, b);
 
-        return new(left.X.Transform(right),
-                   left.Y.Transform(right),
-                   left.Z.Transform(right),
-                   left.W.Transform(right));
+        return new(a.X.Transform(b),
+                   a.Y.Transform(b),
+                   a.Z.Transform(b),
+                   a.W.Transform(b));
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator ==(Mat44<T> left, Mat44<T> right)
+    public static bool operator ==(Mat44<T> a, Mat44<T> b)
     {
         if (SizeOf<T>() == 2 && Vector256<T>.IsSupported)
-            return left.As256() == right.As256();
+            return a.As256() == b.As256();
 
         if (SizeOf<T>() == 4 && Vector512<T>.IsSupported)
-            return left.As512() == right.As512();
+            return a.As512() == b.As512();
 
-        return left.X == right.X
-            && left.Y == right.Y
-            && left.Z == right.Z
-            && left.W == right.W;
+        return a.X == b.X && a.Y == b.Y && a.Z == b.Z && a.W == b.W;
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator !=(Mat44<T> left, Mat44<T> right)
+    public static bool operator !=(Mat44<T> a, Mat44<T> b)
     {
         if (SizeOf<T>() == 2 && Vector256<T>.IsSupported)
-            return left.As256() != right.As256();
+            return a.As256() != b.As256();
 
         if (SizeOf<T>() == 4 && Vector512<T>.IsSupported)
-            return left.As512() != right.As512();
+            return a.As512() != b.As512();
 
-        return left.X != right.X
-            || left.Y != right.Y
-            || left.Z != right.Z
-            || left.W != right.W;
+        return a.X != b.X || a.Y != b.Y || a.Z != b.Z || a.W != b.W;
     }
 
     [Obsolete("vectorize?")]

@@ -13,7 +13,7 @@ public class StressVector2 : BaseBench
     public StressVector2()
     {
         for (int i = 0; i < vecs.Length; i++)
-            vecs[i] = Vec2<float>.Gen(Random.Shared.Next(10, 100)).System();
+            vecs[i] = Vec2<float>.Gen(Random.Shared.Next(1, 10)).System();
     }
 
     [Benchmark]
