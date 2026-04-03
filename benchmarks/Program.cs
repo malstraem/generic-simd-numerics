@@ -9,6 +9,7 @@ var vecs = BenchmarkSwitcher.FromTypes([
     typeof(StressVec2<float>),
     typeof(StressVector2D<float>),
 
+    /*
     typeof(StressVec2<double>),
     typeof(StressVector2D<double>),
 
@@ -74,7 +75,8 @@ var vecs = BenchmarkSwitcher.FromTypes([
     typeof(StressQuaternion<float>),
 
     typeof(StressQuat<double>),
-    typeof(StressQuaternion<double>),
+    typeof(StressQuaternion<double>)
+    */
 ]);
 
 var summary = vecs.RunAllJoined();

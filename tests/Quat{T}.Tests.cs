@@ -13,7 +13,7 @@ public abstract class QuatBase<T>
 {
     protected static readonly T eps = T.One / T.CreateTruncating(1e7);
 
-    protected static readonly Vec3<T> axis = Vec3<T>.Gen(T.One).Normalize();
+    protected static readonly Vec3<T> axis = Vec3<T>.Gen(T.One);
 
     protected static readonly T yaw = T.One / T.CreateChecked(10),
                                 pitch = (T.One + T.One) / T.CreateChecked(10),
@@ -24,8 +24,8 @@ public abstract class QuatBase<T>
        y = Quat<T>.Gen(T.One + T.One),
        min = Quat<T>.Gen(-T.One),
        max = Quat<T>.Gen(T.One + T.One + T.One),
-       vec = Quat<T>.Gen(T.One + T.One + T.One + T.One),
-       negative = -vec;
+       quat = Quat<T>.Gen(T.One + T.One + T.One + T.One),
+       negative = -quat;
 
     [Test, DisplayName("x + y")]
     public async Task Add()
@@ -35,7 +35,7 @@ public abstract class QuatBase<T>
         var expected = (x.Silk() + y.Silk()).Quat();
 
         await Assert.That(add).IsEqualTo(expected);
-        await Assert.That(add).IsEqualTo(Quat<T>.Add(x, y));
+        await Assert.That(Quat.Add(x, y)).IsEqualTo(add);
     }
 
     [Test, DisplayName("x - y")]
@@ -46,7 +46,7 @@ public abstract class QuatBase<T>
         var expected = (x.Silk() - y.Silk()).Quat();
 
         await Assert.That(sub).IsEqualTo(expected);
-        await Assert.That(sub).IsEqualTo(Quat<T>.Subtract(x, y));
+        await Assert.That(Quat.Substruct(x, y)).IsEqualTo(sub);
     }
 
     [Test, DisplayName("x * y")]
@@ -57,7 +57,7 @@ public abstract class QuatBase<T>
         var expected = (x.Silk() * y.Silk()).Quat();
 
         await Assert.That(mul).IsEqualTo(expected);
-        await Assert.That(mul).IsEqualTo(Quat<T>.Multiply(x, y));
+        await Assert.That(Quat.Multiply(x, y)).IsEqualTo(mul);
     }
 
     [Test, DisplayName("x / y")]
@@ -72,35 +72,37 @@ public abstract class QuatBase<T>
         await Assert.That(div.Z - expected.Z).IsLessThan(eps);
         await Assert.That(div.W - expected.W).IsLessThan(eps);
 
-        await Assert.That(div).IsEqualTo(Quat<T>.Divide(x, y));
+        await Assert.That(Quat.Divide(x, y)).IsEqualTo(div);
     }
 
     [Test, DisplayName("dot")]
     public async Task Dot()
     {
-        var dot = Quat<T>.Dot(x, y);
+        var dot = x.Dot(y);
 
         var expected = Quaternion<T>.Dot(x.Silk(), y.Silk());
 
         await Assert.That(dot).IsEqualTo(expected);
+        await Assert.That(Quat.Dot(x, y)).IsEqualTo(dot);
     }
 
     [Test, DisplayName("len")]
     public async Task Length()
     {
-        var length = vec.Length();
+        var length = quat.Length();
 
-        var expected = vec.Silk().Length();
+        var expected = quat.Silk().Length();
 
         await Assert.That(length).IsEqualTo(expected);
+        await Assert.That(Quat.Length(quat)).IsEqualTo(length);
     }
 
     [Test, DisplayName("len²")]
     public async Task LengthSquared()
     {
-        var length = vec.LengthSquared();
+        var length = quat.LengthSquared();
 
-        var expected = vec.Silk().LengthSquared();
+        var expected = quat.Silk().LengthSquared();
 
         await Assert.That(length).IsEqualTo(expected);
     }
@@ -108,11 +110,12 @@ public abstract class QuatBase<T>
     [Test, DisplayName("norm")]
     public async Task Normalize()
     {
-        var normal = Quat<T>.Normalize(vec);
+        var normal = quat.Normalize();
 
-        var expected = Quaternion<T>.Normalize(vec.Silk()).Quat();
+        var expected = Quaternion<T>.Normalize(quat.Silk()).Quat();
 
         await Assert.That(normal).IsEqualTo(expected);
+        await Assert.That(Quat.Normalize(quat)).IsEqualTo(normal);
     }
 
     [Test, DisplayName("lerp")]
@@ -120,30 +123,18 @@ public abstract class QuatBase<T>
     {
         var amount = T.One + T.One + T.One;
 
-        var lerp = Quat<T>.Lerp(x, y, amount);
+        var lerp = x.Lerp(y, amount);
 
         var expected = Quaternion<T>.Lerp(x.Silk(), y.Silk(), amount).Quat();
 
         await Assert.That(lerp).IsEqualTo(expected);
-    }
-
-    [Test, DisplayName("inv")]
-    public async Task Inverse()
-    {
-        var inv = Quat<T>.Inverse(x);
-
-        var expected = Quaternion<T>.Inverse(x.Silk()).Quat();
-
-        await Assert.That(inv.X - expected.X).IsLessThan(eps);
-        await Assert.That(inv.Y - expected.Y).IsLessThan(eps);
-        await Assert.That(inv.Z - expected.Z).IsLessThan(eps);
-        await Assert.That(inv.W - expected.W).IsLessThan(eps);
+        await Assert.That(Quat.Lerp(x, y, amount)).IsEqualTo(lerp);
     }
 
     [Test, DisplayName("conj")]
     public async Task Conjugate()
     {
-        var con = Quat<T>.Conjugate(x);
+        var con = x.Conjugate();
 
         var expected = Quaternion<T>.Conjugate(x.Silk()).Quat();
 
@@ -151,12 +142,29 @@ public abstract class QuatBase<T>
         await Assert.That(con.Y - expected.Y).IsLessThan(eps);
         await Assert.That(con.Z - expected.Z).IsLessThan(eps);
         await Assert.That(con.W - expected.W).IsLessThan(eps);
+
+        await Assert.That(Quat.Conjugate(x)).IsEqualTo(con);
     }
 
-    [Test, DisplayName("axis/angle")]
-    public async Task FromAxisAngle()
+    [Test, DisplayName("inv")]
+    public async Task Inverse()
     {
-        var aa = Quat<T>.CreateFromAxisAngle(axis, yaw);
+        var inv = x.Inverse();
+
+        var expected = Quaternion<T>.Inverse(x.Silk()).Quat();
+
+        await Assert.That(inv.X - expected.X).IsLessThan(eps);
+        await Assert.That(inv.Y - expected.Y).IsLessThan(eps);
+        await Assert.That(inv.Z - expected.Z).IsLessThan(eps);
+        await Assert.That(inv.W - expected.W).IsLessThan(eps);
+
+        await Assert.That(Quat.Inverse(x)).IsEqualTo(inv);
+    }
+
+    [Test, DisplayName("axis & angle")]
+    public async Task AxisAngle()
+    {
+        var aa = Quat.AxisAngle(axis, yaw);
 
         var expected = Quaternion<T>.CreateFromAxisAngle(axis.Silk(), yaw).Quat();
 
@@ -166,10 +174,10 @@ public abstract class QuatBase<T>
         await Assert.That(aa.W - expected.W).IsLessThan(eps);
     }
 
-    [Test, DisplayName("yaw/pitch/roll")]
-    public async Task FromYawPitchRoll()
+    [Test, DisplayName("yaw & pitch & roll")]
+    public async Task YawPitchRoll()
     {
-        var ypr = Quat<T>.CreateFromYawPitchRoll(yaw, pitch, roll);
+        var ypr = Quat.YawPitchRoll(yaw, pitch, roll);
 
         var expected = Quaternion<T>.CreateFromYawPitchRoll(yaw, pitch, roll).Quat();
 
@@ -180,11 +188,11 @@ public abstract class QuatBase<T>
     }
 
     [Test, DisplayName("rotation")]
-    public async Task FromRotationMatrix()
+    public async Task Rotation()
     {
         var m = Matrix4X4.CreateRotationX(yaw) * Matrix4X4.CreateRotationX(pitch) * Matrix4X4.CreateScale(T.One + T.One);
 
-        var rot = Quat<T>.CreateFromRotationMatrix(m.Mat44());
+        var rot = Quat.Rotation(m.Mat44());
 
         var expected = Quaternion<T>.CreateFromRotationMatrix(m).Quat();
 
