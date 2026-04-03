@@ -44,7 +44,7 @@ public abstract class Vec4Root<T> : Vec4Root<T, T>
         var expected = vec.Silk().Length;
 
         await Assert.That(length).IsEqualTo(expected);
-        await Assert.That(length).IsEqualTo(Vec4<T>.Length(vec));
+        await Assert.That(length).IsEqualTo(Vec4.Length(vec));
     }
 
     [Test, DisplayName("dist (sealed variant)")]
@@ -82,7 +82,7 @@ public abstract class Vec4Root<T, R> : Vec4Base<T>
 
         var expected = vec.Silk().Length;
 
-        await Assert.That(length).IsEqualTo(Vec4<T>.Length<R>(vec));
+        await Assert.That(length).IsEqualTo(Vec4.Length<R>(vec));
         await Assert.That(length).IsEqualTo(expected);
     }
 
