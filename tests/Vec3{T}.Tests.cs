@@ -141,47 +141,58 @@ public abstract class Vec3Base<T>
     }
 
     [Test, DisplayName("a - b")]
-    public async Task Substract()
+    public async Task Subtract()
     {
         var sub = a - b;
 
         var expected = (a.Silk() - b.Silk()).Vec3();
 
         await Assert.That(sub).IsEqualTo(expected);
-        await Assert.That(sub).IsEqualTo(Vec3.Substract(a, b));
+        await Assert.That(sub).IsEqualTo(Vec3.Subtract(a, b));
     }
 
-    [Test, DisplayName("a ⊙ b")]
-    public async Task Multiply()
-    {
-        var mul = a * b;
-
-        var expected = (a.Silk() * b.Silk()).Vec3();
-
-        await Assert.That(mul).IsEqualTo(expected);
-        await Assert.That(mul).IsEqualTo(Vec3.Multiply(a, b));
-    }
-
-    [Test, DisplayName("a / b")]
-    public async Task Divide()
-    {
-        var div = a / b;
-
-        var expected = (a.Silk() / b.Silk()).Vec3();
-
-        await Assert.That(div).IsEqualTo(expected);
-        await Assert.That(div).IsEqualTo(Vec3.Divide(a, b));
-    }
-
-    [Test, DisplayName("dot")]
+    [Test, DisplayName("a × b")]
     public async Task Dot()
     {
-        var dot = a.Dot(b);
+        var dot = a * b;
 
         var expected = Vector3D.Dot(a.Silk(), b.Silk());
 
         await Assert.That(dot).IsEqualTo(expected);
         await Assert.That(dot).IsEqualTo(Vec3.Dot(a, b));
+    }
+
+    [Test, DisplayName("a × b (element wise)")]
+    public async Task ElementMultiply()
+    {
+        var mul = a.ElementMultiply(b);
+
+        var expected = (a.Silk() * b.Silk()).Vec3();
+
+        await Assert.That(mul).IsEqualTo(expected);
+        await Assert.That(mul).IsEqualTo(Vec3.ElementMultiply(a, b));
+    }
+
+    [Test, DisplayName("a / b (element wise)")]
+    public async Task ElementDivide()
+    {
+        var div = a.ElementDivide(b);
+
+        var expected = (a.Silk() / b.Silk()).Vec3();
+
+        await Assert.That(div).IsEqualTo(expected);
+        await Assert.That(div).IsEqualTo(Vec3.ElementDivide(a, b));
+    }
+
+    [Test, DisplayName("sum")]
+    public async Task Sum()
+    {
+        var sum = a.Sum();
+
+        var expected = a.X + a.Y + a.Z;
+
+        await Assert.That(sum).IsEqualTo(expected);
+        await Assert.That(sum).IsEqualTo(Vec3.Sum(a));
     }
 
     [Test, DisplayName("abs")]

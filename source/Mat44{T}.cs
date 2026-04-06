@@ -2,7 +2,7 @@ namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
 public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
-    where T : unmanaged, INumber<T>
+    where T : INumber<T>
 {
     public Vec4<T> X = x, Y = y, Z = z, W = w;
 

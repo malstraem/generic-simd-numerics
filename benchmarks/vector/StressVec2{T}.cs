@@ -30,24 +30,24 @@ public class StressVec2<T, R> : BaseBench
     }
 
     [Benchmark]
-    public void Substract()
+    public void Subtract()
     {
         for (int i = 0; i < Count - 1; i++)
             vecs[i] = vecs[i] - vecs[i + 1];
     }
 
     [Benchmark]
-    public void Multiply()
+    public void ElementMultiply()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] * vecs[i + 1];
+            vecs[i] = vecs[i].ElementMultiply(vecs[i + 1]);
     }
 
     [Benchmark]
-    public void Divide()
+    public void ElementDivide()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] / vecs[i + 1];
+            vecs[i] = vecs[i].ElementDivide(vecs[i + 1]);
     }
 
     /*[Benchmark]
