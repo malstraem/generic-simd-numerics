@@ -1,11 +1,12 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 using Silk.NET.Maths;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob, DisassemblyDiagnoser]
-public abstract class StressVector4D<T> : BaseBench
+[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
+public class StressVector4D<T> : BaseBench
     where T : unmanaged, INumber<T>
 {
     private static readonly T[] nums = new T[Count];
@@ -17,7 +18,7 @@ public abstract class StressVector4D<T> : BaseBench
     public StressVector4D()
     {
         for (int i = 0; i < vecs.Length; i++)
-            vecs[i] = Vec4<T>.Gen(T.CreateTruncating(Random.Shared.Next(10, 100))).Silk();
+            vecs[i] = Vec4<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10))).Silk();
     }
 
     [Benchmark]
@@ -28,21 +29,21 @@ public abstract class StressVector4D<T> : BaseBench
     }
 
     [Benchmark]
-    public void Substract()
+    public void Subtract()
     {
         for (int i = 0; i < Count - 1; i++)
             vecs[i] = vecs[i] - vecs[i + 1];
     }
 
     [Benchmark]
-    public void Multiply()
+    public void ElementMultiply()
     {
         for (int i = 0; i < Count - 1; i++)
             vecs[i] = vecs[i] * vecs[i + 1];
     }
 
     [Benchmark]
-    public void Divide()
+    public void ElementDivide()
     {
         for (int i = 0; i < Count - 1; i++)
             vecs[i] = vecs[i] / vecs[i + 1];

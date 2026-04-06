@@ -1,10 +1,12 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 using Silk.NET.Maths;
 
 namespace System.Numerics.Bench;
 
-public abstract class StressMatrix4X4<T> : BaseBench
+[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
+public class StressMatrix4X4<T> : BaseBench
     where T : unmanaged, INumber<T>
 {
     private readonly Matrix4X4<T>[] mats = new Matrix4X4<T>[Count];

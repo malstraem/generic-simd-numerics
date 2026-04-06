@@ -34,35 +34,35 @@ public abstract class Mat44Base<T>
     where T : unmanaged, INumber<T>
 {
     protected static readonly Mat44<T>
-       x = Mat44<T>.Gen(T.One),
-       y = Mat44<T>.Gen(T.One + T.One + T.One);
+       a = Mat44<T>.Gen(T.One),
+       b = Mat44<T>.Gen(T.One + T.One + T.One);
 
-    [Test, DisplayName("x + y")]
+    [Test, DisplayName("a + b")]
     public async Task Add()
     {
-        var add = x + y;
+        var add = a + b;
 
-        var expected = (x.Silk() + y.Silk()).Mat44();
+        var expected = (a.Silk() + b.Silk()).Mat44();
 
         await Assert.That(add).IsEqualTo(expected);
     }
 
-    [Test, DisplayName("x - y")]
-    public async Task Substract()
+    [Test, DisplayName("a - b")]
+    public async Task Subtract()
     {
-        var sub = x - y;
+        var sub = a - b;
 
-        var expected = (x.Silk() - y.Silk()).Mat44();
+        var expected = (a.Silk() - b.Silk()).Mat44();
 
         await Assert.That(sub).IsEqualTo(expected);
     }
 
-    [Test, DisplayName("x * y")]
+    [Test, DisplayName("a * b")]
     public async Task Multiply()
     {
-        var mul = x * y;
+        var mul = a * b;
 
-        var expected = (x.Silk() * y.Silk()).Mat44();
+        var expected = (a.Silk() * b.Silk()).Mat44();
 
         await Assert.That(mul).IsEqualTo(expected);
     }

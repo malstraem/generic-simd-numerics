@@ -16,7 +16,7 @@ public class StressVector2D<T> : BaseBench
     public StressVector2D()
     {
         for (int i = 0; i < vecs.Length; i++)
-            vecs[i] = Vec2<T>.Gen(T.CreateTruncating(Random.Shared.Next(10, 100))).Silk();
+            vecs[i] = Vec2<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10))).Silk();
     }
 
     [Benchmark]
@@ -27,21 +27,21 @@ public class StressVector2D<T> : BaseBench
     }
 
     [Benchmark]
-    public void Substract()
+    public void Subtract()
     {
         for (int i = 0; i < Count - 1; i++)
             vecs[i] = vecs[i] - vecs[i + 1];
     }
 
     [Benchmark]
-    public void Multiply()
+    public void ElementMultiply()
     {
         for (int i = 0; i < Count - 1; i++)
             vecs[i] = vecs[i] * vecs[i + 1];
     }
 
     [Benchmark]
-    public void Divide()
+    public void ElementDivide()
     {
         for (int i = 0; i < Count - 1; i++)
             vecs[i] = vecs[i] / vecs[i + 1];

@@ -1,8 +1,9 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob, DisassemblyDiagnoser]
+[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
 public class StressVector4 : BaseBench
 {
     private static readonly float[] nums = new float[Count];
@@ -14,7 +15,7 @@ public class StressVector4 : BaseBench
     public StressVector4()
     {
         for (int i = 0; i < vecs.Length; i++)
-            vecs[i] = Vec4<float>.Gen(Random.Shared.Next(10, 100)).System();
+            vecs[i] = Vec4<float>.Gen(Random.Shared.Next(1, 10)).System();
     }
 
     [Benchmark]
@@ -25,21 +26,21 @@ public class StressVector4 : BaseBench
     }
 
     [Benchmark]
-    public void Substract()
+    public void Subtract()
     {
         for (int i = 0; i < Count - 1; i++)
             vecs[i] = vecs[i] - vecs[i + 1];
     }
 
     [Benchmark]
-    public void Multiply()
+    public void ElementMultiply()
     {
         for (int i = 0; i < Count - 1; i++)
             vecs[i] = vecs[i] * vecs[i + 1];
     }
 
     [Benchmark]
-    public void Divide()
+    public void ElementDivide()
     {
         for (int i = 0; i < Count - 1; i++)
             vecs[i] = vecs[i] / vecs[i + 1];

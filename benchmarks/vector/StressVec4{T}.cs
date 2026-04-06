@@ -1,15 +1,16 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob, DisassemblyDiagnoser]
-public abstract class StressVec4<T> : StressVec4<T, T>
+[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
+public class StressVec4<T> : StressVec4<T, T>
     where T : unmanaged, INumber<T>, IRootFunctions<T>;
 
-[SimpleJob, DisassemblyDiagnoser]
-public abstract class StressVec4<T, R> : BaseBench
+[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
+public class StressVec4<T, R> : BaseBench
     where T : unmanaged, INumber<T>
-    where R : unmanaged, IRootFunctions<R>
+    where R : unmanaged, INumber<R>, IRootFunctions<R>
 {
     private static readonly T[] nums = new T[Count];
 
@@ -20,7 +21,7 @@ public abstract class StressVec4<T, R> : BaseBench
     public StressVec4()
     {
         for (int i = 0; i < vecs.Length; i++)
-            vecs[i] = Vec4<T>.Gen(T.CreateTruncating(Random.Shared.Next(10, 100)));
+            vecs[i] = Vec4<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
     }
 
     [Benchmark]
@@ -38,17 +39,17 @@ public abstract class StressVec4<T, R> : BaseBench
     }
 
     [Benchmark]
-    public void Multiply()
+    public void ElementMultiply()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] * vecs[i + 1];
+            vecs[i] = vecs[i].ElementMultiply(vecs[i + 1]);
     }
 
     [Benchmark]
-    public void Divide()
+    public void ElementDivide()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] / vecs[i + 1];
+            vecs[i] = vecs[i].ElementDivide(vecs[i + 1]);
     }
 
     [Benchmark]
@@ -69,7 +70,7 @@ public abstract class StressVec4<T, R> : BaseBench
     public void Dot()
     {
         for (int i = 0; i < Count - 1; i++)
-            nums[i] = vecs[i].Dot(vecs[i + 1]);
+            nums[i] = vecs[i] * vecs[i + 1];
     }
 
     [Benchmark]

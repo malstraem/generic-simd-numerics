@@ -1,10 +1,12 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 using Silk.NET.Maths;
 
 namespace System.Numerics.Bench;
 
-public abstract class StressQuaternion<T> : BaseBench
+[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
+public class StressQuaternion<T> : BaseBench
     where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
 {
     private readonly Quaternion<T>[] quats = new Quaternion<T>[Count];

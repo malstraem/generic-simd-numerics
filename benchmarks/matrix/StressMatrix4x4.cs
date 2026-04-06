@@ -1,7 +1,9 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 namespace System.Numerics.Bench;
 
+[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
 public class StressMatrix4x4 : BaseBench
 {
     private readonly Matrix4x4[] mats = new Matrix4x4[Count];

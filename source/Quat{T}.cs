@@ -1,11 +1,9 @@
 namespace System.Numerics;
 
-public partial struct Quat<T>
+public partial struct Quat<T>(Vec4<T> vec)
     where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
 {
-    private static readonly T two = T.One + T.One;
-
-    internal Vec4<T> vec;
+    internal Vec4<T> vec = vec;
 
     public readonly T X => vec.X;
 
@@ -15,32 +13,28 @@ public partial struct Quat<T>
 
     public readonly T W => vec.W;
 
-    public Quat(T x, T y, T z, T w) => vec = new(x, y, z, w);
+    public Quat(T x, T y, T z, T w) : this(new(x, y, z, w)) { }
 
-    public Quat(Vec3<T> vec, T w) => this.vec = new(vec.X, vec.Y, vec.Z, w);
-
-    internal Quat(Vec4<T> vec) => this.vec = vec;
+    public Quat(Vec3<T> vec, T w) : this(new(vec.X, vec.Y, vec.Z, w)) { }
 
     public static Quat<T> Identity => new(Vec3<T>.Zero, T.One);
 
     public readonly bool IsIdentity => this == Identity;
 
-    [MethodImpl((MethodImplOptions)768)]
-    public static Quat<T> operator +(Quat<T> left, Quat<T> right)
-        => new(left.vec + right.vec);
+    [MethodImpl(AggressiveInlining)]
+    public static Quat<T> operator -(Quat<T> quat) => new(-quat.vec);
 
-    [MethodImpl((MethodImplOptions)768)]
-    public static Quat<T> operator /(Quat<T> left, Quat<T> right)
-        => left * Quat<T>.Inverse(right);
+    [MethodImpl(AggressiveInlining)]
+    public static Quat<T> operator *(Quat<T> quat, T n) => new(quat.vec * n);
 
-    public static bool operator ==(Quat<T> left, Quat<T> right)
-        => left.vec == right.vec;
+    [MethodImpl(AggressiveInlining)]
+    public static Quat<T> operator +(Quat<T> a, Quat<T> b) => new(a.vec + b.vec);
 
-    public static bool operator !=(Quat<T> left, Quat<T> right)
-        => left.vec != right.vec;
+    [MethodImpl(AggressiveInlining)]
+    public static Quat<T> operator -(Quat<T> a, Quat<T> b) => new(a.vec - b.vec);
 
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static Quat<T> operator *(Quat<T> left, Quat<T> right)
+    public static Quat<T> operator *(Quat<T> a, Quat<T> b)
     {
         if (typeof(T) == typeof(float))
         {
@@ -48,9 +42,9 @@ public partial struct Quat<T>
             {
                 SkipInit<Quat<T>>(out var value);
 
-                var rVec = right.As128F();
+                var rVec = b.As128F();
 
-                Broadcast128F(left, out var xx, out var yy, out var zz, out var ww);
+                Broadcast128F(a, out var xx, out var yy, out var zz, out var ww);
 
                 var result = rVec * ww;
                 result = Vector128.MultiplyAddEstimate(Vector128.Shuffle(rVec * Vector128.Create(-1, 1, -1, 1f), Vector128.Create(3, 2, 1, 0)), xx, result);
@@ -68,9 +62,9 @@ public partial struct Quat<T>
             {
                 SkipInit<Quat<T>>(out var value);
 
-                var rVec = right.As256D();
+                var rVec = b.As256D();
 
-                Broadcast256D(left, out var xx, out var yy, out var zz, out var ww);
+                Broadcast256D(a, out var xx, out var yy, out var zz, out var ww);
 
                 var result = rVec * ww;
                 result = Vector256.MultiplyAddEstimate(Vector256.Shuffle(rVec * Vector256.Create(-1, 1, -1, 1f), Vector256.Create(3, 2, 1, 0)), xx, result);
@@ -81,146 +75,63 @@ public partial struct Quat<T>
                 return value;
             }
         }
-
-        return new(
-            left.W * right.X + left.X * right.W + left.Y * right.Z - left.Z * right.Y,
-            left.W * right.Y - left.X * right.Z + left.Y * right.W + left.Z * right.X,
-            left.W * right.Z + left.X * right.Y - left.Y * right.X + left.Z * right.W,
-            left.W * right.W - left.X * right.X - left.Y * right.Y - left.Z * right.Z);
+        return new((a.W * b.X) + (a.X * b.W) + (a.Y * b.Z) - (a.Z * b.Y),
+                   (a.W * b.Y) - (a.X * b.Z) + (a.Y * b.W) + (a.Z * b.X),
+                   (a.W * b.Z) + (a.X * b.Y) - (a.Y * b.X) + (a.Z * b.W),
+                   (a.W * b.W) - (a.X * b.X) - (a.Y * b.Y) - (a.Z * b.Z));
     }
 
-    [MethodImpl((MethodImplOptions)768)]
-    public static Quat<T> operator *(Quat<T> quat, T value)
-        => new(quat.vec * value);
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator ==(Quat<T> a, Quat<T> b) => a.vec == b.vec;
 
-    [MethodImpl((MethodImplOptions)768)]
-    public static Quat<T> operator -(Quat<T> left, Quat<T> right)
-        => new(left.vec - right.vec);
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator !=(Quat<T> a, Quat<T> b) => a.vec != b.vec;
 
-    [MethodImpl((MethodImplOptions)768)]
-    public static Quat<T> operator -(Quat<T> value) => new(-value.vec);
+    [MethodImpl(AggressiveInlining)]
+    public static Quat<T> operator /(Quat<T> a, Quat<T> b) => a * b.Inverse();
 
-    [MethodImpl((MethodImplOptions)768)]
-    public static Quat<T> Add(Quat<T> left, Quat<T> right) => left + right;
+    [MethodImpl(AggressiveInlining)]
+    public readonly T Dot(Quat<T> q) => vec * q.vec;
 
-    public static Quat<T> Conjugate(Quat<T> value) => new(-value.X, -value.Y, -value.Z, value.W);
+    [MethodImpl(AggressiveInlining)]
+    public readonly T Length() => vec.Length();
 
-    [MethodImpl((MethodImplOptions)768)]
-    public static Quat<T> CreateFromAxisAngle(Vec3<T> axis, T angle)
+    [MethodImpl(AggressiveInlining)]
+    public readonly T LengthSquared() => vec.LengthSquared();
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly Quat<T> Conjugate() => new(-X, -Y, -Z, W);
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly Quat<T> Normalize()
     {
-        var (s, c) = T.SinCos(angle / two);
-        return new(axis * s, c);
+        //return new(vec.Normalize());
+
+        var dot = vec * vec;
+
+        var c = Vec4<T>.One / T.Sqrt(dot);
+
+        return new(vec.ElementMultiply(c));
     }
 
-    [Obsolete("vectorize?")]
-    public static Quat<T> CreateFromRotationMatrix(Mat44<T> matrix)
+    [MethodImpl(AggressiveInlining)]
+    public readonly Quat<T> Inverse() => new(Conjugate().vec / LengthSquared());
+
+    [Obsolete("vectorize")]
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    public readonly Quat<T> Lerp(Quat<T> quat, T am)
     {
-        var trace = matrix.X.X + matrix.Y.Y + matrix.Z.Z;
+        if (Dot(quat) >= T.Zero)
+            return new(vec.Lerp(quat.vec, am).Normalize());
 
-        T root, c;
-
-        if (trace > T.Zero)
-        {
-            root = T.Sqrt(trace + T.One);
-            c = T.One / (two * root);
-
-            return new(
-                (matrix.Y.Z - matrix.Z.Y) * c,
-                (matrix.Z.X - matrix.X.Z) * c,
-                (matrix.X.Y - matrix.Y.X) * c,
-                root / two);
-        }
-
-        if (matrix.X.X >= matrix.Y.Y && matrix.X.X >= matrix.Z.Z)
-        {
-            root = T.Sqrt(T.One + matrix.X.X - matrix.Y.Y - matrix.Z.Z);
-            c = T.One / (two * root);
-
-            return new(
-                root / two,
-                (matrix.X.Y + matrix.Y.X) * c,
-                (matrix.X.Z + matrix.Z.X) * c,
-                (matrix.Y.Z - matrix.Z.Y) * c);
-        }
-
-        if (matrix.Y.Y >= matrix.Z.Z)
-        {
-            root = T.Sqrt(T.One + matrix.Y.Y - matrix.X.X - matrix.Z.Z);
-            c = T.One / (two * root);
-
-            return new(
-                (matrix.Y.X + matrix.X.Y) * c,
-                root / two,
-                (matrix.Z.Y + matrix.Y.Z) * c,
-                (matrix.Z.X - matrix.X.Z) * c);
-        }
-
-        root = T.Sqrt(T.One + matrix.Z.Z - matrix.X.X - matrix.Y.Y);
-        c = T.One / (two * root);
-
-        return new(
-            (matrix.Z.X + matrix.X.Z) * c,
-            (matrix.Z.Y + matrix.Y.Z) * c,
-            root / two,
-            (matrix.X.Y - matrix.Y.Z) * c);
+        return new(((vec * (T.One - am)) - (quat.vec * am)).Normalize());
     }
-
-    public static Quat<T> CreateFromYawPitchRoll(T yaw, T pitch, T roll)
-    {
-        var (sr, cr) = T.SinCos(roll / two);
-        var (sp, cp) = T.SinCos(pitch / two);
-        var (sy, cy) = T.SinCos(yaw / two);
-
-        return new(
-            cy * sp * cr + sy * cp * sr,
-            sy * cp * cr - cy * sp * sr,
-            cy * cp * sr - sy * sp * cr,
-            cy * cp * cr + sy * sp * sr);
-    }
-
-    [MethodImpl((MethodImplOptions)768)]
-    public static Quat<T> Divide(Quat<T> left, Quat<T> right) => left / right;
-
-    [MethodImpl((MethodImplOptions)768)]
-    public static T Dot(Quat<T> left, Quat<T> right) => Vec4<T>.Dot(left.vec, right.vec);
-
-    //  -1   (       a              -v       )
-    // q   = ( -------------   ------------- )
-    //       (  a^2 + |v|^2  ,  a^2 + |v|^2  )
-    public static Quat<T> Inverse(Quat<T> value)
-        => new(Quat<T>.Conjugate(value).vec / value.LengthSquared());
-
-    public static Quat<T> Lerp(Quat<T> left, Quat<T> right, T amount)
-    {
-        if (Quat<T>.Dot(left, right) >= T.Zero)
-            return new(Vec4<T>.Lerp(left.vec, right.vec, amount).Normalize());
-
-        return new((left.vec * (T.One - amount) - right.vec * amount).Normalize());
-    }
-
-    [MethodImpl((MethodImplOptions)768)]
-    public static Quat<T> Multiply(Quat<T> left, Quat<T> right) => left * right;
-
-    [MethodImpl((MethodImplOptions)768)]
-    public static Quat<T> Multiply(Quat<T> left, T right) => left * right;
-
-    [MethodImpl((MethodImplOptions)768)]
-    public static Quat<T> Negate(Quat<T> value) => -value;
-
-    public static Quat<T> Normalize(Quat<T> value) => new(value.vec.Normalize());
-
-    [MethodImpl((MethodImplOptions)768)]
-    public static Quat<T> Subtract(Quat<T> left, Quat<T> right) => left - right;
 
     public override readonly bool Equals(object? obj) => (obj is Quat<T> other) && Equals(other);
 
     public readonly bool Equals(Quat<T> other) => this == other;
 
     public override readonly int GetHashCode() => vec.GetHashCode();
-
-    public readonly T Length() => vec.Length();
-
-    public readonly T LengthSquared() => vec.LengthSquared();
 
     public override readonly string ToString() => vec.ToString();
 }

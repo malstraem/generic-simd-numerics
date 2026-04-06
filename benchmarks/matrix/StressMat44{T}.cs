@@ -1,8 +1,10 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 namespace System.Numerics.Bench;
 
-public abstract class StressMat44<T> : BaseBench
+[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
+public class StressMat44<T> : BaseBench
     where T : unmanaged, INumber<T>
 {
     private readonly Mat44<T>[] mats = new Mat44<T>[Count];
