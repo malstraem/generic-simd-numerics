@@ -4,9 +4,135 @@ namespace System.Numerics;
 public static class Mat44
 {
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    private static Mat44<T> FromTranslationRotationScale4<T>(Vec3<T> pos, Quat<T> quat, Vec3<T> scale)
+        where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+    {
+        unsafe
+        {
+            var qVec = quat.vec.As128();
+
+            var xmm3 = qVec.WithElement(3, quat.Z);
+
+            xmm3 *= qVec;
+
+            var xmm4 = Vector128
+                .Shuffle(quat.As128F(), Vector128.Create(3, 2, 0, 1))
+                .As<float, T>();
+
+            xmm4 *= qVec;
+
+            T xy1 = quat.X * quat.Y;
+
+            var xmm1 = Vector128.Create((float)(object)xmm4[3], (float)(object)xmm3[3], (float)(object)(-xmm4[3]), 0f);
+            var xmm2 = Vector128.Create((float)(object)xmm4[2], (float)(object)xy1, (float)(object)xmm4[2], 0f);
+
+            var vec1 = xmm1 + xmm2;
+
+            xmm1 = Vector128.Create((float)(object)(-xmm3[3]), (float)(object)(-xmm4[0]), (float)(object)xmm4[0], 0f);
+            xmm2 = Vector128.Create((float)(object)xy1, (float)(object)xmm4[1], (float)(object)xmm4[1], 0f);
+
+            var vec2 = xmm1 + xmm2;
+
+            xmm1 = Vector128.Create((float)(object)xmm3[2], (float)(object)xmm3[2], (float)(object)xmm3[0], 0f);
+            xmm2 = Vector128.Create((float)(object)xmm3[1], (float)(object)xmm3[0], (float)(object)xmm3[1], 0f);
+
+            var vec3 = xmm1 + xmm2;
+
+            vec1 *= 2f;
+            vec2 *= 2f;
+            vec3 *= 2f;
+
+            vec3 = Vector128.Create(1f) - vec3;
+
+            var res3 = Vector128.Create((float)(object)vec1[0], (float)(object)vec2[1], (float)(object)vec3[2], 0f).As<float, T>();
+
+            SkipInit<Mat44<T>>(out var res);
+
+            (vec1.WithElement(0, vec3[0]).As<float, T>() * Vector128.Create(scale.X)).Store((T*)&res.X);
+            (vec2.WithElement(1, vec3[1]).As<float, T>() * Vector128.Create(scale.Y)).Store((T*)&res.Y);
+            (res3 * Vector128.Create(scale.Z)).Store((T*)&res.Z);
+
+            Vector128
+                .CreateScalar(*(double*)&pos)
+                .As<double, T>()
+                .WithElement(2, pos.Z)
+                .WithElement(3, T.One)
+                .Store((T*)&res.W);
+
+            return res;
+        }
+    }
+
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    private static Mat44<T> FromTranslationRotationScale8<T>(Vec3<T> pos, Quat<T> quat, Vec3<T> scale)
+        where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+    {
+        unsafe
+        {
+            var qVec = quat.vec.As256();
+
+            var xmm3 = qVec.WithElement(3, quat.Z);
+
+            xmm3 *= qVec;
+
+            var xmm4 = Vector256
+                .Shuffle(quat.As256D(), Vector256.Create(3, 2, 0, 1))
+                .As<double, T>();
+
+            xmm4 *= qVec;
+
+            T xy1 = quat.X * quat.Y;
+
+            var xmm1 = Vector256.Create((double)(object)xmm4[3], (double)(object)xmm3[3], (double)(object)(-xmm4[3]), 0f);
+            var xmm2 = Vector256.Create((double)(object)xmm4[2], (double)(object)xy1, (double)(object)xmm4[2], 0f);
+
+            var vec1 = xmm1 + xmm2;
+
+            xmm1 = Vector256.Create((double)(object)(-xmm3[3]), (double)(object)(-xmm4[0]), (double)(object)xmm4[0], 0f);
+            xmm2 = Vector256.Create((double)(object)xy1, (double)(object)xmm4[1], (double)(object)xmm4[1], 0f);
+
+            var vec2 = xmm1 + xmm2;
+
+            xmm1 = Vector256.Create((double)(object)xmm3[2], (double)(object)xmm3[2], (double)(object)xmm3[0], 0f);
+            xmm2 = Vector256.Create((double)(object)xmm3[1], (double)(object)xmm3[0], (double)(object)xmm3[1], 0f);
+
+            var vec3 = xmm1 + xmm2;
+
+            vec1 *= 2f;
+            vec2 *= 2f;
+            vec3 *= 2f;
+
+            vec3 = Vector256.Create(1.0) - vec3;
+
+            var res3 = Vector256.Create((double)(object)vec1[0], (double)(object)vec2[1], (double)(object)vec3[2], 0f).As<double, T>();
+
+            SkipInit<Mat44<T>>(out var res);
+
+            (vec1.WithElement(0, vec3[0]).As<double, T>() * Vector256.Create(scale.X)).Store((T*)&res.X);
+            (vec2.WithElement(1, vec3[1]).As<double, T>() * Vector256.Create(scale.Y)).Store((T*)&res.Y);
+            (res3 * Vector256.Create(scale.Z)).Store((T*)&res.Z);
+
+            Vector256
+                .Create((double)(object)pos.X, (double)(object)pos.Y, (double)(object)pos.Z, 0f)
+                .As<double, T>()
+                .Store((T*)&res.W);
+
+            return res;
+        }
+    }
+
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Mat44<T> FromTranslationRotationScale<T>(Vec3<T> pos, Quat<T> quat, Vec3<T> scale)
         where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
     {
+        if (typeof(T) == typeof(float))
+            return FromTranslationRotationScale4(pos, quat, scale);
+
+        if (typeof(T) == typeof(double))
+            return FromTranslationRotationScale8(pos, quat, scale);
+
+        T two = T.One + T.One;
+
         T xx = quat.X * quat.X,
           yy = quat.Y * quat.Y,
           zz = quat.Z * quat.Z,
@@ -16,65 +142,6 @@ public static class Mat44
           yw = quat.Y * quat.W,
           yz = quat.Y * quat.Z,
           xw = quat.X * quat.W;
-
-        if (typeof(T) == typeof(float))
-        {
-            unsafe
-            {
-                var xmm1 = Vector128.Create((float)(object)yw, (float)(object)zw, (float)(object)(-yw), 0f);
-                var xmm2 = Vector128.Create((float)(object)zx, (float)(object)xy, (float)(object)zx, 0f);
-
-                var vec1 = xmm1 + xmm2;
-
-                xmm1 = Vector128.Create((float)(object)(-zw), (float)(object)(-xw), (float)(object)xw, 0f);
-                xmm2 = Vector128.Create((float)(object)xy, (float)(object)yz, (float)(object)yz, 0f);
-
-                var vec2 = xmm1 + xmm2;
-
-                xmm1 = Vector128.Create((float)(object)zz, (float)(object)zz, (float)(object)xx, 0f);
-                xmm2 = Vector128.Create((float)(object)yy, (float)(object)xx, (float)(object)yy, 0f);
-
-                var vec3 = xmm1 + xmm2;
-
-                vec1 *= 2f;
-                vec2 *= 2f;
-                vec3 *= 2f;
-
-                vec3 = Vector128.Create(1f) - vec3;
-
-                var res1 = Vec4<T>.From128(vec1.As<float, T>());
-
-                var res2 = Vec4<T>.From128(vec2.As<float, T>());
-                var res3 = Vec4<T>
-                    .From128(
-                        Vector128
-                            .CreateScalar(*(double*)&vec3)
-                            .As<double, T>()
-                            .WithElement(2, (T)(object)vec3[2])
-                            .WithElement(3, T.Zero)
-                            );
-
-                (res1.X, res3.X) = (res3.X, res1.X);
-                (res2.Y, res3.Y) = (res3.Y, res2.Y);
-
-                SkipInit<Mat44<T>>(out var res);
-
-                (res1.As128() * Vector128.Create(scale.X)).Store((T*)&res.X);
-                (res2.As128() * Vector128.Create(scale.Y)).Store((T*)&res.Y);
-                (res3.As128() * Vector128.Create(scale.Z)).Store((T*)&res.Z);
-                
-                Vector128
-                    .CreateScalar(*(double*)&pos)
-                    .As<double, T>()
-                    .WithElement(2, pos.Z)
-                    .WithElement(3, T.One)
-                    .Store((T*)&res.W);
-
-                return res;
-            }
-        }
-
-        T two = T.One + T.One;
 
         Vec4<T> v1 = new(T.One - two * (yy + zz), two * (xy + zw), two * (zx - yw), T.Zero),
                 v2 = new(two * (xy - zw), T.One - two * (zz + xx), two * (yz + xw), T.Zero),
