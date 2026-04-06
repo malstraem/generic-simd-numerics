@@ -5,12 +5,12 @@ public partial struct Vec2<T>(T x, T y) :
     IVector<Vec2<T>>,
     IVectorOperators<Vec2<T>>,
     IVectorScalarOperators<Vec2<T>, T>
-        // vector works with all types and root behavior is exposed only where needed
+        // vtor works with all types and root behavior is exposed only where needed
         where T : unmanaged, INumber<T>
 {
     public T X = x, Y = y;
 
-    public Vec2(T num) : this(num, num) { }
+    public Vec2(T n) : this(n, n) { }
 
     public static Vec2<T> One { get; } = new(T.One);
 
@@ -26,102 +26,102 @@ public partial struct Vec2<T>(T x, T y) :
 
     #region Operators
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> operator +(Vec2<T> vec)
+    public static Vec2<T> operator +(Vec2<T> v)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(+vec.As128());
+            return From128(+v.As128());
 
-        return new(+vec.X, +vec.Y);
+        return new(+v.X, +v.Y);
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> operator -(Vec2<T> vec)
+    public static Vec2<T> operator -(Vec2<T> v)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(-vec.As128());
+            return From128(-v.As128());
 
-        return new(-vec.X, -vec.Y);
+        return new(-v.X, -v.Y);
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> operator +(Vec2<T> vec, T num)
+    public static Vec2<T> operator +(Vec2<T> v, T n)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(vec.As128() + Vector128.Create(num));
+            return From128(v.As128() + Vector128.Create(n));
 
-        return new(vec.X + num, vec.Y + num);
+        return new(v.X + n, v.Y + n);
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> operator -(Vec2<T> vec, T num)
+    public static Vec2<T> operator -(Vec2<T> v, T n)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(vec.As128() - Vector128.Create(num));
+            return From128(v.As128() - Vector128.Create(n));
 
-        return new(vec.X - num, vec.Y - num);
+        return new(v.X - n, v.Y - n);
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> operator *(Vec2<T> vec, T num)
+    public static Vec2<T> operator *(Vec2<T> v, T n)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(vec.As128() * num);
+            return From128(v.As128() * n);
 
-        return new(vec.X * num, vec.Y * num);
+        return new(v.X * n, v.Y * n);
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> operator /(Vec2<T> vec, T num)
+    public static Vec2<T> operator /(Vec2<T> v, T n)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(vec.As128() / num);
+            return From128(v.As128() / n);
 
-        return new(vec.X / num, vec.Y / num);
+        return new(v.X / n, v.Y / n);
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> operator -(Vec2<T> left, Vec2<T> right)
+    public static Vec2<T> operator -(Vec2<T> a, Vec2<T> b)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(left.As128() - right.As128());
+            return From128(a.As128() - b.As128());
 
-        return new(left.X - right.X, left.Y - right.Y);
+        return new(a.X - b.X, a.Y - b.Y);
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> operator *(Vec2<T> left, Vec2<T> right)
+    public static Vec2<T> operator *(Vec2<T> a, Vec2<T> b)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(left.As128() * right.As128());
+            return From128(a.As128() * b.As128());
 
-        return new(left.X * right.X, left.Y * right.Y);
+        return new(a.X * b.X, a.Y * b.Y);
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> operator /(Vec2<T> left, Vec2<T> right)
+    public static Vec2<T> operator /(Vec2<T> a, Vec2<T> b)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(left.As128() / right.As128());
+            return From128(a.As128() / b.As128());
 
-        return new(left.X / right.X, left.Y / right.Y);
+        return new(a.X / b.X, a.Y / b.Y);
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator ==(Vec2<T> left, Vec2<T> right)
+    public static bool operator ==(Vec2<T> a, Vec2<T> b)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return left.As128() == right.As128();
+            return a.As128() == b.As128();
 
-        return left.X == right.X && left.Y == right.Y;
+        return a.X == b.X && a.Y == b.Y;
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator !=(Vec2<T> left, Vec2<T> right)
+    public static bool operator !=(Vec2<T> a, Vec2<T> b)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return left.As128() != right.As128();
+            return a.As128() != b.As128();
 
-        return left.X != right.X && left.Y != right.Y;
+        return a.X != b.X && a.Y != b.Y;
     }
     #endregion
 
@@ -135,6 +135,9 @@ public partial struct Vec2<T>(T x, T y) :
     }
 
     [MethodImpl(AggressiveInlining)]
+    public readonly T Dot(Vec2<T> v) => (this * v).Sum();
+
+    [MethodImpl(AggressiveInlining)]
     public readonly Vec2<T> Abs()
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
@@ -144,21 +147,21 @@ public partial struct Vec2<T>(T x, T y) :
     }
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec2<T> Min(Vec2<T> vec)
+    public readonly Vec2<T> Min(Vec2<T> v)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(Vector128.Min(As128(), vec.As128()));
+            return From128(Vector128.Min(As128(), v.As128()));
 
-        return new(T.Min(X, vec.X), T.Min(Y, vec.Y));
+        return new(T.Min(X, v.X), T.Min(Y, v.Y));
     }
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec2<T> Max(Vec2<T> vec)
+    public readonly Vec2<T> Max(Vec2<T> v)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(Vector128.Max(As128(), vec.As128()));
+            return From128(Vector128.Max(As128(), v.As128()));
 
-        return new(T.Max(X, vec.X), T.Max(Y, vec.Y));
+        return new(T.Max(X, v.X), T.Max(Y, v.Y));
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -170,23 +173,18 @@ public partial struct Vec2<T>(T x, T y) :
         return max.Min(Max(min));
     }
 
+    // intrinsic Lerp<T> should exist
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec2<T> Lerp(Vec2<T> vec, T amount)
-    {
-        // intrinsic Lerp<T> should exist
-
-        return (this * (T.One - amount))
-             + (vec * amount);
-    }
-
-    [MethodImpl(AggressiveInlining)]
-    public readonly T Dot(Vec2<T> vec) => (this * vec).Sum();
+    public readonly Vec2<T> Lerp(Vec2<T> v, T am) => (this * (T.One - am)) + (v * am);
 
     // not sure about the next one, but looks good?
     // float and double are sealed using extensions
 
     [MethodImpl(AggressiveInlining)]
     public readonly T LengthSquared() => Dot(this);
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly T DistanceSquared(Vec2<T> v) => (this - v).LengthSquared();
 
     [MethodImpl(AggressiveInlining)]
     public readonly R LengthSaturating<R>()
@@ -204,23 +202,19 @@ public partial struct Vec2<T>(T x, T y) :
             => T.CreateTruncating(LengthSaturating<R>());
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T DistanceSquared(Vec2<T> vec)
-        => (this - vec).LengthSquared();
+    public readonly R DistanceSaturating<R>(Vec2<T> v)
+        where R : IRootFunctions<R>
+            => R.Sqrt(R.CreateSaturating(DistanceSquared(v)));
 
     [MethodImpl(AggressiveInlining)]
-    public readonly R DistanceSaturating<R>(Vec2<T> vec)
+    public readonly R DistanceTruncating<R>(Vec2<T> v)
         where R : IRootFunctions<R>
-            => R.Sqrt(R.CreateSaturating(DistanceSquared(vec)));
+            => R.CreateTruncating(DistanceSquared(v));
 
     [MethodImpl(AggressiveInlining)]
-    public readonly R DistanceTruncating<R>(Vec2<T> vec)
+    public readonly T Distance<R>(Vec2<T> v)
         where R : IRootFunctions<R>
-            => R.CreateTruncating(DistanceSquared(vec));
-
-    [MethodImpl(AggressiveInlining)]
-    public readonly T Distance<R>(Vec2<T> vec)
-        where R : IRootFunctions<R>
-            => T.CreateTruncating(DistanceSaturating<R>(vec));
+            => T.CreateTruncating(DistanceSaturating<R>(v));
 
     [MethodImpl(AggressiveInlining)]
     public readonly Vec2<T> Normalize<R>()

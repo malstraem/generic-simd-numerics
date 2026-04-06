@@ -16,7 +16,7 @@ public class StressVector2D<T> : BaseBench
     public StressVector2D()
     {
         for (int i = 0; i < vecs.Length; i++)
-            vecs[i] = Vec2<T>.Gen(T.CreateTruncating(Random.Shared.Next(10, 100))).Silk();
+            vecs[i] = Vec2<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10))).Silk();
     }
 
     [Benchmark]
