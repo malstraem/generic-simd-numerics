@@ -37,14 +37,14 @@ public abstract class QuatBase<T>
     }
 
     [Test, DisplayName("a - b")]
-    public async Task Substract()
+    public async Task Subtract()
     {
         var sub = a - b;
 
         var expected = (a.Silk() - b.Silk()).Quat();
 
         await Assert.That(sub).IsEqualTo(expected);
-        await Assert.That(Quat.Substruct(a, b)).IsEqualTo(sub);
+        await Assert.That(Quat.Subtruct(a, b)).IsEqualTo(sub);
     }
 
     [Test, DisplayName("a * b")]

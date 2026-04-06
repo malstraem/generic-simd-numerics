@@ -73,7 +73,7 @@ public abstract class Vec4Root<T> : Vec4Root<T, T>
 [InheritsTests]
 public abstract class Vec4Root<T, R> : Vec4Base<T>
     where T : unmanaged, INumber<T>
-    where R : IRootFunctions<R>
+    where R : unmanaged, INumber<R>, IRootFunctions<R>
 {
     [Test, DisplayName("len")]
     public async Task Length()
@@ -141,47 +141,47 @@ public abstract class Vec4Base<T>
     }
 
     [Test, DisplayName("a - b")]
-    public async Task Substract()
+    public async Task Subtract()
     {
         var sub = a - b;
 
         var expected = (a.Silk() - b.Silk()).Vec4();
 
         await Assert.That(sub).IsEqualTo(expected);
-        await Assert.That(sub).IsEqualTo(Vec4.Substract(a, b));
+        await Assert.That(sub).IsEqualTo(Vec4.Subtract(a, b));
     }
 
-    [Test, DisplayName("a ⊙ b")]
-    public async Task Multiply()
-    {
-        var mul = a * b;
-
-        var expected = (a.Silk() * b.Silk()).Vec4();
-
-        await Assert.That(mul).IsEqualTo(expected);
-        await Assert.That(mul).IsEqualTo(Vec4.Multiply(a, b));
-    }
-
-    [Test, DisplayName("a / b")]
-    public async Task Divide()
-    {
-        var div = a / b;
-
-        var expected = (a.Silk() / b.Silk()).Vec4();
-
-        await Assert.That(div).IsEqualTo(expected);
-        await Assert.That(div).IsEqualTo(Vec4.Divide(a, b));
-    }
-
-    [Test, DisplayName("dot")]
+    [Test, DisplayName("a × b")]
     public async Task Dot()
     {
-        var dot = a.Dot(b);
+        var dot = a * b;
 
         var expected = Vector4D.Dot(a.Silk(), b.Silk());
 
         await Assert.That(dot).IsEqualTo(expected);
         await Assert.That(dot).IsEqualTo(Vec4.Dot(a, b));
+    }
+
+    [Test, DisplayName("a × b (element wise)")]
+    public async Task ElementMultiply()
+    {
+        var mul = a.ElementMultiply(b);
+
+        var expected = (a.Silk() * b.Silk()).Vec4();
+
+        await Assert.That(mul).IsEqualTo(expected);
+        await Assert.That(mul).IsEqualTo(Vec4.ElementMultiply(a, b));
+    }
+
+    [Test, DisplayName("a / b (element wise)")]
+    public async Task ElementDivide()
+    {
+        var div = a.ElementDivide(b);
+
+        var expected = (a.Silk() / b.Silk()).Vec4();
+
+        await Assert.That(div).IsEqualTo(expected);
+        await Assert.That(div).IsEqualTo(Vec4.ElementDivide(a, b));
     }
 
     [Test, DisplayName("abs")]
@@ -193,6 +193,17 @@ public abstract class Vec4Base<T>
 
         await Assert.That(abs).IsEqualTo(expected);
         await Assert.That(abs).IsEqualTo(Vec4.Abs(-a));
+    }
+
+    [Test, DisplayName("sum")]
+    public async Task Sum()
+    {
+        var sum = a.Sum();
+
+        var expected = a.X + a.Y + a.Z + a.W;
+
+        await Assert.That(sum).IsEqualTo(expected);
+        await Assert.That(sum).IsEqualTo(Vec4.Sum(a));
     }
 
     [Test, DisplayName("min")]
@@ -253,19 +264,6 @@ public abstract class Vec4Base<T>
 
         await Assert.That(lerp).IsEqualTo(expected);
         await Assert.That(lerp).IsEqualTo(Vec4.Lerp(a, b, amount));
-    }
-
-    [Test, DisplayName("transform")]
-    public async Task Transform()
-    {
-        var m = Mat44<T>.Gen(T.One);
-
-        var transform = a.Transform(m);
-
-        var expected = Vector4D.Transform(a.Silk(), m.Silk()).Vec4();
-
-        await Assert.That(transform).IsEqualTo(expected);
-        await Assert.That(transform).IsEqualTo(Vec4.Transform(a, m));
     }
 
     [Test, DisplayName("len²")]

@@ -8,7 +8,7 @@ public static class Vec4
             => v + n;
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Substract<T>(Vec4<T> v, T n)
+    public static Vec4<T> Subtract<T>(Vec4<T> v, T n)
         where T : unmanaged, INumber<T>
             => v - n;
 
@@ -18,7 +18,7 @@ public static class Vec4
             => a + b;
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Substract<T>(Vec4<T> a, Vec4<T> b)
+    public static Vec4<T> Subtract<T>(Vec4<T> a, Vec4<T> b)
         where T : unmanaged, INumber<T>
             => a - b;
 
@@ -33,14 +33,14 @@ public static class Vec4
             => v / n;
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Multiply<T>(Vec4<T> a, Vec4<T> b)
+    public static Vec4<T> ElementMultiply<T>(Vec4<T> a, Vec4<T> b)
         where T : unmanaged, INumber<T>
-            => a * b;
+            => a.ElementMultiply(b);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Divide<T>(Vec4<T> a, Vec4<T> b)
+    public static Vec4<T> ElementDivide<T>(Vec4<T> a, Vec4<T> b)
         where T : unmanaged, INumber<T>
-            => a / b;
+            => a.ElementDivide(b);
 
     [MethodImpl(AggressiveInlining)]
     public static T Sum<T>(Vec4<T> v)
@@ -50,7 +50,7 @@ public static class Vec4
     [MethodImpl(AggressiveInlining)]
     public static T Dot<T>(Vec4<T> a, Vec4<T> b)
         where T : unmanaged, INumber<T>
-            => a.Dot(b);
+            => a * b;
 
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> Abs<T>(Vec4<T> v)
@@ -107,7 +107,7 @@ public static class Vec4
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> Normalize<T, R>(Vec4<T> v)
         where T : unmanaged, INumber<T>
-        where R : IRootFunctions<R>
+        where R : unmanaged, INumber<R>, IRootFunctions<R>
             => v.Normalize<R>();
 
     [MethodImpl(AggressiveInlining)]

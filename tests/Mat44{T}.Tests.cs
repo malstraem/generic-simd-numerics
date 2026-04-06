@@ -48,7 +48,7 @@ public abstract class Mat44Base<T>
     }
 
     [Test, DisplayName("a - b")]
-    public async Task Substract()
+    public async Task Subtract()
     {
         var sub = a - b;
 

@@ -91,7 +91,7 @@ public partial struct Quat<T>(Vec4<T> vec)
     public static Quat<T> operator /(Quat<T> a, Quat<T> b) => a * b.Inverse();
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T Dot(Quat<T> q) => vec.Dot(q.vec);
+    public readonly T Dot(Quat<T> q) => vec * q.vec;
 
     [MethodImpl(AggressiveInlining)]
     public readonly T Length() => vec.Length();
@@ -103,7 +103,16 @@ public partial struct Quat<T>(Vec4<T> vec)
     public readonly Quat<T> Conjugate() => new(-X, -Y, -Z, W);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Quat<T> Normalize() => new(vec.Normalize());
+    public readonly Quat<T> Normalize()
+    {
+        //return new(vec.Normalize());
+
+        var dot = vec * vec;
+
+        var c = Vec4<T>.One / T.Sqrt(dot);
+
+        return new(vec.ElementMultiply(c));
+    }
 
     [MethodImpl(AggressiveInlining)]
     public readonly Quat<T> Inverse() => new(Conjugate().vec / LengthSquared());

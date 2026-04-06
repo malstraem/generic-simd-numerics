@@ -2,8 +2,7 @@ namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
 public partial struct Vec2<T>(T x, T y) :
-    IVector<Vec2<T>>,
-    IVectorOperators<Vec2<T>>,
+    IVector<Vec2<T>, T>,
     IVectorScalarOperators<Vec2<T>, T>
         // vtor works with all types and root behavior is exposed only where needed
         where T : unmanaged, INumber<T>
@@ -89,6 +88,9 @@ public partial struct Vec2<T>(T x, T y) :
     }
 
     [MethodImpl(AggressiveInlining)]
+    public static T operator *(Vec2<T> a, Vec2<T> b) => a.ElementMultiply(b).Sum();
+
+    /*[MethodImpl(AggressiveInlining)]
     public static Vec2<T> operator *(Vec2<T> a, Vec2<T> b)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
@@ -104,7 +106,7 @@ public partial struct Vec2<T>(T x, T y) :
             return From128(a.As128() / b.As128());
 
         return new(a.X / b.X, a.Y / b.Y);
-    }
+    }*/
 
     [MethodImpl(AggressiveInlining)]
     public static bool operator ==(Vec2<T> a, Vec2<T> b)
@@ -126,6 +128,24 @@ public partial struct Vec2<T>(T x, T y) :
     #endregion
 
     [MethodImpl(AggressiveInlining)]
+    public readonly Vec2<T> ElementMultiply(Vec2<T> v)
+    {
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
+            return From128(As128() * v.As128());
+
+        return new(X * v.X, Y * v.Y);
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly Vec2<T> ElementDivide(Vec2<T> v)
+    {
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
+            return From128(As128() / v.As128());
+
+        return new(X / v.X, Y / v.Y);
+    }
+
+    [MethodImpl(AggressiveInlining)]
     public readonly T Sum()
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
@@ -133,9 +153,6 @@ public partial struct Vec2<T>(T x, T y) :
 
         return X + Y;
     }
-
-    [MethodImpl(AggressiveInlining)]
-    public readonly T Dot(Vec2<T> v) => (this * v).Sum();
 
     [MethodImpl(AggressiveInlining)]
     public readonly Vec2<T> Abs()
@@ -181,7 +198,7 @@ public partial struct Vec2<T>(T x, T y) :
     // float and double are sealed using extensions
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T LengthSquared() => Dot(this);
+    public readonly T LengthSquared() => this * this;
 
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec2<T> v) => (this - v).LengthSquared();
@@ -219,7 +236,7 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec2<T> Normalize<R>()
         where R : IRootFunctions<R>
-            => this / Distance<R>(Zero);
+            => this / Length<R>();
 
     [MethodImpl(AggressiveInlining)]
     public readonly Vec2<T> SquareRoot<R>() where R : IRootFunctions<R>
