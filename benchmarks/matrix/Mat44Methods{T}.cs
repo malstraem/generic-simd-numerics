@@ -2,7 +2,7 @@ using BenchmarkDotNet.Attributes;
 
 namespace System.Numerics.Bench;
 
-public abstract class Mat44Methods<T> : BaseBench
+public class Mat44Methods<T> : BaseBench
     where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
 {
     private readonly Vec3<T>[] pos = new Vec3<T>[Count],

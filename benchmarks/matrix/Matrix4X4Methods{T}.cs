@@ -4,7 +4,7 @@ using Silk.NET.Maths;
 
 namespace System.Numerics.Bench;
 
-public abstract class Matrix4X4Methods<T> : BaseBench
+public class Matrix4X4Methods<T> : BaseBench
     where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
 {
     private readonly Vector3D<T>[] pos = new Vector3D<T>[Count],

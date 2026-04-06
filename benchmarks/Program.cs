@@ -5,11 +5,11 @@ using BenchmarkDotNet.Running;
 // todo: post process results to reports
 
 var vecs = BenchmarkSwitcher.FromTypes([
-    typeof(StressVector2),
+    /*typeof(StressVector2),
     typeof(StressVec2<float>),
     typeof(StressVector2D<float>),
 
-    /*
+    
     typeof(StressVec2<double>),
     typeof(StressVector2D<double>),
 
@@ -77,12 +77,11 @@ var vecs = BenchmarkSwitcher.FromTypes([
     typeof(StressQuat<double>),
     typeof(StressQuaternion<double>)
     */
+
+    typeof(Mat44Methods<float>),
+    typeof(Matrix4x4Methods),
 ]);
 
-//var summary = vecs.RunAllJoined();
-
-
-BenchmarkRunner.Run<Mat44Methods<float>>();
-BenchmarkRunner.Run<Matrix4x4Methods>();
+var summary = vecs.RunAllJoined();
 
 Console.ReadLine();
