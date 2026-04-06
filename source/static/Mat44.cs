@@ -21,35 +21,29 @@ public static class Mat44
 
             xmm4 *= qVec;
 
-            T xy1 = quat.X * quat.Y;
+            T xy = quat.X * quat.Y;
 
-            var xmm1 = Vector128.Create((float)(object)xmm4[3], (float)(object)xmm3[3], (float)(object)(-xmm4[3]), 0f);
-            var xmm2 = Vector128.Create((float)(object)xmm4[2], (float)(object)xy1, (float)(object)xmm4[2], 0f);
-
+            var xmm1 = Vector128.Create((float)(object)xmm4[2], (float)(object)xy, (float)(object)xmm4[1], 0f);
+            var xmm2 = Vector128.Create((float)(object)xmm4[3], (float)(object)xmm3[3], (float)(object)xmm4[0], 0f);
             var vec1 = xmm1 + xmm2;
-
-            xmm1 = Vector128.Create((float)(object)(-xmm3[3]), (float)(object)(-xmm4[0]), (float)(object)xmm4[0], 0f);
-            xmm2 = Vector128.Create((float)(object)xy1, (float)(object)xmm4[1], (float)(object)xmm4[1], 0f);
-
-            var vec2 = xmm1 + xmm2;
+            var vec2 = xmm1 - xmm2;
 
             xmm1 = Vector128.Create((float)(object)xmm3[2], (float)(object)xmm3[2], (float)(object)xmm3[0], 0f);
             xmm2 = Vector128.Create((float)(object)xmm3[1], (float)(object)xmm3[0], (float)(object)xmm3[1], 0f);
-
             var vec3 = xmm1 + xmm2;
 
             vec1 *= 2f;
             vec2 *= 2f;
             vec3 *= 2f;
-
             vec3 = Vector128.Create(1f) - vec3;
 
-            var res3 = Vector128.Create((float)(object)vec1[0], (float)(object)vec2[1], (float)(object)vec3[2], 0f).As<float, T>();
+            var res1 = Vector128.Create((float)(object)vec3[0], (float)(object)vec1[1], (float)(object)vec2[0], 0f).As<float, T>();
+            var res2 = Vector128.Create((float)(object)vec2[1], (float)(object)vec3[1], (float)(object)vec1[2], 0f).As<float, T>();
+            var res3 = Vector128.Create((float)(object)vec1[0], (float)(object)vec2[2], (float)(object)vec3[2], 0f).As<float, T>();
 
             SkipInit<Mat44<T>>(out var res);
-
-            (vec1.WithElement(0, vec3[0]).As<float, T>() * Vector128.Create(scale.X)).Store((T*)&res.X);
-            (vec2.WithElement(1, vec3[1]).As<float, T>() * Vector128.Create(scale.Y)).Store((T*)&res.Y);
+            (res1 * Vector128.Create(scale.X)).Store((T*)&res.X);
+            (res2 * Vector128.Create(scale.Y)).Store((T*)&res.Y);
             (res3 * Vector128.Create(scale.Z)).Store((T*)&res.Z);
 
             Vector128
@@ -81,39 +75,33 @@ public static class Mat44
 
             xmm4 *= qVec;
 
-            T xy1 = quat.X * quat.Y;
+            T xy = quat.X * quat.Y;
 
-            var xmm1 = Vector256.Create((double)(object)xmm4[3], (double)(object)xmm3[3], (double)(object)(-xmm4[3]), 0f);
-            var xmm2 = Vector256.Create((double)(object)xmm4[2], (double)(object)xy1, (double)(object)xmm4[2], 0f);
-
+            var xmm1 = Vector256.Create((double)(object)xmm4[2], (double)(object)xy, (double)(object)xmm4[1], 0f);
+            var xmm2 = Vector256.Create((double)(object)xmm4[3], (double)(object)xmm3[3], (double)(object)xmm4[0], 0f);
             var vec1 = xmm1 + xmm2;
-
-            xmm1 = Vector256.Create((double)(object)(-xmm3[3]), (double)(object)(-xmm4[0]), (double)(object)xmm4[0], 0f);
-            xmm2 = Vector256.Create((double)(object)xy1, (double)(object)xmm4[1], (double)(object)xmm4[1], 0f);
-
-            var vec2 = xmm1 + xmm2;
+            var vec2 = xmm1 - xmm2;
 
             xmm1 = Vector256.Create((double)(object)xmm3[2], (double)(object)xmm3[2], (double)(object)xmm3[0], 0f);
             xmm2 = Vector256.Create((double)(object)xmm3[1], (double)(object)xmm3[0], (double)(object)xmm3[1], 0f);
-
             var vec3 = xmm1 + xmm2;
 
             vec1 *= 2f;
             vec2 *= 2f;
             vec3 *= 2f;
-
             vec3 = Vector256.Create(1.0) - vec3;
 
-            var res3 = Vector256.Create((double)(object)vec1[0], (double)(object)vec2[1], (double)(object)vec3[2], 0f).As<double, T>();
+            var res1 = Vector256.Create((double)(object)vec3[0], (double)(object)vec1[1], (double)(object)vec2[0], 0f).As<double, T>();
+            var res2 = Vector256.Create((double)(object)vec2[1], (double)(object)vec3[1], (double)(object)vec1[2], 0f).As<double, T>();
+            var res3 = Vector256.Create((double)(object)vec1[0], (double)(object)vec2[2], (double)(object)vec3[2], 0f).As<double, T>();
 
             SkipInit<Mat44<T>>(out var res);
-
-            (vec1.WithElement(0, vec3[0]).As<double, T>() * Vector256.Create(scale.X)).Store((T*)&res.X);
-            (vec2.WithElement(1, vec3[1]).As<double, T>() * Vector256.Create(scale.Y)).Store((T*)&res.Y);
+            (res1 * Vector256.Create(scale.X)).Store((T*)&res.X);
+            (res2 * Vector256.Create(scale.Y)).Store((T*)&res.Y);
             (res3 * Vector256.Create(scale.Z)).Store((T*)&res.Z);
 
             Vector256
-                .Create((double)(object)pos.X, (double)(object)pos.Y, (double)(object)pos.Z, 0f)
+                .Create((double)(object)pos.X, (double)(object)pos.Y, (double)(object)pos.Z, 1f)
                 .As<double, T>()
                 .Store((T*)&res.W);
 
