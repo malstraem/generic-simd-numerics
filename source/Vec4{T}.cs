@@ -3,7 +3,7 @@ namespace System.Numerics;
 [StructLayout(LayoutKind.Sequential)]
 public partial struct Vec4<T>(T x, T y, T z, T w) : IVector<Vec4<T>, T>, IVectorScalarOperators<Vec4<T>, T>
     // vector works with all types and root behavior is exposed only where needed
-    where T : INumber<T>
+    where T : unmanaged, INumber<T>
 {
     public T X = x, Y = y, Z = z, W = w;
 
@@ -316,7 +316,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) : IVector<Vec4<T>, T>, IVector
 
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Normalize<R>()
-        where R : unmanaged, INumber<R>, IRootFunctions<R>
+        where R : INumber<R>, IRootFunctions<R>
             => this / Length<R>();
     /*{
         var dot = this * this;

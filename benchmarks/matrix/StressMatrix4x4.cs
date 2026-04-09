@@ -1,10 +1,8 @@
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
-public class StressMatrix4x4 : BaseBench
+public class StressMatrix4x4 : BaseBench<float>
 {
     private readonly Matrix4x4[] mats = new Matrix4x4[Count];
 
@@ -14,14 +12,14 @@ public class StressMatrix4x4 : BaseBench
             mats[i] = Mat44<float>.Gen(Random.Shared.Next(1, 10)).System();
     }
 
-    //[Benchmark]
+    [Benchmark]
     public void Add()
     {
         for (int i = 0; i < Count - 1; i++)
             mats[i] = mats[i] + mats[i + 1];
     }
 
-    //[Benchmark]
+    [Benchmark]
     public void Substract()
     {
         for (int i = 0; i < Count - 1; i++)

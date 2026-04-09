@@ -17,7 +17,15 @@ public static class Vec4Extensions
         [MethodImpl(AggressiveInlining)]
         public Vec4<T> SquareRoot() => v.SquareRoot<T>();
     }
+
+    extension<T>(Vec4<T> v)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+    {
+        [MethodImpl(AggressiveInlining)]
+        internal Quat<T> Quat() => BitCast<Vec4<T>, Quat<T>>(v);
+    }
 }
+
 
 public static class Vec4StaticExtensions
 {

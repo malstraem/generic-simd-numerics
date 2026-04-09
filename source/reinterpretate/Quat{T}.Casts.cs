@@ -2,6 +2,9 @@ namespace System.Numerics;
 
 public partial struct Quat<T>
 {
+    [MethodImpl(AggressiveInlining)]
+    private readonly Vec4<T> Vec4() => BitCast<Quat<T>, Vec4<T>>(this);
+
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     private static unsafe void Broadcast128F(Quat<T> row,
         out Vector128<float> b0, out Vector128<float> b1, out Vector128<float> b2, out Vector128<float> b3)

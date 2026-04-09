@@ -1,19 +1,14 @@
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
 public class StressVec3<T> : StressVec3<T, T>
     where T : unmanaged, INumber<T>, IRootFunctions<T>;
 
-[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
-public class StressVec3<T, R> : BaseBench
+public class StressVec3<T, R> : BaseBench<T>
     where T : unmanaged, INumber<T>
     where R : unmanaged, IRootFunctions<R>
 {
-    private static readonly T[] nums = new T[Count];
-
     private static readonly Vec3<T>[] vecs = new Vec3<T>[Count];
 
     public StressVec3()

@@ -1,10 +1,8 @@
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
-public class StressMat44<T> : BaseBench
+public class StressMat44<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
     private readonly Mat44<T>[] mats = new Mat44<T>[Count];
@@ -15,14 +13,14 @@ public class StressMat44<T> : BaseBench
             mats[i] = Mat44<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
     }
 
-    //[Benchmark]
+    [Benchmark]
     public void Add()
     {
         for (int i = 0; i < Count - 1; i++)
             mats[i] = mats[i] + mats[i + 1];
     }
 
-    //[Benchmark]
+    [Benchmark]
     public void Substract()
     {
         for (int i = 0; i < Count - 1; i++)

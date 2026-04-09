@@ -1,16 +1,12 @@
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
 
 using Silk.NET.Maths;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
-public class StressVector3D<T> : BaseBench
+public class StressVector3D<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
-    private static readonly T[] nums = new T[Count];
-
     private static readonly Vector3D<T>[] vecs = new Vector3D<T>[Count];
 
     public StressVector3D()

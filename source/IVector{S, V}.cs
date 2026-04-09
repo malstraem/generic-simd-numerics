@@ -9,7 +9,6 @@ public interface IVector<V, S> :
     IAdditiveIdentity<V, V>,
     IMultiplicativeIdentity<V, V>,
 
-
     IMultiplyOperators<V, V, S>,
     IAdditionOperators<V, V, V>,
     ISubtractionOperators<V, V, V>,
