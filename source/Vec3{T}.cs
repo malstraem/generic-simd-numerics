@@ -121,6 +121,7 @@ public partial struct Vec3<T>(T x, T y, T z) :
         return new(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
     }
 
+    // use dot product instead element wise is personal choice
     [MethodImpl(AggressiveInlining)]
     public static T operator *(Vec3<T> a, Vec3<T> b) => a.ElementMultiply(b).Sum();
 

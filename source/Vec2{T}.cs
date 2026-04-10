@@ -28,7 +28,7 @@ public partial struct Vec2<T>(T x, T y) :
     public static Vec2<T> operator +(Vec2<T> v)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(+v.As128());
+            return (+v.As128()).Vec2();
 
         return new(+v.X, +v.Y);
     }
@@ -37,7 +37,7 @@ public partial struct Vec2<T>(T x, T y) :
     public static Vec2<T> operator -(Vec2<T> v)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(-v.As128());
+            return (-v.As128()).Vec2();
 
         return new(-v.X, -v.Y);
     }
@@ -46,7 +46,7 @@ public partial struct Vec2<T>(T x, T y) :
     public static Vec2<T> operator +(Vec2<T> v, T n)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(v.As128() + Vector128.Create(n));
+            return (v.As128() + Vector128.Create(n)).Vec2();
 
         return new(v.X + n, v.Y + n);
     }
@@ -55,7 +55,7 @@ public partial struct Vec2<T>(T x, T y) :
     public static Vec2<T> operator -(Vec2<T> v, T n)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(v.As128() - Vector128.Create(n));
+            return (v.As128() - Vector128.Create(n)).Vec2();
 
         return new(v.X - n, v.Y - n);
     }
@@ -64,7 +64,7 @@ public partial struct Vec2<T>(T x, T y) :
     public static Vec2<T> operator *(Vec2<T> v, T n)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(v.As128() * n);
+            return (v.As128() * n).Vec2();
 
         return new(v.X * n, v.Y * n);
     }
@@ -73,7 +73,7 @@ public partial struct Vec2<T>(T x, T y) :
     public static Vec2<T> operator /(Vec2<T> v, T n)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(v.As128() / n);
+            return (v.As128() / n).Vec2();
 
         return new(v.X / n, v.Y / n);
     }
@@ -82,11 +82,12 @@ public partial struct Vec2<T>(T x, T y) :
     public static Vec2<T> operator -(Vec2<T> a, Vec2<T> b)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(a.As128() - b.As128());
+            return (a.As128() - b.As128()).Vec2();
 
         return new(a.X - b.X, a.Y - b.Y);
     }
 
+    // use dot product instead element wise is personal choice
     [MethodImpl(AggressiveInlining)]
     public static T operator *(Vec2<T> a, Vec2<T> b) => a.ElementMultiply(b).Sum();
 
@@ -131,7 +132,7 @@ public partial struct Vec2<T>(T x, T y) :
     public readonly Vec2<T> ElementMultiply(Vec2<T> v)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(As128() * v.As128());
+            return (this.As128() * v.As128()).Vec2();
 
         return new(X * v.X, Y * v.Y);
     }
@@ -140,7 +141,7 @@ public partial struct Vec2<T>(T x, T y) :
     public readonly Vec2<T> ElementDivide(Vec2<T> v)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(As128() / v.As128());
+            return (this.As128() / v.As128()).Vec2();
 
         return new(X / v.X, Y / v.Y);
     }
@@ -149,7 +150,7 @@ public partial struct Vec2<T>(T x, T y) :
     public readonly T Sum()
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return Vector128.Sum(As128());
+            return Vector128.Sum(this.As128());
 
         return X + Y;
     }
@@ -158,7 +159,7 @@ public partial struct Vec2<T>(T x, T y) :
     public readonly Vec2<T> Abs()
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(Vector128.Abs(As128()));
+            return Vector128.Abs(this.As128()).Vec2();
 
         return new(T.Abs(X), T.Abs(Y));
     }
@@ -167,7 +168,7 @@ public partial struct Vec2<T>(T x, T y) :
     public readonly Vec2<T> Min(Vec2<T> v)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(Vector128.Min(As128(), v.As128()));
+            return Vector128.Min(this.As128(), v.As128()).Vec2();
 
         return new(T.Min(X, v.X), T.Min(Y, v.Y));
     }
@@ -176,7 +177,7 @@ public partial struct Vec2<T>(T x, T y) :
     public readonly Vec2<T> Max(Vec2<T> v)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(Vector128.Max(As128(), v.As128()));
+            return Vector128.Max(this.As128(), v.As128()).Vec2();
 
         return new(T.Max(X, v.X), T.Max(Y, v.Y));
     }
@@ -185,7 +186,7 @@ public partial struct Vec2<T>(T x, T y) :
     public readonly Vec2<T> Clamp(Vec2<T> min, Vec2<T> max)
     {
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(Vector128.Clamp(As128(), min.As128(), max.As128()));
+            return Vector128.Clamp(this.As128(), min.As128(), max.As128()).Vec2();
 
         return max.Min(Max(min));
     }
@@ -245,7 +246,7 @@ public partial struct Vec2<T>(T x, T y) :
         // but maybe it would be better to make Vec{N}<T>.SquareRoot<R> return Vec{N}<R>?
 
         if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(Vector128.Sqrt(As128()));
+            return Vector128.Sqrt(this.As128()).Vec2();
 
         return new
         (

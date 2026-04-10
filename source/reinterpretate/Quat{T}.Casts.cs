@@ -5,7 +5,7 @@ public partial struct Quat<T>
     [MethodImpl(AggressiveInlining)]
     private readonly Vec4<T> Vec4() => BitCast<Quat<T>, Vec4<T>>(this);
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    /*[MethodImpl(AggressiveInlining | AggressiveOptimization)]
     private static unsafe void Broadcast128F(Quat<T> row,
         out Vector128<float> b0, out Vector128<float> b1, out Vector128<float> b2, out Vector128<float> b3)
     {
@@ -26,13 +26,13 @@ public partial struct Quat<T>
         b2 = Vector256.Create(row.Z).AsDouble();
         b3 = Vector256.Create(row.W).AsDouble();
 
-        /*var xmm = row.As256D();
+        *//*var xmm = row.As256D();
 
         b0 = Vector256.Create(*(double*)&xmm);
         b1 = Vector256.Create(*((double*)&xmm + 1));
         b2 = Vector256.Create(*((double*)&xmm + 2));
-        b3 = Vector256.Create(*((double*)&xmm + 3));*/
-    }
+        b3 = Vector256.Create(*((double*)&xmm + 3));*//*
+    }*/
 
     [MethodImpl(AggressiveInlining)]
     private readonly Vector128<float> As128F() => BitCast<Quat<T>, Vector128<float>>(this);

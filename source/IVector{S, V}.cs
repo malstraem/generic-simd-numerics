@@ -9,7 +9,7 @@ public interface IVector<V, S> :
     IAdditiveIdentity<V, V>,
     IMultiplicativeIdentity<V, V>,
 
-    IMultiplyOperators<V, V, S>,
+    IMultiplyOperators<V, V, S>, // use dot product instead element wise is personal choice
     IAdditionOperators<V, V, V>,
     ISubtractionOperators<V, V, V>,
 

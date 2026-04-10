@@ -7,7 +7,7 @@ public partial struct Vec4<T>
         out Vector128<T> b0, out Vector128<T> b1,
         out Vector128<T> b2, out Vector128<T> b3)
     {
-        var xmm = As128();
+        var xmm = this.As128();
 
         unsafe
         {

@@ -1,5 +1,6 @@
 namespace System.Numerics;
 
+// result is quite good, but asm could be lesser
 public partial struct Mat44<T>
 {
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
@@ -15,8 +16,6 @@ public partial struct Mat44<T>
         Vector256<T> x, Vector256<T> y, Vector256<T> z, Vector256<T> w,
         Vector256<T> b0, Vector256<T> b1, Vector256<T> b2, Vector256<T> b3)
             => (x.MultiplyAdd(b0, y * b1) + z.MultiplyAdd(b2, w * b3)).Store(dst);
-
-    // result is quite good, but asm could be lesser
 
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     private static Mat44<T> Multiply128(Mat44<T> a, Mat44<T> b)

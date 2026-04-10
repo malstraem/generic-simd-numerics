@@ -2,14 +2,14 @@ using System.Numerics.Bench;
 
 using BenchmarkDotNet.Running;
 
-// todo: post process results to reports
+// todo: post process results to prettified reports
 
 var vecs = BenchmarkSwitcher.FromTypes([
     //typeof(StressVector2),
-    //typeof(StressVec2<float>),
+    typeof(StressVec2<float>),
     //typeof(StressVector2D<float>),
 
-    //typeof(StressVec2<double>),
+    typeof(StressVec2<double>),
     //typeof(StressVector2D<double>),
 
     //typeof(StressVec2<byte, float>),
@@ -69,9 +69,9 @@ var vecs = BenchmarkSwitcher.FromTypes([
     //typeof(StressMatrix4X4<int>),
     //typeof(StressMatrix4X4<long>),
 
-    typeof(StressQuaternion),
-    typeof(StressQuat<float>),
-    typeof(StressQuaternion<float>),
+    //typeof(StressQuaternion),
+    //typeof(StressQuat<float>),
+    //typeof(StressQuaternion<float>),
 
     //typeof(StressQuat<double>),
     //typeof(StressQuaternion<double>)
