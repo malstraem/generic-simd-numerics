@@ -27,44 +27,11 @@ public partial struct Quat<T>(T x, T y, T z, T w)
     public static Quat<T> operator *(Quat<T> a, Quat<T> b)
     {
         if (typeof(T) == typeof(float))
-        {
-            unsafe
-            {
-                SkipInit<Quat<T>>(out var value);
-
-                var rVec = b.As128F();
-
-                Broadcast128F(a, out var xx, out var yy, out var zz, out var ww);
-
-                var result = rVec * ww;
-                result = Vector128.MultiplyAddEstimate(Vector128.Shuffle(rVec * Vector128.Create(-1, 1, -1, 1f), Vector128.Create(3, 2, 1, 0)), xx, result);
-                result = Vector128.MultiplyAddEstimate(Vector128.Shuffle(rVec * Vector128.Create(-1, -1, 1, 1f), Vector128.Create(2, 3, 0, 1)), yy, result);
-                result = Vector128.MultiplyAddEstimate(Vector128.Shuffle(rVec * Vector128.Create(1, -1, -1, 1f), Vector128.Create(1, 0, 3, 2)), zz, result);
-
-                Vector128.Store(result.As<float, T>(), (T*)&value);
-                return value;
-            }
-        }
+            return Multiply128(a, b);
 
         if (typeof(T) == typeof(double))
-        {
-            unsafe
-            {
-                SkipInit<Quat<T>>(out var value);
+            return Multiply256(a, b);
 
-                var rVec = b.As256D();
-
-                Broadcast256D(a, out var xx, out var yy, out var zz, out var ww);
-
-                var result = rVec * ww;
-                result = Vector256.MultiplyAddEstimate(Vector256.Shuffle(rVec * Vector256.Create(-1, 1, -1, 1f), Vector256.Create(3, 2, 1, 0)), xx, result);
-                result = Vector256.MultiplyAddEstimate(Vector256.Shuffle(rVec * Vector256.Create(-1, -1, 1, 1f), Vector256.Create(2, 3, 0, 1)), yy, result);
-                result = Vector256.MultiplyAddEstimate(Vector256.Shuffle(rVec * Vector256.Create(1, -1, -1, 1f), Vector256.Create(1, 0, 3, 2)), zz, result);
-
-                Vector256.Store(result.As<double, T>(), (T*)&value);
-                return value;
-            }
-        }
         return new((a.W * b.X) + (a.X * b.W) + (a.Y * b.Z) - (a.Z * b.Y),
                    (a.W * b.Y) - (a.X * b.Z) + (a.Y * b.W) + (a.Z * b.X),
                    (a.W * b.Z) + (a.X * b.Y) - (a.Y * b.X) + (a.Z * b.W),

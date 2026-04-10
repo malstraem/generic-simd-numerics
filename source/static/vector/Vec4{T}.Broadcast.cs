@@ -1,16 +1,13 @@
 namespace System.Numerics;
 
-public partial struct Mat44<T>
+public partial struct Vec4<T>
 {
-    /*[MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    private static void Broadcast128(
-        Vec4<T> row,
-        out Vector128<T> b0,
-        out Vector128<T> b1,
-        out Vector128<T> b2,
-        out Vector128<T> b3)
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    internal readonly void Broadcast128(
+        out Vector128<T> b0, out Vector128<T> b1,
+        out Vector128<T> b2, out Vector128<T> b3)
     {
-        var xmm = row.As128();
+        var xmm = As128();
 
         unsafe
         {
@@ -22,14 +19,11 @@ public partial struct Mat44<T>
     }
 
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    private static void Broadcast256(
-        Vec4<T> row,
-        out Vector256<T> b0,
-        out Vector256<T> b1,
-        out Vector256<T> b2,
-        out Vector256<T> b3)
+    internal readonly void Broadcast256(
+        out Vector256<T> b0, out Vector256<T> b1,
+        out Vector256<T> b2, out Vector256<T> b3)
     {
-        *//*var ymm = row.As256();
+        /*var ymm = As256();
 
         unsafe
         {
@@ -37,15 +31,15 @@ public partial struct Mat44<T>
             b1 = Vector256.Create(*((T*)&ymm + 1));
             b2 = Vector256.Create(*((T*)&ymm + 2));
             b3 = Vector256.Create(*((T*)&ymm + 3));
-        }*//*
+        }*/
 
-        b0 = Vector256.Create(row.X);
-        b1 = Vector256.Create(row.Y);
-        b2 = Vector256.Create(row.Z);
-        b3 = Vector256.Create(row.W);
+        b0 = Vector256.Create(X);
+        b1 = Vector256.Create(Y);
+        b2 = Vector256.Create(Z);
+        b3 = Vector256.Create(W);
 
         // take offset "from ymm" -> pessimized, idk :(
         // now JIT produce 16 scalar movs to xmm and it's better on 9 7900X
         // 128 bit version works as expected
-    }*/
+    }
 }
