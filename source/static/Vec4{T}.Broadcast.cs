@@ -1,5 +1,6 @@
 namespace System.Numerics;
 
+// called in right cases
 public partial struct Vec4<T>
 {
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
@@ -23,6 +24,8 @@ public partial struct Vec4<T>
         out Vector256<T> b0, out Vector256<T> b1,
         out Vector256<T> b2, out Vector256<T> b3)
     {
+        // take offset "from ymm" -> pessimized, idk :(
+
         /*var ymm = As256();
 
         unsafe
@@ -33,13 +36,12 @@ public partial struct Vec4<T>
             b3 = Vector256.Create(*((T*)&ymm + 3));
         }*/
 
+        // now JIT produce 16 scalar movs to xmm and it's better on 9 7900X
+        // 128 bit version works as expected
+
         b0 = Vector256.Create(X);
         b1 = Vector256.Create(Y);
         b2 = Vector256.Create(Z);
         b3 = Vector256.Create(W);
-
-        // take offset "from ymm" -> pessimized, idk :(
-        // now JIT produce 16 scalar movs to xmm and it's better on 9 7900X
-        // 128 bit version works as expected
     }
 }

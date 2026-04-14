@@ -126,30 +126,6 @@ public partial struct Vec4<T>(T x, T y, T z, T w) : IVector<Vec4<T>, T>, IVector
     [MethodImpl(AggressiveInlining)]
     public static T operator *(Vec4<T> a, Vec4<T> b) => a.ElementMultiply(b).Sum();
 
-    /*[MethodImpl(AggressiveInlining)]
-    public static Vec4<T> operator *(Vec4<T> a, Vec4<T> b)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return From128(a.As128() * b.As128());
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return From256(a.As256() * b.As256());
-
-        return new(a.X * b.X, a.Y * b.Y, a.Z * b.Z, a.W * b.W);
-    }
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> operator /(Vec4<T> a, Vec4<T> b)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return From128(a.As128() / b.As128());
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return From256(a.As256() / b.As256());
-
-        return new(a.X / b.X, a.Y / b.Y, a.Z / b.Z, a.W / b.W);
-    }*/
-
     [MethodImpl(AggressiveInlining)]
     public static bool operator ==(Vec4<T> a, Vec4<T> b)
     {
@@ -347,9 +323,9 @@ public partial struct Vec4<T>(T x, T y, T z, T w) : IVector<Vec4<T>, T>, IVector
 
     public override readonly string ToString() => $"({X}, {Y}, {Z}, {W})";
 
+    public readonly bool Equals(Vec4<T> other) => this == other;
+
     public override readonly bool Equals(object? obj) => (obj is Vec4<T> other) && Equals(other);
 
     public override readonly int GetHashCode() => HashCode.Combine(X, Y, Z, W);
-
-    public readonly bool Equals(Vec4<T> other) => this == other;
 }

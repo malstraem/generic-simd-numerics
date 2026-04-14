@@ -1,5 +1,6 @@
 namespace System.Numerics;
 
+// called in right cases
 // result is quite good, but asm could be lesser
 public partial struct Mat44<T>
 {

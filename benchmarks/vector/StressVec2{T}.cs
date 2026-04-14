@@ -24,7 +24,7 @@ public class StressVec2<T, R> : BaseBench<T>
             vecs[i] = vecs[i] + vecs[i + 1];
     }
 
-    [Benchmark]
+    /*[Benchmark]
     public void Subtract()
     {
         for (int i = 0; i < Count - 1; i++)
@@ -99,5 +99,5 @@ public class StressVec2<T, R> : BaseBench<T>
     {
         for (int i = 0; i < Count; i++)
             vecs[i] = vecs[i].Normalize<R>();
-    }
+    }*/
 }

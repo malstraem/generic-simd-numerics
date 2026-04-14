@@ -57,7 +57,7 @@ public abstract class Mat44Base<T>
         await Assert.That(sub).IsEqualTo(expected);
     }
 
-    [Test, DisplayName("a * b")]
+    [Test, DisplayName("a × b")]
     public async Task Multiply()
     {
         var mul = a * b;

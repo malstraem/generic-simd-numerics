@@ -24,12 +24,12 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
     public static Mat44<T> operator *(Mat44<T> m, T n)
     {
         if (SizeOf<T>() == 2 && Vector256<T>.IsSupported)
-            return (m.As256() * Vector256.Create(n)).Mat44();
+            return (m.As256() * n).Mat44();
 
         if (Vector512<T>.IsSupported)
         {
             if (SizeOf<T>() == 4)
-                return (m.As512() * Vector512.Create(n)).Mat44();
+                return (m.As512() * n).Mat44();
 
             if (SizeOf<T>() == 8)
             {
@@ -140,9 +140,9 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
     // for tests readability
     public override readonly string ToString() => $"{X} \n{Y} \n{Z} \n{W}";
 
+    public readonly bool Equals(Mat44<T> other) => other == this;
+
     public override readonly bool Equals(object? obj) => (obj is Mat44<T> mat) && mat == this;
 
     public override readonly int GetHashCode() => HashCode.Combine(X, Y, Z, W);
-
-    public readonly bool Equals(Mat44<T> other) => other == this;
 }

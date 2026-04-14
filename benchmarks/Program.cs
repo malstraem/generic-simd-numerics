@@ -6,10 +6,10 @@ using BenchmarkDotNet.Running;
 
 var vecs = BenchmarkSwitcher.FromTypes([
     //typeof(StressVector2),
-    typeof(StressVec2<float>),
+    //typeof(StressVec2<float>),
     //typeof(StressVector2D<float>),
 
-    typeof(StressVec2<double>),
+    //typeof(StressVec2<double>),
     //typeof(StressVector2D<double>),
 
     //typeof(StressVec2<byte, float>),
@@ -22,7 +22,7 @@ var vecs = BenchmarkSwitcher.FromTypes([
     //typeof(StressVector2D<long>),
 
     //typeof(StressVector3),
-    //typeof(StressVec3<float>),
+    typeof(StressVec3<float>),
     //typeof(StressVector3D<float>),
 
     //typeof(StressVec3<double>),

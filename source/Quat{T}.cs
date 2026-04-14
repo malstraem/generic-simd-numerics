@@ -1,5 +1,6 @@
 namespace System.Numerics;
 
+[StructLayout(LayoutKind.Sequential)]
 public partial struct Quat<T>(T x, T y, T z, T w)
     where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {

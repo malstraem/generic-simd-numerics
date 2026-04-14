@@ -1,67 +1,62 @@
 namespace System.Numerics;
 
-internal static class ReinterpretateVec2
+/*
+???
+
+this SHIT CARGO CULT mirror System.Numerics.Vector2 handy asm to produce scalar moves as expected in call cases
+
+actually it's AVX `vmovs{scalar size}` to xmm -> right ops -> `vmovs{scalar size} to ptr` -> feels good
+
+slower in stress then naive cause JIT can't prove offsets and use regs instead, pls let me know JIT or ME is DUMMY
+
+this scalar moves should be generalized on Numerics or/and JIT level
+to implement fully vectorized Vec2/3/4 and fallback to naive when ISA is not support that
+*/
+
+public partial struct Vec2<T>
 {
-    /* ???
-
-    besides bitcast this CARGO CULT SHIT tries to mirror Vector2 handy asm to produce scalar moves as expected in call cases
-
-    `vmovs{scalar size}` to xmm -> right ops -> `vmovs{scalar size} to ptr` -> feels good
-
-    slower in stress cause JIT can't prove offsets on ptrs and use regs
-
-    pls let me know JIT or ME is DUMB IDIOT */
-
-    extension<T>(Vec2<T> v)
-        where T : unmanaged, INumber<T>
+    [MethodImpl(AggressiveInlining)]
+    private readonly Vector128<T> As128S<S>()
+        where S : unmanaged, INumber<S>
     {
-        [MethodImpl(AggressiveInlining)]
-        internal Vector128<T> As128() => BitCast<Vec2<T>, Vector128<T>>(v);
-
-        [MethodImpl(AggressiveInlining)]
-        internal Vector128<T> As32()
+        unsafe
         {
-            unsafe
-            {
-                return Vector128.CreateScalar(*(int*)&v).As<int, T>();
-            }
-        }
-
-        [MethodImpl(AggressiveInlining)]
-        internal Vector128<T> As64()
-        {
-            unsafe
-            {
-                return Vector128.CreateScalar(*(long*)&v).As<long, T>();
-            }
+            fixed (T* p = &X)
+                return Vector128.CreateScalar(*(S*)p).As<S, T>();
         }
     }
 
-    extension<T>(Vector128<T> xmm)
-        where T : unmanaged, INumber<T>
+    [MethodImpl(AggressiveInlining)]
+    private static Vec2<T> From128S<S>(Vector128<T> xmm)
+        where S : unmanaged, INumber<S>
     {
-        [MethodImpl(AggressiveInlining)]
-        internal Vec2<T> Vec2()
+        unsafe
         {
             Vec2<T> v;
-            unsafe { xmm.Store((T*)&v); }
+            *(S*)&v = Vector128.As<T, S>(xmm).ToScalar();
             return v;
         }
+    }
 
-        [MethodImpl(AggressiveInlining)]
-        internal Vec2<T> Vec2S32()
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    public static Vec2<T> operator +(Vec2<T> a, Vec2<T> b)
+    {
+        if (Vector128<T>.IsSupported)
         {
-            Vec2<T> v;
-            unsafe { *(int*)&v = Vector128.As<T, int>(xmm).ToScalar(); }
-            return v;
-        }
+            /* ???
+            check generated asm
 
-        [MethodImpl(AggressiveInlining)]
-        internal Vec2<T> Vec2S64()
-        {
-            Vec2<T> v;
-            unsafe { *(long*)&v = Vector128.As<T, long>(xmm).ToScalar(); }
-            return v;
+            float <-> 32-bit word
+            double <-> 64-bit word
+
+            && Vector128<size x2 type>.IsSupported is pointless? */
+
+            if (typeof(T) == typeof(short) || (typeof(T) == typeof(ushort) /*&& Vector128<float>.IsSupported*/))
+                return From128S<float>(a.As128S<float>() + b.As128S<float>());
+
+            if (typeof(T) == typeof(int) || typeof(T) == typeof(uint) || typeof(T) == typeof(float))
+                return From128S<double>(a.As128S<double>() + b.As128S<double>());
         }
+        return new(a.X + b.X, a.Y + b.Y);
     }
 }

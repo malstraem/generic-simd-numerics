@@ -1,5 +1,6 @@
 namespace System.Numerics;
 
+// called in right cases
 internal static class ReinterpretateVec4
 {
     extension<T>(Vec4<T> v)
