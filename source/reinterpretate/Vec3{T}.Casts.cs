@@ -1,32 +1,37 @@
 namespace System.Numerics;
 
-public partial struct Vec3<T>
+// called in right cases
+// both 128 and 256 are not optimal asm
+// check Vec2{T}.DISGUSTING_CARGO_CULT.cs for more
+internal static class ReinterpretateVec3
 {
-    // called in right cases
-
-    [MethodImpl(AggressiveInlining)]
-    internal readonly Vector128<T> As128()
+    extension<T>(Vec3<T> v)
+        where T : unmanaged, INumber<T>
     {
-        // something smarter? both variants are not optimal asm
+        [MethodImpl(AggressiveInlining)]
+        internal Vector128<T> As128() => Vector128<T>.Indices
+            .WithElement(0, v.X)
+            .WithElement(1, v.Y)
+            .WithElement(2, v.Z);
 
-        return Vector128<T>.One
-            .WithElement(0, X)
-            .WithElement(1, Y)
-            .WithElement(2, Z);
+        [MethodImpl(AggressiveInlining)]
+        internal Vector256<T> As256() => Vector256<T>.Indices
+            .WithElement(0, v.X)
+            .WithElement(1, v.Y)
+            .WithElement(2, v.Z);
     }
 
-    [MethodImpl(AggressiveInlining)]
-    internal readonly Vector256<T> As256()
+    extension<T>(Vector128<T> xmm)
+        where T : unmanaged, INumber<T>
     {
-        return Vector256<T>.One
-            .WithElement(0, X)
-            .WithElement(1, Y)
-            .WithElement(2, Z);
+        [MethodImpl(AggressiveInlining)]
+        internal Vec3<T> Vec3() => new(xmm.GetElement(0), xmm.GetElement(1), xmm.GetElement(2));
     }
 
-    [MethodImpl(AggressiveInlining)]
-    internal static Vec3<T> From128(Vector128<T> xmm) => As<Vector128<T>, Vec3<T>>(ref xmm);
-
-    [MethodImpl(AggressiveInlining)]
-    internal static Vec3<T> From256(Vector256<T> ymm) => As<Vector256<T>, Vec3<T>>(ref ymm);
+    extension<T>(Vector256<T> ymm)
+        where T : unmanaged, INumber<T>
+    {
+        [MethodImpl(AggressiveInlining)]
+        internal Vec3<T> Vec3() => new(ymm.GetElement(0), ymm.GetElement(1), ymm.GetElement(2));
+    }
 }

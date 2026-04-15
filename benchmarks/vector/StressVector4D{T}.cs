@@ -1,16 +1,12 @@
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
 
 using Silk.NET.Maths;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
-public class StressVector4D<T> : BaseBench
+public class StressVector4D<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
-    private static readonly T[] nums = new T[Count];
-
     private static readonly Vector4D<T>[] vecs = new Vector4D<T>[Count];
 
     private static readonly Matrix4X4<T> mat = Mat44<T>.Gen(T.One).Silk();

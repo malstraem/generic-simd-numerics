@@ -4,7 +4,7 @@ using BenchmarkDotNet.Jobs;
 namespace System.Numerics.Bench;
 
 [SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
-public class StressQuaternion : BaseBench
+public class StressQuaternion : BaseBench<float>
 {
     private readonly Quaternion[] quats = new Quaternion[Count];
 
@@ -14,14 +14,14 @@ public class StressQuaternion : BaseBench
             quats[i] = Quat<float>.Gen(Random.Shared.Next(10, 100)).System();
     }
 
-    //[Benchmark]
+    [Benchmark]
     public void Add()
     {
         for (int i = 0; i < Count - 1; i++)
             quats[i] = quats[i] + quats[i + 1];
     }
 
-    //[Benchmark]
+    [Benchmark]
     public void Substract()
     {
         for (int i = 0; i < Count - 1; i++)
@@ -33,5 +33,12 @@ public class StressQuaternion : BaseBench
     {
         for (int i = 0; i < Count - 1; i++)
             quats[i] = quats[i] * quats[i + 1];
+    }
+
+    [Benchmark]
+    public void Dot()
+    {
+        for (int i = 0; i < Count - 1; i++)
+            nums[i] = Quaternion.Dot(quats[i], quats[i + 1]);
     }
 }

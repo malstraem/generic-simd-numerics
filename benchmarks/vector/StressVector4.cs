@@ -1,13 +1,9 @@
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
-public class StressVector4 : BaseBench
+public class StressVector4 : BaseBench<float>
 {
-    private static readonly float[] nums = new float[Count];
-
     private static readonly Vector4[] vecs = new Vector4[Count];
 
     private static readonly Matrix4x4 mat = Mat44<float>.Gen(1f).System();

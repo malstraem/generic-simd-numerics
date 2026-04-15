@@ -4,67 +4,67 @@ public static class Quat
 {
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Add<T>(Quat<T> a, Quat<T> b)
-        where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => a + b;
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Subtruct<T>(Quat<T> a, Quat<T> b)
-        where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => a - b;
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Multiply<T>(Quat<T> a, T n)
-        where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => a * n;
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Multiply<T>(Quat<T> a, Quat<T> b)
-        where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => a * b;
 
     [MethodImpl(AggressiveInlining)]
     public static T Dot<T>(Quat<T> a, Quat<T> b)
-        where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => a.Dot(b);
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Divide<T>(Quat<T> a, Quat<T> b)
-        where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => a / b;
 
     [MethodImpl(AggressiveInlining)]
     public static T Length<T>(Quat<T> q)
-        where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => q.Length();
 
     [MethodImpl(AggressiveInlining)]
     public static T LengthSquared<T>(Quat<T> q)
-        where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => q.LengthSquared();
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Normalize<T>(Quat<T> q)
-        where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => q.Normalize();
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Conjugate<T>(Quat<T> q)
-        where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => q.Conjugate();
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Inverse<T>(Quat<T> q)
-        where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => q.Inverse();
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Lerp<T>(Quat<T> a, Quat<T> b, T am)
-        where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => a.Lerp(b, am);
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> AxisAngle<T>(Vec3<T> axis, T angle)
-        where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         var (s, c) = T.SinCos(angle * T.CreateChecked(0.5));
         return new(axis * s, c);
@@ -73,7 +73,7 @@ public static class Quat
     // any way to vectorize?
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> Rotation<T>(Mat44<T> m)
-        where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         T root, c, h = T.CreateChecked(0.5), d = T.CreateChecked(2d),
 
@@ -118,7 +118,7 @@ public static class Quat
 
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> YawPitchRoll<T>(T yaw, T pitch, T roll)
-        where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         var h = T.CreateChecked(0.5);
 

@@ -1,6 +1,6 @@
 namespace System.Numerics;
 
-// shitty?
+// generic constraints need to have "not" to combine this two interfaces
 
 public interface IVector<V, S> :
     IUnaryPlusOperators<V, V>,
@@ -9,8 +9,7 @@ public interface IVector<V, S> :
     IAdditiveIdentity<V, V>,
     IMultiplicativeIdentity<V, V>,
 
-
-    IMultiplyOperators<V, V, S>,
+    IMultiplyOperators<V, V, S>, // use dot product instead element wise is personal choice
     IAdditionOperators<V, V, V>,
     ISubtractionOperators<V, V, V>,
 
@@ -23,7 +22,6 @@ public interface IVector<V, S> :
     static abstract V Zero { get; }
 }
 
-// generic constraints need to have "not" to combine
 public interface IVectorScalarOperators<V, S> :
     IMultiplyOperators<V, S, V>,
     IDivisionOperators<V, S, V>,

@@ -1,39 +1,25 @@
 namespace System.Numerics;
 
-public partial struct Quat<T>
+// called in right cases
+internal static class ReinterpretateQuat
 {
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    private static unsafe void Broadcast128F(Quat<T> row,
-        out Vector128<float> b0, out Vector128<float> b1, out Vector128<float> b2, out Vector128<float> b3)
+    extension<T>(Quat<T> q)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        var xmm = row.As128F();
+        [MethodImpl(AggressiveInlining)]
+        internal Vec4<T> Vec4() => BitCast<Quat<T>, Vec4<T>>(q);
 
-        b0 = Vector128.Create(*(float*)&xmm);
-        b1 = Vector128.Create(*((float*)&xmm + 1));
-        b2 = Vector128.Create(*((float*)&xmm + 2));
-        b3 = Vector128.Create(*((float*)&xmm + 3));
+        [MethodImpl(AggressiveInlining)]
+        internal Vector128<float> As128F() => BitCast<Quat<T>, Vector128<float>>(q);
+
+        [MethodImpl(AggressiveInlining)]
+        internal Vector256<double> As256D() => BitCast<Quat<T>, Vector256<double>>(q);
     }
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    private static unsafe void Broadcast256D(Quat<T> row,
-        out Vector256<double> b0, out Vector256<double> b1, out Vector256<double> b2, out Vector256<double> b3)
+    extension<T>(Vec4<T> v)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        b0 = Vector256.Create(row.X).AsDouble();
-        b1 = Vector256.Create(row.Y).AsDouble();
-        b2 = Vector256.Create(row.Z).AsDouble();
-        b3 = Vector256.Create(row.W).AsDouble();
-
-        /*var xmm = row.As256D();
-
-        b0 = Vector256.Create(*(double*)&xmm);
-        b1 = Vector256.Create(*((double*)&xmm + 1));
-        b2 = Vector256.Create(*((double*)&xmm + 2));
-        b3 = Vector256.Create(*((double*)&xmm + 3));*/
+        [MethodImpl(AggressiveInlining)]
+        internal Quat<T> Quat() => BitCast<Vec4<T>, Quat<T>>(v);
     }
-
-    [MethodImpl(AggressiveInlining)]
-    internal readonly Vector128<float> As128F() => BitCast<Quat<T>, Vector128<float>>(this);
-
-    [MethodImpl(AggressiveInlining)]
-    internal readonly Vector256<double> As256D() => BitCast<Quat<T>, Vector256<double>>(this);
 }
