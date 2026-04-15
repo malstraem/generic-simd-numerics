@@ -2,14 +2,55 @@ using BenchmarkDotNet.Attributes;
 
 namespace System.Numerics.Bench;
 
+public class StressMat44WithQuat<T> : StressMat44<T>
+    where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+{
+    private readonly Quat<T>[] quats = new Quat<T>[Count];
+
+    private readonly Vec3<T>[] scales = new Vec3<T>[Count],
+                               positions = new Vec3<T>[Count];
+
+    public StressMat44WithQuat()
+    {
+        for (int i = 0; i < Count; i++)
+        {
+            quats[i] = Quat<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
+            scales[i] = Vec3<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
+            positions[i] = Vec3<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
+        }
+    }
+
+    [Benchmark]
+    public void Rotation()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Mat44.Rotation(quats[i]);
+    }
+
+    [Benchmark]
+    public void Transform()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Mat44.Transform(mats[i], quats[i]);
+    }
+
+    [Benchmark]
+    public void Affine()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Mat44.Affine(positions[i], quats[i], scales[i]);
+    }
+}
+
 public class StressMat44<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
-    private readonly Mat44<T>[] mats = new Mat44<T>[Count];
+    protected readonly Mat44<T>[] mats = new Mat44<T>[Count],
+                                  @out = new Mat44<T>[Count];
 
     public StressMat44()
     {
-        for (int i = 0; i < mats.Length; i++)
+        for (int i = 0; i < Count; i++)
             mats[i] = Mat44<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
     }
 
@@ -17,20 +58,20 @@ public class StressMat44<T> : BaseBench<T>
     public void Add()
     {
         for (int i = 0; i < Count - 1; i++)
-            mats[i] = mats[i] + mats[i + 1];
+            @out[i] = mats[i] + mats[i + 1];
     }
 
     [Benchmark]
     public void Substract()
     {
         for (int i = 0; i < Count - 1; i++)
-            mats[i] = mats[i] - mats[i + 1];
+            @out[i] = mats[i] - mats[i + 1];
     }
 
     [Benchmark]
     public void Multiply()
     {
         for (int i = 0; i < Count - 1; i++)
-            mats[i] = mats[i] * mats[i + 1];
+            @out[i] = mats[i] * mats[i + 1];
     }
 }

@@ -49,13 +49,13 @@ public partial struct Quat<T>(T x, T y, T z, T w)
     public static bool operator !=(Quat<T> a, Quat<T> b) => a.Vec4() != b.Vec4();
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T Dot(Quat<T> q) => Vec4() * q.Vec4();
+    public readonly T Dot(Quat<T> q) => this.Vec4() * q.Vec4();
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T Length() => Vec4().Length();
+    public readonly T Length() => this.Vec4().Length();
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T LengthSquared() => Vec4().LengthSquared();
+    public readonly T LengthSquared() => this.Vec4().LengthSquared();
 
     [MethodImpl(AggressiveInlining)]
     public readonly Quat<T> Conjugate() => new(-X, -Y, -Z, W);
@@ -65,7 +65,7 @@ public partial struct Quat<T>(T x, T y, T z, T w)
     {
         //return Vec4().Normalize().Quat();
 
-        var v = Vec4();
+        var v = this.Vec4();
 
         var dot = v * v;
 
@@ -81,16 +81,16 @@ public partial struct Quat<T>(T x, T y, T z, T w)
     public readonly Quat<T> Lerp(Quat<T> q, T am)
     {
         if (Dot(q) >= T.Zero)
-            return Vec4().Lerp(q.Vec4(), am).Normalize().Quat();
+            return this.Vec4().Lerp(q.Vec4(), am).Normalize().Quat();
 
-        return ((Vec4() * (T.One - am)) - (q.Vec4() * am)).Normalize().Quat();
+        return ((this.Vec4() * (T.One - am)) - (q.Vec4() * am)).Normalize().Quat();
     }
 
     public readonly bool Equals(Quat<T> other) => this == other;
 
     public override readonly bool Equals(object? obj) => (obj is Quat<T> other) && Equals(other);
 
-    public override readonly int GetHashCode() => Vec4().GetHashCode();
+    public override readonly int GetHashCode() => this.Vec4().GetHashCode();
 
-    public override readonly string ToString() => Vec4().ToString();
+    public override readonly string ToString() => this.Vec4().ToString();
 }

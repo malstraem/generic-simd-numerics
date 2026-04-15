@@ -1,10 +1,73 @@
+using Silk.NET.Maths;
+
 namespace System.Numerics.Tests.Matrix44;
 
 [InheritsTests]
-public class Mat44f32 : Mat44Base<float>;
+public class Mat44f32 : Mat44WithQuaternion<float>;
 
 [InheritsTests]
-public class Mat44f64 : Mat44Base<double>;
+public class Mat44f64 : Mat44WithQuaternion<double>;
+
+public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
+    where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+{
+    private static readonly Quat<T> rotation = Quat<T>.Gen(T.One);
+
+    private static readonly Vec3<T> position = Vec3<T>.Gen(T.One),
+                                    scale = Vec3<T>.Gen(T.One + T.One);
+
+    [Test, DisplayName("translation")]
+    public async Task Translation()
+    {
+        var t = Mat44.Translation(position);
+
+        var expected = Matrix4X4.CreateTranslation(position.Silk()).Mat44();
+
+        await Assert.That(t).IsEqualTo(expected);
+    }
+
+    [Test, DisplayName("rotation")]
+    public async Task Rotation()
+    {
+        var r = Mat44.Rotation(rotation);
+
+        var expected = Matrix4X4.CreateFromQuaternion(rotation.Silk()).Mat44();
+
+        await Assert.That(r).IsEqualTo(expected);
+    }
+
+    [Test, DisplayName("scale")]
+    public async Task Scale()
+    {
+        var s = Mat44.Scale(scale);
+
+        var expected = Matrix4X4.CreateScale(scale.Silk()).Mat44();
+
+        await Assert.That(s).IsEqualTo(expected);
+    }
+
+    [Test, DisplayName("transform")]
+    public async Task Transform()
+    {
+        var transformed = Mat44.Transform(a, rotation);
+
+        var expected = Matrix4X4.Transform(a.Silk(), rotation.Silk()).Mat44();
+
+        await Assert.That(transformed).IsEqualTo(expected);
+    }
+
+    [Test, DisplayName("affine")]
+    public async Task Affine()
+    {
+        var affine = Mat44.Affine(position, rotation, scale);
+
+        var expected = (Matrix4X4.CreateScale(scale.Silk())
+                      * Matrix4X4.CreateFromQuaternion(rotation.Silk())
+                      * Matrix4X4.CreateTranslation(position.Silk())).Mat44();
+
+        await Assert.That(affine).IsEqualTo(expected);
+    }
+}
 
 [InheritsTests]
 public class Mat44i8 : Mat44Base<sbyte>;

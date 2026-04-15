@@ -172,7 +172,7 @@ public abstract class QuatBase<T>
         await Assert.That(aa.W - expected.W).IsLessThan(eps);
     }
 
-    [Test, DisplayName("yaw & pitch & roll")]
+    [Test, DisplayName("yaw pitch roll")]
     public async Task YawPitchRoll()
     {
         var ypr = Quat.YawPitchRoll(yaw, pitch, roll);

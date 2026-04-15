@@ -18,6 +18,5 @@ internal static class Vector256Extensions
 
             return (a * b) + c;
         }
-
     }
 }
