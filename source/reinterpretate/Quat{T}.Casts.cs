@@ -8,12 +8,6 @@ internal static class ReinterpretateQuat
     {
         [MethodImpl(AggressiveInlining)]
         internal Vec4<T> Vec4() => BitCast<Quat<T>, Vec4<T>>(q);
-
-        [MethodImpl(AggressiveInlining)]
-        internal Vector128<float> As128F() => BitCast<Quat<T>, Vector128<float>>(q);
-
-        [MethodImpl(AggressiveInlining)]
-        internal Vector256<double> As256D() => BitCast<Quat<T>, Vector256<double>>(q);
     }
 
     extension<T>(Vec4<T> v)

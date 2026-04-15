@@ -9,11 +9,12 @@ public class StressVec2<T, R> : BaseBench<T>
     where T : unmanaged, INumber<T>
     where R : unmanaged, IRootFunctions<R>
 {
-    private static readonly Vec2<T>[] vecs = new Vec2<T>[Count];
+    private static readonly Vec2<T>[] vecs = new Vec2<T>[Count],
+                                      @out = new Vec2<T>[Count];
 
     public StressVec2()
     {
-        for (int i = 0; i < vecs.Length; i++)
+        for (int i = 0; i < Count; i++)
             vecs[i] = Vec2<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
     }
 
@@ -21,35 +22,35 @@ public class StressVec2<T, R> : BaseBench<T>
     public void Add()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] + vecs[i + 1];
+            @out[i] = vecs[i] + vecs[i + 1];
     }
 
-    /*[Benchmark]
+    [Benchmark]
     public void Subtract()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] - vecs[i + 1];
+            @out[i] = vecs[i] - vecs[i + 1];
     }
 
     [Benchmark]
     public void ElementMultiply()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i].ElementMultiply(vecs[i + 1]);
+            @out[i] = vecs[i].ElementMultiply(vecs[i + 1]);
     }
 
     [Benchmark]
     public void ElementDivide()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i].ElementDivide(vecs[i + 1]);
+            @out[i] = vecs[i].ElementDivide(vecs[i + 1]);
     }
 
     [Benchmark]
     public void Abs()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = vecs[i].Abs();
+            @out[i] = vecs[i].Abs();
     }
 
     [Benchmark]
@@ -98,6 +99,6 @@ public class StressVec2<T, R> : BaseBench<T>
     public void Normalize()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = vecs[i].Normalize<R>();
-    }*/
+            @out[i] = vecs[i].Normalize<R>();
+    }
 }

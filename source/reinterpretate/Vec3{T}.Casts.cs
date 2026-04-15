@@ -25,13 +25,13 @@ internal static class ReinterpretateVec3
         where T : unmanaged, INumber<T>
     {
         [MethodImpl(AggressiveInlining)]
-        internal Vec3<T> Vec3() => new(xmm.GetElement(0), xmm.GetElement(1), xmm.GetElement(2));
+        internal Vec3<T> Vec3() => new(xmm[0], xmm[1], xmm[2]);
     }
 
     extension<T>(Vector256<T> ymm)
         where T : unmanaged, INumber<T>
     {
         [MethodImpl(AggressiveInlining)]
-        internal Vec3<T> Vec3() => new(ymm.GetElement(0), ymm.GetElement(1), ymm.GetElement(2));
+        internal Vec3<T> Vec3() => new(ymm[0], ymm[1], ymm[2]);
     }
 }

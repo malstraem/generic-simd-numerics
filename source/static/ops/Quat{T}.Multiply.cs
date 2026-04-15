@@ -6,15 +6,15 @@ public partial struct Quat<T>
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     private static Quat<T> Multiply128(Quat<T> a, Quat<T> b)
     {
-        var xmm = b.As128F();
+        var xmm = BitCast<Quat<T>, Vector128<float>>(b);
 
         ((Vec4<float>)(object)a.Vec4()).Broadcast128(out var xx, out var yy, out var zz, out var ww);
 
         var res = xmm * ww;
 
-        res = Vector128.MultiplyAddEstimate(Vector128.Shuffle(xmm * Vector128.Create(-1, 1, -1, 1f), Vector128.Create(3, 2, 1, 0)), xx, res);
-        res = Vector128.MultiplyAddEstimate(Vector128.Shuffle(xmm * Vector128.Create(-1, -1, 1, 1f), Vector128.Create(2, 3, 0, 1)), yy, res);
-        res = Vector128.MultiplyAddEstimate(Vector128.Shuffle(xmm * Vector128.Create(1, -1, -1, 1f), Vector128.Create(1, 0, 3, 2)), zz, res);
+        res = Vector128.MultiplyAddEstimate(Vector128.Shuffle(xmm * Vector128.Create(-1f, 1f, -1f, 1f), Vector128.Create(3, 2, 1, 0)), xx, res);
+        res = Vector128.MultiplyAddEstimate(Vector128.Shuffle(xmm * Vector128.Create(-1f, -1f, 1f, 1f), Vector128.Create(2, 3, 0, 1)), yy, res);
+        res = Vector128.MultiplyAddEstimate(Vector128.Shuffle(xmm * Vector128.Create(1f, -1f, -1f, 1f), Vector128.Create(1, 0, 3, 2)), zz, res);
 
         unsafe { Vector128.Store(res.As<float, T>(), (T*)&a); }
         return a;
@@ -23,7 +23,7 @@ public partial struct Quat<T>
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     private static Quat<T> Multiply256(Quat<T> a, Quat<T> b)
     {
-        var ymm = b.As256D();
+        var ymm = BitCast<Quat<T>, Vector256<double>>(b);
 
         ((Vec4<double>)(object)a.Vec4()).Broadcast256(out var xx, out var yy, out var zz, out var ww);
 

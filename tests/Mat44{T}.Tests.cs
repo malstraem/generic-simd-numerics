@@ -3,18 +3,75 @@ using Silk.NET.Maths;
 namespace System.Numerics.Tests.Matrix44;
 
 [InheritsTests]
-public class Mat44f32 : Mat44WithQuaternion<float>;
+public class Mat44f32 : Mat44WithQuaternion<float>
+{
+    [Test, DisplayName("translation (vs System.Numerics)")]
+    public async Task TranslationSystem()
+    {
+        var t = Mat44.Translation(position);
+
+        var expected = Matrix4x4.CreateTranslation(position.System()).Mat44();
+
+        await Assert.That(t).IsEqualTo(expected);
+    }
+
+    [Test, DisplayName("rotation (vs System.Numerics)")]
+    public async Task RotationSystem()
+    {
+        var r = Mat44.Rotation(rotation);
+
+        var expected = Matrix4x4.CreateFromQuaternion(rotation.System()).Mat44();
+
+        await Assert.That(r).IsEqualTo(expected);
+    }
+
+    [Test, DisplayName("scale (vs System.Numerics)")]
+    public async Task ScaleSystem()
+    {
+        var s = Mat44.Scale(scale);
+
+        var expected = Matrix4x4.CreateScale(scale.System()).Mat44();
+
+        await Assert.That(s).IsEqualTo(expected);
+    }
+
+    [Test, DisplayName("transform (vs System.Numerics)")]
+    public async Task TransformSystem()
+    {
+        var transformed = Mat44.Transform(a, rotation);
+
+        var expected = Matrix4x4.Transform(a.System(), rotation.System()).Mat44();
+
+        await Assert.That(transformed).IsEqualTo(expected);
+    }
+
+    [Test, DisplayName("affine (vs System.Numerics)")]
+    public async Task AffineSystem()
+    {
+        var affine = Mat44.Affine(position, rotation, scale);
+
+        var expected = (Matrix4x4.CreateScale(scale.System())
+                      * Matrix4x4.CreateFromQuaternion(rotation.System())
+                      * Matrix4x4.CreateTranslation(position.System())).Mat44();
+
+        await Assert.That(affine).IsEqualTo(expected);
+    }
+}
 
 [InheritsTests]
 public class Mat44f64 : Mat44WithQuaternion<double>;
 
+[InheritsTests]
 public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
     where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
 {
-    private static readonly Quat<T> rotation = Quat<T>.Gen(T.One);
+    protected static readonly Quat<T> rotation = Quaternion<T>.CreateFromYawPitchRoll(
+        T.CreateTruncating(0.333),
+        T.CreateTruncating(0.333),
+        T.CreateTruncating(0.333)).Quat();
 
-    private static readonly Vec3<T> position = Vec3<T>.Gen(T.One),
-                                    scale = Vec3<T>.Gen(T.One + T.One);
+    protected static readonly Vec3<T> position = Vec3<T>.Gen(T.One),
+                                      scale = Vec3<T>.Gen(T.One + T.One);
 
     [Test, DisplayName("translation")]
     public async Task Translation()

@@ -187,7 +187,9 @@ public abstract class Vec4Base<T>
     [Test, DisplayName("abs")]
     public async Task Abs()
     {
-        var abs = (-a).Abs();
+        var negative = -a;
+
+        var abs = negative.Abs();
 
         var expected = Vector4D.Abs((-a).Silk()).Vec4();
 

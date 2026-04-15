@@ -4,11 +4,12 @@ namespace System.Numerics.Bench;
 
 public class StressVector3 : BaseBench<float>
 {
-    private static readonly Vector3[] vecs = new Vector3[Count];
+    private static readonly Vector3[] vecs = new Vector3[Count],
+                                      @out = new Vector3[Count];
 
     public StressVector3()
     {
-        for (int i = 0; i < vecs.Length; i++)
+        for (int i = 0; i < Count; i++)
             vecs[i] = Vec3<float>.Gen(Random.Shared.Next(1, 10)).System();
     }
 
@@ -16,35 +17,35 @@ public class StressVector3 : BaseBench<float>
     public void Add()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] + vecs[i + 1];
+            @out[i] = vecs[i] + vecs[i + 1];
     }
 
-    /*[Benchmark]
+    [Benchmark]
     public void Subtract()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] - vecs[i + 1];
+            @out[i] = vecs[i] - vecs[i + 1];
     }
 
     [Benchmark]
     public void ElementMultiply()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] * vecs[i + 1];
+            @out[i] = vecs[i] * vecs[i + 1];
     }
 
     [Benchmark]
     public void ElementDivide()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] / vecs[i + 1];
+            @out[i] = vecs[i] / vecs[i + 1];
     }
 
     [Benchmark]
     public void Abs()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vector3.Abs(vecs[i]);
+            @out[i] = Vector3.Abs(vecs[i]);
     }
 
     [Benchmark]
@@ -93,6 +94,6 @@ public class StressVector3 : BaseBench<float>
     public void Normalize()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vector3.Normalize(vecs[i]);
-    }*/
+            @out[i] = Vector3.Normalize(vecs[i]);
+    }
 }

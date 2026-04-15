@@ -23,7 +23,7 @@ public class StressMatrix4x4 : BaseBench<float>
         }
     }
 
-    [Benchmark]
+    /*[Benchmark]
     public void Add()
     {
         for (int i = 0; i < Count - 1; i++)
@@ -56,7 +56,7 @@ public class StressMatrix4x4 : BaseBench<float>
     {
         for (int i = 0; i < Count; i++)
             @out[i] = Matrix4x4.Transform(mats[i], quats[i]);
-    }
+    }*/
 
     [Benchmark]
     public void Affine()
