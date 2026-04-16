@@ -3,102 +3,111 @@ namespace System.Numerics;
 #pragma warning disable IDE0055, IDE0007
 public static class Mat44
 {
-    // called in right cases
-    // asm could be more performant and there is place for 256 I believe
+    // called in right case
+    // I believe asm could be more performant and there is place for 256
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     private static Mat44<T> Affine128<T>(Vec3<T> t, Quat<T> r, Vec3<T> s)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         Mat44<T> m;
 
-        T xy = r.X * r.Y;
+        var xmm0 = r.Vec4().As128().As<T, float>(); // X, Y, Z, W
 
-        var xmm0 = BitCast<Quat<T>, Vector128<float>>(r);
-
-        var xmm1 = xmm0.WithElement(3, (float)(object)r.Z);
-
-        var xmm2 = Vector128.Shuffle(xmm0, Vector128.Create(3, 2, 0, 1));
+        var xmm1 = Vector128.Shuffle(xmm0, Vector128.Create(0, 1, 2, 2)); // X, Y, Z, Z
+        var xmm2 = Vector128.Shuffle(xmm0, Vector128.Create(3, 2, 0, 1)); // W, Z, X, Y
+        var xmm3 = Vector128.Shuffle(xmm0, Vector128.Create(1, 0, 0, 0)); // Y, X, X, X for X * Y
 
         xmm1 *= xmm0;
         xmm2 *= xmm0;
+        xmm3 *= xmm0;
 
-        var ins0 = Vector128.Create(xmm2[2], (float)(object)xy, xmm2[1], 0f);
-        var ins1 = Vector128.Create(xmm2[3], xmm1[3], xmm2[0], 0f);
-        var ins2 = Vector128.Create(xmm1[2], xmm1[2], xmm1[0], 0f);
-        var ins3 = Vector128.Create(xmm1[1], xmm1[0], xmm1[1], 0f);
+        var x = xmm2.WithElement(3, xmm3[0]).WithElement(0, 0);
+        var z = xmm2.WithElement(1, xmm1[3]).WithElement(2, 0);
 
-        xmm0 = ins0 + ins1;
-        xmm1 = ins2 + ins3;
-        xmm2 = ins0 - ins1;
+        x = Vector128.Shuffle(x, Vector128.Create(2, 3, 1, 0));
+        z = Vector128.Shuffle(z, Vector128.Create(3, 1, 0, 2));
+
+        xmm1 = xmm1.WithElement(3, 0);
+
+        var y = Vector128.Shuffle(xmm1, Vector128.Create(2, 2, 0, 3));
+        var w = Vector128.Shuffle(xmm1, Vector128.Create(1, 0, 1, 3));
+
+        xmm0 = x + z;
+        xmm1 = y + w;
+        xmm2 = x - z;
 
         xmm0 += xmm0;
+        xmm2 += xmm2;
         xmm1 += xmm1;
         xmm1 = Vector128.Create(1f) - xmm1;
-        xmm2 += xmm2;
 
-        var x = Vector128.Create(xmm1[0], xmm0[1], xmm2[0], 0f).As<float, T>();
-        var y = Vector128.Create(xmm2[1], xmm1[1], xmm0[2], 0f).As<float, T>();
-        var z = Vector128.Create(xmm0[0], xmm2[2], xmm1[2], 0f).As<float, T>();
+        x = Vector128.Create(xmm1[0], xmm0[1], xmm2[0], 0f);
+        y = Vector128.Create(xmm2[1], xmm1[1], xmm0[2], 0f);
+        z = Vector128.Create(xmm0[0], xmm2[2], xmm1[2], 0f);
+        // this should be previously loaded to xmm with vmovsd + vinsertps for Z, its not now
+        w = Vector128.Create((float)(object)t.X, (float)(object)t.Y, (float)(object)t.Z, 1f);
 
         unsafe
         {
-            (x * s.X).Store((T*)&m);
-            (y * s.Y).Store((T*)&m.Y);
-            (z * s.Z).Store((T*)&m.Z);
-
-            Vector128.CreateScalar(*(double*)&t).As<double, T>()
-                     .WithElement(2, t.Z)
-                     .WithElement(3, T.One).Store((T*)&m.W);
+            (x.As<float, T>() * s.X).Store((T*)&m);
+            (y.As<float, T>() * s.Y).Store((T*)&m.Y);
+            (z.As<float, T>() * s.Z).Store((T*)&m.Z);
+            w.As<float, T>().Store((T*)&m.W);
         }
         return m;
     }
 
-    // called in right cases
-    // asm could be more performant and there is place for 512 I believe
+    // called in right case
+    // I believe asm could be more performant and there is place for 512
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     private static Mat44<T> Affine256<T>(Vec3<T> t, Quat<T> r, Vec3<T> s)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         Mat44<T> m;
 
-        T xy = r.X * r.Y;
+        var ymm0 = r.Vec4().As256().As<T, double>(); // X, Y, Z, W
 
-        var xmm0 = BitCast<Quat<T>, Vector256<double>>(r);
+        var ymm1 = Vector256.Shuffle(ymm0, Vector256.Create(0, 1, 2, 2)); // X, Y, Z, Z
+        var ymm2 = Vector256.Shuffle(ymm0, Vector256.Create(3, 2, 0, 1)); // W, Z, X, Y
+        var ymm3 = Vector256.Shuffle(ymm0, Vector256.Create(1, 0, 0, 0)); // Y, X, X, X for X * Y
 
-        var xmm1 = xmm0.WithElement(3, (double)(object)r.Z);
+        ymm1 *= ymm0;
+        ymm2 *= ymm0;
+        ymm3 *= ymm0;
 
-        var xmm2 = Vector256.Shuffle(xmm0, Vector256.Create(3, 2, 0, 1));
+        var x = ymm2.WithElement(3, ymm3[0]).WithElement(0, 0);
+        var z = ymm2.WithElement(1, ymm1[3]).WithElement(2, 0);
 
-        xmm1 *= xmm0;
-        xmm2 *= xmm0;
+        ymm1 = ymm1.WithElement(3, 0);
 
-        var ins0 = Vector256.Create(xmm2[2], (double)(object)xy, xmm2[1], 0d);
-        var ins1 = Vector256.Create(xmm2[3], xmm1[3], xmm2[0], 0d);
-        var ins2 = Vector256.Create(xmm1[2], xmm1[2], xmm1[0], 0d);
-        var ins3 = Vector256.Create(xmm1[1], xmm1[0], xmm1[1], 0d);
+        x = Vector256.Shuffle(x, Vector256.Create(2, 3, 1, 0));
+        z = Vector256.Shuffle(z, Vector256.Create(3, 1, 0, 2));
 
-        xmm0 = ins0 + ins1;
-        xmm1 = ins2 + ins3;
-        xmm2 = ins0 - ins1;
+        var y = Vector256.Shuffle(ymm1, Vector256.Create(2, 2, 0, 3));
+        var w = Vector256.Shuffle(ymm1, Vector256.Create(1, 0, 1, 3));
 
-        xmm0 += xmm0;
-        xmm1 += xmm1;
-        xmm1 = Vector256.Create(1d) - xmm1;
-        xmm2 += xmm2;
+        ymm0 = x + z;
+        ymm1 = y + w;
+        ymm2 = x - z;
 
-        var x = Vector256.Create(xmm1[0], xmm0[1], xmm2[0], 0d).As<double, T>();
-        var y = Vector256.Create(xmm2[1], xmm1[1], xmm0[2], 0d).As<double, T>();
-        var z = Vector256.Create(xmm0[0], xmm2[2], xmm1[2], 0d).As<double, T>();
+        ymm0 += ymm0;
+        ymm1 += ymm1;
+        ymm1 = Vector256.Create(1d) - ymm1;
+        ymm2 += ymm2;
+
+        x = Vector256.Create(ymm1[0], ymm0[1], ymm2[0], 0f);
+        y = Vector256.Create(ymm2[1], ymm1[1], ymm0[2], 0f);
+        z = Vector256.Create(ymm0[0], ymm2[2], ymm1[2], 0f);
+
+        // this should be previously loaded to low xmm[n] of ymm[n] with something like vmovapd, then insert Z, its not now
+        w = Vector256.Create((double)(object)t.X, (double)(object)t.Y, (double)(object)t.Z, 1f);
 
         unsafe
         {
-            (x * s.X).Store((T*)&m);
-            (y * s.Y).Store((T*)&m.Y);
-            (z * s.Z).Store((T*)&m.Z);
-
-            Vector256.Create((double)(object)t.X, (double)(object)t.Y, (double)(object)t.Z, 1d)
-                     .As<double, T>()
-                     .Store((T*)&m.W);
+            (x.As<double, T>() * s.X).Store((T*)&m);
+            (y.As<double, T>() * s.Y).Store((T*)&m.Y);
+            (z.As<double, T>() * s.Z).Store((T*)&m.Z);
+            w.As<double, T>().Store((T*)&m.W);
         }
         return m;
     }

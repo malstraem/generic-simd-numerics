@@ -66,12 +66,12 @@ public class StressMat44<T> : BaseBench<T>
     {
         for (int i = 0; i < Count - 1; i++)
             @out[i] = mats[i] - mats[i + 1];
-    }
+    }*/
 
     [Benchmark]
     public void Multiply()
     {
         for (int i = 0; i < Count - 1; i++)
             @out[i] = mats[i] * mats[i + 1];
-    }*/
+    }
 }

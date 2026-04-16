@@ -22,7 +22,7 @@ public class StressMatrix4X4WithQuaternion<T> : StressMatrix4X4<T>
         }
     }
 
-    [Benchmark]
+    /*[Benchmark]
     public void Rotation()
     {
         for (int i = 0; i < Count; i++)
@@ -34,7 +34,7 @@ public class StressMatrix4X4WithQuaternion<T> : StressMatrix4X4<T>
     {
         for (int i = 0; i < Count; i++)
             @out[i] = Matrix4X4.Transform(mats[i], quats[i]);
-    }
+    }*/
 
     [Benchmark]
     public void Affine()
@@ -56,7 +56,7 @@ public class StressMatrix4X4<T> : BaseBench<T>
             mats[i] = Mat44<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10))).Silk();
     }
 
-    [Benchmark]
+    /*[Benchmark]
     public void Add()
     {
         for (int i = 0; i < Count - 1; i++)
@@ -68,7 +68,7 @@ public class StressMatrix4X4<T> : BaseBench<T>
     {
         for (int i = 0; i < Count - 1; i++)
             @out[i] = mats[i] - mats[i + 1];
-    }
+    }*/
 
     [Benchmark]
     public void Multiply()

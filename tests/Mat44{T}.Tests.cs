@@ -70,8 +70,15 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
         T.CreateTruncating(0.333),
         T.CreateTruncating(0.333));
 
-    protected static readonly Vec3<T> position = Vec3<T>.Gen(T.One),
-                                      scale = Vec3<T>.Gen(T.One + T.One);
+    protected static readonly Vec3<T> position = new(
+        T.CreateTruncating(55555.55555),
+        T.CreateTruncating(55555.55555),
+        T.CreateTruncating(55555.55555));
+
+    protected static readonly Vec3<T> scale = new(
+        T.CreateTruncating(0.5),
+        T.CreateTruncating(0.3),
+        T.CreateTruncating(0.1));
 
     [Test, DisplayName("translation")]
     public async Task Translation()
