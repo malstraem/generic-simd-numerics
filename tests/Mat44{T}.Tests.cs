@@ -65,10 +65,10 @@ public class Mat44f64 : Mat44WithQuaternion<double>;
 public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
     where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
 {
-    protected static readonly Quat<T> rotation = Quaternion<T>.CreateFromYawPitchRoll(
+    protected static readonly Quat<T> rotation = Quat.YawPitchRoll(
         T.CreateTruncating(0.333),
         T.CreateTruncating(0.333),
-        T.CreateTruncating(0.333)).Quat();
+        T.CreateTruncating(0.333));
 
     protected static readonly Vec3<T> position = Vec3<T>.Gen(T.One),
                                       scale = Vec3<T>.Gen(T.One + T.One);
