@@ -105,16 +105,15 @@ public static class Mat44
         }
     }
 
-    [Obsolete("todo scale in soft way")]
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Mat44<T> Affine<T>(Vec3<T> t, Quat<T> r, Vec3<T> s)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        /*if (typeof(T) == typeof(float) && Vector128<float>.IsSupported)
+        if (typeof(T) == typeof(float) && Vector128<float>.IsSupported)
             return Affine128(t, r, s);
 
         if (typeof(T) == typeof(double) && Vector256<double>.IsSupported)
-            return Affine256(t, r, s);*/
+            return Affine256(t, r, s);
 
         T d = T.One + T.One, // T.Two should exist
 
@@ -128,10 +127,10 @@ public static class Mat44
         yz = r.Y * r.Z,
         xw = r.X * r.W;
 
-        return new(T.One - (d * (yy + zz)), d * (xy + zw), d * (zx - yw),                          T.Zero,
-                   d * (xy - zw),           T.One - (d * (zz + xx)),      d * (yz + xw),           T.Zero,
-                   d * (zx + yw),           d * (yz - xw),                T.One - (d * (yy + xx)), T.Zero,
-                   t.X,                     t.Y,                          t.Z,                     T.One);
+        return new(s.X * (T.One - (d * (yy + zz))), s.X * d * (xy + zw),             s.X * d * (zx - yw),             T.Zero,
+                   s.Y * d * (xy - zw),             s.Y * (T.One - (d * (zz + xx))), s.Y * d * (yz + xw),             T.Zero,
+                   s.Z * d * (zx + yw),             s.Z * d * (yz - xw),             s.Z * (T.One - (d * (yy + xx))), T.Zero,
+                   t.X,                             t.Y,                             t.Z,                             T.One);
     }
 
     [Obsolete("vectorize")]
