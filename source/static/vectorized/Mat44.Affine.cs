@@ -4,50 +4,53 @@ namespace System.Numerics;
 
 // called in right case
 // shuffle/permute can be generalized to Permute<T> with only int indices, isn't?
+// I believe asm could be more performant and there is more optimal way
+// scalar x2 ops can be used for XY of translation and XY of scale and maybe for some insertions in calculus
 public static partial class Mat44
 {
-    // I believe asm could be more performant and there is place for 256
+    // any way to mix with 256?
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     private static Mat44<T> Affine128<T>(Vec3<T> t, Quat<T> r, Vec3<T> s)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         Mat44<T> m;
 
-        var xmm0 = r.Vec4().As128().As<T, float>(); // X, Y, Z, W
+        Vector128<float> n;
 
-        var xmm1 = Vector128.Shuffle(xmm0, Vector128.Create(0, 1, 2, 2)); // X, Y, Z, Z
-        var xmm2 = Vector128.Shuffle(xmm0, Vector128.Create(3, 2, 0, 1)); // W, Z, X, Y
-        var xmm3 = Vector128.Shuffle(xmm0, Vector128.Create(1, 0, 0, 0)); // Y, X, X, X
+        var w = r.Vec4().As128().As<T, float>(); // X, Y, Z, W
 
-        xmm1 *= xmm0;
-        xmm2 *= xmm0;
-        xmm3 *= xmm0;
+        var xyzz = Vector128.Shuffle(w, Vector128.Create(0, 1, 2, 2)); // X, Y, Z, Z
+        var wzxy = Vector128.Shuffle(w, Vector128.Create(3, 2, 0, 1)); // W, Z, X, Y
+        var yooo = Vector128.Shuffle(w, Vector128.Create(1, 0, 0, 0)); // Y, -, -, -
 
-        var x = xmm2.WithElement(3, xmm3[0]).WithElement(0, 0f);
-        var y = xmm2.WithElement(1, xmm1[3]).WithElement(2, 0f);
+        var x = yooo * w;
+        var y = wzxy * w;
+        var z = xyzz * w;
 
-        xmm1 = xmm1.WithElement(3, 0f);
+        x = y.WithElement(3, x[0]).WithElement(0, 0f);
+        y = y.WithElement(1, z[3]).WithElement(2, 0f);
 
         x = Vector128.Shuffle(x, Vector128.Create(2, 3, 1, 0));
         y = Vector128.Shuffle(y, Vector128.Create(3, 1, 0, 2));
 
-        var z = Vector128.Shuffle(xmm1, Vector128.Create(2, 2, 0, 3));
-        var w = Vector128.Shuffle(xmm1, Vector128.Create(1, 0, 1, 3));
+        z = z.WithElement(3, 0f);
 
-        xmm0 = x + y;
-        xmm1 = z + w;
+        w = Vector128.Shuffle(z, Vector128.Create(1, 0, 1, 3));
+        z = Vector128.Shuffle(z, Vector128.Create(2, 2, 0, 3));
 
-        xmm2 = x - y;
+        z += w;
+        z += z;
+        z = Vector128.Create(1f) - z;
 
-        xmm0 += xmm0;
-        xmm2 += xmm2;
+        w = x + y;
+        n = x - y;
 
-        xmm1 += xmm1;
-        xmm1 = Vector128.Create(1f) - xmm1;
+        w += w;
+        n += n;
 
-        x = Vector128.Create(xmm1[0], xmm0[1], xmm2[0], 0f);
-        y = Vector128.Create(xmm2[1], xmm1[1], xmm0[2], 0f);
-        z = Vector128.Create(xmm0[0], xmm2[2], xmm1[2], 0f);
+        x = Vector128.Create(z[0], w[1], n[0], 0f);
+        y = Vector128.Create(n[1], z[1], w[2], 0f);
+        z = Vector128.Create(w[0], n[2], z[2], 0f);
         // should be previously loaded to xmm with vmovsd + vinsertps for Z, its not now
         w = Vector128.Create((float)(object)t.X, (float)(object)t.Y, (float)(object)t.Z, 1f);
 
@@ -61,7 +64,7 @@ public static partial class Mat44
         return m;
     }
 
-    // I believe asm could be more performant and there is place for 512
+    // any way to mix with 512?
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     private static Mat44<T> Affine256<T>(Vec3<T> t, Quat<T> r, Vec3<T> s)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
