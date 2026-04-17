@@ -10,55 +10,45 @@ public static partial class Mat44
 {
     // any way to mix with 256?
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    private static Mat44<T> Affine128<T>(Vec3<T> t, Quat<T> r, Vec3<T> s)
+    private static unsafe Mat44<T> Affine128<T>(Vec3<T> t, Quat<T> r, Vec3<T> s)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         Mat44<T> m;
 
-        Vector128<float> n;
-
         var w = r.Vec4().As128().As<T, float>(); // X, Y, Z, W
 
-        var xyzz = Vector128.Shuffle(w, Vector128.Create(0, 1, 2, 2)); // X, Y, Z, Z
-        var wzxy = Vector128.Shuffle(w, Vector128.Create(3, 2, 0, 1)); // W, Z, X, Y
-        var yooo = Vector128.Shuffle(w, Vector128.Create(1, 0, 0, 0)); // Y, -, -, -
+        var a = Vector128.Shuffle(w, Vector128.Create(1, 2, 0, 3)); // y, z, x, w
+        var b = Vector128.Shuffle(w, Vector128.Create(3, 3, 3, 3)); // w, w, w, w
+        var c = Vector128.Shuffle(w, Vector128.Create(2, 0, 1, 3)); // z, x, y, w
 
-        var x = yooo * w;
-        var y = wzxy * w;
-        var z = xyzz * w;
+        a *= w; // yx, yz, zx, ww
+        b *= c; // zw, xw, yw, ww
+        w *= w; // xx, yy, zz, ww
 
-        x = y.WithElement(3, x[0]);
-        y = y.WithElement(1, z[3]);
+        var sum = a + b;
+        sum += sum; // 2(xy + zw), 2(yz + xw), 2(zx + yw), 2ww
 
-        x = Vector128.Shuffle(x, Vector128.Create(2, 3, 1, 0));
-        y = Vector128.Shuffle(y, Vector128.Create(3, 1, 0, 2));
+        var dif = a - b;
+        dif += dif; // 2(xy - zw), 2(yz - xw), 2(zx - yw), 0
 
-        w = Vector128.Shuffle(z, Vector128.Create(1, 0, 1, 3));
-        z = Vector128.Shuffle(z, Vector128.Create(2, 2, 0, 3));
+        w += Vector128.Shuffle(w, Vector128.Create(1, 2, 0, 3)); //xx + yy, yy + zz, zz + xx, 2ww
 
-        z += w;
-        z += z;
-        z = Vector128.Create(1f) - z;
+        w += w; // 2(xx + yy), 2(yy + zz), 2(zz + xx), 4ww
 
-        w = x + y;
-        n = x - y;
+        w = Vector128.Create(1f) - w; // 1 - 2(xx + yy), 1 - 2(yy + zz), 1 - 2(zz + xx), 1 - 4ww
 
-        w += w;
-        n += n;
+        var x = Vector128.Create(w[1], sum[0], dif[2], 0f);
+        var y = Vector128.Create(dif[0], w[2], sum[1], 0f);
+        w = Vector128.Create(sum[2], dif[1], w[0], 0f);
 
-        x = Vector128.Create(z[0], w[1], n[0], 0f);
-        y = Vector128.Create(n[1], z[1], w[2], 0f);
-        z = Vector128.Create(w[0], n[2], z[2], 0f);
         // should be previously loaded to xmm with vmovsd + vinsertps for Z, its not now
-        w = Vector128.Create((float)(object)t.X, (float)(object)t.Y, (float)(object)t.Z, 1f);
+        var z = Vector128.Create((float)(object)t.X, (float)(object)t.Y, (float)(object)t.Z, 1f);
 
-        unsafe
-        {
-            (x.As<float, T>() * s.X).Store((T*)&m);
-            (y.As<float, T>() * s.Y).Store((T*)&m.Y);
-            (z.As<float, T>() * s.Z).Store((T*)&m.Z);
-             w.As<float, T>()       .Store((T*)&m.W);
-        }
+        (x.As<float, T>() * s.X).Store((T*)&m);
+        (y.As<float, T>() * s.Y).Store((T*)&m.Y);
+        (w.As<float, T>() * s.Z).Store((T*)&m.Z);
+        z.As<float, T>().Store((T*)&m.W);
+
         return m;
     }
 
