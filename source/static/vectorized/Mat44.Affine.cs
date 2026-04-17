@@ -39,15 +39,16 @@ public static partial class Mat44
 
         var x = Vector128.Create(w[1], sum[0], dif[2], 0f);
         var y = Vector128.Create(dif[0], w[2], sum[1], 0f);
-        w = Vector128.Create(sum[2], dif[1], w[0], 0f);
+
+        dif = dif.WithElement(0, sum[2]).WithElement(2, w[0]);
 
         // should be previously loaded to xmm with vmovsd + vinsertps for Z, its not now
-        var z = Vector128.Create((float)(object)t.X, (float)(object)t.Y, (float)(object)t.Z, 1f);
+        w = Vector128.Create((float)(object)t.X, (float)(object)t.Y, (float)(object)t.Z, 1f);
 
         (x.As<float, T>() * s.X).Store((T*)&m);
         (y.As<float, T>() * s.Y).Store((T*)&m.Y);
-        (w.As<float, T>() * s.Z).Store((T*)&m.Z);
-        z.As<float, T>().Store((T*)&m.W);
+        (dif.As<float, T>() * s.Z).Store((T*)&m.Z);
+        w.As<float, T>().Store((T*)&m.W);
 
         return m;
     }
