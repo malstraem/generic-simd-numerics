@@ -31,24 +31,28 @@ public static partial class Mat44
         y *= z; // zw, xw, yw, ww
         w *= w; // xx, yy, zz, ww
 
-        var a = x + y;
-        a += a; // 2(xy + zw), 2(yz + xw), 2(zx + yw), 2ww
+        //var n = -y;
 
+        var n = x + y;                                           // 2(xy + zw), 2(yz + xw), 2(zx + yw), no mean 2ww
         z = x - y;
-        z += z; // 2(xy - zw), 2(yz - xw), 2(zx - yw), 0
+        w += Vector128.Shuffle(w, Vector128.Create(1, 2, 0, 3)); // xx + yy,    yy + zz,    zz + xx,    no mean 2ww
 
-        w += Vector128.Shuffle(w, Vector128.Create(1, 2, 0, 3)); // xx + yy, yy + zz, zz + xx, 2ww
-        w += w;                                                  // 2(xx + yy), 2(yy + zz), 2(zz + xx), 4ww
+        w += w;                                                  // 2(xx + yy), 2(yy + zz), 2(zz + xx), no mean 4ww
 
-        w = Vector128.Create(1f) - w;                            // 1 - 2(xx + yy), 1 - 2(yy + zz), 1 - 2(zz + xx), 1 - 4ww
 
-        x = z.WithElement(0, w[1]).WithElement(1, a[0]);
-        y = z.WithElement(1, w[2]).WithElement(2, a[1]);
-        z = z.WithElement(0, a[2]).WithElement(2, w[0]);
+        n += n;                                                  // 2(xy + zw), 2(yz + xw), 2(zx + yw), no mean 2ww
+        z += z;                                                  // 2(xy - zw), 2(yz - xw), 2(zx - yw), 0
+
+        w = Vector128.Create(1f) - w;                            // 1 - 2(xx + yy), 1 - 2(yy + zz), 1 - 2(zz + xx), no mean 1 - 4ww
+
+        x = z.WithElement(0, w[1]).WithElement(1, n[0]);
+        y = z.WithElement(1, w[2]).WithElement(2, n[1]);
+
+        z = z.WithElement(0, n[2]).WithElement(2, w[0]);
 
         // should be previously loaded to xmm with vmovsd + vinsertps for Z, its not now
         w = Vector128.Create((float)(object)t.X, (float)(object)t.Y, (float)(object)t.Z, 1f);
-         
+
         (x.As<float, T>() * s.X).Store((T*)&m);
         (y.As<float, T>() * s.Y).Store((T*)&m.Y);
         (z.As<float, T>() * s.Z).Store((T*)&m.Z);
