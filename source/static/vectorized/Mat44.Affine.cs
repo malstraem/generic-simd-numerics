@@ -15,7 +15,7 @@ public static partial class Mat44
     {
         Mat44<T> m;
 
-        var w = r.Vec4().As128().As<T, float>(); // X, Y, Z, W
+        var w = r.Vec4().As128().As<T, float>(); //x, y, z, w
 
         var a = Vector128.Shuffle(w, Vector128.Create(1, 2, 0, 3)); // y, z, x, w
         var b = Vector128.Shuffle(w, Vector128.Create(3, 3, 3, 3)); // w, w, w, w
