@@ -73,15 +73,15 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Quat<T> Normalize()
     {
-        //return Vec4().Normalize().Quat();
+        return this.Vec4().Normalize().Quat();
 
-        var v = this.Vec4();
+        /*var v = this.Vec4();
 
         var dot = v * v;
 
         var c = Vec4<T>.One / T.Sqrt(dot);
 
-        return v.ElementMultiply(c).Quat();
+        return v.ElementMultiply(c).Quat();*/
     }
 
     [MethodImpl(AggressiveInlining)]

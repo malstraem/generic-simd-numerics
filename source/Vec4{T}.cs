@@ -125,7 +125,16 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
 
     // use dot product instead element wise is personal choice
     [MethodImpl(AggressiveInlining)]
-    public static T operator *(Vec4<T> a, Vec4<T> b) => a.ElementMultiply(b).Sum();
+    public static T operator *(Vec4<T> a, Vec4<T> b)
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return Vector128.Dot(a.As128(), b.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return Vector256.Dot(a.As256(), b.As256());
+
+        return a.ElementMultiply(b).Sum();
+    }
 
     [MethodImpl(AggressiveInlining)]
     public static bool operator ==(Vec4<T> a, Vec4<T> b)
@@ -295,7 +304,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Normalize<R>()
         where R : INumber<R>, IRootFunctions<R>
-            => this / Length<R>();
+            => this / T.CreateSaturating(LengthSaturating<R>());
     /*{
         var dot = this * this;
 

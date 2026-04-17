@@ -5,7 +5,7 @@ namespace System.Numerics.Tests.Matrix44;
 [InheritsTests]
 public class Mat44f32 : Mat44WithQuaternion<float>
 {
-    [Test, Repeat(99), DisplayName("translation (vs System.Numerics)")]
+    [Test, Repeat(9), DisplayName("translation (system)")]
     public async Task TranslationSystem()
     {
         var t = Position;
@@ -17,7 +17,7 @@ public class Mat44f32 : Mat44WithQuaternion<float>
         await Assert.That(translation).IsEqualTo(expected);
     }
 
-    [Test, Repeat(99), DisplayName("rotation (vs System.Numerics)")]
+    [Test, Repeat(9), DisplayName("rotation (system)")]
     public async Task RotationSystem()
     {
         var r = Rotation;
@@ -29,7 +29,7 @@ public class Mat44f32 : Mat44WithQuaternion<float>
         await Assert.That(rotation).IsEqualTo(expected);
     }
 
-    [Test, Repeat(99), DisplayName("scale (vs System.Numerics)")]
+    [Test, Repeat(9), DisplayName("scale (system)")]
     public async Task ScaleSystem()
     {
         var s = Scale;
@@ -41,7 +41,7 @@ public class Mat44f32 : Mat44WithQuaternion<float>
         await Assert.That(scale).IsEqualTo(expected);
     }
 
-    [Test, Repeat(99), DisplayName("transform (vs System.Numerics)")]
+    [Test, Repeat(9), DisplayName("transform (system)")]
     public async Task RotateSystem()
     {
         var r = Rotation;
@@ -53,12 +53,12 @@ public class Mat44f32 : Mat44WithQuaternion<float>
         await Assert.That(rotated).IsEqualTo(expected);
     }
 
-    [Test, Repeat(99), DisplayName("affine (vs System.Numerics)")]
+    [Test, Repeat(9), DisplayName("affine (system)")]
     public async Task AffineSystem()
     {
-        Affine(out var t, out var r, out var s);
+        Affine(out var r, out var s, out var t);
 
-        var affine = Mat44.Affine(t, r, s);
+        var affine = Mat44.Affine(r, s, t);
 
         var expected = (Matrix4x4.CreateScale(s.System())
                       * Matrix4x4.CreateFromQuaternion(r.System())
@@ -90,14 +90,14 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
         T.CreateTruncating(Random.Shared.NextDouble()),
         T.CreateTruncating(Random.Shared.NextDouble()));
 
-    protected void Affine(out Vec3<T> t, out Quat<T> r, out Vec3<T> s)
+    protected void Affine(out Quat<T> r, out Vec3<T> s, out Vec3<T> t)
     {
         t = Position;
         r = Rotation;
         s = Scale;
     }
 
-    [Test, Repeat(99), DisplayName("translation")]
+    [Test, Repeat(9), DisplayName("translation")]
     public async Task Translation()
     {
         var t = Position;
@@ -109,7 +109,7 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
         await Assert.That(translation).IsEqualTo(expected);
     }
 
-    [Test, Repeat(99), DisplayName("rotation")]
+    [Test, Repeat(9), DisplayName("rotation")]
     public async Task FromRotation()
     {
         var r = Rotation;
@@ -121,7 +121,7 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
         await Assert.That(rotation).IsEqualTo(expected);
     }
 
-    [Test, Repeat(99), DisplayName("scale")]
+    [Test, Repeat(9), DisplayName("scale")]
     public async Task FromScale()
     {
         var s = Scale;
@@ -133,7 +133,7 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
         await Assert.That(scale).IsEqualTo(expected);
     }
 
-    [Test, Repeat(99), DisplayName("rotate")]
+    [Test, Repeat(9), DisplayName("rotate")]
     public async Task Rotate()
     {
         var r = Rotation;
@@ -145,12 +145,12 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
         await Assert.That(rotated).IsEqualTo(expected);
     }
 
-    [Test, Repeat(99), DisplayName("affine")]
+    [Test, Repeat(9), DisplayName("affine")]
     public async Task Affine()
     {
-        Affine(out var t, out var r, out var s);
+        Affine(out var r, out var s, out var t);
 
-        var affine = Mat44.Affine(t, r, s);
+        var affine = Mat44.Affine(r, s, t);
 
         var expected = (Matrix4X4.CreateScale(s.Silk())
                       * Matrix4X4.CreateFromQuaternion(r.Silk())

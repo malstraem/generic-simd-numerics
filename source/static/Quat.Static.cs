@@ -66,7 +66,7 @@ public static class Quat
     public static Quat<T> AxisAngle<T>(Vec3<T> axis, T angle)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        var (s, c) = T.SinCos(angle * T.CreateChecked(0.5));
+        var (s, c) = T.SinCos(angle * T.CreateChecked(0.5)); // T.Half should exist
         return new(axis * s, c);
     }
 

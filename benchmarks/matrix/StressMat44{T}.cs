@@ -38,7 +38,7 @@ public class StressMat44WithQuat<T> : StressMat44<T>
     public void Affine()
     {
         for (int i = 0; i < Count; i++)
-            @out[i] = Mat44.Affine(positions[i], quats[i], scales[i]);
+            @out[i] = Mat44.Affine(quats[i], scales[i], positions[i]);
     }
 }
 
@@ -68,7 +68,7 @@ public class StressMat44<T> : BaseBench<T>
             @out[i] = mats[i] - mats[i + 1];
     }*/
 
-    //[Benchmark]
+    [Benchmark]
     public void Multiply()
     {
         for (int i = 0; i < Count - 1; i++)

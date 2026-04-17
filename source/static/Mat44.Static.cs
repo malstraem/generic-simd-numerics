@@ -4,14 +4,14 @@ namespace System.Numerics;
 public static partial class Mat44
 {
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static Mat44<T> Affine<T>(Vec3<T> t, Quat<T> r, Vec3<T> s)
+    public static Mat44<T> Affine<T>(Quat<T> r, Vec3<T> s, Vec3<T> t)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         if (typeof(T) == typeof(float) && Vector128<float>.IsSupported)
-            return Affine128(t, r, s);
+            unsafe { return Affine128(r, &s, &t); }
 
         if (typeof(T) == typeof(double) && Vector256<double>.IsSupported)
-            return Affine256(t, r, s);
+            unsafe { return Affine256(r, &s, &t); }
 
         T d = T.One + T.One, // T.Two should exist
 

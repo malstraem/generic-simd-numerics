@@ -57,7 +57,7 @@ var vecs = BenchmarkSwitcher.FromTypes([
     typeof(StressMat44WithQuat<float>),
     //typeof(StressMatrix4X4WithQuaternion<float>),
 
-    //typeof(StressMat44WithQuat<double>),
+    typeof(StressMat44WithQuat<double>),
     //typeof(StressMatrix4X4WithQuaternion<double>),
 
     //typeof(StressMat44<byte>),
