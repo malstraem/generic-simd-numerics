@@ -27,13 +27,11 @@ public static partial class Mat44
         var y = wzxy * w;
         var z = xyzz * w;
 
-        x = y.WithElement(3, x[0]).WithElement(0, 0f);
-        y = y.WithElement(1, z[3]).WithElement(2, 0f);
+        x = y.WithElement(3, x[0]);
+        y = y.WithElement(1, z[3]);
 
         x = Vector128.Shuffle(x, Vector128.Create(2, 3, 1, 0));
         y = Vector128.Shuffle(y, Vector128.Create(3, 1, 0, 2));
-
-        z = z.WithElement(3, 0f);
 
         w = Vector128.Shuffle(z, Vector128.Create(1, 0, 1, 3));
         z = Vector128.Shuffle(z, Vector128.Create(2, 2, 0, 3));
