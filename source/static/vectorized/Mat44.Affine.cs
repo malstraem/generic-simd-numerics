@@ -3,57 +3,61 @@ namespace System.Numerics;
 #pragma warning disable IDE0055, IDE0007
 
 // called in right case
-// shuffle/permute can be generalized to Permute<T> with only int indices, isn't?
-// I believe asm could be more performant and there is more optimal way
-// scalar x2 ops can be used for XY of translation and XY of scale and maybe for some insertions in calculus
+
+// I believe shuffle/permute can be generalized to Permute<T> with only int indices, isn't?
+
+// permutation should return non-generic "VectorNNN bit word" struct to juggle bits as it's now
+
+// non generic vector should be able to be operand
+
+// Vector128<T> some = ...
+// Vector128 perm = some.Permute(1, 0) / (3, 2, 1, 0) etc overloads that JIT process/fallback to naive
 public static partial class Mat44
 {
-    // any way to mix with 256?
+    // any way to mix with 256? only 256 way?
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     private static unsafe Mat44<T> Affine128<T>(Vec3<T> t, Quat<T> r, Vec3<T> s)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         Mat44<T> m;
 
-        var w = r.Vec4().As128().As<T, float>(); //x, y, z, w
+        var w = r.Vec4().As128().As<T, float>();                    // x, y, z, w
 
-        var a = Vector128.Shuffle(w, Vector128.Create(1, 2, 0, 3)); // y, z, x, w
-        var b = Vector128.Shuffle(w, Vector128.Create(3, 3, 3, 3)); // w, w, w, w
-        var c = Vector128.Shuffle(w, Vector128.Create(2, 0, 1, 3)); // z, x, y, w
+        var x = Vector128.Shuffle(w, Vector128.Create(1, 2, 0, 3)); // y, z, x, w
+        var y = Vector128.Shuffle(w, Vector128.Create(3, 3, 3, 3)); // w, w, w, w
+        var z = Vector128.Shuffle(w, Vector128.Create(2, 0, 1, 3)); // z, x, y, w
 
-        a *= w; // yx, yz, zx, ww
-        b *= c; // zw, xw, yw, ww
+        x *= w; // yx, yz, zx, ww
+        y *= z; // zw, xw, yw, ww
         w *= w; // xx, yy, zz, ww
 
-        var sum = a + b;
-        sum += sum; // 2(xy + zw), 2(yz + xw), 2(zx + yw), 2ww
+        var a = x + y;
+        a += a; // 2(xy + zw), 2(yz + xw), 2(zx + yw), 2ww
 
-        var dif = a - b;
-        dif += dif; // 2(xy - zw), 2(yz - xw), 2(zx - yw), 0
+        z = x - y;
+        z += z; // 2(xy - zw), 2(yz - xw), 2(zx - yw), 0
 
-        w += Vector128.Shuffle(w, Vector128.Create(1, 2, 0, 3)); //xx + yy, yy + zz, zz + xx, 2ww
+        w += Vector128.Shuffle(w, Vector128.Create(1, 2, 0, 3)); // xx + yy, yy + zz, zz + xx, 2ww
+        w += w;                                                  // 2(xx + yy), 2(yy + zz), 2(zz + xx), 4ww
 
-        w += w; // 2(xx + yy), 2(yy + zz), 2(zz + xx), 4ww
+        w = Vector128.Create(1f) - w;                            // 1 - 2(xx + yy), 1 - 2(yy + zz), 1 - 2(zz + xx), 1 - 4ww
 
-        w = Vector128.Create(1f) - w; // 1 - 2(xx + yy), 1 - 2(yy + zz), 1 - 2(zz + xx), 1 - 4ww
-
-        var x = Vector128.Create(w[1], sum[0], dif[2], 0f);
-        var y = Vector128.Create(dif[0], w[2], sum[1], 0f);
-
-        dif = dif.WithElement(0, sum[2]).WithElement(2, w[0]);
+        x = z.WithElement(0, w[1]).WithElement(1, a[0]);
+        y = z.WithElement(1, w[2]).WithElement(2, a[1]);
+        z = z.WithElement(0, a[2]).WithElement(2, w[0]);
 
         // should be previously loaded to xmm with vmovsd + vinsertps for Z, its not now
         w = Vector128.Create((float)(object)t.X, (float)(object)t.Y, (float)(object)t.Z, 1f);
-
+         
         (x.As<float, T>() * s.X).Store((T*)&m);
         (y.As<float, T>() * s.Y).Store((T*)&m.Y);
-        (dif.As<float, T>() * s.Z).Store((T*)&m.Z);
-        w.As<float, T>().Store((T*)&m.W);
+        (z.As<float, T>() * s.Z).Store((T*)&m.Z);
+         w.As<float, T>()       .Store((T*)&m.W);
 
         return m;
     }
 
-    // any way to mix with 512?
+    // any way to mix with 512? only 512 way?
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     private static Mat44<T> Affine256<T>(Vec3<T> t, Quat<T> r, Vec3<T> s)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
