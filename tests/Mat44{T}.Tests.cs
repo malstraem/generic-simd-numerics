@@ -8,51 +8,61 @@ public class Mat44f32 : Mat44WithQuaternion<float>
     [Test, Repeat(99), DisplayName("translation (vs System.Numerics)")]
     public async Task TranslationSystem()
     {
-        var t = Mat44.Translation(Position);
+        var t = Position;
 
-        var expected = Matrix4x4.CreateTranslation(Position.System()).Mat44();
+        var translation = Mat44.Translation(t);
 
-        await Assert.That(t).IsEqualTo(expected);
+        var expected = Matrix4x4.CreateTranslation(t.System()).Mat44();
+
+        await Assert.That(translation).IsEqualTo(expected);
     }
 
     [Test, Repeat(99), DisplayName("rotation (vs System.Numerics)")]
     public async Task RotationSystem()
     {
-        var r = Mat44.FromRotation(Rotation);
+        var r = Rotation;
 
-        var expected = Matrix4x4.CreateFromQuaternion(Rotation.System()).Mat44();
+        var rotation = Mat44.Rotation(r);
 
-        await Assert.That(r).IsEqualTo(expected);
+        var expected = Matrix4x4.CreateFromQuaternion(r.System()).Mat44();
+
+        await Assert.That(rotation).IsEqualTo(expected);
     }
 
     [Test, Repeat(99), DisplayName("scale (vs System.Numerics)")]
     public async Task ScaleSystem()
     {
-        var s = Mat44.FromScale(Scale);
+        var s = Scale;
 
-        var expected = Matrix4x4.CreateScale(Scale.System()).Mat44();
+        var scale = Mat44.Scale(s);
 
-        await Assert.That(s).IsEqualTo(expected);
+        var expected = Matrix4x4.CreateScale(s.System()).Mat44();
+
+        await Assert.That(scale).IsEqualTo(expected);
     }
 
     [Test, Repeat(99), DisplayName("transform (vs System.Numerics)")]
-    public async Task TransformSystem()
+    public async Task RotateSystem()
     {
-        var transformed = Mat44.Rotate(a, Rotation);
+        var r = Rotation;
 
-        var expected = Matrix4x4.Transform(a.System(), Rotation.System()).Mat44();
+        var rotated = Mat44.Rotate(a, r);
 
-        await Assert.That(transformed).IsEqualTo(expected);
+        var expected = Matrix4x4.Transform(a.System(), r.System()).Mat44();
+
+        await Assert.That(rotated).IsEqualTo(expected);
     }
 
     [Test, Repeat(99), DisplayName("affine (vs System.Numerics)")]
     public async Task AffineSystem()
     {
-        var affine = Mat44.Affine(Position, Rotation, Scale);
+        Affine(out var t, out var r, out var s);
 
-        var expected = (Matrix4x4.CreateScale(Scale.System())
-                      * Matrix4x4.CreateFromQuaternion(Rotation.System())
-                      * Matrix4x4.CreateTranslation(Position.System())).Mat44();
+        var affine = Mat44.Affine(t, r, s);
+
+        var expected = (Matrix4x4.CreateScale(s.System())
+                      * Matrix4x4.CreateFromQuaternion(r.System())
+                      * Matrix4x4.CreateTranslation(t.System())).Mat44();
 
         await Assert.That(affine).IsEqualTo(expected);
     }
@@ -80,54 +90,71 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
         T.CreateTruncating(Random.Shared.NextDouble()),
         T.CreateTruncating(Random.Shared.NextDouble()));
 
+    protected void Affine(out Vec3<T> t, out Quat<T> r, out Vec3<T> s)
+    {
+        t = Position;
+        r = Rotation;
+        s = Scale;
+    }
+
     [Test, Repeat(99), DisplayName("translation")]
     public async Task Translation()
     {
-        var t = Mat44.Translation(Position);
+        var t = Position;
 
-        var expected = Matrix4X4.CreateTranslation(Position.Silk()).Mat44();
+        var translation = Mat44.Translation(t);
 
-        await Assert.That(t).IsEqualTo(expected);
+        var expected = Matrix4X4.CreateTranslation(t.Silk()).Mat44();
+
+        await Assert.That(translation).IsEqualTo(expected);
     }
 
     [Test, Repeat(99), DisplayName("rotation")]
     public async Task FromRotation()
     {
-        var r = Mat44.FromRotation(Rotation);
+        var r = Rotation;
 
-        var expected = Matrix4X4.CreateFromQuaternion(Rotation.Silk()).Mat44();
+        var rotation = Mat44.Rotation(r);
 
-        await Assert.That(r).IsEqualTo(expected);
+        var expected = Matrix4X4.CreateFromQuaternion(r.Silk()).Mat44();
+
+        await Assert.That(rotation).IsEqualTo(expected);
     }
 
     [Test, Repeat(99), DisplayName("scale")]
     public async Task FromScale()
     {
-        var s = Mat44.FromScale(Scale);
+        var s = Scale;
 
-        var expected = Matrix4X4.CreateScale(Scale.Silk()).Mat44();
+        var scale = Mat44.Scale(s);
 
-        await Assert.That(s).IsEqualTo(expected);
+        var expected = Matrix4X4.CreateScale(s.Silk()).Mat44();
+
+        await Assert.That(scale).IsEqualTo(expected);
     }
 
-    [Test, Repeat(99), DisplayName("transform")]
-    public async Task Transform()
+    [Test, Repeat(99), DisplayName("rotate")]
+    public async Task Rotate()
     {
-        var transformed = Mat44.Rotate(a, Rotation);
+        var r = Rotation;
 
-        var expected = Matrix4X4.Transform(a.Silk(), Rotation.Silk()).Mat44();
+        var rotated = Mat44.Rotate(a, r);
 
-        await Assert.That(transformed).IsEqualTo(expected);
+        var expected = Matrix4X4.Transform(a.Silk(), r.Silk()).Mat44();
+
+        await Assert.That(rotated).IsEqualTo(expected);
     }
 
     [Test, Repeat(99), DisplayName("affine")]
     public async Task Affine()
     {
-        var affine = Mat44.Affine(Position, Rotation, Scale);
+        Affine(out var t, out var r, out var s);
 
-        var expected = (Matrix4X4.CreateScale(Scale.Silk())
-                      * Matrix4X4.CreateFromQuaternion(Rotation.Silk())
-                      * Matrix4X4.CreateTranslation(Position.Silk())).Mat44();
+        var affine = Mat44.Affine(t, r, s);
+
+        var expected = (Matrix4X4.CreateScale(s.Silk())
+                      * Matrix4X4.CreateFromQuaternion(r.Silk())
+                      * Matrix4X4.CreateTranslation(t.Silk())).Mat44();
 
         await Assert.That(affine).IsEqualTo(expected);
     }

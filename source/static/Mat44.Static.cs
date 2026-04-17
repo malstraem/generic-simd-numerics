@@ -33,6 +33,29 @@ public static partial class Mat44
 
     [Obsolete("vectorize")]
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    public static Mat44<T> Rotation<T>(Quat<T> q)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+    {
+        T d = T.One + T.One; // T.Two should exist
+
+        T xx = q.X * q.X,
+          yy = q.Y * q.Y,
+          zz = q.Z * q.Z,
+          xy = q.X * q.Y,
+          zw = q.Z * q.W,
+          zx = q.Z * q.X,
+          yw = q.Y * q.W,
+          yz = q.Y * q.Z,
+          xw = q.X * q.W;
+
+        return new(T.One - (d * (yy + zz)), d * (xy + zw),           d * (zx - yw),           T.Zero,
+                   d * (xy - zw),           T.One - (d * (zz + xx)), d * (yz + xw),           T.Zero,
+                   d * (zx + yw),           d * (yz - xw),           T.One - (d * (yy + xx)), T.Zero,
+                   T.Zero,                  T.Zero,                  T.Zero,                  T.One);
+    }
+
+    [Obsolete("vectorize")]
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Mat44<T> Rotate<T>(Mat44<T> m, Quat<T> q)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
@@ -90,7 +113,7 @@ public static partial class Mat44
 
     [Obsolete("vectorize, todo 'Scale' with input matrix")]
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static Mat44<T> FromScale<T>(T s)
+    public static Mat44<T> Scale<T>(T s)
         where T : unmanaged, INumber<T>
             => new(s,      T.Zero, T.Zero, T.Zero,
                    T.Zero, s,      T.Zero, T.Zero,
@@ -99,7 +122,7 @@ public static partial class Mat44
 
     [Obsolete("vectorize, todo 'Scale' with input matrix")]
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static Mat44<T> FromScale<T>(Vec3<T> s)
+    public static Mat44<T> Scale<T>(Vec3<T> s)
         where T : unmanaged, INumber<T>
             => new(s.X,    T.Zero, T.Zero, T.Zero,
                    T.Zero, s.Y,    T.Zero, T.Zero,
@@ -114,27 +137,4 @@ public static partial class Mat44
                    T.Zero, T.One,  T.Zero, T.Zero,
                    T.Zero, T.Zero, T.One,  T.Zero,
                    v.X,    v.Y,    v.Z,    T.One);
-
-    [Obsolete("vectorize")]
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static Mat44<T> FromRotation<T>(Quat<T> q)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
-    {
-        T d = T.One + T.One; // T.Two should exist
-
-        T xx = q.X * q.X,
-          yy = q.Y * q.Y,
-          zz = q.Z * q.Z,
-          xy = q.X * q.Y,
-          zw = q.Z * q.W,
-          zx = q.Z * q.X,
-          yw = q.Y * q.W,
-          yz = q.Y * q.Z,
-          xw = q.X * q.W;
-
-        return new(T.One - (d * (yy + zz)), d * (xy + zw),           d * (zx - yw),           T.Zero,
-                   d * (xy - zw),           T.One - (d * (zz + xx)), d * (yz + xw),           T.Zero,
-                   d * (zx + yw),           d * (yz - xw),           T.One - (d * (yy + xx)), T.Zero,
-                   T.Zero,                  T.Zero,                  T.Zero,                  T.One);
-    }
 }
