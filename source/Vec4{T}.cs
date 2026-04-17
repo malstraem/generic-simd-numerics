@@ -253,14 +253,14 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         return v;
     }
 
-    // not sure about the next one, but looks good?
-    // float and double are sealed using extensions
-
     [MethodImpl(AggressiveInlining)]
     public readonly T LengthSquared() => this * this;
 
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec4<T> v) => (this - v).LengthSquared();
+
+    // not sure about the next one, but looks good?
+    // float and double are sealed using extensions
 
     [MethodImpl(AggressiveInlining)]
     public readonly R LengthSaturating<R>()

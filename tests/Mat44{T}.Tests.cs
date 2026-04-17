@@ -18,7 +18,7 @@ public class Mat44f32 : Mat44WithQuaternion<float>
     [Test, DisplayName("rotation (vs System.Numerics)")]
     public async Task RotationSystem()
     {
-        var r = Mat44.Rotation(rotation);
+        var r = Mat44.FromRotation(rotation);
 
         var expected = Matrix4x4.CreateFromQuaternion(rotation.System()).Mat44();
 
@@ -28,7 +28,7 @@ public class Mat44f32 : Mat44WithQuaternion<float>
     [Test, DisplayName("scale (vs System.Numerics)")]
     public async Task ScaleSystem()
     {
-        var s = Mat44.Scale(scale);
+        var s = Mat44.FromScale(scale);
 
         var expected = Matrix4x4.CreateScale(scale.System()).Mat44();
 
@@ -38,7 +38,7 @@ public class Mat44f32 : Mat44WithQuaternion<float>
     [Test, DisplayName("transform (vs System.Numerics)")]
     public async Task TransformSystem()
     {
-        var transformed = Mat44.Transform(a, rotation);
+        var transformed = Mat44.Rotate(a, rotation);
 
         var expected = Matrix4x4.Transform(a.System(), rotation.System()).Mat44();
 
@@ -93,7 +93,7 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
     [Test, DisplayName("rotation")]
     public async Task Rotation()
     {
-        var r = Mat44.Rotation(rotation);
+        var r = Mat44.FromRotation(rotation);
 
         var expected = Matrix4X4.CreateFromQuaternion(rotation.Silk()).Mat44();
 
@@ -103,7 +103,7 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
     [Test, DisplayName("scale")]
     public async Task Scale()
     {
-        var s = Mat44.Scale(scale);
+        var s = Mat44.FromScale(scale);
 
         var expected = Matrix4X4.CreateScale(scale.Silk()).Mat44();
 
@@ -113,7 +113,7 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
     [Test, DisplayName("transform")]
     public async Task Transform()
     {
-        var transformed = Mat44.Transform(a, rotation);
+        var transformed = Mat44.Rotate(a, rotation);
 
         var expected = Matrix4X4.Transform(a.Silk(), rotation.Silk()).Mat44();
 

@@ -1,8 +1,17 @@
 namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
-public partial struct Quat<T>(T x, T y, T z, T w)
-    where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+public partial struct Quat<T>(T x, T y, T z, T w) :
+    IAdditiveIdentity<Quat<T>, Quat<T>>,
+    IMultiplicativeIdentity<Quat<T>, Quat<T>>,
+
+    IMultiplyOperators<Quat<T>, Quat<T>, Quat<T>>,
+    IDivisionOperators<Quat<T>, Quat<T>, Quat<T>>,
+    IAdditionOperators<Quat<T>, Quat<T>, Quat<T>>,
+    ISubtractionOperators<Quat<T>, Quat<T>, Quat<T>>,
+
+    IEqualityOperators<Quat<T>, Quat<T>, bool>
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {
     public T X = x, Y = y, Z = z, W = w;
 
@@ -12,8 +21,9 @@ public partial struct Quat<T>(T x, T y, T z, T w)
 
     public readonly bool IsIdentity => this == Identity;
 
-    [MethodImpl(AggressiveInlining)]
-    public static Quat<T> operator -(Quat<T> q) => (-q.Vec4()).Quat();
+    static Quat<T> IAdditiveIdentity<Quat<T>, Quat<T>>.AdditiveIdentity => Identity;
+
+    static Quat<T> IMultiplicativeIdentity<Quat<T>, Quat<T>>.MultiplicativeIdentity => Identity;
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> operator *(Quat<T> q, T n) => (q.Vec4() * n).Quat();

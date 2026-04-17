@@ -260,14 +260,14 @@ public partial struct Vec3<T>(T x, T y, T z) :
                                                     (Z * v.X) - (X * v.Z),
                                                     (X * v.Y) - (Y * v.X));
 
-    // not sure about the next one, but looks good?
-    // float and double are sealed using extensions
-
     [MethodImpl(AggressiveInlining)]
     public readonly T LengthSquared() => this * this;
 
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec3<T> v) => (this - v).LengthSquared();
+
+    // not sure about the next one, but looks good?
+    // float and double are sealed using extensions
 
     [MethodImpl(AggressiveInlining)]
     public readonly R LengthSaturating<R>()

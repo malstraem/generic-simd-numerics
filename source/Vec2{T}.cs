@@ -194,14 +194,14 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec2<T> Lerp(Vec2<T> v, T am) => (this * (T.One - am)) + (v * am);
 
-    // not sure about the next one, but looks good?
-    // float and double are sealed using extensions
-
     [MethodImpl(AggressiveInlining)]
     public readonly T LengthSquared() => this * this;
 
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec2<T> v) => (this - v).LengthSquared();
+
+    // not sure about the next one, but looks good?
+    // float and double are sealed using extensions
 
     [MethodImpl(AggressiveInlining)]
     public readonly R LengthSaturating<R>()
