@@ -37,11 +37,11 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> operator *(Quat<T> a, Quat<T> b)
     {
-        if (typeof(T) == typeof(float) && Vector128<T>.IsSupported)
+        /*if (typeof(T) == typeof(float) && Vector128<T>.IsSupported)
             return Multiply128(a, b);
 
         if (typeof(T) == typeof(double) && Vector256<T>.IsSupported)
-            return Multiply256(a, b);
+            return Multiply256(a, b);*/
 
         return new((a.W * b.X) + (a.X * b.W) + (a.Y * b.Z) - (a.Z * b.Y),
                    (a.W * b.Y) - (a.X * b.Z) + (a.Y * b.W) + (a.Z * b.X),
@@ -49,8 +49,34 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
                    (a.W * b.W) - (a.X * b.X) - (a.Y * b.Y) - (a.Z * b.Z));
     }
 
+    [Obsolete("vectorize with permute")]
     [MethodImpl(AggressiveInlining)]
-    public static Quat<T> operator /(Quat<T> a, Quat<T> b) => a * b.Inverse();
+    public static Quat<T> operator /(Quat<T> a, Quat<T> b)
+    {
+        //T w = a.W;
+
+        //a.W = T.Zero;
+
+        b *= T.One / b.LengthSquared();
+        b = b.Conjugate();
+
+        return a * b;
+
+        //T dot = a.Vec4() * b.Vec4(),
+        //  x = (a.Y * b.Z) - (a.Z * b.Y),
+        //  y = (a.Z * b.X) - (a.X * b.Z),
+        //  z = (a.X * b.Y) - (a.Y * b.X);
+
+        //a.W = w;
+        //a *= b.W;
+
+        //a.X += (b.X * w) + x;
+        //a.Y += (b.Y * w) + y;
+        //a.Z += (b.Z * w) + z;
+        //a.W -= dot;
+
+        //return a;
+    }
 
     [MethodImpl(AggressiveInlining)]
     public static bool operator ==(Quat<T> a, Quat<T> b) => a.Vec4() == b.Vec4();
@@ -67,25 +93,16 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly T LengthSquared() => this.Vec4().LengthSquared();
 
+    [Obsolete("vectorize")]
     [MethodImpl(AggressiveInlining)]
     public readonly Quat<T> Conjugate() => new(-X, -Y, -Z, W);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Quat<T> Normalize()
-    {
-        return this.Vec4().Normalize().Quat();
+    public readonly Quat<T> Normalize() => this.Vec4().Normalize().Quat();
 
-        /*var v = this.Vec4();
-
-        var dot = v * v;
-
-        var c = Vec4<T>.One / T.Sqrt(dot);
-
-        return v.ElementMultiply(c).Quat();*/
-    }
-
+    [Obsolete("vectorize with permute (and reciprocal)?")]
     [MethodImpl(AggressiveInlining)]
-    public readonly Quat<T> Inverse() => (Conjugate().Vec4() / LengthSquared()).Quat();
+    public readonly Quat<T> Inverse() => (this.Vec4() * (T.One / LengthSquared())).Quat().Conjugate();
 
     [MethodImpl(AggressiveInlining)]
     public readonly Quat<T> Lerp(Quat<T> q, T am)

@@ -5,7 +5,18 @@ namespace System.Numerics.QuatTests;
 [InheritsTests]
 public class Quatf32 : QuatBase<float>
 {
-    [Test, DisplayName("a / b (system)")]
+    [Test, Repeat(9), DisplayName("a × b (system)")]
+    public async Task MultiplySystem()
+    {
+        var mul = a * b;
+
+        var expected = (a.System() * b.System()).Quat();
+
+        await Assert.That(mul).IsEqualTo(expected);
+        await Assert.That(Quat.Multiply(a, b)).IsEqualTo(mul);
+    }
+
+    [Test, Repeat(9), DisplayName("a / b (system)")]
     public async Task DivideSystem()
     {
         var div = a / b;
@@ -16,7 +27,7 @@ public class Quatf32 : QuatBase<float>
         await Assert.That(Quat.Divide(a, b)).IsEqualTo(div);
     }
 
-    [Test, DisplayName("dot (system)")]
+    [Test, Repeat(9), DisplayName("dot (system)")]
     public async Task DotSystem()
     {
         float dot = a.Dot(b);
@@ -27,7 +38,7 @@ public class Quatf32 : QuatBase<float>
         await Assert.That(Quat.Dot(a, b)).IsEqualTo(dot);
     }
 
-    [Test, DisplayName("len (system)")]
+    [Test, Repeat(9), DisplayName("len (system)")]
     public async Task LengthSystem()
     {
         float length = a.Length();
@@ -38,7 +49,7 @@ public class Quatf32 : QuatBase<float>
         await Assert.That(Quat.Length(a)).IsEqualTo(length);
     }
 
-    [Test, DisplayName("len² (system)")]
+    [Test, Repeat(9), DisplayName("len² (system)")]
     public async Task LengthSquaredSystem()
     {
         float length = a.LengthSquared();
@@ -48,7 +59,7 @@ public class Quatf32 : QuatBase<float>
         await Assert.That(length).IsEqualTo(expected);
     }
 
-    [Test, DisplayName("norm (system)")]
+    [Test, Repeat(9), DisplayName("norm (system)")]
     public async Task NormalizeSystem()
     {
         var norm = a.Normalize();
@@ -59,7 +70,7 @@ public class Quatf32 : QuatBase<float>
         await Assert.That(Quat.Normalize(a)).IsEqualTo(norm);
     }
 
-    [Test, DisplayName("lerp (system)")]
+    [Test, Repeat(9), DisplayName("lerp (system)")]
     public async Task LerpSystem()
     {
         float amount = 0.5f;
@@ -72,7 +83,7 @@ public class Quatf32 : QuatBase<float>
         await Assert.That(Quat.Lerp(a, b, amount)).IsEqualTo(lerp);
     }
 
-    [Test, DisplayName("conj (system)")]
+    [Test, Repeat(9), DisplayName("conj (system)")]
     public async Task ConjugateSystem()
     {
         var conj = a.Conjugate();
@@ -83,7 +94,7 @@ public class Quatf32 : QuatBase<float>
         await Assert.That(Quat.Conjugate(a)).IsEqualTo(conj);
     }
 
-    [Test, DisplayName("inv (system)")]
+    [Test, Repeat(9), DisplayName("inv (system)")]
     public async Task InverseSystem()
     {
         var inv = a.Inverse();
@@ -94,9 +105,11 @@ public class Quatf32 : QuatBase<float>
         await Assert.That(Quat.Inverse(a)).IsEqualTo(inv);
     }
 
-    [Test, DisplayName("axis & angle (system)")]
+    [Test, Repeat(9), DisplayName("axis & angle (system)")]
     public async Task AxisAngleSystem()
     {
+        YawPitchRoll(out var yaw, out _, out _);
+
         var aa = Quat.AxisAngle(axis, yaw);
 
         var expected = Quaternion.CreateFromAxisAngle(axis.System(), yaw).Quat();
@@ -104,9 +117,11 @@ public class Quatf32 : QuatBase<float>
         await Assert.That(aa).IsEqualTo(expected);
     }
 
-    [Test, DisplayName("yaw pitch roll (system)")]
+    [Test, Repeat(9), DisplayName("yaw pitch roll (system)")]
     public async Task YawPitchRollSystem()
     {
+        YawPitchRoll(out var yaw, out var pitch, out var roll);
+
         var ypr = Quat.YawPitchRoll(yaw, pitch, roll);
 
         var expected = Quaternion.CreateFromYawPitchRoll(yaw, pitch, roll).Quat();
@@ -114,10 +129,12 @@ public class Quatf32 : QuatBase<float>
         await Assert.That(ypr).IsEqualTo(expected);
     }
 
-    [Test, DisplayName("rotation (system)")]
+    [Test, Repeat(9), DisplayName("rotation (system)")]
     public async Task RotationSystem()
     {
-        var m = Matrix4x4.CreateRotationX(yaw) * Matrix4x4.CreateRotationX(pitch) * Matrix4x4.CreateScale(2f);
+        YawPitchRoll(out var yaw, out var pitch, out var roll);
+
+        var m = Matrix4x4.CreateFromYawPitchRoll(yaw, pitch, roll);
 
         var rot = Quat.Rotation(m.Mat44());
 
@@ -133,19 +150,23 @@ public class Quatf64 : QuatBase<double>;
 public abstract class QuatBase<T>
     where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
 {
-    protected static readonly T eps = T.One / T.CreateTruncating(1e7);
+    protected static readonly T eps = T.One / T.CreateTruncating(1e8);
+
+    protected static T num = T.CreateTruncating(0.123456789),
+                       num2 = T.CreateTruncating(0.55555555);
 
     protected static readonly Vec3<T> axis = Vec3<T>.Gen(T.One);
 
-    protected static readonly T yaw = T.One / T.CreateChecked(10),
-                                pitch = (T.One + T.One) / T.CreateChecked(10),
-                                roll = (T.One + T.One + T.One) / T.CreateChecked(10);
-
     protected static readonly Quat<T>
-       a = Quat<T>.Gen(T.One),
-       b = Quat<T>.Gen(T.One + T.One),
-       min = Quat<T>.Gen(-T.One),
-       max = a;
+       a = new(num, num, num, num),
+       b = new(num2, num2, num2, num2);
+
+    protected void YawPitchRoll(out T yaw, out T pitch, out T roll)
+    {
+        yaw = T.CreateTruncating(Random.Shared.NextDouble());
+        pitch = T.CreateTruncating(Random.Shared.NextDouble());
+        roll = T.CreateTruncating(Random.Shared.NextDouble());
+    }
 
     [Test, DisplayName("a + b")]
     public async Task Add()
@@ -169,7 +190,7 @@ public abstract class QuatBase<T>
         await Assert.That(Quat.Subtruct(a, b)).IsEqualTo(sub);
     }
 
-    [Test, DisplayName("a * b")]
+    [Test, Repeat(9), DisplayName("a × b")]
     public async Task Multiply()
     {
         var mul = a * b;
@@ -180,7 +201,7 @@ public abstract class QuatBase<T>
         await Assert.That(Quat.Multiply(a, b)).IsEqualTo(mul);
     }
 
-    [Test, DisplayName("a / b")]
+    [Test, Repeat(9), DisplayName("a / b")]
     public async Task Divide()
     {
         var div = a / b;
@@ -188,11 +209,10 @@ public abstract class QuatBase<T>
         var expected = (a.Silk() / b.Silk()).Quat();
 
         await Assert.That(div).IsEqualTo(expected);
-
         await Assert.That(Quat.Divide(a, b)).IsEqualTo(div);
     }
 
-    [Test, DisplayName("dot")]
+    [Test, Repeat(9), DisplayName("dot")]
     public async Task Dot()
     {
         var dot = a.Dot(b);
@@ -203,7 +223,7 @@ public abstract class QuatBase<T>
         await Assert.That(Quat.Dot(a, b)).IsEqualTo(dot);
     }
 
-    [Test, DisplayName("len")]
+    [Test, Repeat(9), DisplayName("len")]
     public async Task Length()
     {
         var length = a.Length();
@@ -214,7 +234,7 @@ public abstract class QuatBase<T>
         await Assert.That(Quat.Length(a)).IsEqualTo(length);
     }
 
-    [Test, DisplayName("len²")]
+    [Test, Repeat(9), DisplayName("len²")]
     public async Task LengthSquared()
     {
         var length = a.LengthSquared();
@@ -224,7 +244,7 @@ public abstract class QuatBase<T>
         await Assert.That(length).IsEqualTo(expected);
     }
 
-    [Test, DisplayName("norm")]
+    [Test, Repeat(9), DisplayName("norm")]
     public async Task Normalize()
     {
         var norm = a.Normalize();
@@ -240,7 +260,7 @@ public abstract class QuatBase<T>
         await Assert.That(Quat.Normalize(a)).IsEqualTo(norm);
     }
 
-    [Test, DisplayName("lerp")]
+    [Test, Repeat(9), DisplayName("lerp")]
     public async Task Lerp()
     {
         var amount = T.One + T.One + T.One;
@@ -253,7 +273,7 @@ public abstract class QuatBase<T>
         await Assert.That(Quat.Lerp(a, b, amount)).IsEqualTo(lerp);
     }
 
-    [Test, DisplayName("conj")]
+    [Test, Repeat(9), DisplayName("conj")]
     public async Task Conjugate()
     {
         var conj = a.Conjugate();
@@ -261,16 +281,19 @@ public abstract class QuatBase<T>
         var expected = Quaternion<T>.Conjugate(a.Silk()).Quat();
 
         await Assert.That(conj).IsEqualTo(expected);
-
         await Assert.That(Quat.Conjugate(a)).IsEqualTo(conj);
     }
 
-    [Test, DisplayName("inv")]
+    [Test, Repeat(9), DisplayName("inv")]
     public async Task Inverse()
     {
-        var inv = a.Inverse();
+        YawPitchRoll(out var yaw, out var pitch, out var roll);
 
-        var expected = Quaternion<T>.Inverse(a.Silk()).Quat();
+        var ypr = Quat.YawPitchRoll(yaw, pitch, roll);
+
+        var inv = ypr.Inverse();
+
+        var expected = Quaternion<T>.Inverse(ypr.Silk()).Quat();
 
         // Silk.NET behavior not match with System.Numerics
         await Assert.That(inv.X - expected.X).IsLessThan(eps);
@@ -278,12 +301,14 @@ public abstract class QuatBase<T>
         await Assert.That(inv.Z - expected.Z).IsLessThan(eps);
         await Assert.That(inv.W - expected.W).IsLessThan(eps);
 
-        await Assert.That(Quat.Inverse(a)).IsEqualTo(inv);
+        await Assert.That(Quat.Inverse(ypr)).IsEqualTo(inv);
     }
 
-    [Test, DisplayName("axis & angle")]
+    [Test, Repeat(9), DisplayName("axis & angle")]
     public async Task AxisAngle()
     {
+        YawPitchRoll(out var yaw, out _, out _);
+
         var aa = Quat.AxisAngle(axis, yaw);
 
         var expected = Quaternion<T>.CreateFromAxisAngle(axis.Silk(), yaw).Quat();
@@ -291,9 +316,11 @@ public abstract class QuatBase<T>
         await Assert.That(aa).IsEqualTo(expected);
     }
 
-    [Test, DisplayName("yaw pitch roll")]
+    [Test, Repeat(9), DisplayName("yaw pitch roll")]
     public async Task YawPitchRoll()
     {
+        YawPitchRoll(out var yaw, out var pitch, out var roll);
+
         var ypr = Quat.YawPitchRoll(yaw, pitch, roll);
 
         var expected = Quaternion<T>.CreateFromYawPitchRoll(yaw, pitch, roll).Quat();
@@ -301,10 +328,12 @@ public abstract class QuatBase<T>
         await Assert.That(ypr).IsEqualTo(expected);
     }
 
-    [Test, DisplayName("rotation")]
+    [Test, Repeat(9), DisplayName("rotation")]
     public async Task Rotation()
     {
-        var m = Matrix4X4.CreateRotationX(yaw) * Matrix4X4.CreateRotationX(pitch) * Matrix4X4.CreateScale(T.One + T.One);
+        YawPitchRoll(out var yaw, out var pitch, out var roll);
+
+        var m = Matrix4X4.CreateFromYawPitchRoll(yaw, pitch, roll);
 
         var rot = Quat.Rotation(m.Mat44());
 

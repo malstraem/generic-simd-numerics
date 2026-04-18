@@ -245,7 +245,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         return max.Min(Max(min));
     }
 
-    // intrinsic Lerp<T> should exist
+    // intrinsic Lerp<T> should exist or expose as real behavior through extensions?
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Lerp(Vec4<T> v, T am) => (this * (T.One - am)) + (v * am);
 
@@ -268,7 +268,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec4<T> v) => (this - v).LengthSquared();
 
-    // not sure about the next one, but looks good?
+    // not sure about the truncate/saturate
     // float and double are sealed using extensions
 
     [MethodImpl(AggressiveInlining)]
@@ -304,14 +304,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Normalize<R>()
         where R : INumber<R>, IRootFunctions<R>
-            => this / T.CreateSaturating(LengthSaturating<R>());
-    /*{
-        var dot = this * this;
-
-        var c = Vec4<R>.One / R.Sqrt(R.CreateTruncating(dot));
-
-        return From128((As128().As<T, R>() * c.As128()).As<R, T>());
-    }*/
+            => this / Length<R>();
 
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> SquareRoot<R>() where R : IRootFunctions<R>
@@ -331,11 +324,11 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
                    T.CreateTruncating(R.Sqrt(R.CreateTruncating(W))));
     }
 
-    public override readonly string ToString() => $"({X}, {Y}, {Z}, {W})";
-
     public readonly bool Equals(Vec4<T> other) => this == other;
 
     public override readonly bool Equals(object? obj) => (obj is Vec4<T> other) && Equals(other);
 
     public override readonly int GetHashCode() => HashCode.Combine(X, Y, Z, W);
+
+    public override readonly string ToString() => $"({X}, {Y}, {Z}, {W})";
 }

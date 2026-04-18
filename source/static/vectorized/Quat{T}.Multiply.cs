@@ -2,7 +2,7 @@ namespace System.Numerics;
 
 // called in right cases
 // todo non FMA way
-// shuffle/permute can be generalized to Permute<T> with only int indices, isn't?
+// shuffle/permute can be generalized to Permute<T> with only byte indices, isn't?
 public partial struct Quat<T>
 {
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]

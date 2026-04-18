@@ -250,7 +250,7 @@ public partial struct Vec3<T>(T x, T y, T z) :
         return max.Min(Max(min));
     }
 
-    // intrinsic Lerp<T> should exist
+    // intrinsic Lerp<T> should exist or expose as real behavior through extensions?
     [MethodImpl(AggressiveInlining)]
     public readonly Vec3<T> Lerp(Vec3<T> v, T am) => (this * (T.One - am)) + (v * am);
 
@@ -266,7 +266,7 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec3<T> v) => (this - v).LengthSquared();
 
-    // not sure about the next one, but looks good?
+    // not sure about the truncate/saturate
     // float and double are sealed using extensions
 
     [MethodImpl(AggressiveInlining)]
@@ -321,11 +321,11 @@ public partial struct Vec3<T>(T x, T y, T z) :
                    T.CreateTruncating(R.Sqrt(R.CreateSaturating(Z))));
     }
 
-    public override readonly string ToString() => $"({X}, {Y}, {Z})";
-
     public readonly bool Equals(Vec3<T> other) => this == other;
 
     public override readonly bool Equals(object? obj) => (obj is Vec3<T> other) && Equals(other);
 
     public override readonly int GetHashCode() => HashCode.Combine(X, Y, Z);
+
+    public override readonly string ToString() => $"({X}, {Y}, {Z})";
 }

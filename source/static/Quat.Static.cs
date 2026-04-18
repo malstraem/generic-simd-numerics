@@ -62,6 +62,7 @@ public static class Quat
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => a.Lerp(b, am);
 
+    [Obsolete("vectorize")]
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> AxisAngle<T>(Vec3<T> axis, T angle)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
@@ -70,7 +71,7 @@ public static class Quat
         return new(axis * s, c);
     }
 
-    // any way to vectorize?
+    [Obsolete("vectorize")]
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> Rotation<T>(Mat44<T> m)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
@@ -116,6 +117,7 @@ public static class Quat
                    (m.X.Y - m.Y.Z) * c);
     }
 
+    [Obsolete("vectorize")]
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> YawPitchRoll<T>(T yaw, T pitch, T roll)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
