@@ -10,9 +10,9 @@ IBELIEAVE:
 
 2) shuffle/permute can be generalized to Permute<T> with only byte indices, isn't?
 
-   permutation should return non-generic "VectorNNN bit word" struct to juggle bits as it's now
+   permutation can return non-generic "VectorNNN bit word" struct to juggle bits as it's now
 
-   non generic vector should be able to be operand and always interpretate as other
+   non generic vector should be able to be operand (always interpretate as other) and to assign to VectorNNN<T>
 
    Vector128<T> some = ...
 
@@ -22,7 +22,8 @@ IBELIEAVE:
 
 public static partial class Mat44
 {
-    // any way to mix with 256? only 256 way?
+    // any way to mix with 256?
+    // only 256 way?
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     private static unsafe Mat44<T> Affine128<T>(Quat<T> r, Vec3<T>* s, Vec3<T>* t)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
@@ -76,7 +77,8 @@ public static partial class Mat44
         return m;
     }
 
-    // any way to mix with 512? only 512 way?
+    // any way to mix with 512?
+    // only 512 way?
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     private static unsafe Mat44<T> Affine256<T>(Quat<T> r, Vec3<T>* s, Vec3<T>* t)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>

@@ -1,7 +1,10 @@
+using System.Runtime.CompilerServices;
+
 using Silk.NET.Maths;
 
 namespace System.Numerics;
 
+// only for tests
 internal static class Vec2Extensions
 {
     extension<T>(Vec2<T> v)
@@ -32,6 +35,8 @@ internal static class Vec3Extensions
         internal static Vec3<T> Gen(T num) => new(num++, num++, num++);
 
         internal Vector3D<T> Silk() => new(v.X, v.Y, v.Z);
+
+        internal Vector3 System() => Unsafe.BitCast<Vec3<T>, Vec3<float>>(v).System();
     }
 
     extension<T>(Vector3D<T> v)

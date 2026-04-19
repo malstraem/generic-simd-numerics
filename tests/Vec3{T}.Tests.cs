@@ -1,6 +1,10 @@
 using Silk.NET.Maths;
 
-namespace System.Numerics.Tests.Vector3;
+namespace System.Numerics.Vec3Tests;
+
+/* need more time investments
+    1) random generation with saving/formatting
+    2) provide more edge cases with better way */
 
 [InheritsTests]
 public class Vec3f32 : Vec3Root<float>;
