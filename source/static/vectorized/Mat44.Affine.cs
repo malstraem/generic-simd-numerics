@@ -18,7 +18,7 @@ IBELIEAVE:
    Vector128 perm = some.Permute(1, 0) / Permute(3, 2, 1, 0) / Permute(0, .., 7) etc that JIT process/fallback to naive
    Vector128<T> other = some + perm
 
- 3) fully generic way below */
+ 3) fully generic Permute<T> way below, prove me wrong */
 
 public static partial class Mat44
 {
