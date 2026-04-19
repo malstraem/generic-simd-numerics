@@ -15,10 +15,10 @@ IBELIEAVE:
    non generic vector should be able to be operand (always interpretate as other) and to assign (how?) to VectorNNN<T>
 
    Vector128<T> some = ...
-
    Vector128 perm = some.Permute(1, 0) / Permute(3, 2, 1, 0) / Permute(0, .., 7) etc that JIT process/fallback to naive
+   Vector128<T> other = some + perm
 
-   Vector128<T> other = some + perm */
+ 3) fully generic way below */
 
 public static partial class Mat44
 {
@@ -59,7 +59,7 @@ public static partial class Mat44
 
         var p = (T*)t;
 
-        w = one.WithElement(0, *p).WithElement(1, *(p + 1)).WithElement(2, *(p + 2));
+        w = one.AsDouble().WithElement(0, *(double*)p).As<double, T>().WithElement(2, *(p + 2));
 
         //w = one.WithElement(0, t.X).WithElement(1, t.Y).WithElement(2, t.Z); // not recognized by JIT
 
@@ -133,6 +133,8 @@ internal static class BitsSCHIZOPHRENIA
 {
     extension<T>(Vector128<T> v)
     {
+        // why this is not just exists?
+
         [MethodImpl(AggressiveInlining | AggressiveOptimization)]
         internal Vector128<T> Permute64(byte e0, byte e1)
             => Vector128.Shuffle(v.AsInt64(), Vector128.Create(e0, e1)).As<long, T>();
@@ -181,7 +183,7 @@ internal static class BitsSCHIZOPHRENIA
 
         var p = (T*)t;
 
-        w = one.WithElement(0, *p).WithElement(1, *(p + 1)).WithElement(2, *(p + 2));
+        w = one.AsDouble().WithElement(0, *(double*)p).As<double, T>().WithElement(2, *(p + 2));
 
         p = (T*)s;
 
