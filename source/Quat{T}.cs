@@ -53,29 +53,26 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> operator /(Quat<T> a, Quat<T> b)
     {
-        //T w = a.W;
+        b = b.Inverse();
 
-        //a.W = T.Zero;
+        T w = a.W;
 
-        b *= T.One / b.LengthSquared();
-        b = b.Conjugate();
+        a.W = T.Zero;
 
-        return a * b;
+        T dot = a.Vec4() * b.Vec4(),
+          x = (a.Y * b.Z) - (a.Z * b.Y),
+          y = (a.Z * b.X) - (a.X * b.Z),
+          z = (a.X * b.Y) - (a.Y * b.X);
 
-        //T dot = a.Vec4() * b.Vec4(),
-        //  x = (a.Y * b.Z) - (a.Z * b.Y),
-        //  y = (a.Z * b.X) - (a.X * b.Z),
-        //  z = (a.X * b.Y) - (a.Y * b.X);
+        a.W = w;
+        a *= b.W;
 
-        //a.W = w;
-        //a *= b.W;
+        a.X += (b.X * w) + x;
+        a.Y += (b.Y * w) + y;
+        a.Z += (b.Z * w) + z;
+        a.W -= dot;
 
-        //a.X += (b.X * w) + x;
-        //a.Y += (b.Y * w) + y;
-        //a.Z += (b.Z * w) + z;
-        //a.W -= dot;
-
-        //return a;
+        return a;
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -102,9 +99,9 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
 
     [Obsolete("vectorize with permute (and reciprocal)?")]
     [MethodImpl(AggressiveInlining)]
-    public readonly Quat<T> Inverse() => (this.Vec4() * (T.One / LengthSquared())).Quat().Conjugate();
+    public readonly Quat<T> Inverse() => (this.Vec4() / LengthSquared()).Quat().Conjugate();
 
-    [Obsolete("more clear?")]
+    [Obsolete("not sure")]
     [MethodImpl(AggressiveInlining)]
     public readonly Quat<T> Lerp(Quat<T> q, T am)
     {
