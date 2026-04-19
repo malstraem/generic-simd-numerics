@@ -12,7 +12,7 @@ IBELIEAVE:
 
    permutation can return non-generic "VectorNNN bit word" struct to juggle bits as it's now
 
-   non generic vector should be able to be operand (always interpretate as other) and to assign to VectorNNN<T>
+   non generic vector should be able to be operand (always interpretate as other) and to assign (how?) to VectorNNN<T>
 
    Vector128<T> some = ...
 
@@ -122,6 +122,77 @@ public static partial class Mat44
         (y * sy).Store(&m.Y.X);
         (z * sz).Store(&m.Z.X);
          w      .Store(&m.W.X);
+
+        return m;
+    }
+}
+
+// this produce LESS asm bruh...
+// and uses vshufd, idk how it works
+internal static class BitsSCHIZOPHRENIA
+{
+    extension<T>(Vector128<T> v)
+    {
+        [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+        internal Vector128<T> Permute64(byte e0, byte e1)
+            => Vector128.Shuffle(v.AsInt64(), Vector128.Create(e0, e1)).As<long, T>();
+
+        [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+        internal Vector128<T> Permute32(byte e0, byte e1, byte e2, byte e3)
+            => Vector128.Shuffle(v.AsInt32(), Vector128.Create(e0, e1, e2, e3)).As<int, T>();
+
+        [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+        internal Vector128<T> Permute16(byte e0, byte e1, byte e2, byte e3, byte e4, byte e5, byte e6, byte e7)
+            => Vector128.Shuffle(v.AsInt16(), Vector128.Create(e0, e1, e2, e3, e4, e5, e6, e7)).As<short, T>();
+    }
+
+    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    internal static unsafe Mat44<T> Affine128<T>(Quat<T> r, Vec3<T>* s, Vec3<T>* t)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+    {
+        Mat44<T> m;
+
+        var one = Vector128<T>.One;
+
+        var w = r.Vec4().As128();
+
+        var x = w.Permute32(1, 2, 0, 3);
+        var y = w.Permute32(3, 3, 3, 3);
+        var z = w.Permute32(2, 0, 1, 3);
+
+        x *= w;
+        y *= z;
+        w *= w;
+
+        var n = x + y;
+        z = x - y;
+
+        w += w.Permute32(1, 2, 0, 3);
+
+        n += n;
+        z += z;
+        w += w;
+        w = -w;
+        w += one;
+
+        x = z.WithElement(0, w[1]).WithElement(1, n[0]);
+        y = z.WithElement(1, w[2]).WithElement(2, n[1]);
+        z = z.WithElement(0, n[2]).WithElement(2, w[0]);
+
+        var p = (T*)t;
+
+        w = one.WithElement(0, *p).WithElement(1, *(p + 1)).WithElement(2, *(p + 2));
+
+        p = (T*)s;
+
+        var sx = Vector128.Create(*p);
+        var sy = Vector128.Create(*(p + 1));
+        var sz = Vector128.Create(*(p + 2));
+
+        (x * sx).Store((T*)&m);
+        (y * sy).Store(&m.Y.X);
+        (z * sz).Store(&m.Z.X);
+        w.Store(&m.W.X);
 
         return m;
     }

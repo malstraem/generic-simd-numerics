@@ -1,7 +1,7 @@
 namespace System.Numerics;
 
 // called in right cases
-// result is quite good, but asm could be lesser
+// result is quite good, but asm could be lighter
 public partial struct Mat44<T>
 {
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]

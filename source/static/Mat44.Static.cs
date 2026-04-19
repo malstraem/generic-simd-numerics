@@ -8,7 +8,7 @@ public static partial class Mat44
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         if (typeof(T) == typeof(float) && Vector128<float>.IsSupported)
-            unsafe { return Affine128(r, &s, &t); }
+            unsafe { return BitsSCHIZOPHRENIA.Affine128(r, &s, &t); }
 
         if (typeof(T) == typeof(double) && Vector256<double>.IsSupported)
             unsafe { return Affine256(r, &s, &t); }
