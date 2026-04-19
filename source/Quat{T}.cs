@@ -37,11 +37,11 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> operator *(Quat<T> a, Quat<T> b)
     {
-        if (typeof(T) == typeof(float) && Vector128<T>.IsSupported)
+        /*if (typeof(T) == typeof(float) && Vector128<T>.IsSupported)
             return Multiply128(a, b);
 
         if (typeof(T) == typeof(double) && Vector256<T>.IsSupported)
-            return Multiply256(a, b);
+            return Multiply256(a, b);*/
 
         return new((a.W * b.X) + (a.X * b.W) + (a.Y * b.Z) - (a.Z * b.Y),
                    (a.W * b.Y) - (a.X * b.Z) + (a.Y * b.W) + (a.Z * b.X),
@@ -53,7 +53,7 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> operator /(Quat<T> a, Quat<T> b)
     {
-        b = b.Inverse();
+        return a * b.Inverse();
 
         T w = a.W;
 
