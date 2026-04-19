@@ -1,8 +1,13 @@
 namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
-public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
-    where T : unmanaged, INumber<T>
+public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w) :
+    IMultiplyOperators<Mat44<T>, Mat44<T>, Mat44<T>>,
+    IAdditionOperators<Mat44<T>, Mat44<T>, Mat44<T>>,
+    ISubtractionOperators<Mat44<T>, Mat44<T>, Mat44<T>>,
+
+    IEqualityOperators<Mat44<T>, Mat44<T>, bool>
+        where T : unmanaged, INumber<T>
 {
     public Vec4<T> X = x, Y = y, Z = z, W = w;
 
