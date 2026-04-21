@@ -34,4 +34,11 @@ public class StressQuat<T> : BaseBench<T>
         for (int i = 0; i < Count; i++)
             @out[i] = quats[i].Conjugate();
     }
+
+    [Benchmark]
+    public void Inverse()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = quats[i].Inverse();
+    }
 }

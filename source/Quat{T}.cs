@@ -27,6 +27,9 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     public static Quat<T> operator *(Quat<T> q, T n) => (q.Vec4() * n).Quat();
 
     [MethodImpl(AggressiveInlining)]
+    public static Quat<T> operator /(Quat<T> q, T n) => (q.Vec4() / n).Quat();
+
+    [MethodImpl(AggressiveInlining)]
     public static Quat<T> operator +(Quat<T> a, Quat<T> b) => (a.Vec4() + b.Vec4()).Quat();
 
     [MethodImpl(AggressiveInlining)]
@@ -75,16 +78,16 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     {
         if (typeof(T) == typeof(float) && Vector128<T>.IsSupported)
         {
-            var xmm = this.Vec4().As128();
-            xmm *= Vector128.Create(-1f, -1f, -1f, 1f).As<float, T>();
-            return xmm.Vec4().Quat();
+            var xmm = this.As128();
+            xmm *= Vector128.Create(-1, -1, -1, 1f).As<float, T>();
+            return xmm.Quat();
         }
 
         if (typeof(T) == typeof(double) && Vector256<T>.IsSupported)
         {
-            var ymm = this.Vec4().As256();
-            ymm *= Vector256.Create(-1d, -1d, -1d, 1d).As<double, T>();
-            return ymm.Vec4().Quat();
+            var ymm = this.As256();
+            ymm *= Vector256.Create(-1, -1, -1, 1d).As<double, T>();
+            return ymm.Quat();
         }
         return new(-X, -Y, -Z, W);
     }
@@ -104,12 +107,12 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
 
             var compare = Vector128.LessThanOrEqual(lsv, Vector128.Create(T.CreateChecked(1.192092896e-7f)));
 
-            return Vector128.AndNot(Conjugate().Vec4().As128() / lsv, compare).Vec4().Quat();
+            return Vector128.AndNot(Conjugate().As128() / lsv, compare).Quat();
         }
 
         // todo 256 way with epsilon
 
-        return (Conjugate().Vec4() / ls).Quat();
+        return Conjugate() / ls;
     }
 
     [Obsolete("not sure")]

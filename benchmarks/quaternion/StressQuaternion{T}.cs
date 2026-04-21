@@ -36,4 +36,11 @@ public class StressQuaternion<T> : BaseBench<T>
         for (int i = 0; i < Count; i++)
             @out[i] = Quaternion<T>.Conjugate(quats[i]);
     }
+
+    [Benchmark]
+    public void Inverse()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Quaternion<T>.Inverse(quats[i]);
+    }
 }

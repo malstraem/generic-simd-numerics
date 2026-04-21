@@ -25,14 +25,14 @@ public static partial class Mat44
     // any way to mix with 256?
     // only 256 way?
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    private static unsafe Mat44<T> Affine128F<T>(Quat<T> r, Vec3<T>* s, Vec3<T>* t)
+    private static unsafe Mat44<T> Affine128FExact<T>(Quat<T> r, Vec3<T>* s, Vec3<T>* t)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         Mat44<T> m;
 
         var one = Vector128<T>.One;
 
-        var w = r.Vec4().As128(); // x, y, z, w
+        var w = r.As128(); // x, y, z, w
 
         var x = Vector128.Shuffle(w.AsSingle(), Vector128.Create(1, 2, 0, 3)).As<float, T>(); // y, z, x, w
         var y = Vector128.Shuffle(w.AsSingle(), Vector128.Create(3, 3, 3, 3)).As<float, T>(); // w, w, w, w
@@ -87,7 +87,7 @@ public static partial class Mat44
 
         var one = Vector256<T>.One;
 
-        var w = r.Vec4().As256(); // x, y, z, w
+        var w = r.As256(); // x, y, z, w
 
         var x = Vector256.Shuffle(w.AsDouble(), Vector256.Create(1, 2, 0, 3)).As<double, T>(); // y, z, x, w
         var y = Vector256.Shuffle(w.AsDouble(), Vector256.Create(3, 3, 3, 3)).As<double, T>(); // w, w, w, w
@@ -125,30 +125,8 @@ public static partial class Mat44
 
         return m;
     }
-}
 
-// proof of concept of a fully generalized permutation that must exist at System.Numerics
-
-// produce LESS asm bruh... and uses vshufd, idk how it works
-internal static class BitsSCHIZOPHRENIA
-{
-    extension<T>(Vector128<T> v)
-    {
-        // why doesn't this just exist?
-
-        [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-        internal Vector128<T> Permute64(byte e0, byte e1)
-            => Vector128.Shuffle(v.AsInt64(), Vector128.Create(e0, e1)).As<long, T>();
-
-        [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-        internal Vector128<T> Permute32(byte e0, byte e1, byte e2, byte e3)
-            => Vector128.Shuffle(v.AsInt32(), Vector128.Create(e0, e1, e2, e3)).As<int, T>();
-
-        [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-        internal Vector128<T> Permute16(byte e0, byte e1, byte e2, byte e3, byte e4, byte e5, byte e6, byte e7)
-            => Vector128.Shuffle(v.AsInt16(), Vector128.Create(e0, e1, e2, e3, e4, e5, e6, e7)).As<short, T>();
-    }
-
+    // produce LESS asm bruh... and uses vshufd, idk how it works
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     internal static unsafe Mat44<T> Affine128F<T>(Quat<T> r, Vec3<T>* s, Vec3<T>* t)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
@@ -157,7 +135,7 @@ internal static class BitsSCHIZOPHRENIA
 
         var one = Vector128<T>.One;
 
-        var w = r.Vec4().As128();
+        var w = r.As128();
 
         var x = w.Permute32(1, 2, 0, 3);
         var y = w.Permute32(3, 3, 3, 3);
@@ -195,7 +173,7 @@ internal static class BitsSCHIZOPHRENIA
         (x * sx).Store((T*)&m);
         (y * sy).Store(&m.Y.X);
         (z * sz).Store(&m.Z.X);
-        w       .Store(&m.W.X);
+         w      .Store(&m.W.X);
 
         return m;
     }
