@@ -71,18 +71,18 @@ public static class Quat
         return new(axis * s, c);
     }
 
-    [Obsolete("vectorize")]
+    [Obsolete("any way to vectorize?")]
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> Rotation<T>(Mat44<T> m)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        T root, c, h = T.CreateChecked(0.5), d = T.CreateChecked(2d),
+        T root, c, h = T.CreateChecked(0.5),
 
         b = m.X.X + m.Y.Y + m.Z.Z;
 
         if (b > T.Zero)
         {
-            root = T.Sqrt(b + T.One); c = T.One / (root * d);
+            root = T.Sqrt(b + T.One); c = h / root;
 
             return new((m.Y.Z - m.Z.Y) * c,
                        (m.Z.X - m.X.Z) * c,
@@ -92,7 +92,7 @@ public static class Quat
 
         if (m.X.X >= m.Y.Y && m.X.X >= m.Z.Z)
         {
-            root = T.Sqrt(T.One + m.X.X - m.Y.Y - m.Z.Z); c = T.One / (root * d);
+            root = T.Sqrt(T.One + m.X.X - m.Y.Y - m.Z.Z); c = h / root;
 
             return new(root * h,
                       (m.X.Y + m.Y.X) * c,
@@ -102,14 +102,14 @@ public static class Quat
 
         if (m.Y.Y >= m.Z.Z)
         {
-            root = T.Sqrt(T.One + m.Y.Y - m.X.X - m.Z.Z); c = T.One / (root * d);
+            root = T.Sqrt(T.One + m.Y.Y - m.X.X - m.Z.Z); c = h / root;
 
             return new((m.Y.X + m.X.Y) * c,
                         root * h,
                        (m.Z.Y + m.Y.Z) * c,
                        (m.Z.X - m.X.Z) * c);
         }
-        root = T.Sqrt(T.One + m.Z.Z - m.X.X - m.Y.Y); c = T.One / (root * d);
+        root = T.Sqrt(T.One + m.Z.Z - m.X.X - m.Y.Y); c = h / root;
 
         return new((m.Z.X + m.X.Z) * c,
                    (m.Z.Y + m.Y.Z) * c,
@@ -117,7 +117,7 @@ public static class Quat
                    (m.X.Y - m.Y.Z) * c);
     }
 
-    [Obsolete("vectorize")]
+    [Obsolete("any way to vectorize?")]
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> YawPitchRoll<T>(T yaw, T pitch, T roll)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>

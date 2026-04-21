@@ -14,13 +14,13 @@ public class StressMat44WithQuat<T> : StressMat44<T>
     {
         for (int i = 0; i < Count; i++)
         {
-            quats[i] = Quat<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
+            quats[i] = Quat<T>.Rand();
             scales[i] = Vec3<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
             positions[i] = Vec3<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
         }
     }
 
-    /*[Benchmark]
+    [Benchmark]
     public void Rotation()
     {
         for (int i = 0; i < Count; i++)
@@ -31,8 +31,8 @@ public class StressMat44WithQuat<T> : StressMat44<T>
     public void Transform()
     {
         for (int i = 0; i < Count; i++)
-            @out[i] = Mat44.Transform(mats[i], quats[i]);
-    }*/
+            @out[i] = Mat44.Rotate(mats[i], quats[i]);
+    }
 
     [Benchmark]
     public void Affine()
@@ -54,7 +54,7 @@ public class StressMat44<T> : BaseBench<T>
             mats[i] = Mat44<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
     }
 
-    /*[Benchmark]
+    [Benchmark]
     public void Add()
     {
         for (int i = 0; i < Count - 1; i++)
@@ -66,7 +66,7 @@ public class StressMat44<T> : BaseBench<T>
     {
         for (int i = 0; i < Count - 1; i++)
             @out[i] = mats[i] - mats[i + 1];
-    }*/
+    }
 
     [Benchmark]
     public void Multiply()

@@ -2,7 +2,7 @@ namespace System.Numerics;
 
 #pragma warning disable IDE0055, IDE0007
 
-/* called in right case
+/* called in right cases
 
 IBELIEAVE:
 
@@ -25,7 +25,7 @@ public static partial class Mat44
     // any way to mix with 256?
     // only 256 way?
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    private static unsafe Mat44<T> Affine128<T>(Quat<T> r, Vec3<T>* s, Vec3<T>* t)
+    private static unsafe Mat44<T> Affine128F<T>(Quat<T> r, Vec3<T>* s, Vec3<T>* t)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         Mat44<T> m;
@@ -80,7 +80,7 @@ public static partial class Mat44
     // any way to mix with 512?
     // only 512 way?
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    private static unsafe Mat44<T> Affine256<T>(Quat<T> r, Vec3<T>* s, Vec3<T>* t)
+    private static unsafe Mat44<T> Affine256D<T>(Quat<T> r, Vec3<T>* s, Vec3<T>* t)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         Mat44<T> m;
@@ -127,13 +127,14 @@ public static partial class Mat44
     }
 }
 
-// this produce LESS asm bruh...
-// and uses vshufd, idk how it works
+// proof of concept of a fully generalized permutation that must exist at System.Numerics
+
+// produce LESS asm bruh... and uses vshufd, idk how it works
 internal static class BitsSCHIZOPHRENIA
 {
     extension<T>(Vector128<T> v)
     {
-        // why this is not just exists?
+        // why doesn't this just exist?
 
         [MethodImpl(AggressiveInlining | AggressiveOptimization)]
         internal Vector128<T> Permute64(byte e0, byte e1)
@@ -149,7 +150,7 @@ internal static class BitsSCHIZOPHRENIA
     }
 
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    internal static unsafe Mat44<T> Affine128<T>(Quat<T> r, Vec3<T>* s, Vec3<T>* t)
+    internal static unsafe Mat44<T> Affine128F<T>(Quat<T> r, Vec3<T>* s, Vec3<T>* t)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         Mat44<T> m;
@@ -194,7 +195,7 @@ internal static class BitsSCHIZOPHRENIA
         (x * sx).Store((T*)&m);
         (y * sy).Store(&m.Y.X);
         (z * sz).Store(&m.Z.X);
-        w.Store(&m.W.X);
+        w       .Store(&m.W.X);
 
         return m;
     }

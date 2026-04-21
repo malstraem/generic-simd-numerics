@@ -17,13 +17,13 @@ public class StressMatrix4x4 : BaseBench<float>
         for (int i = 0; i < Count; i++)
         {
             mats[i] = Mat44<float>.Gen(Random.Shared.Next(1, 10)).System();
-            quats[i] = Quat<float>.Gen(Random.Shared.Next(1, 10)).System();
+            quats[i] = Quat<float>.Rand().System();
             scales[i] = Vec3<float>.Gen(Random.Shared.Next(1, 10)).System();
             positions[i] = Vec3<float>.Gen(Random.Shared.Next(1, 10)).System();
         }
     }
 
-    /*[Benchmark]
+    [Benchmark]
     public void Add()
     {
         for (int i = 0; i < Count - 1; i++)
@@ -49,7 +49,7 @@ public class StressMatrix4x4 : BaseBench<float>
     {
         for (int i = 0; i < Count; i++)
             @out[i] = Matrix4x4.Transform(mats[i], quats[i]);
-    }*/
+    }
 
     [Benchmark]
     public void Affine()

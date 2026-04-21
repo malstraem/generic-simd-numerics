@@ -13,21 +13,7 @@ public class StressQuaternion<T> : BaseBench<T>
     public StressQuaternion()
     {
         for (int i = 0; i < Count; i++)
-            quats[i] = Quat<T>.Gen(T.CreateTruncating(Random.Shared.Next(10, 100))).Silk();
-    }
-
-    [Benchmark]
-    public void Add()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            @out[i] = quats[i] + quats[i + 1];
-    }
-
-    [Benchmark]
-    public void Substract()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            @out[i] = quats[i] - quats[i + 1];
+            quats[i] = Quat<T>.Rand().Silk();
     }
 
     [Benchmark]
@@ -38,9 +24,16 @@ public class StressQuaternion<T> : BaseBench<T>
     }
 
     [Benchmark]
-    public void Dot()
+    public void Divide()
     {
         for (int i = 0; i < Count - 1; i++)
-            nums[i] = Quaternion<T>.Dot(quats[i], quats[i + 1]);
+            @out[i] = quats[i] / quats[i + 1];
+    }
+
+    [Benchmark]
+    public void Conjugate()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Quaternion<T>.Conjugate(quats[i]);
     }
 }

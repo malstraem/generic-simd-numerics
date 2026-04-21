@@ -11,21 +11,7 @@ public class StressQuat<T> : BaseBench<T>
     public StressQuat()
     {
         for (int i = 0; i < Count; i++)
-            quats[i] = Quat<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
-    }
-
-    [Benchmark]
-    public void Add()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            @out[i] = quats[i] + quats[i + 1];
-    }
-
-    [Benchmark]
-    public void Substract()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            @out[i] = quats[i] - quats[i + 1];
+            quats[i] = Quat<T>.Rand();
     }
 
     [Benchmark]
@@ -36,9 +22,16 @@ public class StressQuat<T> : BaseBench<T>
     }
 
     [Benchmark]
-    public void Dot()
+    public void Divide()
     {
         for (int i = 0; i < Count - 1; i++)
-            nums[i] = quats[i].Dot(quats[i + 1]);
+            @out[i] = quats[i] / quats[i + 1];
+    }
+
+    [Benchmark]
+    public void Conjugate()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = quats[i].Conjugate();
     }
 }

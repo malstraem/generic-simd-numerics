@@ -18,7 +18,8 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
 {
     private static readonly bool system = typeof(T) == typeof(float);
 
-    protected static Quat<T> Rotation => Quat.YawPitchRoll(
+    protected static Quat<T> Rotation => new(
+        T.CreateTruncating(Random.Shared.NextDouble()),
         T.CreateTruncating(Random.Shared.NextDouble()),
         T.CreateTruncating(Random.Shared.NextDouble()),
         T.CreateTruncating(Random.Shared.NextDouble()));

@@ -28,13 +28,9 @@ public abstract class QuatBase<T>
 
     private static readonly Vec3<T> axis = new(num3, num3, num3);
 
-    [Test, DisplayName("a × b ($x, $x, $x, $x) ($y, $y, $y, $y)")]
-    [Arguments(0.55555555, 0.123456789)]
-    [Arguments(0.123456789, 0.55555555)]
-    public async Task Multiply(T x, T y)
+    [Test, DisplayName("a × b")]
+    public async Task Multiply()
     {
-        Quat<T> a = new(x, x, x, x), b = new(y, y, y, y);
-
         var mul = a * b;
 
         await Assert.That(Quat.Multiply(a, b)).IsEqualTo(mul);
@@ -139,12 +135,14 @@ public abstract class QuatBase<T>
     [Test, DisplayName("inv")]
     public async Task Inverse()
     {
-        var inv = a.Inverse();
+        var quat = Quat<T>.Rand();
 
-        await Assert.That(Quat.Inverse(a)).IsEqualTo(inv);
+        var inv = quat.Inverse();
 
-        var expected = system ? Quaternion.Inverse(a.System()).Quat<T>()
-                           : Quaternion<T>.Inverse(a.Silk()).Quat();
+        await Assert.That(Quat.Inverse(quat)).IsEqualTo(inv);
+
+        var expected = system ? Quaternion.Inverse(quat.System()).Quat<T>()
+                           : Quaternion<T>.Inverse(quat.Silk()).Quat();
 
         await Assert.That(inv).IsEqualTo(expected);
     }

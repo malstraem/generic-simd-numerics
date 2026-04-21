@@ -10,7 +10,11 @@ internal static class QuatExtensions
     extension<T>(Quat<T> q)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        internal static Quat<T> Gen(T num) => new(num++, num++, num++, T.One);
+        internal static Quat<T> Rand() => new(
+            T.CreateTruncating(Random.Shared.NextDouble()),
+            T.CreateTruncating(Random.Shared.NextDouble()),
+            T.CreateTruncating(Random.Shared.NextDouble()),
+            T.One);
 
         internal Quaternion<T> Silk() => new(q.X, q.Y, q.Z, q.W);
 
