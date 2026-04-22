@@ -149,5 +149,5 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w) :
     public override readonly int GetHashCode() => HashCode.Combine(X, Y, Z, W);
 
     // for tests readability
-    public override readonly string ToString() => $"{X} \n{Y} \n{Z} \n{W}";
+    public override readonly string ToString() => $"\n{X} \n{Y} \n{Z} \n{W}";
 }

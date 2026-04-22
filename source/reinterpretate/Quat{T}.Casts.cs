@@ -1,6 +1,7 @@
 namespace System.Numerics;
 
 // called in right cases
+// reversed bitcasts are pessimized by JIT compilation, so the Store is now used
 internal static class ReinterpretateQuat
 {
     extension<T>(Quat<T> q)

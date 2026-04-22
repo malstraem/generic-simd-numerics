@@ -1,6 +1,9 @@
 namespace System.Numerics;
 
 #pragma warning disable IDE0055, IDE0007
+
+// T.Two should exist
+
 public static partial class Mat44
 {
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
@@ -8,12 +11,12 @@ public static partial class Mat44
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         if (typeof(T) == typeof(float) && Vector128<float>.IsSupported)
-            unsafe { return Affine128F(r, &s, &t); }
+            unsafe { return Affine128FV2(r, &s, &t); }
 
         if (typeof(T) == typeof(double) && Vector256<double>.IsSupported)
-            unsafe { return Affine256D(r, &s, &t); }
+            unsafe { return Affine256DV2(r, &s, &t); }
 
-        T d = T.One + T.One, // T.Two should exist
+        T d = T.One + T.One,
 
         xx = r.X * r.X, yy = r.Y * r.Y, zz = r.Z * r.Z,
 
@@ -31,12 +34,17 @@ public static partial class Mat44
                    t.X,       t.Y,       t.Z,       T.One);
     }
 
-    [Obsolete("vectorize")]
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Mat44<T> Rotation<T>(Quat<T> r)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        T d = T.One + T.One, // T.Two should exist
+        if (typeof(T) == typeof(float) && Vector128<float>.IsSupported)
+            return Rotation128F(r);
+
+        if (typeof(T) == typeof(double) && Vector256<double>.IsSupported)
+            return Rotation256D(r);
+
+        T d = T.One + T.One,
 
         xx = r.X * r.X, yy = r.Y * r.Y, zz = r.Z * r.Z,
 
@@ -60,7 +68,7 @@ public static partial class Mat44
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         if (typeof(T) == typeof(float) && Vector128<float>.IsSupported)
-            unsafe { return Rotate128F(r, m); }
+            return Rotate128F(m, r);
 
         T
         xx = r.X + r.X, yy = r.Y + r.Y, zz = r.Z + r.Z,

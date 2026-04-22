@@ -1,6 +1,7 @@
 namespace System.Numerics;
 
 // called in right cases
+// reversed bitcasts are pessimized by JIT compilation, so the Store is now used
 internal static class ReinterpretateVec4
 {
     extension<T>(Vec4<T> v)
@@ -16,7 +17,7 @@ internal static class ReinterpretateVec4
     extension<T>(Vector128<T> xmm)
         where T : unmanaged, INumber<T>
     {
-        [MethodImpl(AggressiveInlining)]
+        [MethodImpl(AggressiveInlining | AggressiveOptimization)]
         internal Vec4<T> Vec4()
         {
             Vec4<T> v;

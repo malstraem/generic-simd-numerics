@@ -39,10 +39,10 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     public static Quat<T> operator *(Quat<T> a, Quat<T> b)
     {
         if (typeof(T) == typeof(float) && Vector128<T>.IsSupported)
-            return Multiply128(a, b);
+            return Multiply128F(a, b);
 
         if (typeof(T) == typeof(double) && Vector256<T>.IsSupported)
-            return Multiply256(a, b);
+            return Multiply256D(a, b);
 
         var c = b * a.W;
         var d = b * a.X;

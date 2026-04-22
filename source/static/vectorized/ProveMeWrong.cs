@@ -1,7 +1,7 @@
 namespace System.Numerics;
 
-// proof of concept of a fully generalized permutation that must exist at System.Numerics
-// with fallback to naive
+// proof of concept of a fully generalized permutation
+// that must exist at System.Numerics with JIT fallback to naive
 internal static class ProveMeWrong
 {
     extension<T>(Vector128<T> v)
