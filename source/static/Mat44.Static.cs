@@ -59,6 +59,9 @@ public static partial class Mat44
     public static Mat44<T> Rotate<T>(Mat44<T> m, Quat<T> r)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
+        if (typeof(T) == typeof(float) && Vector128<float>.IsSupported)
+            return Rotate128F(m, r);
+
         T
         xx = r.X + r.X, yy = r.Y + r.Y, zz = r.Z + r.Z,
 
