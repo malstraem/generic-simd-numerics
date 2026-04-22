@@ -3,10 +3,15 @@ namespace System.Numerics;
 public static partial class Mat44
 {
     [MethodImpl(AggressiveInlining)]
-    internal static unsafe Mat44<T> Rotate128F<T>(Quat<T> r, Mat44<T>* m)
+    internal static unsafe Mat44<T> Rotate128F<T>(Quat<T> r, Mat44<T> m)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        var w = r.As128(); // x, y, z, w
+        Vector128<T>
+            row1 = m.X.As128(),
+            row2 = m.Y.As128(),
+            row3 = m.Z.As128(),
+            row4 = m.W.As128(),
+            w = r.As128(); // x, y, z, w
 
         var x = w.Permute32(1, 2, 0, 3); // y, z, x, w
         var y = w.Permute32(3, 3, 3, 3); // w, w, w, w
@@ -33,28 +38,26 @@ public static partial class Mat44
 
         Mat44<T> res;
 
-        var ptr = (T*)m;
+        var xx = Vector128.Create(row1[0]) * x;
+        xx = Vector128.Create(row1[1]).MultiplyAdd(y, xx);
+        xx = Vector128.Create(row1[2]).MultiplyAdd(z, xx);
 
-        var xx = Vector128.Create(*ptr) * x;
-        xx = Vector128.Create(*(ptr + 1)).MultiplyAdd(y, xx);
-        xx = Vector128.Create(*(ptr + 2)).MultiplyAdd(z, xx);
+        var yy = Vector128.Create(row2[0]) * x;
+        yy = Vector128.Create(row2[1]).MultiplyAdd(y, yy);
+        yy = Vector128.Create(row2[2]).MultiplyAdd(z, yy);
 
-        var yy = Vector128.Create(*(ptr + 4)) * x;
-        yy = Vector128.Create(*(ptr + 5)).MultiplyAdd(y, yy);
-        yy = Vector128.Create(*(ptr + 6)).MultiplyAdd(z, yy);
+        var zz = Vector128.Create(row3[0]) * x;
+        zz = Vector128.Create(row3[1]).MultiplyAdd(y, zz);
+        zz = Vector128.Create(row3[2]).MultiplyAdd(z, zz);
 
-        var zz = Vector128.Create(*(ptr + 8)) * x;
-        zz = Vector128.Create(*(ptr + 9)).MultiplyAdd(y, zz);
-        zz = Vector128.Create(*(ptr + 10)).MultiplyAdd(z, zz);
+        var ww = Vector128.Create(row4[0]) * x;
+        ww = Vector128.Create(row4[1]).MultiplyAdd(y, ww);
+        ww = Vector128.Create(row4[2]).MultiplyAdd(z, ww);
 
-        var ww = Vector128.Create(*(ptr + 12)) * x;
-        ww = Vector128.Create(*(ptr + 13)).MultiplyAdd(y, ww);
-        ww = Vector128.Create(*(ptr + 14)).MultiplyAdd(z, ww);
-
-        xx.WithElement(3, *(ptr + 3)).Store((T*)&res);
-        yy.WithElement(3, *(ptr + 7)).Store(&res.Y.X);
-        zz.WithElement(3, *(ptr + 11)).Store(&res.Z.X);
-        ww.WithElement(3, *(ptr + 15)).Store(&res.W.X);
+        xx.WithElement(3, row1[3]).Store((T*)&res);
+        yy.WithElement(3, row2[3]).Store(&res.Y.X);
+        zz.WithElement(3, row3[3]).Store(&res.Z.X);
+        ww.WithElement(3, row4[3]).Store(&res.W.X);
 
         //xx.WithElement(3, *(ptr + 3)).Store((T*)&m);
         //yy.WithElement(3, *(ptr + 7)).Store(&m.Y.X);
