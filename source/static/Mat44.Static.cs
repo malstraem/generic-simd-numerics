@@ -60,7 +60,7 @@ public static partial class Mat44
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         if (typeof(T) == typeof(float) && Vector128<float>.IsSupported)
-            return Rotate128F(m, r);
+            unsafe { return Rotate128F(r, &m); }
 
         T
         xx = r.X + r.X, yy = r.Y + r.Y, zz = r.Z + r.Z,

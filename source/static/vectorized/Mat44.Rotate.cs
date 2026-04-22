@@ -3,10 +3,12 @@ namespace System.Numerics;
 public static partial class Mat44
 {
     [MethodImpl(AggressiveInlining)]
-    internal static Mat44<T> Rotate128F<T>(Mat44<T> m, Quat<T> r)
+    internal static unsafe Mat44<T> Rotate128F<T>(Quat<T> r, Mat44<T>* m)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         Mat44<T> res;
+
+        var ptr = (T*)m;
 
         var w = r.As128(); // x, y, z, w
 
@@ -31,31 +33,31 @@ public static partial class Mat44
 
         x = z.WithElement(0, w[1]).WithElement(1, n[0]); // 1 - 2(yy + zz), 2(yx + zw)    , 2(xz - yw)    , 0
         y = z.WithElement(1, w[2]).WithElement(2, n[1]); // 2(yx - zw)    , 1 - 2(zz + xx), 2(zy + xw)    , 0
-        z = z.WithElement(0, n[2]).WithElement(2, w[0]); // 2(xz + yw)    , 2(zy - xw)    , 1 - 2(xx + yy), 0
+        z = z.WithElement(0, n[2]).WithElement(2, w[0]); // 2(xz + yw)    , 2(zy - xw)    , 1 - 2(xx + yy), 0 
 
-        var row = Vector128.Create(m.X.X).AsSingle() * x.AsSingle();
-        row = Vector128.MultiplyAddEstimate(Vector128.Create(m.X.Y).AsSingle(), y.AsSingle(), row);
-        row = Vector128.MultiplyAddEstimate(Vector128.Create(m.X.Z).AsSingle(), z.AsSingle(), row);
+        var row = Vector128.Create(*ptr) * x;
+        row = Vector128.Create(*(ptr + 1)).MultiplyAdd(y, row);
+        row = Vector128.Create(*(ptr + 2)).MultiplyAdd(z, row);
 
-        unsafe { row.As<float, T>().WithElement(3, m.X.W).Store((T*)&res); }
+        row.WithElement(3, *(ptr + 3)).Store((T*)&res);
 
-        row = Vector128.Create(m.Y.X).AsSingle() * x.AsSingle();
-        row = Vector128.MultiplyAddEstimate(Vector128.Create(m.Y.Y).AsSingle(), y.AsSingle(), row);
-        row = Vector128.MultiplyAddEstimate(Vector128.Create(m.Y.Z).AsSingle(), z.AsSingle(), row);
+        row = Vector128.Create(*(ptr + 4)) * x;
+        row = Vector128.Create(*(ptr + 5)).MultiplyAdd(y, row);
+        row = Vector128.Create(*(ptr + 6)).MultiplyAdd(z, row);
 
-        unsafe { row.As<float, T>().WithElement(3, m.Y.W).Store((T*)&res.Y); }
+        row.WithElement(3, *(ptr + 7)).Store((T*)&res.Y);
 
-        row = Vector128.Create(m.Z.X).AsSingle() * x.AsSingle();
-        row = Vector128.MultiplyAddEstimate(Vector128.Create(m.Z.Y).AsSingle(), y.AsSingle(), row);
-        row = Vector128.MultiplyAddEstimate(Vector128.Create(m.Z.Z).AsSingle(), z.AsSingle(), row);
+        row = Vector128.Create(*(ptr + 8)) * x;
+        row = Vector128.Create(*(ptr + 9)).MultiplyAdd(y, row);
+        row = Vector128.Create(*(ptr + 10)).MultiplyAdd(z, row);
 
-        unsafe { row.As<float, T>().WithElement(3, m.Z.W).Store((T*)&res.Z); }
+        row.WithElement(3, *(ptr + 11)).Store((T*)&res.Z);
 
-        row = Vector128.Create(m.W.X).AsSingle() * x.AsSingle();
-        row = Vector128.MultiplyAddEstimate(Vector128.Create(m.W.Y).AsSingle(), y.AsSingle(), row);
-        row = Vector128.MultiplyAddEstimate(Vector128.Create(m.W.Z).AsSingle(), z.AsSingle(), row);
+        row = Vector128.Create(*(ptr + 12)) * x;
+        row = Vector128.Create(*(ptr + 13)).MultiplyAdd(y, row);
+        row = Vector128.Create(*(ptr + 14)).MultiplyAdd(z, row);
 
-        unsafe { row.As<float, T>().WithElement(3, m.W.W).Store((T*)&res.W); }
+        row.WithElement(3, *(ptr + 15)).Store((T*)&res.W);
 
         return res;
     }
