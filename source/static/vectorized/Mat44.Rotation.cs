@@ -37,22 +37,22 @@ public static partial class Mat44
         var y = w.Permute32(3, 3, 3, 3); // w, w, w, w
         var z = w.Permute32(2, 0, 1, 3); // z, x, y, w
 
-        x *= w; // xy, yz, zx, ww
+        x *= w; // xy, yz, xz, ww
         y *= z; // zw, xw, yw, ww
         w *= w; // xx, yy, zz, ww
 
-        var n = x + y; // yx + zw        | zy + xw        | xz + yw        | 2ww, no mean
-            z = x - y; // yx - zw        | zy - xw        | xz - yw        | 0
+        var n = x + y; // xy + zw        | yz + xw        | xz + yw        | 2ww, no mean
+            z = x - y; // xy - zw        | yz - xw        | xz - yw        | 0
 
-        n += n;        // 2(xy + zw)     | 2(yz + xw)     | 2(zx + yw)     | 4ww, no mean
-        z += z;        // 2(xy - zw)     | 2(yz - xw)     | 2(zx - yw)     | 0
+        n += n;        // 2(xy + zw)     | 2(yz + xw)     | 2(xz + yw)     | 4ww, no mean
+        z += z;        // 2(xy - zw)     | 2(yz - xw)     | 2(xz - yw)     | 0
 
         w += w.Permute32(1, 2, 0, 3);   // xx + yy        | yy + zz        | zz + xx        | 4ww, no mean
         w = Vector128<T>.One - (w + w); // 1 - 2(xx + yy) | 1 - 2(yy + zz) | 1 - 2(zz + xx) | 1 - 4ww, no mean
 
-        x = z.WithElement(0, w[1]).WithElement(1, n[0]); // 1 - 2(yy + zz) | 2(yx + zw)     | 2(xz - yw)     | 0
-        y = z.WithElement(1, w[2]).WithElement(2, n[1]); // 2(yx - zw)     | 1 - 2(zz + xx) | 2(zy + xw)     | 0
-        z = z.WithElement(0, n[2]).WithElement(2, w[0]); // 2(xz + yw)     | 2(zy - xw)     | 1 - 2(xx + yy) | 0
+        x = z.WithElement(0, w[1]).WithElement(1, n[0]); // 1 - 2(yy + zz) | 2(xy + zw)     | 2(xz - yw)     | 0
+        y = z.WithElement(1, w[2]).WithElement(2, n[1]); // 2(xy - zw)     | 1 - 2(zz + xx) | 2(yz + xw)     | 0
+        z = z.WithElement(0, n[2]).WithElement(2, w[0]); // 2(xz + yw)     | 2(yz - xw)     | 1 - 2(xx + yy) | 0
 
         m.X = x.Vec4();
         m.Y = y.Vec4();
@@ -77,22 +77,22 @@ public static partial class Mat44
         var y = w.Permute64(3, 3, 3, 3); // w, w, w, w
         var z = w.Permute64(2, 0, 1, 3); // z, x, y, w
 
-        x *= w; // xy, yz, zx, ww
+        x *= w; // xy, yz, xz, ww
         y *= z; // zw, xw, yw, ww
         w *= w; // xx, yy, zz, ww
 
-        var n = x + y; // yx + zw        | zy + xw        | xz + yw        | 2ww, no mean
-            z = x - y; // yx - zw        | zy - xw        | xz - yw        | 0
+        var n = x + y; // xy + zw        | yz + xw        | xz + yw        | 2ww, no mean
+            z = x - y; // xy - zw        | yz - xw        | xz - yw        | 0
 
-        n += n;        // 2(xy + zw)     | 2(yz + xw)     | 2(zx + yw)     | 4ww, no mean
-        z += z;        // 2(xy - zw)     | 2(yz - xw)     | 2(zx - yw)     | 0
+        n += n;        // 2(xy + zw)     | 2(yz + xw)     | 2(xz + yw)     | 4ww, no mean
+        z += z;        // 2(xy - zw)     | 2(yz - xw)     | 2(xz - yw)     | 0
 
         w += w.Permute64(1, 2, 0, 3);   // xx + yy        | yy + zz        | zz + xx        | 4ww, no mean
         w = Vector256<T>.One - (w + w); // 1 - 2(xx + yy) | 1 - 2(yy + zz) | 1 - 2(zz + xx) | 1 - 4ww, no mean
 
-        x = z.WithElement(0, w[1]).WithElement(1, n[0]); // 1 - 2(yy + zz) | 2(yx + zw)     | 2(xz - yw)     | 0
-        y = z.WithElement(1, w[2]).WithElement(2, n[1]); // 2(yx - zw)     | 1 - 2(zz + xx) | 2(zy + xw)     | 0
-        z = z.WithElement(0, n[2]).WithElement(2, w[0]); // 2(xz + yw)     | 2(zy - xw)     | 1 - 2(xx + yy) | 0
+        x = z.WithElement(0, w[1]).WithElement(1, n[0]); // 1 - 2(yy + zz) | 2(xy + zw)     | 2(xz - yw)     | 0
+        y = z.WithElement(1, w[2]).WithElement(2, n[1]); // 2(xy - zw)     | 1 - 2(zz + xx) | 2(yz + xw)     | 0
+        z = z.WithElement(0, n[2]).WithElement(2, w[0]); // 2(xz + yw)     | 2(yz - xw)     | 1 - 2(xx + yy) | 0
 
         m.X = x.Vec4();
         m.Y = y.Vec4();
