@@ -1,120 +1,117 @@
 namespace System.Numerics;
 
-#pragma warning disable IDE0055, IDE0007
+#pragma warning disable IDE0055, IDE0007, IDE0047
 
-// called in right case
-// shuffle/permute can be generalized to Permute<T> with only int indices, isn't?
-// I believe asm could be more performant and there is more optimal way
-// scalar x2 ops can be used for XY of translation and XY of scale and maybe for some insertions in calculus
+/* called in right cases
+
+IBELIEVE:
+
+1) asm could be more lighter for both single/double, not all offsets proved now and there is few unnecessary instructions
+
+2) shuffle/permute can be generalized to Permute<T> with only byte indices, isn't?
+
+   permutation can return non-generic "VectorNNN bit word" struct to juggle bits as it's now
+
+   non generic vector should be able to be operand (always interpretated as other) and to assign (how?) to VectorNNN<T>
+
+   Vector128<T> some = ...
+   Vector128 perm = some.Permute(1, 0) / Permute(3, 2, 1, 0) / Permute(0, .., 7) etc that JIT process/fallback to naive
+   Vector128<T> other = some + perm
+
+ 3) fully generic Permute<T> way below, prove me wrong */
+
 public static partial class Mat44
 {
     // any way to mix with 256?
+    // only 256 way?
+    // JIT actually produce vshufd (idk how it's proved), so code can be more optimal
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    private static Mat44<T> Affine128<T>(Vec3<T> t, Quat<T> r, Vec3<T> s)
+    internal static unsafe Mat44<T> Affine128F<T>(Quat<T> r, Vec3<T>* s, Vec3<T>* t)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         Mat44<T> m;
 
-        Vector128<float> n;
+        var (one, w) = (Vector128<T>.One, r.As128());
 
-        var w = r.Vec4().As128().As<T, float>(); // X, Y, Z, W
+        var x = w.Permute32(1, 2, 0, 3); // y, z, x, w
+        var y = w.Permute32(3, 3, 3, 3); // w, w, w, w
+        var z = w.Permute32(2, 0, 1, 3); // z, x, y, w
 
-        var xyzz = Vector128.Shuffle(w, Vector128.Create(0, 1, 2, 2)); // X, Y, Z, Z
-        var wzxy = Vector128.Shuffle(w, Vector128.Create(3, 2, 0, 1)); // W, Z, X, Y
-        var yooo = Vector128.Shuffle(w, Vector128.Create(1, 0, 0, 0)); // Y, -, -, -
+        x *= w; // xy, yz, zx, ww
+        y *= z; // zw, xw, yw, ww
+        w *= w; // xx, yy, zz, ww
 
-        var x = yooo * w;
-        var y = wzxy * w;
-        var z = xyzz * w;
+        var n = x + y; // yx + zw        | zy + xw        | xz + yw | 2ww, no mean
+            z = x - y; // yx - zw        | zy - xw        | xz - yw | 0
 
-        x = y.WithElement(3, x[0]).WithElement(0, 0f);
-        y = y.WithElement(1, z[3]).WithElement(2, 0f);
+        n += n;        // 2(xy + zw)     | 2(yz + xw)     | 2(zx + yw)     | 4ww, no mean
+        z += z;        // 2(xy - zw)     | 2(yz - xw)     | 2(zx - yw)     | 0
 
-        x = Vector128.Shuffle(x, Vector128.Create(2, 3, 1, 0));
-        y = Vector128.Shuffle(y, Vector128.Create(3, 1, 0, 2));
+        w += w.Permute32(1, 2, 0, 3);   // xx + yy        | yy + zz        | zz + xx        | 4ww, no mean
+        w = one - (w + w);              // 1 - 2(xx + yy) | 1 - 2(yy + zz) | 1 - 2(zz + xx) | 1 - 4ww, no mean
 
-        z = z.WithElement(3, 0f);
+        x = z.WithElement(0, w[1]).WithElement(1, n[0]); // 1 - 2(yy + zz) | 2(yx + zw)     | 2(xz - yw)     | 0
+        y = z.WithElement(1, w[2]).WithElement(2, n[1]); // 2(yx - zw)     | 1 - 2(zz + xx) | 2(zy + xw)     | 0
+        z = z.WithElement(0, n[2]).WithElement(2, w[0]); // 2(xz + yw)     | 2(zy - xw)     | 1 - 2(xx + yy) | 0
 
-        w = Vector128.Shuffle(z, Vector128.Create(1, 0, 1, 3));
-        z = Vector128.Shuffle(z, Vector128.Create(2, 2, 0, 3));
+        var tp = (T*)t; var sp = (T*)s;
 
-        z += w;
-        z += z;
-        z = Vector128.Create(1f) - z;
+        // this is not recognized by JIT to produce vmovsd
+        // w = one.WithElement(0, *tp).WithElement(1, *(tp + 1)).WithElement(2, *(tp + 2));
 
-        w = x + y;
-        n = x - y;
+        w = one.AsDouble().WithElement(0, *(double*)tp).As<double, T>().WithElement(2, *(tp + 2));
 
-        w += w;
-        n += n;
+        (x * Vector128.Create(*sp      )).Store((T*)&m);
+        (y * Vector128.Create(*(sp + 1))).Store(&m.Y.X);
+        (z * Vector128.Create(*(sp + 2))).Store(&m.Z.X);
+        (w                              ).Store(&m.W.X);
 
-        x = Vector128.Create(z[0], w[1], n[0], 0f);
-        y = Vector128.Create(n[1], z[1], w[2], 0f);
-        z = Vector128.Create(w[0], n[2], z[2], 0f);
-        // should be previously loaded to xmm with vmovsd + vinsertps for Z, its not now
-        w = Vector128.Create((float)(object)t.X, (float)(object)t.Y, (float)(object)t.Z, 1f);
-
-        unsafe
-        {
-            (x.As<float, T>() * s.X).Store((T*)&m);
-            (y.As<float, T>() * s.Y).Store((T*)&m.Y);
-            (z.As<float, T>() * s.Z).Store((T*)&m.Z);
-             w.As<float, T>()       .Store((T*)&m.W);
-        }
         return m;
     }
 
+    // asm can be more optimal
     // any way to mix with 512?
+    // only 512 way?
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    private static Mat44<T> Affine256<T>(Vec3<T> t, Quat<T> r, Vec3<T> s)
+    private static unsafe Mat44<T> Affine256D<T>(Quat<T> r, Vec3<T>* s, Vec3<T>* t)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         Mat44<T> m;
 
-        var ymm0 = r.Vec4().As256().As<T, double>(); // X, Y, Z, W
+        var one = Vector256<T>.One;
 
-        var ymm1 = Vector256.Shuffle(ymm0, Vector256.Create(0L, 1L, 2L, 2L)); // X, Y, Z, Z
-        var ymm2 = Vector256.Shuffle(ymm0, Vector256.Create(3L, 2L, 0L, 1L)); // W, Z, X, Y
-        var ymm3 = Vector256.Shuffle(ymm0, Vector256.Create(1L, 0L, 0L, 0L)); // Y, X, X, X
+        var w = r.As256(); // x, y, z, w
 
-        ymm1 *= ymm0;
-        ymm2 *= ymm0;
-        ymm3 *= ymm0;
+        var x = w.Permute64(1, 2, 0, 3); // y, z, x, w
+        var y = w.Permute64(3, 3, 3, 3); // w, w, w, w
+        var z = w.Permute64(2, 0, 1, 3); // z, x, y, w
 
-        var x = ymm2.WithElement(3, ymm3[0]).WithElement(0, 0d);
-        var z = ymm2.WithElement(1, ymm1[3]).WithElement(2, 0d);
+        x *= w; // xy, yz, zx, ww
+        y *= z; // zw, xw, yw, ww
+        w *= w; // xx, yy, zz, ww
 
-        ymm1 = ymm1.WithElement(3, 0d);
+        var n = x + y; // yx + zw        | zy + xw        | xz + yw | 2ww, no mean
+            z = x - y; // yx - zw        | zy - xw        | xz - yw | 0
 
-        x = Vector256.Shuffle(x, Vector256.Create(2L, 3L, 1L, 0L));
-        z = Vector256.Shuffle(z, Vector256.Create(3L, 1L, 0L, 2L));
+        n += n;        // 2(xy + zw)     | 2(yz + xw)     | 2(zx + yw)     | 4ww, no mean
+        z += z;        // 2(xy - zw)     | 2(yz - xw)     | 2(zx - yw)     | 0
 
-        var y = Vector256.Shuffle(ymm1, Vector256.Create(2L, 2L, 0L, 3L));
-        var w = Vector256.Shuffle(ymm1, Vector256.Create(1L, 0L, 1L, 3L));
+        w += w.Permute64(1, 2, 0, 3);   // xx + yy        | yy + zz        | zz + xx        | 4ww, no mean
+        w = one - (w + w);              // 1 - 2(xx + yy) | 1 - 2(yy + zz) | 1 - 2(zz + xx) | 1 - 4ww, no mean
 
-        ymm0 = x + z;
-        ymm1 = y + w;
-        ymm2 = x - z;
+        x = z.WithElement(0, w[1]).WithElement(1, n[0]); // 1 - 2(yy + zz) | 2(yx + zw)     | 2(xz - yw)     | 0
+        y = z.WithElement(1, w[2]).WithElement(2, n[1]); // 2(yx - zw)     | 1 - 2(zz + xx) | 2(zy + xw)     | 0
+        z = z.WithElement(0, n[2]).WithElement(2, w[0]); // 2(xz + yw)     | 2(zy - xw)     | 1 - 2(xx + yy) | 0
 
-        ymm0 += ymm0;
-        ymm2 += ymm2;
-        ymm1 += ymm1;
-        ymm1 = Vector256.Create(1d) - ymm1;
+        var tp = (T*)t; var sp = (T*)s;
 
-        x = Vector256.Create(ymm1[0], ymm0[1], ymm2[0], 0d);
-        y = Vector256.Create(ymm2[1], ymm1[1], ymm0[2], 0d);
-        z = Vector256.Create(ymm0[0], ymm2[2], ymm1[2], 0d);
+        w = one.WithElement(0, *tp).WithElement(1, *(tp + 1)).WithElement(2, *(tp + 2));
 
-        // should be previously loaded to low xmm[n] of ymm[n] with something like vmovapd, then insert Z, its not now
-        w = Vector256.Create((double)(object)t.X, (double)(object)t.Y, (double)(object)t.Z, 1d);
+        (x * Vector256.Create(*sp      )).Store((T*)&m);
+        (y * Vector256.Create(*(sp + 1))).Store(&m.Y.X);
+        (z * Vector256.Create(*(sp + 2))).Store(&m.Z.X);
+        (w                              ).Store(&m.W.X);
 
-        unsafe
-        {
-            (x.As<double, T>() * s.X).Store((T*)&m);
-            (y.As<double, T>() * s.Y).Store((T*)&m.Y);
-            (z.As<double, T>() * s.Z).Store((T*)&m.Z);
-             w.As<double, T>()       .Store((T*)&m.W);
-        }
         return m;
     }
 }

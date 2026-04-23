@@ -190,7 +190,7 @@ public partial struct Vec2<T>(T x, T y) :
         return max.Min(Max(min));
     }
 
-    // intrinsic Lerp<T> should exist
+    // intrinsic Lerp<T> should exist or expose as real behavior through extensions?
     [MethodImpl(AggressiveInlining)]
     public readonly Vec2<T> Lerp(Vec2<T> v, T am) => (this * (T.One - am)) + (v * am);
 
@@ -200,7 +200,7 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec2<T> v) => (this - v).LengthSquared();
 
-    // not sure about the next one, but looks good?
+    // not sure about the truncate/saturate
     // float and double are sealed using extensions
 
     [MethodImpl(AggressiveInlining)]
@@ -254,11 +254,11 @@ public partial struct Vec2<T>(T x, T y) :
         );
     }
 
-    public override readonly string ToString() => $"({X}, {Y})";
-
     public readonly bool Equals(Vec2<T> other) => this == other;
 
     public override readonly bool Equals(object? obj) => (obj is Vec2<T> other) && Equals(other);
 
     public override readonly int GetHashCode() => HashCode.Combine(X, Y);
+
+    public override readonly string ToString() => $"({X}, {Y})";
 }

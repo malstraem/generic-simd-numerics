@@ -1,40 +1,47 @@
 namespace System.Numerics;
 
 // called in right cases
-// todo non FMA way
-// shuffle/permute can be generalized to Permute<T> with only int indices, isn't?
+
+// any ways to 256 float and 512 double?
 public partial struct Quat<T>
 {
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    private static Quat<T> Multiply128(Quat<T> a, Quat<T> b)
+    private static Quat<T> Multiply128F(Quat<T> a, Quat<T> b)
     {
-        var xmm = BitCast<Quat<T>, Vector128<float>>(b);
+        a.Vec4().Broadcast128(out var c, out var d, out var e, out var f);
 
-        BitCast<Quat<T>, Vec4<float>>(a).Broadcast128(out var xx, out var yy, out var zz, out var ww);
+        var q = b.As128();
 
-        var q = xmm * ww;
+        c *= q.Permute32(3, 2, 1, 0);
+        d *= q.Permute32(2, 3, 0, 1);
+        e *= q.Permute32(1, 0, 3, 2);
 
-        q = Vector128.MultiplyAddEstimate(Vector128.Shuffle(xmm * Vector128.Create(-1f, 1f, -1f, 1f), Vector128.Create(3, 2, 1, 0)), xx, q);
-        q = Vector128.MultiplyAddEstimate(Vector128.Shuffle(xmm * Vector128.Create(-1f, -1f, 1f, 1f), Vector128.Create(2, 3, 0, 1)), yy, q);
-        q = Vector128.MultiplyAddEstimate(Vector128.Shuffle(xmm * Vector128.Create(1f, -1f, -1f, 1f), Vector128.Create(1, 0, 3, 2)), zz, q);
+        q *= f;
 
-        unsafe { Vector128.Store(q.As<float, T>(), (T*)&a); }
-        return a;
+        q = c.MultiplyAdd(Vector128.Create(+1, -1, +1, -1f).As<float, T>(), q);
+        q = d.MultiplyAdd(Vector128.Create(+1, +1, -1, -1f).As<float, T>(), q);
+        q = e.MultiplyAdd(Vector128.Create(-1, +1, +1, -1f).As<float, T>(), q);
+
+        return q.Quat();
     }
 
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    private static Quat<T> Multiply256(Quat<T> a, Quat<T> b)
+    private static Quat<T> Multiply256D(Quat<T> a, Quat<T> b)
     {
-        var ymm = BitCast<Quat<T>, Vector256<double>>(b);
+        a.Vec4().Broadcast256(out var c, out var d, out var e, out var f);
 
-        BitCast<Quat<T>, Vec4<double>>(a).Broadcast256(out var xx, out var yy, out var zz, out var ww);
+        var q = b.As256();
 
-        var q = ymm * ww;
-        q = Vector256.MultiplyAddEstimate(Vector256.Shuffle(ymm * Vector256.Create(-1d, 1d, -1d, 1d), Vector256.Create(3L, 2L, 1L, 0L)), xx, q);
-        q = Vector256.MultiplyAddEstimate(Vector256.Shuffle(ymm * Vector256.Create(-1d, -1d, 1d, 1d), Vector256.Create(2L, 3L, 0L, 1L)), yy, q);
-        q = Vector256.MultiplyAddEstimate(Vector256.Shuffle(ymm * Vector256.Create(1d, -1d, -1d, 1d), Vector256.Create(1L, 0L, 3L, 2L)), zz, q);
+        c *= q.Permute64(3, 2, 1, 0);
+        d *= q.Permute64(2, 3, 0, 1);
+        e *= q.Permute64(1, 0, 3, 2);
 
-        unsafe { Vector256.Store(q.As<double, T>(), (T*)&a); }
-        return a;
+        q *= f;
+
+        q = c.MultiplyAdd(Vector256.Create(+1, -1, +1, -1d).As<double, T>(), q);
+        q = d.MultiplyAdd(Vector256.Create(+1, +1, -1, -1d).As<double, T>(), q);
+        q = e.MultiplyAdd(Vector256.Create(-1, +1, +1, -1d).As<double, T>(), q);
+
+        return q.Quat();
     }
 }

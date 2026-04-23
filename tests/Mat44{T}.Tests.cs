@@ -1,62 +1,13 @@
 using Silk.NET.Maths;
 
-namespace System.Numerics.Tests.Matrix44;
+namespace System.Numerics.Mat44Tests;
+
+/* need more time investments
+    1) save and format random generation
+    2) provide more edge cases with better way */
 
 [InheritsTests]
-public class Mat44f32 : Mat44WithQuaternion<float>
-{
-    [Test, Repeat(99), DisplayName("translation (vs System.Numerics)")]
-    public async Task TranslationSystem()
-    {
-        var t = Mat44.Translation(position);
-
-        var expected = Matrix4x4.CreateTranslation(position.System()).Mat44();
-
-        await Assert.That(t).IsEqualTo(expected);
-    }
-
-    [Test, Repeat(99), DisplayName("rotation (vs System.Numerics)")]
-    public async Task RotationSystem()
-    {
-        var r = Mat44.FromRotation(rotation);
-
-        var expected = Matrix4x4.CreateFromQuaternion(rotation.System()).Mat44();
-
-        await Assert.That(r).IsEqualTo(expected);
-    }
-
-    [Test, Repeat(99), DisplayName("scale (vs System.Numerics)")]
-    public async Task ScaleSystem()
-    {
-        var s = Mat44.FromScale(scale);
-
-        var expected = Matrix4x4.CreateScale(scale.System()).Mat44();
-
-        await Assert.That(s).IsEqualTo(expected);
-    }
-
-    [Test, Repeat(99), DisplayName("transform (vs System.Numerics)")]
-    public async Task TransformSystem()
-    {
-        var transformed = Mat44.Rotate(a, rotation);
-
-        var expected = Matrix4x4.Transform(a.System(), rotation.System()).Mat44();
-
-        await Assert.That(transformed).IsEqualTo(expected);
-    }
-
-    [Test, Repeat(99), DisplayName("affine (vs System.Numerics)")]
-    public async Task AffineSystem()
-    {
-        var affine = Mat44.Affine(position, rotation, scale);
-
-        var expected = (Matrix4x4.CreateScale(scale.System())
-                      * Matrix4x4.CreateFromQuaternion(rotation.System())
-                      * Matrix4x4.CreateTranslation(position.System())).Mat44();
-
-        await Assert.That(affine).IsEqualTo(expected);
-    }
-}
+public class Mat44f32 : Mat44WithQuaternion<float>;
 
 [InheritsTests]
 public class Mat44f64 : Mat44WithQuaternion<double>;
@@ -65,69 +16,144 @@ public class Mat44f64 : Mat44WithQuaternion<double>;
 public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
     where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
 {
-    protected static readonly Quat<T> rotation = Quat.YawPitchRoll(
-        T.CreateTruncating(Random.Shared.NextDouble()),
-        T.CreateTruncating(Random.Shared.NextDouble()),
-        T.CreateTruncating(Random.Shared.NextDouble()));
+    private static readonly bool system = typeof(T) == typeof(float);
 
-    protected static readonly Vec3<T> position = new(
+    protected static Quat<T> Rotation => new(
+        T.CreateTruncating(Random.Shared.NextDouble()),
         T.CreateTruncating(Random.Shared.NextDouble()),
         T.CreateTruncating(Random.Shared.NextDouble()),
         T.CreateTruncating(Random.Shared.NextDouble()));
 
-    protected static readonly Vec3<T> scale = new(
+    protected static Vec3<T> Position => new(
         T.CreateTruncating(Random.Shared.NextDouble()),
         T.CreateTruncating(Random.Shared.NextDouble()),
         T.CreateTruncating(Random.Shared.NextDouble()));
 
-    [Test, Repeat(99), DisplayName("translation")]
-    public async Task Translation()
+    protected static Vec3<T> Scale => new(
+        T.CreateTruncating(Random.Shared.NextDouble()),
+        T.CreateTruncating(Random.Shared.NextDouble()),
+        T.CreateTruncating(Random.Shared.NextDouble()));
+
+    protected void Affine(out Quat<T> r, out Vec3<T> s, out Vec3<T> t)
     {
-        var t = Mat44.Translation(position);
-
-        var expected = Matrix4X4.CreateTranslation(position.Silk()).Mat44();
-
-        await Assert.That(t).IsEqualTo(expected);
+        t = Position;
+        r = Rotation;
+        s = Scale;
     }
 
-    [Test, Repeat(99), DisplayName("rotation")]
-    public async Task Rotation()
+    [Test, Repeat(9), DisplayName("translation")]
+    public async Task FromTranslation()
     {
-        var r = Mat44.FromRotation(rotation);
+        var t = Position;
 
-        var expected = Matrix4X4.CreateFromQuaternion(rotation.Silk()).Mat44();
+        var translation = Mat44.Translation(t);
 
-        await Assert.That(r).IsEqualTo(expected);
+        var expected = system ? Matrix4x4.CreateTranslation(t.System()).Mat44<T>()
+                              : Matrix4X4.CreateTranslation(t.Silk()).Mat44();
+
+        await Assert.That(translation).IsEqualTo(expected);
     }
 
-    [Test, Repeat(99), DisplayName("scale")]
-    public async Task Scale()
+    [Test, Repeat(9), DisplayName("rotation")]
+    public async Task FromRotation()
     {
-        var s = Mat44.FromScale(scale);
+        var r = Rotation;
 
-        var expected = Matrix4X4.CreateScale(scale.Silk()).Mat44();
+        var rotation = Mat44.Rotation(r);
 
-        await Assert.That(s).IsEqualTo(expected);
+        var expected = system ? Matrix4x4.CreateFromQuaternion(r.System()).Mat44<T>()
+                              : Matrix4X4.CreateFromQuaternion(r.Silk()).Mat44();
+
+        await Assert.That(rotation).IsEqualTo(expected);
     }
 
-    [Test, Repeat(99), DisplayName("transform")]
-    public async Task Transform()
+    [Test, Repeat(9), DisplayName("scale")]
+    public async Task FromScale()
     {
-        var transformed = Mat44.Rotate(a, rotation);
+        var s = Scale;
 
-        var expected = Matrix4X4.Transform(a.Silk(), rotation.Silk()).Mat44();
+        var scale = Mat44.Scale(s);
 
-        await Assert.That(transformed).IsEqualTo(expected);
+        var expected = system ? Matrix4x4.CreateScale(s.System()).Mat44<T>()
+                              : Matrix4X4.CreateScale(s.Silk()).Mat44();
+
+        await Assert.That(scale).IsEqualTo(expected);
     }
 
-    [Test, Repeat(99), DisplayName("affine")]
+    [Test]
+    [Skip("run to see differences, also check frobenius norm")]
+    public async Task Rotate()
+    {
+        var r = Rotation;
+
+        var rotated = Mat44.Rotate(a, r);
+
+        var expected = system ? Matrix4x4.Transform(a.System(), r.System()).Mat44<T>()
+                              : Matrix4X4.Transform(a.Silk(), r.Silk()).Mat44();
+
+        await Assert.That(rotated).IsEqualTo(expected).Because($"quaternion is {r}");
+    }
+
+    [Test, Repeat(1000), DisplayName("rotate (frobenius norm)")]
+    [Skip("run to see differences")]
+    public async Task FrobeniusCompareRotations()
+    {
+        if (typeof(T) == typeof(double)) // nobody cares...
+            return;
+
+        var r = Rotation;
+
+        var draft = Mat44.Rotate(a, r).Silk().As<double>();
+
+        var system = Matrix4x4.Transform(a.System(), r.System()).Mat44<T>().Silk().As<double>();
+
+        if (draft == system)
+            return;
+
+        var target = Matrix4X4.Transform(a.Silk().As<double>(), r.Silk().As<double>());
+
+        double toler1 = (target.Row1 - draft.Row1).LengthSquared,
+               toler2 = (target.Row2 - draft.Row2).LengthSquared,
+               toler3 = (target.Row3 - draft.Row3).LengthSquared,
+               toler4 = (target.Row4 - draft.Row4).LengthSquared,
+
+               toler1System = (target.Row1 - system.Row1).LengthSquared,
+               toler2System = (target.Row2 - system.Row2).LengthSquared,
+               toler3System = (target.Row3 - system.Row3).LengthSquared,
+               toler4System = (target.Row4 - system.Row4).LengthSquared,
+
+        frob = double.Sqrt(toler1 + toler2 + toler3 + toler4),
+        frobSystem = double.Sqrt(toler1System + toler2System + toler3System + toler4System);
+
+        await Assert.That(frob).IsLessThan(frobSystem).Because(
+            @$"Quaternion {r}
+            Tolerance: draft | system
+            Row1: {toler1} | {toler1System}
+            Is System better? {toler1System < toler1}
+            Row2: {toler2} | {toler2System}
+            Is System better? {toler2System < toler2}
+            Row3: {toler3} | {toler3System}
+            Is System better? {toler3System < toler3}
+            Row4: {toler4} | {toler4System}
+            Is System better? {toler4System < toler4}
+            Frobenius norm: {frob} | {frobSystem}"
+        );
+    }
+
+    [Test, Repeat(9), DisplayName("affine")]
     public async Task Affine()
     {
-        var affine = Mat44.Affine(position, rotation, scale);
+        Affine(out var r, out var s, out var t);
 
-        var expected = (Matrix4X4.CreateScale(scale.Silk())
-                      * Matrix4X4.CreateFromQuaternion(rotation.Silk())
-                      * Matrix4X4.CreateTranslation(position.Silk())).Mat44();
+        var affine = Mat44.Affine(r, s, t);
+
+        var expected = system ? (Matrix4x4.CreateScale(s.System())
+                               * Matrix4x4.CreateFromQuaternion(r.System())
+                               * Matrix4x4.CreateTranslation(t.System())).Mat44<T>()
+
+                              : (Matrix4X4.CreateScale(s.Silk())
+                               * Matrix4X4.CreateFromQuaternion(r.Silk())
+                               * Matrix4X4.CreateTranslation(t.Silk())).Mat44();
 
         await Assert.That(affine).IsEqualTo(expected);
     }

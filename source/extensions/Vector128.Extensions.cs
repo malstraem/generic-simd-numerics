@@ -13,6 +13,9 @@ internal static class Vector128Extensions
             if (typeof(T) == typeof(float) && Fma.IsSupported)
                 return Fma.MultiplyAdd(a.AsSingle(), b.AsSingle(), c.AsSingle()).As<float, T>();
 
+            if (typeof(T) == typeof(double) && Fma.IsSupported)
+                return Fma.MultiplyAdd(a.AsDouble(), b.AsDouble(), c.AsDouble()).As<double, T>();
+
             return (a * b) + c;
         }
     }
