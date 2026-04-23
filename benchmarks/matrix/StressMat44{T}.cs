@@ -20,12 +20,12 @@ public class StressMat44WithQuat<T> : StressMat44<T>
         }
     }
 
-    /*[Benchmark]
+    [Benchmark]
     public void Rotation()
     {
         for (int i = 0; i < Count; i++)
             @out[i] = Mat44.Rotation(quats[i]);
-    }*/
+    }
 
     [Benchmark]
     public void Transform()
@@ -34,12 +34,12 @@ public class StressMat44WithQuat<T> : StressMat44<T>
             @out[i] = Mat44.Rotate(mats[i], quats[i]);
     }
 
-    /*[Benchmark]
+    [Benchmark]
     public void Affine()
     {
         for (int i = 0; i < Count; i++)
             @out[i] = Mat44.Affine(quats[i], scales[i], positions[i]);
-    }*/
+    }
 }
 
 public class StressMat44<T> : BaseBench<T>
