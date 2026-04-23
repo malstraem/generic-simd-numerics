@@ -97,7 +97,7 @@ public static partial class Mat44
         m.X = x.Vec4();
         m.Y = y.Vec4();
         m.Z = z.Vec4();
-        m.W = Vec4<T>.UnitW.As128().Vec4(); // there is unnecessary transfers without bitcasting
+        m.W = Vec4<T>.UnitW.As256().Vec4();
 
         return m;
     }

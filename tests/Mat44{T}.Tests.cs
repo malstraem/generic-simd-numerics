@@ -87,7 +87,7 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
 
         var rotated = Mat44.Rotate(a, r);
 
-        var expected = system ? Matrix4x4.Transform(a.System(), r.System()).Mat44<T>()
+        var expected = system ? (a.System() * Matrix4x4.CreateFromQuaternion(r.System())).Mat44<T>() //Matrix4x4.Transform(a.System(), r.System()).Mat44<T>()
                               : Matrix4X4.Transform(a.Silk(), r.Silk()).Mat44();
 
         await Assert.That(rotated).IsEqualTo(expected).Because($"quaternion is {r}");
