@@ -112,7 +112,7 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
 
         // todo 256 way with epsilon
 
-        return Conjugate() / ls;
+        return Conjugate() * (T.One / ls);
     }
 
     [Obsolete("not sure")]

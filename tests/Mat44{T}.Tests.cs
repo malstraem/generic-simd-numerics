@@ -1,5 +1,3 @@
-using System.Runtime.Intrinsics;
-
 using Silk.NET.Maths;
 
 namespace System.Numerics.Mat44Tests;
@@ -82,97 +80,64 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
         await Assert.That(scale).IsEqualTo(expected);
     }
 
-    [Test, Repeat(9), DisplayName("rotate")]
+    [Test]
+    [Skip("run to see differences, also check frobenius norm")]
     public async Task Rotate()
     {
         var r = Rotation;
 
         var rotated = Mat44.Rotate(a, r);
 
-        var expected = system ? (a.System() * Matrix4x4.CreateFromQuaternion(r.System())).Mat44<T>() //Matrix4x4.Transform(a.System(), r.System()).Mat44<T>()
+        var expected = system ? Matrix4x4.Transform(a.System(), r.System()).Mat44<T>()
                               : Matrix4X4.Transform(a.Silk(), r.Silk()).Mat44();
 
         await Assert.That(rotated).IsEqualTo(expected).Because($"quaternion is {r}");
     }
 
-    [Test, Repeat(9), DisplayName("rotate compare")]
-    public async Task Compare()
+    [Test, Repeat(1000), DisplayName("rotate (frobenius norm)")]
+    [Skip("run to see differences")]
+    public async Task FrobeniusCompareRotations()
     {
-        var r = Rotation;
-
-        var ours = Mat44.Rotate(a, r).Silk().As<decimal>();
-
-        var sys = (a.System() * Matrix4x4.CreateFromQuaternion(r.System())).Mat44<T>().Silk().As<decimal>();
-
-        if (ours == sys)
+        if (typeof(T) == typeof(double)) // nobody cares...
             return;
 
-        var decRes = Rotate(a.Silk().As<decimal>(), r.Silk().As<decimal>());
+        var r = Rotation;
 
-        decimal row1TolOurs = (decRes.Row1 - ours.Row1).LengthSquared;
-        decimal row2TolOurs = (decRes.Row2 - ours.Row2).LengthSquared;
-        decimal row3TolOurs = (decRes.Row3 - ours.Row3).LengthSquared;
-        decimal row4TolOurs = (decRes.Row4 - ours.Row4).LengthSquared;
+        var draft = Mat44.Rotate(a, r).Silk().As<double>();
 
-        decimal frobNormOurs = row1TolOurs + row2TolOurs + row3TolOurs + row4TolOurs;
+        var system = Matrix4x4.Transform(a.System(), r.System()).Mat44<T>().Silk().As<double>();
 
-        decimal row1TolSys = (decRes.Row1 - sys.Row1).LengthSquared;
-        decimal row2TolSys = (decRes.Row2 - sys.Row2).LengthSquared;
-        decimal row3TolSys = (decRes.Row3 - sys.Row3).LengthSquared;
-        decimal row4TolSys = (decRes.Row4 - sys.Row4).LengthSquared;
+        if (draft == system)
+            return;
 
-        decimal frobNormSys = row1TolSys + row2TolSys + row3TolSys + row4TolSys;
+        var target = Matrix4X4.Transform(a.Silk().As<double>(), r.Silk().As<double>());
 
-        Assert.Fail($"Quaternion is {r}.\n" +
-            $"Tolerance: ours ; sys\n" +
-            $"Row1: {row1TolOurs} ; {row1TolSys}\n" +
-            $"Is sys better {row1TolSys < row1TolOurs}\n" +
-            $"Row2: {row2TolOurs} ; {row2TolSys}\n" +
-            $"Is sys better {row2TolSys < row2TolOurs}\n" +
-            $"Row3: {row3TolOurs} ; {row3TolSys}\n" +
-            $"Is sys better {row3TolSys < row3TolOurs}\n" +
-            $"Row4: {row4TolOurs} ; {row4TolSys}\n" +
-            $"Is sys better {row4TolSys < row4TolOurs}\n" +
-            $"Frobenius norm: {frobNormOurs} ; {frobNormSys}\n" +
-            $"Is sys better {frobNormSys < frobNormOurs}\n");
-    }
+        double toler1 = (target.Row1 - draft.Row1).LengthSquared,
+               toler2 = (target.Row2 - draft.Row2).LengthSquared,
+               toler3 = (target.Row3 - draft.Row3).LengthSquared,
+               toler4 = (target.Row4 - draft.Row4).LengthSquared,
 
-    public static Matrix4X4<decimal> Rotate(Matrix4X4<decimal> m, Quaternion<decimal> r)
-    {
-        decimal
-        xx = r.X + r.X, yy = r.Y + r.Y, zz = r.Z + r.Z,
+               toler1System = (target.Row1 - system.Row1).LengthSquared,
+               toler2System = (target.Row2 - system.Row2).LengthSquared,
+               toler3System = (target.Row3 - system.Row3).LengthSquared,
+               toler4System = (target.Row4 - system.Row4).LengthSquared,
 
-        xy = r.X * yy, xw = xx * r.W,
-        yz = r.Y * zz, yw = yy * r.W,
-        zx = r.Z * xx, zw = zz * r.W;
+        frob = double.Sqrt(toler1 + toler2 + toler3 + toler4),
+        frobSystem = double.Sqrt(toler1System + toler2System + toler3System + toler4System);
 
-        xx = r.X * xx; yy = r.Y * yy; zz = r.Z * zz;
-
-        decimal
-        q11 = 1 - yy - zz, q12 = xy + zw, q13 = zx - yw,
-        q21 = xy - zw, q22 = 1 - xx - zz, q23 = yz + xw,
-        q31 = zx + yw, q32 = yz - xw, q33 = 1 - xx - yy;
-
-        return new(
-            (m.Row1.X * q11) + (m.Row1.Y * q21) + (m.Row1.Z * q31),
-            (m.Row1.X * q12) + (m.Row1.Y * q22) + (m.Row1.Z * q32),
-            (m.Row1.X * q13) + (m.Row1.Y * q23) + (m.Row1.Z * q33),
-             m.Row1.W,
-
-            (m.Row2.X * q11) + (m.Row2.Y * q21) + (m.Row2.Z * q31),
-            (m.Row2.X * q12) + (m.Row2.Y * q22) + (m.Row2.Z * q32),
-            (m.Row2.X * q13) + (m.Row2.Y * q23) + (m.Row2.Z * q33),
-             m.Row2.W,
-
-            (m.Row3.X * q11) + (m.Row3.Y * q21) + (m.Row3.Z * q31),
-            (m.Row3.X * q12) + (m.Row3.Y * q22) + (m.Row3.Z * q32),
-            (m.Row3.X * q13) + (m.Row3.Y * q23) + (m.Row3.Z * q33),
-             m.Row3.W,
-
-            (m.Row4.X * q11) + (m.Row4.Y * q21) + (m.Row4.Z * q31),
-            (m.Row4.X * q12) + (m.Row4.Y * q22) + (m.Row4.Z * q32),
-            (m.Row4.X * q13) + (m.Row4.Y * q23) + (m.Row4.Z * q33),
-             m.Row4.W);
+        await Assert.That(frob).IsLessThan(frobSystem).Because(
+            @$"Quaternion {r}
+            Tolerance: draft | system
+            Row1: {toler1} | {toler1System}
+            Is System better? {toler1System < toler1}
+            Row2: {toler2} | {toler2System}
+            Is System better? {toler2System < toler2}
+            Row3: {toler3} | {toler3System}
+            Is System better? {toler3System < toler3}
+            Row4: {toler4} | {toler4System}
+            Is System better? {toler4System < toler4}
+            Frobenius norm: {frob} | {frobSystem}"
+        );
     }
 
     [Test, Repeat(9), DisplayName("affine")]

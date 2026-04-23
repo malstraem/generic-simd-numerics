@@ -11,10 +11,10 @@ public static partial class Mat44
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         if (typeof(T) == typeof(float) && Vector128<T>.IsSupported)
-            unsafe { return Affine128FV2(r, &s, &t); }
+            unsafe { return Affine128(r, &s, &t); }
 
         if (typeof(T) == typeof(double) && Vector256<T>.IsSupported)
-            unsafe { return Affine256DV2(r, &s, &t); }
+            unsafe { return Affine256(r, &s, &t); }
 
         T d = T.One + T.One, xx = r.X * r.X, yy = r.Y * r.Y, zz = r.Z * r.Z,
 
@@ -37,10 +37,10 @@ public static partial class Mat44
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         if (typeof(T) == typeof(float) && Vector128<T>.IsSupported)
-            return Rotation128F(r);
+            return Rotation128(r);
 
         if (typeof(T) == typeof(double) && Vector256<T>.IsSupported)
-            return Rotation256D(r);
+            return Rotation256(r);
 
         T d = T.One + T.One, xx = r.X * r.X, yy = r.Y * r.Y, zz = r.Z * r.Z,
 

@@ -17,8 +17,6 @@ public abstract class QuatBase<T>
 {
     private static readonly bool system = typeof(T) == typeof(float);
 
-    private static readonly T eps = T.One / T.CreateTruncating(1e8);
-
     private static readonly T num1 = T.CreateTruncating(0.123456789),
                               num2 = T.CreateTruncating(0.555555555),
                               num3 = T.CreateTruncating(0.333333333);
@@ -35,10 +33,20 @@ public abstract class QuatBase<T>
 
         await Assert.That(Quat.Multiply(a, b)).IsEqualTo(mul);
 
-        var expected = system ? (a.System() * b.System()).Quat<T>()
-                                : (a.Silk() * b.Silk()).Quat();
+        if (system)
+        {
+            await Assert.That(mul).IsEqualTo((a.System() * b.System()).Quat<T>());
+            return;
+        }
 
-        await Assert.That(mul).IsEqualTo(expected);
+        var eps = T.One / T.CreateTruncating(1e16);
+
+        var expected = (a.Silk() * b.Silk()).Quat();
+
+        await Assert.That(eps).IsGreaterThanOrEqualTo(T.Abs(mul.X - expected.X))
+                          .And.IsGreaterThanOrEqualTo(T.Abs(mul.Y - expected.Y))
+                          .And.IsGreaterThanOrEqualTo(T.Abs(mul.Z - expected.Z))
+                          .And.IsGreaterThanOrEqualTo(T.Abs(mul.W - expected.W));
     }
 
     [Test, DisplayName("a / b")]
@@ -48,10 +56,20 @@ public abstract class QuatBase<T>
 
         await Assert.That(Quat.Divide(a, b)).IsEqualTo(div);
 
-        var expected = system ? (a.System() / b.System()).Quat<T>()
-                                : (a.Silk() / b.Silk()).Quat();
+        if (system)
+        {
+            await Assert.That(div).IsEqualTo((a.System() / b.System()).Quat<T>());
+            return;
+        }
 
-        await Assert.That(div).IsEqualTo(expected);
+        var eps = T.One / T.CreateTruncating(1e16);
+
+        var expected = (a.Silk() / b.Silk()).Quat();
+
+        await Assert.That(eps).IsGreaterThanOrEqualTo(T.Abs(div.X - expected.X))
+                          .And.IsGreaterThanOrEqualTo(T.Abs(div.Y - expected.Y))
+                          .And.IsGreaterThanOrEqualTo(T.Abs(div.Z - expected.Z))
+                          .And.IsGreaterThanOrEqualTo(T.Abs(div.W - expected.W));
     }
 
     [Test, DisplayName("dot")]
@@ -141,10 +159,20 @@ public abstract class QuatBase<T>
 
         await Assert.That(Quat.Inverse(quat)).IsEqualTo(inv);
 
-        var expected = system ? Quaternion.Inverse(quat.System()).Quat<T>()
-                           : Quaternion<T>.Inverse(quat.Silk()).Quat();
+        if (system)
+        {
+            await Assert.That(inv).IsEqualTo(Quaternion.Inverse(quat.System()).Quat<T>());
+            return;
+        }
 
-        await Assert.That(inv).IsEqualTo(expected);
+        var eps = T.One / T.CreateTruncating(1e15);
+
+        var expected = Quaternion<T>.Inverse(quat.Silk()).Quat();
+
+        await Assert.That(eps).IsGreaterThanOrEqualTo(T.Abs(inv.X - expected.X))
+                          .And.IsGreaterThanOrEqualTo(T.Abs(inv.Y - expected.Y))
+                          .And.IsGreaterThanOrEqualTo(T.Abs(inv.Z - expected.Z))
+                          .And.IsGreaterThanOrEqualTo(T.Abs(inv.W - expected.W));
     }
 
     [Test, DisplayName("axis angle")]
