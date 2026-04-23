@@ -31,21 +31,21 @@ public static partial class Mat44
         k += k;                         // 2(yx - zw)     | 2(zy - xw)     | 2(xz - yw)     | 0
         w = Vector128<T>.One - (w + w); // 1 - 2(yy + zz) | 1 - 2(zz + xx) | 1 - 2(xx + yy) | 1 - 4ww, no mean
 
-        x = mx * w;
-        x = mx.Permute32(1, 2, 0, 3).MultiplyAdd(k, x);
-        x = mx.Permute32(2, 0, 1, 3).MultiplyAdd(n, x);
+        x = mx * w; // (mxx | mxy | mxz | mxw) * (1 - 2(yy + zz) | 1 - 2(zz + xx) | 1 - 2(xx + yy) | 1 - 4ww)
+        x = mx.Permute32(1, 2, 0, 3).MultiplyAdd(k, x); // (mxy | mxz | mxx | mxw) * (2(yx - zw) | 2(zy - xw) | 2(xz - yw) | 0) + ...
+        x = mx.Permute32(2, 0, 1, 3).MultiplyAdd(n, x); // (mxz | mxx | mxy | mxw) * (2(xz + yw) | 2(yx + zw) | 2(zy + xw) | 4ww) + ...
 
-        y = my * w;
-        y = my.Permute32(1, 2, 0, 3).MultiplyAdd(k, y);
-        y = my.Permute32(2, 0, 1, 3).MultiplyAdd(n, y);
+        y = my * w; // (myx | myy | myz | myw) * (1 - 2(yy + zz) | 1 - 2(zz + xx) | 1 - 2(xx + yy) | 1 - 4ww)
+        y = my.Permute32(1, 2, 0, 3).MultiplyAdd(k, y); // (myy | myz | myx | myw) * (2(yx - zw) | 2(zy - xw) | 2(xz - yw) | 0) + ...
+        y = my.Permute32(2, 0, 1, 3).MultiplyAdd(n, y); // (myz | myx | myy | myw) * (2(xz + yw) | 2(yx + zw) | 2(zy + xw) | 4ww) + ...
 
-        z = mz * w;
-        z = mz.Permute32(1, 2, 0, 3).MultiplyAdd(k, z);
-        z = mz.Permute32(2, 0, 1, 3).MultiplyAdd(n, z);
+        z = mz * w; // (mzx | mzy | mzz | mzw) * (1 - 2(yy + zz) | 1 - 2(zz + xx) | 1 - 2(xx + yy) | 1 - 4ww)
+        z = mz.Permute32(1, 2, 0, 3).MultiplyAdd(k, z); // (mzy | mzz | mzx | mzw) * (2(yx - zw) | 2(zy - xw) | 2(xz - yw) | 0) + ...
+        z = mz.Permute32(2, 0, 1, 3).MultiplyAdd(n, z); // (mzz | mzx | mzy | mzw) * (2(xz + yw) | 2(yx + zw) | 2(zy + xw) | 4ww) + ...
 
-        w = mw * w;
-        w = mw.Permute32(1, 2, 0, 3).MultiplyAdd(k, w);
-        w = mw.Permute32(2, 0, 1, 3).MultiplyAdd(n, w);
+        w = mw * w; // (mwx | mwy | mwz | mww) * (1 - 2(yy + zz) | 1 - 2(zz + xx) | 1 - 2(xx + yy) | 1 - 4ww)
+        w = mw.Permute32(1, 2, 0, 3).MultiplyAdd(k, w); // (mwy | mwz | mwx | mww) * (2(yx - zw) | 2(zy - xw) | 2(xz - yw) | 0) + ...
+        w = mw.Permute32(2, 0, 1, 3).MultiplyAdd(n, w); // (mwz | mwx | mwy | mww) * (2(xz + yw) | 2(yx + zw) | 2(zy + xw) | 4ww) + ...
 
         m.X = x.WithElement(3, mx[3]).Vec4();
         m.Y = y.WithElement(3, my[3]).Vec4();
