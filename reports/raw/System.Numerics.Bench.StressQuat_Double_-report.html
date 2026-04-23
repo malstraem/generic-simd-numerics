@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>System.Numerics.Bench.StressQuat_Double_-20260423-191151</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.15.8, Windows 11 (10.0.26200.8246/25H2/2025Update/HudsonValley2)
+AMD Ryzen 9 7900X 4.70GHz, 1 CPU, 24 logical and 12 physical cores
+.NET SDK 11.0.100-preview.3.26207.106
+  [Host]    : .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v4
+  .NET 10.0 : .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v4
+</code></pre>
+<pre><code>Job=.NET 10.0  Runtime=.NET 10.0  
+</code></pre>
+
+<table>
+<thead><tr><th>Method</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Code Size</th>
+</tr>
+</thead><tbody><tr><td>Multiply</td><td>125.44 &mu;s</td><td>0.251 &mu;s</td><td>0.234 &mu;s</td><td>251 B</td>
+</tr><tr><td>Divide</td><td>242.04 &mu;s</td><td>0.167 &mu;s</td><td>0.156 &mu;s</td><td>347 B</td>
+</tr><tr><td>Conjugate</td><td>60.93 &mu;s</td><td>0.010 &mu;s</td><td>0.009 &mu;s</td><td>82 B</td>
+</tr><tr><td>Inverse</td><td>97.50 &mu;s</td><td>0.018 &mu;s</td><td>0.016 &mu;s</td><td>132 B</td>
+</tr></tbody></table>
+</body>
+</html>
