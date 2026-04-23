@@ -1,3 +1,5 @@
+using System.Runtime.Intrinsics;
+
 using Silk.NET.Maths;
 
 namespace System.Numerics.Mat44Tests;
@@ -91,6 +93,86 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
                               : Matrix4X4.Transform(a.Silk(), r.Silk()).Mat44();
 
         await Assert.That(rotated).IsEqualTo(expected).Because($"quaternion is {r}");
+    }
+
+    [Test, Repeat(9), DisplayName("rotate compare")]
+    public async Task Compare()
+    {
+        var r = Rotation;
+
+        var ours = Mat44.Rotate(a, r).Silk().As<decimal>();
+
+        var sys = (a.System() * Matrix4x4.CreateFromQuaternion(r.System())).Mat44<T>().Silk().As<decimal>();
+
+        if (ours == sys)
+            return;
+
+        var decRes = Rotate(a.Silk().As<decimal>(), r.Silk().As<decimal>());
+
+        decimal row1TolOurs = (decRes.Row1 - ours.Row1).LengthSquared;
+        decimal row2TolOurs = (decRes.Row2 - ours.Row2).LengthSquared;
+        decimal row3TolOurs = (decRes.Row3 - ours.Row3).LengthSquared;
+        decimal row4TolOurs = (decRes.Row4 - ours.Row4).LengthSquared;
+
+        decimal frobNormOurs = row1TolOurs + row2TolOurs + row3TolOurs + row4TolOurs;
+
+        decimal row1TolSys = (decRes.Row1 - sys.Row1).LengthSquared;
+        decimal row2TolSys = (decRes.Row2 - sys.Row2).LengthSquared;
+        decimal row3TolSys = (decRes.Row3 - sys.Row3).LengthSquared;
+        decimal row4TolSys = (decRes.Row4 - sys.Row4).LengthSquared;
+
+        decimal frobNormSys = row1TolSys + row2TolSys + row3TolSys + row4TolSys;
+
+        Assert.Fail($"Quaternion is {r}.\n" +
+            $"Tolerance: ours ; sys\n" +
+            $"Row1: {row1TolOurs} ; {row1TolSys}\n" +
+            $"Is sys better {row1TolSys < row1TolOurs}\n" +
+            $"Row2: {row2TolOurs} ; {row2TolSys}\n" +
+            $"Is sys better {row2TolSys < row2TolOurs}\n" +
+            $"Row3: {row3TolOurs} ; {row3TolSys}\n" +
+            $"Is sys better {row3TolSys < row3TolOurs}\n" +
+            $"Row4: {row4TolOurs} ; {row4TolSys}\n" +
+            $"Is sys better {row4TolSys < row4TolOurs}\n" +
+            $"Frobenius norm: {frobNormOurs} ; {frobNormSys}\n" +
+            $"Is sys better {frobNormSys < frobNormOurs}\n");
+    }
+
+    public static Matrix4X4<decimal> Rotate(Matrix4X4<decimal> m, Quaternion<decimal> r)
+    {
+        decimal
+        xx = r.X + r.X, yy = r.Y + r.Y, zz = r.Z + r.Z,
+
+        xy = r.X * yy, xw = xx * r.W,
+        yz = r.Y * zz, yw = yy * r.W,
+        zx = r.Z * xx, zw = zz * r.W;
+
+        xx = r.X * xx; yy = r.Y * yy; zz = r.Z * zz;
+
+        decimal
+        q11 = 1 - yy - zz, q12 = xy + zw, q13 = zx - yw,
+        q21 = xy - zw, q22 = 1 - xx - zz, q23 = yz + xw,
+        q31 = zx + yw, q32 = yz - xw, q33 = 1 - xx - yy;
+
+        return new(
+            (m.Row1.X * q11) + (m.Row1.Y * q21) + (m.Row1.Z * q31),
+            (m.Row1.X * q12) + (m.Row1.Y * q22) + (m.Row1.Z * q32),
+            (m.Row1.X * q13) + (m.Row1.Y * q23) + (m.Row1.Z * q33),
+             m.Row1.W,
+
+            (m.Row2.X * q11) + (m.Row2.Y * q21) + (m.Row2.Z * q31),
+            (m.Row2.X * q12) + (m.Row2.Y * q22) + (m.Row2.Z * q32),
+            (m.Row2.X * q13) + (m.Row2.Y * q23) + (m.Row2.Z * q33),
+             m.Row2.W,
+
+            (m.Row3.X * q11) + (m.Row3.Y * q21) + (m.Row3.Z * q31),
+            (m.Row3.X * q12) + (m.Row3.Y * q22) + (m.Row3.Z * q32),
+            (m.Row3.X * q13) + (m.Row3.Y * q23) + (m.Row3.Z * q33),
+             m.Row3.W,
+
+            (m.Row4.X * q11) + (m.Row4.Y * q21) + (m.Row4.Z * q31),
+            (m.Row4.X * q12) + (m.Row4.Y * q22) + (m.Row4.Z * q32),
+            (m.Row4.X * q13) + (m.Row4.Y * q23) + (m.Row4.Z * q33),
+             m.Row4.W);
     }
 
     [Test, Repeat(9), DisplayName("affine")]
