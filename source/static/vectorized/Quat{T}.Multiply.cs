@@ -8,7 +8,7 @@ public partial struct Quat<T>
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     private static Quat<T> Multiply128F(Quat<T> a, Quat<T> b)
     {
-        a.Vec4().Broadcast128(out var c, out var d, out var e, out var f);
+        Vec4<T>.Broadcast128(a.Vec4(), out var c, out var d, out var e, out var f);
 
         var q = b.As128();
 

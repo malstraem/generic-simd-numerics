@@ -94,7 +94,7 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
         await Assert.That(rotated).IsEqualTo(expected).Because($"quaternion is {r}");
     }
 
-    [Test, Repeat(1000), DisplayName("rotate (frobenius norm)")]
+    [Test, Repeat(999), DisplayName("rotate (frobenius norm)")]
     [Skip("run to see differences")]
     public async Task FrobeniusCompareRotations()
     {
