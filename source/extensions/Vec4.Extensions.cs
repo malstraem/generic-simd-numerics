@@ -2,6 +2,34 @@ namespace System.Numerics;
 
 public static class Vec4Extensions
 {
+    extension<T>(Vec4<T> a)
+        where T : unmanaged, INumber<T>
+    {
+        [MethodImpl(AggressiveInlining)]
+        public Vec4<T> MultiplyAdd(T b, Vec4<T> c)
+        {
+            if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+                return a.As128().MultiplyAdd(Vector128.Create(b), c.As128()).Vec4();
+
+            if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+                return a.As256().MultiplyAdd(Vector256.Create(b), c.As256()).Vec4();
+
+            return (a * b) + c;
+        }
+
+        [MethodImpl(AggressiveInlining)]
+        public Vec4<T> MultiplyAdd(Vec4<T> b, Vec4<T> c)
+        {
+            if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+                return a.As128().MultiplyAdd(b.As128(), c.As128()).Vec4();
+
+            if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+                return a.As256().MultiplyAdd(b.As256(), c.As256()).Vec4();
+
+            return a.ElementMultiply(b) + c;
+        }
+    }
+
     extension<T>(Vec4<T> v)
         where T : unmanaged, INumber<T>, IRootFunctions<T>
     {

@@ -13,7 +13,7 @@ public class StressVector3D<T> : BaseBench<T>
     public StressVector3D()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vec3<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10))).Silk();
+            vecs[i] = Vec3<T>.Gen(T.One).Silk();
     }
 
     [Benchmark]

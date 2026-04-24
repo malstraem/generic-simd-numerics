@@ -17,8 +17,8 @@ public class StressMatrix4X4WithQuaternion<T> : StressMatrix4X4<T>
         for (int i = 0; i < Count; i++)
         {
             quats[i] = Quat<T>.Rand().Silk();
-            scales[i] = Vec3<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10))).Silk();
-            positions[i] = Vec3<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10))).Silk();
+            scales[i] = Vec3<T>.Gen(T.One).Silk();
+            positions[i] = Vec3<T>.Gen(T.One).Silk();
         }
     }
 
@@ -53,7 +53,7 @@ public class StressMatrix4X4<T> : BaseBench<T>
     public StressMatrix4X4()
     {
         for (int i = 0; i < Count; i++)
-            mats[i] = Mat44<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10))).Silk();
+            mats[i] = Mat44<T>.Gen(T.One).Silk();
     }
 
     [Benchmark]

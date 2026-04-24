@@ -15,7 +15,7 @@ public class StressVector4D<T> : BaseBench<T>
     public StressVector4D()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vec4<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10))).Silk();
+            vecs[i] = Vec4<T>.Gen(T.One).Silk();
     }
 
     [Benchmark]

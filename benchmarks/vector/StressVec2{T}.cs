@@ -15,7 +15,7 @@ public class StressVec2<T, R> : BaseBench<T>
     public StressVec2()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vec2<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
+            vecs[i] = Vec2<T>.Gen(T.One);
     }
 
     [Benchmark]

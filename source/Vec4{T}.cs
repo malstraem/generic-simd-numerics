@@ -245,19 +245,18 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         return max.Min(Max(min));
     }
 
-    // intrinsic Lerp<T> should exist or expose as real behavior through extensions?
+    // intrinsic Lerp<T> should exist, isn't?
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Lerp(Vec4<T> v, T am) => (this * (T.One - am)) + (v * am);
 
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Transform(Mat44<T> m)
     {
-        // intrinsic MultiplyAdd<T> should exist
         var v = m.X * X;
 
-        v += m.Y * Y;
-        v += m.Z * Z;
-        v += m.W * W;
+        v = m.Y.MultiplyAdd(Y, v);
+        v = m.Z.MultiplyAdd(Z, v);
+        v = m.W.MultiplyAdd(W, v);
 
         return v;
     }
