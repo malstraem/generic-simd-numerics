@@ -79,8 +79,8 @@ M00_L01:
 ```assembly
 ; System.Numerics.Bench.StressQuaternion`1[[System.Single, System.Private.CoreLib]].Divide()
        sub       rsp,28
-       vmovss    xmm0,dword ptr [7FF8F42EB920]
-       vmovss    xmm1,dword ptr [7FF8F42EB924]
+       vmovss    xmm0,dword ptr [7FFF431CA900]
+       vmovss    xmm1,dword ptr [7FFF431CA904]
        xor       eax,eax
 M00_L00:
        mov       rdx,[rcx+10]
@@ -172,7 +172,7 @@ M00_L01:
 ```assembly
 ; System.Numerics.Bench.StressQuaternion`1[[System.Single, System.Private.CoreLib]].Conjugate()
        sub       rsp,28
-       vmovss    xmm0,dword ptr [7FF8F42EAB80]
+       vmovss    xmm0,dword ptr [7FFF431A9B60]
        xor       eax,eax
 M00_L00:
        mov       rdx,[rcx+10]
@@ -212,8 +212,8 @@ M00_L01:
 ```assembly
 ; System.Numerics.Bench.StressQuaternion`1[[System.Single, System.Private.CoreLib]].Inverse()
        sub       rsp,28
-       vmovss    xmm0,dword ptr [7FF8F430AF18]
-       vmovss    xmm1,dword ptr [7FF8F430AF1C]
+       vmovss    xmm0,dword ptr [7FFF431C9EF8]
+       vmovss    xmm1,dword ptr [7FFF431C9EFC]
        xor       eax,eax
 M00_L00:
        mov       rdx,[rcx+10]
