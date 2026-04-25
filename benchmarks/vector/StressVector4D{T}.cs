@@ -33,14 +33,14 @@ public class StressVector4D<T> : BaseBench<T>
     }
 
     [Benchmark]
-    public void ElementMultiply()
+    public void MultiplyElementWise()
     {
         for (int i = 0; i < Count - 1; i++)
             @out[i] = vecs[i] * vecs[i + 1];
     }
 
     [Benchmark]
-    public void ElementDivide()
+    public void DivideElementWise()
     {
         for (int i = 0; i < Count - 1; i++)
             @out[i] = vecs[i] / vecs[i + 1];

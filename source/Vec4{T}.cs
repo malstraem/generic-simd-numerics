@@ -133,7 +133,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Vector256.Dot(a.As256(), b.As256());
 
-        return a.ElementMultiply(b).Sum();
+        return a.MultiplyWise(b).Sum();
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -162,7 +162,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     #endregion
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec4<T> ElementMultiply(Vec4<T> v)
+    public readonly Vec4<T> MultiplyWise(Vec4<T> v)
     {
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return (this.As128() * v.As128()).Vec4();
@@ -174,7 +174,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     }
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec4<T> ElementDivide(Vec4<T> v)
+    public readonly Vec4<T> DivideWise(Vec4<T> v)
     {
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return (this.As128() / v.As128()).Vec4();

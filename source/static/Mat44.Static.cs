@@ -10,10 +10,10 @@ public static partial class Mat44
     public static Mat44<T> Affine<T>(Quat<T> r, Vec3<T> s, Vec3<T> t)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        if (typeof(T) == typeof(float) && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             unsafe { return Affine128(r, &s, &t); }
 
-        if (typeof(T) == typeof(double) && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             unsafe { return Affine256(r, &s, &t); }
 
         T d = T.One + T.One, xx = r.X * r.X, yy = r.Y * r.Y, zz = r.Z * r.Z,
@@ -36,10 +36,10 @@ public static partial class Mat44
     public static Mat44<T> Rotation<T>(Quat<T> r)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        if (typeof(T) == typeof(float) && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return Rotation128(r);
 
-        if (typeof(T) == typeof(double) && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Rotation256(r);
 
         T d = T.One + T.One, xx = r.X * r.X, yy = r.Y * r.Y, zz = r.Z * r.Z,
@@ -63,8 +63,11 @@ public static partial class Mat44
     public static Mat44<T> Rotate<T>(Mat44<T> m, Quat<T> r)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        if (typeof(T) == typeof(float) && Vector128<T>.IsSupported)
-            return Rotate128F(m, r);
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return Rotate128(m, r);
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return Rotate256(m, r);
 
         T
         xx = r.X + r.X, yy = r.Y + r.Y, zz = r.Z + r.Z,

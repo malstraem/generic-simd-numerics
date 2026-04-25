@@ -6,7 +6,7 @@ namespace System.Numerics;
 
 IBELIEVE:
 
-1) asm could be more lighter for both single/double, not all offsets proved now and there is few unnecessary instructions
+1) asm could be more lighter for both single/double, there is few unnecessary instructions
 
 2) shuffle/permute can be generalized to Permute<T> with only byte indices, isn't?
 
