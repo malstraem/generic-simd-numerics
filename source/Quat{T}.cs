@@ -38,10 +38,10 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> operator *(Quat<T> a, Quat<T> b)
     {
-        if (typeof(T) == typeof(float) && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return Multiply128F(a, b);
 
-        if (typeof(T) == typeof(double) && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Multiply256D(a, b);
 
         var c = b * a.W;
@@ -76,14 +76,14 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Quat<T> Conjugate()
     {
-        if (typeof(T) == typeof(float) && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
         {
             var xmm = this.As128();
             xmm *= Vector128.Create(-1, -1, -1, 1f).As<float, T>();
             return xmm.Quat();
         }
 
-        if (typeof(T) == typeof(double) && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
         {
             var ymm = this.As256();
             ymm *= Vector256.Create(-1, -1, -1, 1d).As<double, T>();
@@ -101,7 +101,7 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     {
         var ls = LengthSquared();
 
-        if (typeof(T) == typeof(float) && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
         {
             var lsv = Vector128.Create(ls);
 

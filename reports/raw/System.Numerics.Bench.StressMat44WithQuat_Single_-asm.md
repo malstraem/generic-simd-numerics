@@ -4,7 +4,7 @@
 ; System.Numerics.Bench.StressMat44WithQuat`1[[System.Single, System.Private.CoreLib]].Rotation()
        sub       rsp,28
        xor       eax,eax
-       vbroadcastss xmm0,dword ptr [7FF8F42EBC30]
+       vbroadcastss xmm0,dword ptr [7FFF431CA970]
 M00_L00:
        mov       rdx,[rcx+10]
        mov       r8,[rcx+18]
@@ -46,7 +46,7 @@ M00_L00:
        vmovups   [rdx],xmm2
        vmovups   [rdx+10],xmm3
        vmovups   [rdx+20],xmm4
-       vmovups   xmm1,[7FF8F42EBC40]
+       vmovups   xmm1,[7FFF431CA980]
        vmovups   [rdx+30],xmm1
        inc       eax
        cmp       eax,186A0
@@ -65,7 +65,7 @@ M00_L01:
 ; System.Numerics.Bench.StressMat44WithQuat`1[[System.Single, System.Private.CoreLib]].Transform()
        sub       rsp,28
        xor       eax,eax
-       vbroadcastss xmm0,dword ptr [7FF8F42FBB80]
+       vbroadcastss xmm0,dword ptr [7FFF431DA8C0]
 M00_L00:
        mov       rdx,[rcx+10]
        mov       r8,[rcx+8]
@@ -151,7 +151,7 @@ M00_L01:
 ; System.Numerics.Bench.StressMat44WithQuat`1[[System.Single, System.Private.CoreLib]].Affine()
        sub       rsp,48
        xor       eax,eax
-       vbroadcastss xmm0,dword ptr [7FF8F42EBE18]
+       vbroadcastss xmm0,dword ptr [7FFF431CAB58]
 M00_L00:
        mov       rdx,[rcx+10]
        mov       r8,[rcx+18]

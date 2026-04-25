@@ -37,12 +37,12 @@ var vecs = BenchmarkSwitcher.FromTypes([
     //typeof(StressVector3D<int>),
     //typeof(StressVector3D<long>),
 
-    //typeof(StressVector4),
-    //typeof(StressVec4<float>),
-    //typeof(StressVector4D<float>),
+    typeof(StressVector4),
+    typeof(StressVec4<float>),
+    typeof(StressVector4D<float>),
 
-    //typeof(StressVec4<double>),
-    //typeof(StressVector4D<double>),
+    typeof(StressVec4<double>),
+    typeof(StressVector4D<double>),
 
     //typeof(StressVec4<byte, float>),
     //typeof(StressVec4<short, float>),

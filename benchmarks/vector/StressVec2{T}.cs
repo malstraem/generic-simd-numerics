@@ -15,7 +15,7 @@ public class StressVec2<T, R> : BaseBench<T>
     public StressVec2()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vec2<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
+            vecs[i] = Vec2<T>.Gen(T.One);
     }
 
     [Benchmark]
@@ -33,17 +33,17 @@ public class StressVec2<T, R> : BaseBench<T>
     }
 
     [Benchmark]
-    public void ElementMultiply()
+    public void MultiplyElementWise()
     {
         for (int i = 0; i < Count - 1; i++)
-            @out[i] = vecs[i].ElementMultiply(vecs[i + 1]);
+            @out[i] = vecs[i].MultiplyWise(vecs[i + 1]);
     }
 
     [Benchmark]
-    public void ElementDivide()
+    public void DivideElementWise()
     {
         for (int i = 0; i < Count - 1; i++)
-            @out[i] = vecs[i].ElementDivide(vecs[i + 1]);
+            @out[i] = vecs[i].DivideWise(vecs[i + 1]);
     }
 
     [Benchmark]

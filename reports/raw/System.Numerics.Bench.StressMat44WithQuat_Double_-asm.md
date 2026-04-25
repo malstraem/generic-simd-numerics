@@ -4,7 +4,7 @@
 ; System.Numerics.Bench.StressMat44WithQuat`1[[System.Double, System.Private.CoreLib]].Rotation()
        sub       rsp,28
        xor       eax,eax
-       vbroadcastsd ymm0,qword ptr [7FF8F42DBF20]
+       vbroadcastsd ymm0,qword ptr [7FFF431CAC40]
 M00_L00:
        mov       rdx,[rcx+10]
        mov       r8,[rcx+18]
@@ -60,7 +60,7 @@ M00_L00:
        vmovups   [rdx],ymm2
        vmovups   [rdx+20],ymm3
        vmovups   [rdx+40],ymm4
-       vmovups   ymm1,[7FF8F42DBF40]
+       vmovups   ymm1,[7FFF431CAC60]
        vmovups   [rdx+60],ymm1
        inc       eax
        cmp       eax,186A0
@@ -78,168 +78,99 @@ M00_L01:
 
 ```assembly
 ; System.Numerics.Bench.StressMat44WithQuat`1[[System.Double, System.Private.CoreLib]].Transform()
-       sub       rsp,98
-       vmovaps   [rsp+80],xmm6
-       vmovaps   [rsp+70],xmm7
-       vmovaps   [rsp+60],xmm8
-       vmovaps   [rsp+50],xmm9
-       vmovaps   [rsp+40],xmm10
-       vmovaps   [rsp+30],xmm11
-       vmovaps   [rsp+20],xmm12
-       vmovsd    xmm0,qword ptr [7FF8F430C470]
+       sub       rsp,28
        xor       eax,eax
+       vbroadcastsd ymm0,qword ptr [7FFF431AAAB0]
 M00_L00:
        mov       rdx,[rcx+10]
        mov       r8,[rcx+8]
        cmp       eax,[r8+8]
        jae       near ptr M00_L01
-       mov       r10,rax
-       shl       r10,7
-       lea       r8,[r8+r10+10]
-       vmovsd    xmm1,qword ptr [r8]
-       vmovsd    xmm2,qword ptr [r8+8]
-       vmovsd    xmm3,qword ptr [r8+10]
-       vmovsd    xmm4,qword ptr [r8+18]
-       vmovsd    xmm5,qword ptr [r8+20]
-       vmovsd    xmm16,qword ptr [r8+28]
-       vmovsd    xmm17,qword ptr [r8+30]
-       vmovsd    xmm18,qword ptr [r8+38]
-       vmovsd    xmm19,qword ptr [r8+40]
-       vmovsd    xmm20,qword ptr [r8+48]
-       vmovsd    xmm21,qword ptr [r8+50]
-       vmovsd    xmm22,qword ptr [r8+58]
-       vmovsd    xmm23,qword ptr [r8+60]
-       vmovsd    xmm24,qword ptr [r8+68]
-       vmovsd    xmm25,qword ptr [r8+70]
-       vmovsd    xmm26,qword ptr [r8+78]
+       mov       r10d,eax
+       mov       r9,r10
+       shl       r9,7
+       lea       r8,[r8+r9+10]
+       vmovups   ymm1,[r8]
+       vmovups   ymm2,[r8+20]
+       vmovups   ymm3,[r8+40]
+       vmovups   ymm4,[r8+60]
        mov       r8,[rcx+18]
        cmp       eax,[r8+8]
        jae       near ptr M00_L01
-       mov       r9,rax
-       shl       r9,5
-       lea       r8,[r8+r9+10]
-       vmovsd    xmm27,qword ptr [r8]
-       vmovsd    xmm28,qword ptr [r8+8]
-       vmovsd    xmm29,qword ptr [r8+10]
-       vmovsd    xmm30,qword ptr [r8+18]
-       vaddsd    xmm31,xmm27,xmm27
-       vaddsd    xmm6,xmm28,xmm28
-       vaddsd    xmm7,xmm29,xmm29
-       vmulsd    xmm8,xmm27,xmm6
-       vmulsd    xmm9,xmm31,xmm30
-       vmulsd    xmm10,xmm29,xmm31
-       vmulsd    xmm11,xmm6,xmm30
-       vmulsd    xmm12,xmm28,xmm7
-       vmulsd    xmm30,xmm7,xmm30
-       vmulsd    xmm31,xmm27,xmm31
-       vmulsd    xmm6,xmm28,xmm6
-       vmulsd    xmm7,xmm29,xmm7
-       vsubsd    xmm27,xmm0,xmm6
-       vsubsd    xmm27,xmm27,xmm7
-       vaddsd    xmm28,xmm8,xmm30
-       vsubsd    xmm29,xmm10,xmm11
-       vsubsd    xmm30,xmm8,xmm30
-       vsubsd    xmm31,xmm0,xmm31
-       vsubsd    xmm7,xmm31,xmm7
-       vaddsd    xmm8,xmm12,xmm9
-       vaddsd    xmm10,xmm10,xmm11
-       vsubsd    xmm9,xmm12,xmm9
-       vsubsd    xmm31,xmm31,xmm6
-       vmulsd    xmm6,xmm1,xmm27
-       vmulsd    xmm11,xmm2,xmm30
-       vaddsd    xmm6,xmm6,xmm11
-       vmulsd    xmm11,xmm3,xmm10
-       vaddsd    xmm6,xmm6,xmm11
-       vmulsd    xmm11,xmm1,xmm28
-       vmulsd    xmm12,xmm2,xmm7
-       vaddsd    xmm11,xmm11,xmm12
-       vmulsd    xmm12,xmm3,xmm9
-       vaddsd    xmm11,xmm11,xmm12
-       vmulsd    xmm1,xmm1,xmm29
-       vmulsd    xmm2,xmm2,xmm8
-       vaddsd    xmm1,xmm1,xmm2
-       vmulsd    xmm2,xmm3,xmm31
-       vaddsd    xmm1,xmm1,xmm2
-       vmulsd    xmm2,xmm5,xmm27
-       vmulsd    xmm3,xmm16,xmm30
-       vaddsd    xmm2,xmm2,xmm3
-       vmulsd    xmm3,xmm17,xmm10
-       vaddsd    xmm2,xmm2,xmm3
-       vmulsd    xmm3,xmm5,xmm28
-       vmulsd    xmm12,xmm16,xmm7
-       vaddsd    xmm3,xmm3,xmm12
-       vmulsd    xmm12,xmm17,xmm9
-       vaddsd    xmm3,xmm3,xmm12
-       vmulsd    xmm5,xmm5,xmm29
-       vmulsd    xmm16,xmm16,xmm8
-       vaddsd    xmm5,xmm5,xmm16
-       vmulsd    xmm16,xmm17,xmm31
-       vaddsd    xmm5,xmm5,xmm16
-       vmulsd    xmm16,xmm19,xmm27
-       vmulsd    xmm17,xmm20,xmm30
-       vaddsd    xmm16,xmm16,xmm17
-       vmulsd    xmm17,xmm21,xmm10
-       vaddsd    xmm16,xmm16,xmm17
-       vmulsd    xmm17,xmm19,xmm28
-       vmulsd    xmm12,xmm20,xmm7
-       vaddsd    xmm17,xmm17,xmm12
-       vmulsd    xmm12,xmm21,xmm9
-       vaddsd    xmm17,xmm17,xmm12
-       vmulsd    xmm19,xmm19,xmm29
-       vmulsd    xmm20,xmm20,xmm8
-       vaddsd    xmm19,xmm19,xmm20
-       vmulsd    xmm20,xmm21,xmm31
-       vaddsd    xmm19,xmm19,xmm20
-       vmulsd    xmm20,xmm23,xmm27
-       vmulsd    xmm21,xmm24,xmm30
-       vaddsd    xmm20,xmm20,xmm21
-       vmulsd    xmm21,xmm25,xmm10
-       vaddsd    xmm20,xmm20,xmm21
-       vmulsd    xmm21,xmm23,xmm28
-       vmulsd    xmm27,xmm24,xmm7
-       vaddsd    xmm21,xmm21,xmm27
-       vmulsd    xmm27,xmm25,xmm9
-       vaddsd    xmm21,xmm21,xmm27
-       vmulsd    xmm23,xmm23,xmm29
-       vmulsd    xmm24,xmm24,xmm8
-       vaddsd    xmm23,xmm23,xmm24
-       vmulsd    xmm24,xmm25,xmm31
-       vaddsd    xmm23,xmm24,xmm23
+       shl       r10,5
+       vmovups   ymm5,[r8+r10+10]
+       vpermq    ymm16,ymm5,0C9
+       vpermq    ymm17,ymm5,0FF
+       vpermq    ymm18,ymm5,0D2
+       vmulpd    ymm19,ymm16,ymm16
+       vmulpd    ymm16,ymm16,ymm5
+       vmulpd    ymm17,ymm18,ymm17
+       vaddpd    ymm5,ymm16,ymm17
+       vsubpd    ymm18,ymm16,ymm17
+       vpermq    ymm5,ymm5,0D2
+       vpermq    ymm16,ymm19,0C9
+       vaddpd    ymm19,ymm16,ymm19
+       vaddpd    ymm5,ymm5,ymm5
+       vaddpd    ymm18,ymm18,ymm18
+       vaddpd    ymm19,ymm19,ymm19
+       vsubpd    ymm19,ymm0,ymm19
+       vpermq    ymm16,ymm1,0D2
+       vpermq    ymm17,ymm1,0C9
+       vmulpd    ymm20,ymm19,ymm1
+       vfmadd213pd ymm17,ymm18,ymm20
+       vfmadd213pd ymm16,ymm5,ymm17
+       vextractf128 xmm1,ymm1,1
+       vextractf32x4 xmm17,ymm16,1
+       vunpckhpd xmm1,xmm1,xmm1
+       vunpcklpd xmm1,xmm17,xmm1
+       vinsertf32x4 ymm1,ymm16,xmm1,1
+       vpermq    ymm16,ymm2,0D2
+       vpermq    ymm17,ymm2,0C9
+       vmulpd    ymm20,ymm19,ymm2
+       vfmadd213pd ymm17,ymm18,ymm20
+       vfmadd213pd ymm16,ymm5,ymm17
+       vextractf128 xmm2,ymm2,1
+       vextractf32x4 xmm17,ymm16,1
+       vunpckhpd xmm2,xmm2,xmm2
+       vunpcklpd xmm2,xmm17,xmm2
+       vinsertf32x4 ymm2,ymm16,xmm2,1
+       vpermq    ymm16,ymm3,0D2
+       vpermq    ymm17,ymm3,0C9
+       vmulpd    ymm20,ymm19,ymm3
+       vfmadd213pd ymm17,ymm18,ymm20
+       vfmadd213pd ymm16,ymm5,ymm17
+       vextractf128 xmm3,ymm3,1
+       vextractf32x4 xmm17,ymm16,1
+       vunpckhpd xmm3,xmm3,xmm3
+       vunpcklpd xmm3,xmm17,xmm3
+       vinsertf32x4 ymm3,ymm16,xmm3,1
+       vpermq    ymm16,ymm4,0D2
+       vpermq    ymm17,ymm4,0C9
+       vmulpd    ymm19,ymm19,ymm4
+       vfmadd213pd ymm18,ymm17,ymm19
+       vfmadd213pd ymm5,ymm16,ymm18
+       vextractf128 xmm4,ymm4,1
+       vextractf32x4 xmm16,ymm5,1
+       vunpckhpd xmm4,xmm4,xmm4
+       vunpcklpd xmm4,xmm16,xmm4
+       vinsertf128 ymm4,ymm5,xmm4,1
        cmp       eax,[rdx+8]
-       jae       near ptr M00_L01
-       lea       rdx,[rdx+r10+10]
-       vmovsd    qword ptr [rdx],xmm6
-       vmovsd    qword ptr [rdx+8],xmm11
-       vmovsd    qword ptr [rdx+10],xmm1
-       vmovsd    qword ptr [rdx+18],xmm4
-       vmovsd    qword ptr [rdx+20],xmm2
-       vmovsd    qword ptr [rdx+28],xmm3
-       vmovsd    qword ptr [rdx+30],xmm5
-       vmovsd    qword ptr [rdx+38],xmm18
-       vmovsd    qword ptr [rdx+40],xmm16
-       vmovsd    qword ptr [rdx+48],xmm17
-       vmovsd    qword ptr [rdx+50],xmm19
-       vmovsd    qword ptr [rdx+58],xmm22
-       vmovsd    qword ptr [rdx+60],xmm20
-       vmovsd    qword ptr [rdx+68],xmm21
-       vmovsd    qword ptr [rdx+70],xmm23
-       vmovsd    qword ptr [rdx+78],xmm26
+       jae       short M00_L01
+       lea       rdx,[rdx+r9+10]
+       vmovups   [rdx],ymm1
+       vmovups   [rdx+20],ymm2
+       vmovups   [rdx+40],ymm3
+       vmovups   [rdx+60],ymm4
        inc       eax
        cmp       eax,186A0
        jl        near ptr M00_L00
-       vmovaps   xmm6,[rsp+80]
-       vmovaps   xmm7,[rsp+70]
-       vmovaps   xmm8,[rsp+60]
-       vmovaps   xmm9,[rsp+50]
-       vmovaps   xmm10,[rsp+40]
-       vmovaps   xmm11,[rsp+30]
-       vmovaps   xmm12,[rsp+20]
-       add       rsp,98
+       vzeroupper
+       add       rsp,28
        ret
 M00_L01:
        call      CORINFO_HELP_RNGCHKFAIL
        int       3
-; Total bytes of code 908
+; Total bytes of code 491
 ```
 
 ## .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
@@ -248,7 +179,7 @@ M00_L01:
 ; System.Numerics.Bench.StressMat44WithQuat`1[[System.Double, System.Private.CoreLib]].Affine()
        sub       rsp,58
        xor       eax,eax
-       vbroadcastsd ymm0,qword ptr [7FF8F42DC188]
+       vbroadcastsd ymm0,qword ptr [7FFF431BAEA8]
 M00_L00:
        mov       rdx,[rcx+10]
        mov       r8,[rcx+18]

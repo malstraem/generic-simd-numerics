@@ -10,7 +10,7 @@ public class StressVector3 : BaseBench<float>
     public StressVector3()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vec3<float>.Gen(Random.Shared.Next(1, 10)).System();
+            vecs[i] = Vec3<float>.Gen(1f).System();
     }
 
     [Benchmark]
@@ -28,14 +28,14 @@ public class StressVector3 : BaseBench<float>
     }
 
     [Benchmark]
-    public void ElementMultiply()
+    public void MultiplyElementWise()
     {
         for (int i = 0; i < Count - 1; i++)
             @out[i] = vecs[i] * vecs[i + 1];
     }
 
     [Benchmark]
-    public void ElementDivide()
+    public void DivideElementWise()
     {
         for (int i = 0; i < Count - 1; i++)
             @out[i] = vecs[i] / vecs[i + 1];

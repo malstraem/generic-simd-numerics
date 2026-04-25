@@ -4,44 +4,38 @@ namespace System.Numerics;
 public partial struct Vec4<T>
 {
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    internal readonly void Broadcast128(
-        out Vector128<T> b0, out Vector128<T> b1,
-        out Vector128<T> b2, out Vector128<T> b3)
+    internal void Broadcast128(
+        out Vector128<T> x, out Vector128<T> y,
+        out Vector128<T> z, out Vector128<T> w)
     {
         var xmm = this.As128();
 
-        unsafe
-        {
-            b0 = Vector128.Create(*(T*)&xmm);
-            b1 = Vector128.Create(*((T*)&xmm + 1));
-            b2 = Vector128.Create(*((T*)&xmm + 2));
-            b3 = Vector128.Create(*((T*)&xmm + 3));
-        }
+        x = Vector128.Create(xmm[0]);
+        y = Vector128.Create(xmm[1]);
+        z = Vector128.Create(xmm[2]);
+        w = Vector128.Create(xmm[3]);
     }
 
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     internal readonly void Broadcast256(
-        out Vector256<T> b0, out Vector256<T> b1,
-        out Vector256<T> b2, out Vector256<T> b3)
+        out Vector256<T> x, out Vector256<T> y,
+        out Vector256<T> z, out Vector256<T> w)
     {
-        // take offset "from ymm" -> pessimized, idk :(
+        // "offset ymm" to provoke shuffles as in 128 -> pessimized, idk :(
 
-        /*var ymm = As256();
+        /*var ymm = this.As256();
 
-        unsafe
-        {
-            b0 = Vector256.Create(*(T*)&ymm);
-            b1 = Vector256.Create(*((T*)&ymm + 1));
-            b2 = Vector256.Create(*((T*)&ymm + 2));
-            b3 = Vector256.Create(*((T*)&ymm + 3));
-        }*/
+        x = Vector256.Create(ymm[0]);
+        y = Vector256.Create(ymm[1]);
+        z = Vector256.Create(ymm[2]);
+        w = Vector256.Create(ymm[3]);*/
 
         // now JIT produce 16 scalar movs to xmm and it's better on 9 7900X
         // 128 bit version works as expected
 
-        b0 = Vector256.Create(X);
-        b1 = Vector256.Create(Y);
-        b2 = Vector256.Create(Z);
-        b3 = Vector256.Create(W);
+        x = Vector256.Create(X);
+        y = Vector256.Create(Y);
+        z = Vector256.Create(Z);
+        w = Vector256.Create(W);
     }
 }

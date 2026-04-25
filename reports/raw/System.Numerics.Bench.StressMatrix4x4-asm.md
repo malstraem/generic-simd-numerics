@@ -108,9 +108,9 @@ M00_L01:
 ; System.Numerics.Bench.StressMatrix4x4.Rotation()
        sub       rsp,28
        xor       eax,eax
-       vmovss    xmm0,dword ptr [7FF8F42EBD70]
-       vmovss    xmm1,dword ptr [7FF8F42EBD74]
-       vmovups   xmm2,[7FF8F42EBD80]
+       vmovss    xmm0,dword ptr [7FFF431AA9B0]
+       vmovss    xmm1,dword ptr [7FFF431AA9B4]
+       vmovups   xmm2,[7FFF431AA9C0]
 M00_L00:
        mov       rdx,[rcx+10]
        mov       r8,[rcx+18]
@@ -167,7 +167,7 @@ M00_L00:
        vmovups   [rdx],xmm4
        vmovups   [rdx+10],xmm18
        vmovups   [rdx+20],xmm3
-       vmovups   xmm3,[7FF8F42EBD80]
+       vmovups   xmm3,[7FFF431AA9C0]
        vmovups   [rdx+30],xmm3
        inc       eax
        cmp       eax,186A0
@@ -192,7 +192,7 @@ M00_L01:
        vmovaps   [rsp+40],xmm10
        vmovaps   [rsp+30],xmm11
        vmovaps   [rsp+20],xmm12
-       vmovss    xmm0,dword ptr [7FF8F42DC708]
+       vmovss    xmm0,dword ptr [7FFF431AB348]
        xor       eax,eax
 M00_L00:
        mov       rdx,[rcx+10]
@@ -366,12 +366,12 @@ M00_L01:
        vxorps    xmm4,xmm4,xmm4
        vmovdqu32 [rsp+30],zmm4
        xor       eax,eax
-       vmovups   xmm0,[7FF8F42ED4B0]
+       vmovups   xmm0,[7FFF431CC0D0]
        vmovaps   [rsp+20],xmm0
-       vmovss    xmm1,dword ptr [7FF8F42ED4C0]
-       vmovss    xmm2,dword ptr [7FF8F42ED4C0]
-       vmovsd    xmm3,qword ptr [7FF8F42ED4C8]
-       vmovups   xmm4,[7FF8F42ED4D0]
+       vmovss    xmm1,dword ptr [7FFF431CC0E0]
+       vmovss    xmm2,dword ptr [7FFF431CC0E0]
+       vmovsd    xmm3,qword ptr [7FFF431CC0E8]
+       vmovups   xmm4,[7FFF431CC0F0]
 M00_L00:
        mov       rdx,[rcx+10]
        mov       r8,[rcx+20]

@@ -5,9 +5,9 @@
        push      rbx
        sub       rsp,20
        mov       rax,[rcx+10]
-       vmovups   xmm0,[7FF8F430AE60]
-       vmovddup  xmm1,qword ptr [7FF8F430AE70]
-       vmovups   xmm2,[7FF8F430AE80]
+       vmovups   xmm0,[7FFF43199E40]
+       vmovddup  xmm1,qword ptr [7FFF43199E50]
+       vmovups   xmm2,[7FFF43199E60]
        xor       edx,edx
 M00_L00:
        mov       r8,rax
@@ -67,11 +67,11 @@ M00_L01:
        vmovaps   [rsp+30],xmm6
        vmovaps   [rsp+20],xmm7
        mov       rax,[rcx+10]
-       vmovups   xmm0,[7FF8F42EAF60]
-       vbroadcastss xmm1,dword ptr [7FF8F42EAF70]
-       vmovups   xmm2,[7FF8F42EAF80]
-       vmovddup  xmm3,qword ptr [7FF8F42EAF90]
-       vmovups   xmm4,[7FF8F42EAFA0]
+       vmovups   xmm0,[7FFF431C9F40]
+       vbroadcastss xmm1,dword ptr [7FFF431C9F50]
+       vmovups   xmm2,[7FFF431C9F60]
+       vmovddup  xmm3,qword ptr [7FFF431C9F70]
+       vmovups   xmm4,[7FFF431C9F80]
        xor       edx,edx
 M00_L00:
        mov       r8,rax
@@ -135,7 +135,7 @@ M00_L01:
 ; System.Numerics.Bench.StressQuaternion.Conjugate()
        sub       rsp,28
        mov       rax,[rcx+10]
-       vmovups   xmm0,[7FF8F42EAA50]
+       vmovups   xmm0,[7FFF431C9A30]
        xor       edx,edx
 M00_L00:
        mov       r8,rax
@@ -165,8 +165,8 @@ M00_L01:
 ; System.Numerics.Bench.StressQuaternion.Inverse()
        sub       rsp,28
        mov       rax,[rcx+10]
-       vmovups   xmm0,[7FF8F42EAB10]
-       vbroadcastss xmm1,dword ptr [7FF8F42EAB20]
+       vmovups   xmm0,[7FFF43199AF0]
+       vbroadcastss xmm1,dword ptr [7FFF43199B00]
        xor       edx,edx
 M00_L00:
        mov       r8,rax

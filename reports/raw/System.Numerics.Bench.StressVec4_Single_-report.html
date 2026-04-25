@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>System.Numerics.Bench.StressVec4_Single_-20260425-143531</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.15.8, Windows 11 (10.0.26200.8246/25H2/2025Update/HudsonValley2)
+AMD Ryzen 9 7900X 4.70GHz, 1 CPU, 24 logical and 12 physical cores
+.NET SDK 11.0.100-preview.2.26159.112
+  [Host]    : .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v4
+  .NET 10.0 : .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v4
+</code></pre>
+<pre><code>Job=.NET 10.0  Runtime=.NET 10.0  
+</code></pre>
+
+<table>
+<thead><tr><th>Method       </th><th>Mean</th><th>Error</th><th>StdDev</th><th>Median</th><th>Code Size</th>
+</tr>
+</thead><tbody><tr><td>Add</td><td>29.63 &mu;s</td><td>0.121 &mu;s</td><td>0.113 &mu;s</td><td>29.57 &mu;s</td><td>78 B</td>
+</tr><tr><td>Substract</td><td>30.21 &mu;s</td><td>0.129 &mu;s</td><td>0.115 &mu;s</td><td>30.21 &mu;s</td><td>78 B</td>
+</tr><tr><td>MultiplyElementWise</td><td>43.44 &mu;s</td><td>0.864 &mu;s</td><td>1.765 &mu;s</td><td>42.56 &mu;s</td><td>81 B</td>
+</tr><tr><td>DivideElementWise</td><td>58.69 &mu;s</td><td>0.209 &mu;s</td><td>0.195 &mu;s</td><td>58.65 &mu;s</td><td>85 B</td>
+</tr><tr><td>Abs</td><td>25.94 &mu;s</td><td>0.035 &mu;s</td><td>0.033 &mu;s</td><td>25.94 &mu;s</td><td>68 B</td>
+</tr><tr><td>Sum</td><td>31.96 &mu;s</td><td>0.078 &mu;s</td><td>0.073 &mu;s</td><td>31.92 &mu;s</td><td>76 B</td>
+</tr><tr><td>Dot</td><td>93.91 &mu;s</td><td>0.146 &mu;s</td><td>0.136 &mu;s</td><td>93.90 &mu;s</td><td>81 B</td>
+</tr><tr><td>LengthSquared</td><td>91.44 &mu;s</td><td>0.091 &mu;s</td><td>0.076 &mu;s</td><td>91.41 &mu;s</td><td>70 B</td>
+</tr><tr><td>DistanceSquared</td><td>110.20 &mu;s</td><td>0.232 &mu;s</td><td>0.217 &mu;s</td><td>110.32 &mu;s</td><td>93 B</td>
+</tr><tr><td>Length</td><td>92.00 &mu;s</td><td>0.193 &mu;s</td><td>0.180 &mu;s</td><td>92.04 &mu;s</td><td>74 B</td>
+</tr><tr><td>Distance</td><td>110.63 &mu;s</td><td>0.063 &mu;s</td><td>0.059 &mu;s</td><td>110.62 &mu;s</td><td>97 B</td>
+</tr><tr><td>Normalize</td><td>152.15 &mu;s</td><td>0.587 &mu;s</td><td>0.549 &mu;s</td><td>152.36 &mu;s</td><td>75 B</td>
+</tr><tr><td>Transform</td><td>78.43 &mu;s</td><td>0.311 &mu;s</td><td>0.276 &mu;s</td><td>78.31 &mu;s</td><td>114 B</td>
+</tr></tbody></table>
+</body>
+</html>

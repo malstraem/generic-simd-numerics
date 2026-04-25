@@ -16,10 +16,10 @@ public class StressMatrix4x4 : BaseBench<float>
     {
         for (int i = 0; i < Count; i++)
         {
-            mats[i] = Mat44<float>.Gen(Random.Shared.Next(1, 10)).System();
+            mats[i] = Mat44<float>.Gen(1f).System();
             quats[i] = Quat<float>.Rand().System();
-            scales[i] = Vec3<float>.Gen(Random.Shared.Next(1, 10)).System();
-            positions[i] = Vec3<float>.Gen(Random.Shared.Next(1, 10)).System();
+            scales[i] = Vec3<float>.Gen(1f).System();
+            positions[i] = Vec3<float>.Gen(1f).System();
         }
     }
 

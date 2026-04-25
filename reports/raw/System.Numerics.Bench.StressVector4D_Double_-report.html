@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>System.Numerics.Bench.StressVector4D_Double_-20260425-144817</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.15.8, Windows 11 (10.0.26200.8246/25H2/2025Update/HudsonValley2)
+AMD Ryzen 9 7900X 4.70GHz, 1 CPU, 24 logical and 12 physical cores
+.NET SDK 11.0.100-preview.2.26159.112
+  [Host]    : .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v4
+  .NET 10.0 : .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v4
+</code></pre>
+<pre><code>Job=.NET 10.0  Runtime=.NET 10.0  
+</code></pre>
+
+<table>
+<thead><tr><th>Method       </th><th>Mean</th><th>Error</th><th>StdDev</th><th>Code Size</th>
+</tr>
+</thead><tbody><tr><td>Add</td><td>114.47 &mu;s</td><td>0.199 &mu;s</td><td>0.186 &mu;s</td><td>163 B</td>
+</tr><tr><td>Subtract</td><td>114.36 &mu;s</td><td>0.112 &mu;s</td><td>0.105 &mu;s</td><td>163 B</td>
+</tr><tr><td>MultiplyElementWise</td><td>114.31 &mu;s</td><td>0.254 &mu;s</td><td>0.225 &mu;s</td><td>163 B</td>
+</tr><tr><td>DivideElementWise</td><td>350.79 &mu;s</td><td>0.656 &mu;s</td><td>0.613 &mu;s</td><td>163 B</td>
+</tr><tr><td>Abs</td><td>145.08 &mu;s</td><td>0.232 &mu;s</td><td>0.217 &mu;s</td><td>163 B</td>
+</tr><tr><td>Dot</td><td>94.94 &mu;s</td><td>0.138 &mu;s</td><td>0.129 &mu;s</td><td>152 B</td>
+</tr><tr><td>LengthSquared</td><td>65.00 &mu;s</td><td>0.391 &mu;s</td><td>0.366 &mu;s</td><td>127 B</td>
+</tr><tr><td>DistanceSquared</td><td>113.61 &mu;s</td><td>0.135 &mu;s</td><td>0.113 &mu;s</td><td>172 B</td>
+</tr><tr><td>Length</td><td>165.06 &mu;s</td><td>0.354 &mu;s</td><td>0.313 &mu;s</td><td>131 B</td>
+</tr><tr><td>Distance</td><td>166.72 &mu;s</td><td>0.311 &mu;s</td><td>0.260 &mu;s</td><td>176 B</td>
+</tr><tr><td>Normalize</td><td>520.95 &mu;s</td><td>1.273 &mu;s</td><td>1.190 &mu;s</td><td>149 B</td>
+</tr><tr><td>Transform</td><td>185.96 &mu;s</td><td>0.330 &mu;s</td><td>0.308 &mu;s</td><td>296 B</td>
+</tr></tbody></table>
+</body>
+</html>

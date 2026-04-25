@@ -123,7 +123,7 @@ public partial struct Vec3<T>(T x, T y, T z) :
 
     // use dot product instead element wise is personal choice
     [MethodImpl(AggressiveInlining)]
-    public static T operator *(Vec3<T> a, Vec3<T> b) => a.ElementMultiply(b).Sum();
+    public static T operator *(Vec3<T> a, Vec3<T> b) => a.MultiplyWise(b).Sum();
 
     /*[MethodImpl(AggressiveInlining)]
     public static Vec3<T> operator *(Vec3<T> a, Vec3<T> b)
@@ -175,7 +175,7 @@ public partial struct Vec3<T>(T x, T y, T z) :
     #endregion
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec3<T> ElementMultiply(Vec3<T> v)
+    public readonly Vec3<T> MultiplyWise(Vec3<T> v)
     {
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return (this.As128() * v.As128()).Vec3();
@@ -187,7 +187,7 @@ public partial struct Vec3<T>(T x, T y, T z) :
     }
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec3<T> ElementDivide(Vec3<T> v)
+    public readonly Vec3<T> DivideWise(Vec3<T> v)
     {
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return (this.As128() / v.As128()).Vec3();

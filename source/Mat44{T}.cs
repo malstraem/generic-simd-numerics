@@ -96,16 +96,23 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w) :
     [MethodImpl(AggressiveInlining)]
     public static Mat44<T> operator *(Mat44<T> a, Mat44<T> b)
     {
+        // both "hand" and "transform" vectorized ways are non-optimal now
+        // asm is dummy different from System.Numerics - performance is close, but should be better
+
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return Multiply128(a, b);
 
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
             return Multiply256(a, b);
 
-        return new(a.X.Transform(b),
-                   a.Y.Transform(b),
-                   a.Z.Transform(b),
-                   a.W.Transform(b));
+        Mat44<T> m;
+
+        m.X = a.X.Transform(b);
+        m.Y = a.Y.Transform(b);
+        m.Z = a.Z.Transform(b);
+        m.W = a.W.Transform(b);
+
+        return m;
     }
 
     [MethodImpl(AggressiveInlining)]

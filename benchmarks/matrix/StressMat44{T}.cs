@@ -15,8 +15,8 @@ public class StressMat44WithQuat<T> : StressMat44<T>
         for (int i = 0; i < Count; i++)
         {
             quats[i] = Quat<T>.Rand();
-            scales[i] = Vec3<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
-            positions[i] = Vec3<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
+            scales[i] = Vec3<T>.Gen(T.One);
+            positions[i] = Vec3<T>.Gen(T.One);
         }
     }
 

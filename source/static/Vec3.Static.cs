@@ -33,14 +33,14 @@ public static class Vec3
             => v / n;
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec3<T> ElementMultiply<T>(Vec3<T> a, Vec3<T> b)
+    public static Vec3<T> MultiplyWise<T>(Vec3<T> a, Vec3<T> b)
         where T : unmanaged, INumber<T>
-            => a.ElementMultiply(b);
+            => a.MultiplyWise(b);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec3<T> ElementDivide<T>(Vec3<T> a, Vec3<T> b)
+    public static Vec3<T> DivideWise<T>(Vec3<T> a, Vec3<T> b)
         where T : unmanaged, INumber<T>
-            => a.ElementDivide(b);
+            => a.DivideWise(b);
 
     [MethodImpl(AggressiveInlining)]
     public static T Sum<T>(Vec3<T> v)
