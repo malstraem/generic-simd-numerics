@@ -1,16 +1,16 @@
-## .NET 10.0.626.17701, X64 RyuJIT x86-64-v4, Windows 11 26200.8246, AMD Ryzen 9 7900X 4.70GHz
+.NET 10.0.626.17701, X64 RyuJIT x86-64-v4, Windows 11 26200.8246, AMD Ryzen 9 7900X 4.70GHz
 
-# a * b
+# Multiply
 
 ```mermaid
 xychart
-    title "100k"
+    title "100k objects"
     x-axis [Quat, System.Numerics.Quaternion, Silk.NET.Quaternion]
-    y-axis "time (μs)" 0 --> 1000
+    y-axis "time (μs)" 0 --> 500
     bar [114, 114, 207]
 ```
 
-## Quat&lt;float&gt;
+### Quat&lt;float&gt;
 
 <details>
 <summary>asm</summary>
@@ -74,7 +74,7 @@ M00_L01:
 ```
 </details>
 
-## System.Numerics.Quaternion
+### System.Numerics.Quaternion
 
 <details>
 <summary>asm</summary>
@@ -138,7 +138,7 @@ M00_L01:
 ```
 </details>
 
-## Silk.NET.Quaternion&lt;float&gt;
+### Silk.NET.Quaternion&lt;float&gt;
 
 <details>
 <summary>asm</summary>
@@ -218,12 +218,13 @@ M00_L01:
 ```
 </details><br/>
 
-# a / b
+# Divide
+
 ```mermaid
 xychart
-    title "100k"
+    title "100k objects"
     x-axis [Quat, System.Numerics.Quaternion, Silk.NET.Quaternion]
-    y-axis "time (μs)" 0 --> 1000
+    y-axis "time (μs)" 0 --> 500
     bar [213, 208, 466]
 ```
 
@@ -471,5 +472,276 @@ M00_L01:
        call      CORINFO_HELP_RNGCHKFAIL
        int       3
 ; Total bytes of code 445
+```
+</details></br>
+
+# Conjugate
+
+```mermaid
+xychart
+    title "100k objects"
+    x-axis [Quat, System.Numerics.Quaternion, Silk.NET.Quaternion]
+    y-axis "time (μs)" 0 --> 500
+    bar [42, 42, 93]
+```
+
+### Quat&lt;float&gt;
+
+<details>
+<summary>asm</summary>
+
+```assembly
+; System.Numerics.Bench.StressQuat`1[[System.Single, System.Private.CoreLib]].Conjugate()
+       sub       rsp,28
+       mov       rax,[rcx+10]
+       vmovups   xmm0,[7FFF431C9A90]
+       xor       edx,edx
+M00_L00:
+       mov       r8,rax
+       mov       r10,[rcx+8]
+       cmp       edx,[r10+8]
+       jae       short M00_L01
+       mov       r9,rdx
+       shl       r9,4
+       vmulps    xmm1,xmm0,[r10+r9+10]
+       cmp       edx,[r8+8]
+       jae       short M00_L01
+       vmovups   [r8+r9+10],xmm1
+       inc       edx
+       cmp       edx,186A0
+       jl        short M00_L00
+       add       rsp,28
+       ret
+M00_L01:
+       call      CORINFO_HELP_RNGCHKFAIL
+       int       3
+; Total bytes of code 79
+```
+</details>
+
+### System.Numerics.Quaternion
+
+<details>
+<summary>asm</summary>
+
+```assembly
+; System.Numerics.Bench.StressQuaternion.Conjugate()
+       sub       rsp,28
+       mov       rax,[rcx+10]
+       vmovups   xmm0,[7FFF431C9A30]
+       xor       edx,edx
+M00_L00:
+       mov       r8,rax
+       mov       r10,[rcx+8]
+       cmp       edx,[r10+8]
+       jae       short M00_L01
+       mov       r9,rdx
+       shl       r9,4
+       vmulps    xmm1,xmm0,[r10+r9+10]
+       cmp       edx,[r8+8]
+       jae       short M00_L01
+       vmovups   [r8+r9+10],xmm1
+       inc       edx
+       cmp       edx,186A0
+       jl        short M00_L00
+       add       rsp,28
+       ret
+M00_L01:
+       call      CORINFO_HELP_RNGCHKFAIL
+       int       3
+; Total bytes of code 79
+```
+</details>
+
+### Silk.NET.Quaternion&lt;float&gt;
+
+<details>
+<summary>asm</summary>
+
+```assembly
+; System.Numerics.Bench.StressQuaternion`1[[System.Single, System.Private.CoreLib]].Conjugate()
+       sub       rsp,28
+       vmovss    xmm0,dword ptr [7FFF431A9B60]
+       xor       eax,eax
+M00_L00:
+       mov       rdx,[rcx+10]
+       mov       r8,[rcx+8]
+       cmp       eax,[r8+8]
+       jae       short M00_L01
+       mov       r10,rax
+       shl       r10,4
+       lea       r8,[r8+r10+10]
+       vmovss    xmm1,dword ptr [r8]
+       vmovss    xmm2,dword ptr [r8+4]
+       vmovss    xmm3,dword ptr [r8+8]
+       vmovss    xmm4,dword ptr [r8+0C]
+       vmulss    xmm1,xmm1,xmm0
+       vmulss    xmm2,xmm2,xmm0
+       vmulss    xmm3,xmm3,xmm0
+       cmp       eax,[rdx+8]
+       jae       short M00_L01
+       lea       rdx,[rdx+r10+10]
+       vmovss    dword ptr [rdx],xmm1
+       vmovss    dword ptr [rdx+4],xmm2
+       vmovss    dword ptr [rdx+8],xmm3
+       vmovss    dword ptr [rdx+0C],xmm4
+       inc       eax
+       cmp       eax,186A0
+       jl        short M00_L00
+       add       rsp,28
+       ret
+M00_L01:
+       call      CORINFO_HELP_RNGCHKFAIL
+       int       3
+; Total bytes of code 124
+```
+</details></br>
+
+# Inverse
+
+```mermaid
+xychart
+    title "100k objects"
+    x-axis [Quat, System.Numerics.Quaternion, Silk.NET.Quaternion]
+    y-axis "time (μs)" 0 --> 500
+    bar [130, 114, 150]
+```
+
+### Quat&lt;float&gt;
+
+<details asm>
+<summary>asm</summary>
+
+```assembly
+; System.Numerics.Bench.StressQuat`1[[System.Single, System.Private.CoreLib]].Inverse()
+       sub       rsp,28
+       mov       rax,[rcx+10]
+       vmovups   xmm0,[7FFF431BA180]
+       vbroadcastss xmm1,dword ptr [7FFF431BA190]
+       xor       edx,edx
+M00_L00:
+       mov       r8,rax
+       mov       r10,[rcx+8]
+       cmp       edx,[r10+8]
+       jae       short M00_L01
+       mov       r9,rdx
+       shl       r9,4
+       lea       r10,[r10+r9+10]
+       vmovups   xmm2,[r10]
+       vmovaps   xmm3,xmm2
+       vdpps     xmm3,xmm3,xmm3,0FF
+       vmulps    xmm2,xmm0,xmm2
+       vdivps    xmm2,xmm2,xmm3
+       vcmpnleps xmm3,xmm3,xmm1
+       vandps    xmm2,xmm3,xmm2
+       cmp       edx,[r8+8]
+       jae       short M00_L01
+       vmovups   [r8+r9+10],xmm2
+       inc       edx
+       cmp       edx,186A0
+       jl        short M00_L00
+       add       rsp,28
+       ret
+M00_L01:
+       call      CORINFO_HELP_RNGCHKFAIL
+       int       3
+; Total bytes of code 118
+```
+</details>
+
+### System.Numerics.Quaternion
+
+<details>
+<summary>asm</summary>
+
+```assembly
+; System.Numerics.Bench.StressQuaternion.Inverse()
+       sub       rsp,28
+       mov       rax,[rcx+10]
+       vmovups   xmm0,[7FFF43199AF0]
+       vbroadcastss xmm1,dword ptr [7FFF43199B00]
+       xor       edx,edx
+M00_L00:
+       mov       r8,rax
+       mov       r10,[rcx+8]
+       cmp       edx,[r10+8]
+       jae       short M00_L01
+       mov       r9,rdx
+       shl       r9,4
+       vmovups   xmm2,[r10+r9+10]
+       vdpps     xmm3,xmm2,xmm2,0FF
+       cmp       edx,[r8+8]
+       jae       short M00_L01
+       vmulps    xmm2,xmm0,xmm2
+       vdivps    xmm2,xmm2,xmm3
+       vcmpnleps xmm3,xmm3,xmm1
+       vandps    xmm2,xmm3,xmm2
+       vmovups   [r8+r9+10],xmm2
+       inc       edx
+       cmp       edx,186A0
+       jl        short M00_L00
+       add       rsp,28
+       ret
+M00_L01:
+       call      CORINFO_HELP_RNGCHKFAIL
+       int       3
+; Total bytes of code 111
+```
+</details>
+
+### Silk.NET.Quaternion&lt;float&gt;
+
+<details>
+<summary>asm</summary>
+
+```assembly
+; System.Numerics.Bench.StressQuaternion`1[[System.Single, System.Private.CoreLib]].Inverse()
+       sub       rsp,28
+       vmovss    xmm0,dword ptr [7FFF431C9EF8]
+       vmovss    xmm1,dword ptr [7FFF431C9EFC]
+       xor       eax,eax
+M00_L00:
+       mov       rdx,[rcx+10]
+       mov       r8,[rcx+8]
+       cmp       eax,[r8+8]
+       jae       near ptr M00_L01
+       mov       r10,rax
+       shl       r10,4
+       lea       r8,[r8+r10+10]
+       vmovss    xmm2,dword ptr [r8]
+       vmovss    xmm3,dword ptr [r8+4]
+       vmovss    xmm4,dword ptr [r8+8]
+       vmovss    xmm5,dword ptr [r8+0C]
+       vmulss    xmm16,xmm2,xmm2
+       vmulss    xmm17,xmm3,xmm3
+       vaddss    xmm16,xmm17,xmm16
+       vmulss    xmm17,xmm4,xmm4
+       vaddss    xmm16,xmm17,xmm16
+       vmulss    xmm17,xmm5,xmm5
+       vaddss    xmm16,xmm17,xmm16
+       vdivss    xmm16,xmm0,xmm16
+       vmulss    xmm2,xmm2,xmm16
+       vmulss    xmm2,xmm2,xmm1
+       vmulss    xmm3,xmm3,xmm16
+       vmulss    xmm3,xmm3,xmm1
+       vmulss    xmm4,xmm4,xmm16
+       vmulss    xmm4,xmm4,xmm1
+       vmulss    xmm5,xmm5,xmm16
+       cmp       eax,[rdx+8]
+       jae       short M00_L01
+       lea       rdx,[rdx+r10+10]
+       vmovss    dword ptr [rdx],xmm2
+       vmovss    dword ptr [rdx+4],xmm3
+       vmovss    dword ptr [rdx+8],xmm4
+       vmovss    dword ptr [rdx+0C],xmm5
+       inc       eax
+       cmp       eax,186A0
+       jl        near ptr M00_L00
+       add       rsp,28
+       ret
+M00_L01:
+       call      CORINFO_HELP_RNGCHKFAIL
+       int       3
+; Total bytes of code 212
 ```
 </details>

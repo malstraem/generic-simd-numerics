@@ -2,6 +2,8 @@ using BenchmarkDotNet.Attributes;
 
 namespace System.Numerics.Bench;
 
+[GenericTypeArguments(typeof(float))]
+[GenericTypeArguments(typeof(double))]
 public class StressQuat<T> : BaseBench<T>
     where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {

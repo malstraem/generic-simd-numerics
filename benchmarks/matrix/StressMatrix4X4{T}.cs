@@ -4,6 +4,8 @@ using Silk.NET.Maths;
 
 namespace System.Numerics.Bench;
 
+[GenericTypeArguments(typeof(float))]
+[GenericTypeArguments(typeof(double))]
 public class StressMatrix4X4WithQuaternion<T> : StressMatrix4X4<T>
     where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {
@@ -44,6 +46,10 @@ public class StressMatrix4X4WithQuaternion<T> : StressMatrix4X4<T>
     }
 }
 
+[GenericTypeArguments(typeof(byte))]
+[GenericTypeArguments(typeof(short))]
+[GenericTypeArguments(typeof(int))]
+[GenericTypeArguments(typeof(long))]
 public class StressMatrix4X4<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
@@ -64,7 +70,7 @@ public class StressMatrix4X4<T> : BaseBench<T>
     }
 
     [Benchmark]
-    public void Substract()
+    public void Subtract()
     {
         for (int i = 0; i < Count - 1; i++)
             @out[i] = mats[i] - mats[i + 1];

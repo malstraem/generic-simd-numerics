@@ -4,6 +4,15 @@ using Silk.NET.Maths;
 
 namespace System.Numerics.Bench;
 
+[GenericTypeArguments(typeof(byte))]
+[GenericTypeArguments(typeof(short))]
+[GenericTypeArguments(typeof(int))]
+[GenericTypeArguments(typeof(long))]
+public class StressVector3DI<T> : StressVector3D<T>
+    where T : unmanaged, INumber<T>;
+
+[GenericTypeArguments(typeof(float))]
+[GenericTypeArguments(typeof(double))]
 public class StressVector3D<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {

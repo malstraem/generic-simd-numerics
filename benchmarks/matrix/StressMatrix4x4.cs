@@ -31,7 +31,7 @@ public class StressMatrix4x4 : BaseBench<float>
     }
 
     [Benchmark]
-    public void Substract()
+    public void Subtract()
     {
         for (int i = 0; i < Count - 1; i++)
             @out[i] = mats[i] - mats[i + 1];

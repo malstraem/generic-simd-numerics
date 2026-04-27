@@ -2,9 +2,15 @@ using BenchmarkDotNet.Attributes;
 
 namespace System.Numerics.Bench;
 
+[GenericTypeArguments(typeof(float))]
+[GenericTypeArguments(typeof(double))]
 public class StressVec4<T> : StressVec4<T, T>
     where T : unmanaged, INumber<T>, IRootFunctions<T>;
 
+[GenericTypeArguments(typeof(byte), typeof(float))]
+[GenericTypeArguments(typeof(short), typeof(float))]
+[GenericTypeArguments(typeof(int), typeof(float))]
+[GenericTypeArguments(typeof(long), typeof(double))]
 public class StressVec4<T, R> : BaseBench<T>
     where T : unmanaged, INumber<T>
     where R : unmanaged, INumber<R>, IRootFunctions<R>
@@ -28,7 +34,7 @@ public class StressVec4<T, R> : BaseBench<T>
     }
 
     [Benchmark]
-    public void Substract()
+    public void Subtract()
     {
         for (int i = 0; i < Count - 1; i++)
             @out[i] = vecs[i] - vecs[i + 1];

@@ -58,7 +58,6 @@ public static partial class Mat44
                    T.Zero, T.Zero, T.Zero, T.One);
     }
 
-    [Obsolete("vectorize")]
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Mat44<T> Rotate<T>(Mat44<T> m, Quat<T> r)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>

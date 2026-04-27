@@ -1359,7 +1359,7 @@ M00_L01:
 ## .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
 
 ```assembly
-; System.Numerics.Bench.StressMatrix4X4`1[[System.Double, System.Private.CoreLib]].Substract()
+; System.Numerics.Bench.StressMatrix4X4`1[[System.Double, System.Private.CoreLib]].Subtract()
        sub       rsp,0C8
        vmovaps   [rsp+0B0],xmm6
        vmovaps   [rsp+0A0],xmm7

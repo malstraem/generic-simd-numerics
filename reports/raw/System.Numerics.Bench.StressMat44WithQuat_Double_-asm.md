@@ -326,7 +326,7 @@ M00_L01:
 ## .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
 
 ```assembly
-; System.Numerics.Bench.StressMat44`1[[System.Double, System.Private.CoreLib]].Substract()
+; System.Numerics.Bench.StressMat44`1[[System.Double, System.Private.CoreLib]].Subtract()
        sub       rsp,28
        xor       eax,eax
 M00_L00:

@@ -2,9 +2,15 @@ using BenchmarkDotNet.Attributes;
 
 namespace System.Numerics.Bench;
 
+[GenericTypeArguments(typeof(float))]
+[GenericTypeArguments(typeof(double))]
 public class StressVec3<T> : StressVec3<T, T>
     where T : unmanaged, INumber<T>, IRootFunctions<T>;
 
+[GenericTypeArguments(typeof(byte), typeof(float))]
+[GenericTypeArguments(typeof(short), typeof(float))]
+[GenericTypeArguments(typeof(int), typeof(float))]
+[GenericTypeArguments(typeof(long), typeof(double))]
 public class StressVec3<T, R> : BaseBench<T>
     where T : unmanaged, INumber<T>
     where R : unmanaged, IRootFunctions<R>
