@@ -1,6 +1,6 @@
 .NET 10.0.626.17701, X64 RyuJIT x86-64-v4, Windows 11 26200.8246, AMD Ryzen 9 7900X 4.70GHz
 
-# Rotation from quaternion
+# Rotation (from quaternion)
 
 ```mermaid
 xychart
@@ -1050,7 +1050,7 @@ M00_L01:
 # Rotate (transform by quaternion)
 
 > [!NOTE]
-Calculations and results are deifferent, see tests.
+Calculations and results are different, see tests.
 
 ```mermaid
 xychart

@@ -1,11 +1,14 @@
-prototype of generic linear algebraic objects using current state of .NET System.Numerics SIMD vectors
+prototype of generic linear algebraic objects using current state of
+[System.Runtime.Intrinsics](https://learn.microsoft.com/ru-ru/dotnet/api/system.runtime.intrinsics?view=net-10.0) SIMD vectors
 
-focused to outperform [Silk.NET](https://github.com/dotnet/Silk.NET), especially on matrix operation with double precision
+firstly started as try to outperform [Silk.NET](https://github.com/dotnet/Silk.NET), especially on matrix operations with `double` precision
 
-firstly this is for in-house engine, but possible draft for https://github.com/dotnet/runtime/issues/24168
+this is for in-house engine, but possibly draft for https://github.com/dotnet/runtime/issues/24168
+
+next step is hardware accelerated ways for type conversions like `Vec4<int>` -> `Vec4<float>` 🚧
 
 > [!WARNING]
-SIMD support check is currently dumb -> `sizeof` + `VectorXXX<T>.IsSupported`</br></br>
+SIMD support check is probably dumb currently -> `sizeof` + `VectorXXX<T>.IsSupported`</br></br>
 so make sure you have the necessary instruction sets to pass the tests and run benchmarks</br></br>
 tested and benchmarked on AMD Ryzen 9 7900X that have</br></br>
 `AVX512 - BITALG+VBMI2+VNNI+VPOPCNTDQ+IFMA+VBMI+F+BW+CD+DQ+VL`</br></br>

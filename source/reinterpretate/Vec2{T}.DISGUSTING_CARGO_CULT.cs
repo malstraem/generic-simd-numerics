@@ -41,6 +41,9 @@ public partial struct Vec2<T>
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Vec2<T> operator +(Vec2<T> a, Vec2<T> b)
     {
+        //if (Vector128<T>.IsSupported)
+        //    return (a.As128() + b.As128()).Vec2(); // this way use WithElement call
+
         if (Vector128<T>.IsSupported)
         {
             /* ???

@@ -250,7 +250,7 @@ public partial struct Vec3<T>(T x, T y, T z) :
         return max.Min(Max(min));
     }
 
-    // intrinsic Lerp<T> should exist or expose as real behavior through extensions?
+    // Vector{XXX}.Lerp<T> should exist, isn't?
     [MethodImpl(AggressiveInlining)]
     public readonly Vec3<T> Lerp(Vec3<T> v, T am) => (this * (T.One - am)) + (v * am);
 
