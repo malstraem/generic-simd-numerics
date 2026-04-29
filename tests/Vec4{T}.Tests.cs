@@ -1,6 +1,10 @@
 using Silk.NET.Maths;
 
-namespace System.Numerics.Tests.Vector4;
+namespace System.Numerics.Vec4Tests;
+
+/* need more time investments
+    1) random generation with saving/formatting
+    2) provide more edge cases with better way */
 
 [InheritsTests]
 public class Vec4f32 : Vec4Root<float>;
@@ -55,7 +59,7 @@ public abstract class Vec4Root<T> : Vec4Root<T, T>
         var expected = Vector4D.Distance(a.Silk(), b.Silk());
 
         await Assert.That(distance).IsEqualTo(expected);
-        await Assert.That(distance).IsEqualTo(Vec4.Distance<T>(a, b));
+        await Assert.That(distance).IsEqualTo(Vec4.Distance(a, b));
     }
 
     [Test, DisplayName("norm (sealed variant)")]
@@ -163,31 +167,33 @@ public abstract class Vec4Base<T>
     }
 
     [Test, DisplayName("a × b (element wise)")]
-    public async Task ElementMultiply()
+    public async Task MultiplyWise()
     {
-        var mul = a.ElementMultiply(b);
+        var mul = a.MultiplyWise(b);
 
         var expected = (a.Silk() * b.Silk()).Vec4();
 
         await Assert.That(mul).IsEqualTo(expected);
-        await Assert.That(mul).IsEqualTo(Vec4.ElementMultiply(a, b));
+        await Assert.That(mul).IsEqualTo(Vec4.MultiplyWise(a, b));
     }
 
     [Test, DisplayName("a / b (element wise)")]
-    public async Task ElementDivide()
+    public async Task DivideWise()
     {
-        var div = a.ElementDivide(b);
+        var div = a.DivideWise(b);
 
         var expected = (a.Silk() / b.Silk()).Vec4();
 
         await Assert.That(div).IsEqualTo(expected);
-        await Assert.That(div).IsEqualTo(Vec4.ElementDivide(a, b));
+        await Assert.That(div).IsEqualTo(Vec4.DivideWise(a, b));
     }
 
     [Test, DisplayName("abs")]
     public async Task Abs()
     {
-        var abs = (-a).Abs();
+        var negative = -a;
+
+        var abs = negative.Abs();
 
         var expected = Vector4D.Abs((-a).Silk()).Vec4();
 

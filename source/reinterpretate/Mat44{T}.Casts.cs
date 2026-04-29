@@ -1,22 +1,64 @@
 namespace System.Numerics;
 
-public partial struct Mat44<T>
+// called in right cases
+// reversed bitcasts are pessimized by JIT compilation, so the Store is now used
+internal static class ReinterpretateMat44
 {
-    // called in right cases
+    extension<T>(Mat44<T> m)
+        where T : unmanaged, INumber<T>
+    {
+        [MethodImpl(AggressiveInlining)]
+        internal Vector256<T> As256() => BitCast<Mat44<T>, Vector256<T>>(m);
 
-    [MethodImpl(AggressiveInlining)]
-    private readonly Vector256<T> As256() => BitCast<Mat44<T>, Vector256<T>>(this);
+        [MethodImpl(AggressiveInlining)]
+        internal Vector512<T> As512() => BitCast<Mat44<T>, Vector512<T>>(m);
 
-    [MethodImpl(AggressiveInlining)]
-    private readonly Vector512<T> As512() => BitCast<Mat44<T>, Vector512<T>>(this);
+        [MethodImpl(AggressiveInlining)]
+        internal void As512(out Vector512<T> xy, out Vector512<T> zw)
+        {
+            unsafe
+            {
+                xy = Vector512.Load(&m.X.X);
+                zw = Vector512.Load(&m.Z.X);
+            }
+        }
+    }
 
-    [MethodImpl(AggressiveInlining)]
-    private static Mat44<T> From256(Vector256<T> ymm) => BitCast<Vector256<T>, Mat44<T>>(ymm);
+    extension<T>(Vector256<T> ymm)
+        where T : unmanaged, INumber<T>
+    {
+        [MethodImpl(AggressiveInlining)]
+        internal Mat44<T> Mat44()
+        {
+            Mat44<T> m;
+            unsafe { ymm.Store((T*)&m); }
+            return m;
+        }
+    }
 
-    [MethodImpl(AggressiveInlining)]
-    private static Mat44<T> From512(Vector512<T> zmm) => BitCast<Vector512<T>, Mat44<T>>(zmm);
+    extension<T>(Vector512<T> zmm)
+        where T : unmanaged, INumber<T>
+    {
+        [MethodImpl(AggressiveInlining)]
+        internal Mat44<T> Mat44()
+        {
+            Mat44<T> m;
+            unsafe { zmm.Store((T*)&m); }
+            return m;
+        }
 
-    [MethodImpl(AggressiveInlining)]
-    public readonly Mat44<TOther> As<TOther>() where TOther : unmanaged, INumber<TOther>
-        => new(X.As<TOther>(), Y.As<TOther>(), Z.As<TOther>(), W.As<TOther>());
+        [MethodImpl(AggressiveInlining)]
+        internal Mat44<T> Mat44(Vector512<T> zw)
+        {
+            Mat44<T> m;
+            unsafe
+            {
+                var p = (T*)&m;
+
+                zmm.Store(p);
+                zw.Store(p + 8);
+            }
+            return m;
+        }
+    }
 }

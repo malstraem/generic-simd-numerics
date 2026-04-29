@@ -1,50 +1,50 @@
 namespace System.Numerics;
 
-public struct Rect<T> where T : unmanaged, INumber<T>
+[StructLayout(LayoutKind.Sequential)]
+public struct Rect<T>(Vec2<T> origin, Vec2<T> max)
+    where T : unmanaged, INumber<T>
 {
-    public Vec2<T> Origin;
+    public Vec2<T> Origin = origin, Max = max;
 
-    public Vec2<T> Max;
+    public Rect(T oX, T oY, T mX, T mY) : this(new(oX, oY), new(mX, mY)) { }
 
     public readonly Vec2<T> Size => Max - Origin;
 
-    public Rect(Vec2<T> origin, Vec2<T> max)
-    {
-        Origin = origin;
-        Max = max;
-    }
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator ==(Rect<T> a, Rect<T> b) => a.Vec4() == b.Vec4();
 
-    public Rect(T oX, T oY, T mX, T mY)
-    {
-        Origin = new(oX, oY);
-        Max = new(mX, mY);
-    }
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator !=(Rect<T> a, Rect<T> b) => a.Vec4() != b.Vec4();
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     public readonly T Square()
     {
         var size = Size;
         return size.X * size.Y;
     }
 
+    [MethodImpl(AggressiveInlining)]
     public readonly bool Contains(Vec2<T> point) => point >= Origin && point <= Max;
 
+    [MethodImpl(AggressiveInlining)]
     public readonly bool Contains(Rect<T> other) => other.Origin >= Origin && other.Max <= Max;
 
-    public readonly bool IsIntersect(Rect<T> other) => Origin <= other.Max && Max >= other.Origin;
+    [MethodImpl(AggressiveInlining)]
+    public readonly bool IsIntersectNaive(Rect<T> other) => Origin <= other.Max && other.Origin <= Max;
 
-    public readonly Rect<T> GetTranslated(Vec2<T> distance) => new(Origin + distance, Max + distance);
+    [MethodImpl(AggressiveInlining)]
+    [Obsolete("hardcode todo")]
+    public readonly bool IsIntersectVectorized(Rect<T> other)
+    {
+        var a = this.As128();
+        var b = other.As128().Permute32(2, 3, 0, 1);
 
-    public readonly bool Equals(Rect<T> other) => Origin.Equals(other.Origin) && Max.Equals(other.Max);
+        return Vector128.LessThanOrEqualAll(a, b);
+    }
+
+    public readonly bool Equals(Rect<T> other) => this == other;
 
     public override readonly bool Equals(object? obj) => obj is Rect<T> other && Equals(other);
 
     public override readonly int GetHashCode() => HashCode.Combine(Origin, Max);
-
-    public static bool operator ==(Rect<T> left, Rect<T> right) => left.Origin == right.Origin && left.Max == right.Max;
-
-    public static bool operator !=(Rect<T> left, Rect<T> right) => left.Origin != right.Origin && left.Max != right.Max;
-
-    public readonly Rect<TOther> As<TOther>() where TOther : unmanaged, INumber<TOther>
-        => new(Origin.As<TOther>(), Max.As<TOther>());
 }

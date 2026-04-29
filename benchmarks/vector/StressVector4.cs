@@ -1,56 +1,53 @@
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
-public class StressVector4 : BaseBench
+public class StressVector4 : BaseBench<float>
 {
-    private static readonly float[] nums = new float[Count];
+    private static readonly Vector4[] vecs = new Vector4[Count],
+                                      @out = new Vector4[Count];
 
-    private static readonly Vector4[] vecs = new Vector4[Count];
-
-    private static readonly Matrix4x4 mat = Mat44<float>.Gen(1f).System();
+    private static readonly Matrix4x4 m = Mat44<float>.Gen(1f).System();
 
     public StressVector4()
     {
-        for (int i = 0; i < vecs.Length; i++)
-            vecs[i] = Vec4<float>.Gen(Random.Shared.Next(1, 10)).System();
+        for (int i = 0; i < Count; i++)
+            vecs[i] = Vec4<float>.Gen(1f).System();
     }
 
     [Benchmark]
     public void Add()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] + vecs[i + 1];
+            @out[i] = vecs[i] + vecs[i + 1];
     }
 
     [Benchmark]
     public void Subtract()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] - vecs[i + 1];
+            @out[i] = vecs[i] - vecs[i + 1];
     }
 
     [Benchmark]
-    public void ElementMultiply()
+    public void MultiplyElementWise()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] * vecs[i + 1];
+            @out[i] = vecs[i] * vecs[i + 1];
     }
 
     [Benchmark]
-    public void ElementDivide()
+    public void DivideElementWise()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] / vecs[i + 1];
+            @out[i] = vecs[i] / vecs[i + 1];
     }
 
     [Benchmark]
     public void Abs()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vector4.Abs(vecs[i]);
+            @out[i] = Vector4.Abs(vecs[i]);
     }
 
     [Benchmark]
@@ -99,13 +96,13 @@ public class StressVector4 : BaseBench
     public void Normalize()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vector4.Normalize(vecs[i]);
+            @out[i] = Vector4.Normalize(vecs[i]);
     }
 
     [Benchmark]
     public void Transform()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vector4.Transform(vecs[i], mat);
+            @out[i] = Vector4.Transform(vecs[i], m);
     }
 }

@@ -1,62 +1,64 @@
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
+[GenericTypeArguments(typeof(float))]
+[GenericTypeArguments(typeof(double))]
 public class StressVec4<T> : StressVec4<T, T>
     where T : unmanaged, INumber<T>, IRootFunctions<T>;
 
-[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
-public class StressVec4<T, R> : BaseBench
+[GenericTypeArguments(typeof(byte), typeof(float))]
+[GenericTypeArguments(typeof(short), typeof(float))]
+[GenericTypeArguments(typeof(int), typeof(float))]
+[GenericTypeArguments(typeof(long), typeof(double))]
+public class StressVec4<T, R> : BaseBench<T>
     where T : unmanaged, INumber<T>
     where R : unmanaged, INumber<R>, IRootFunctions<R>
 {
-    private static readonly T[] nums = new T[Count];
+    private static readonly Vec4<T>[] vecs = new Vec4<T>[Count],
+                                      @out = new Vec4<T>[Count];
 
-    private static readonly Vec4<T>[] vecs = new Vec4<T>[Count];
-
-    private static readonly Mat44<T> mat = Mat44<T>.Gen(T.One);
+    private static readonly Mat44<T> m = Mat44<T>.Gen(T.One);
 
     public StressVec4()
     {
-        for (int i = 0; i < vecs.Length; i++)
-            vecs[i] = Vec4<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
+        for (int i = 0; i < Count; i++)
+            vecs[i] = Vec4<T>.Gen(T.One);
     }
 
     [Benchmark]
     public void Add()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] + vecs[i + 1];
+            @out[i] = vecs[i] + vecs[i + 1];
     }
 
     [Benchmark]
-    public void Substract()
+    public void Subtract()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] - vecs[i + 1];
+            @out[i] = vecs[i] - vecs[i + 1];
     }
 
     [Benchmark]
-    public void ElementMultiply()
+    public void MultiplyElementWise()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i].ElementMultiply(vecs[i + 1]);
+            @out[i] = vecs[i].MultiplyWise(vecs[i + 1]);
     }
 
     [Benchmark]
-    public void ElementDivide()
+    public void DivideElementWise()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i].ElementDivide(vecs[i + 1]);
+            @out[i] = vecs[i].DivideWise(vecs[i + 1]);
     }
 
     [Benchmark]
     public void Abs()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = vecs[i].Abs();
+            @out[i] = vecs[i].Abs();
     }
 
     [Benchmark]
@@ -105,13 +107,13 @@ public class StressVec4<T, R> : BaseBench
     public void Normalize()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = vecs[i].Normalize<R>();
+            @out[i] = vecs[i].Normalize<R>();
     }
 
     [Benchmark]
     public void Transform()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = vecs[i].Transform(mat);
+            @out[i] = vecs[i].Transform(m);
     }
 }

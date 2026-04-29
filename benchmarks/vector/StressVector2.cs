@@ -1,54 +1,51 @@
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
-public class StressVector2 : BaseBench
+public class StressVector2 : BaseBench<float>
 {
-    private static readonly float[] nums = new float[Count];
-
-    private static readonly Vector2[] vecs = new Vector2[Count];
+    private static readonly Vector2[] vecs = new Vector2[Count],
+                                      @out = new Vector2[Count];
 
     public StressVector2()
     {
-        for (int i = 0; i < vecs.Length; i++)
-            vecs[i] = Vec2<float>.Gen(Random.Shared.Next(1, 10)).System();
+        for (int i = 0; i < Count; i++)
+            vecs[i] = Vec2<float>.Gen(1f).System();
     }
 
     [Benchmark]
     public void Add()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] + vecs[i + 1];
+            @out[i] = vecs[i] + vecs[i + 1];
     }
 
     [Benchmark]
     public void Subtract()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] - vecs[i + 1];
+            @out[i] = vecs[i] - vecs[i + 1];
     }
 
     [Benchmark]
-    public void ElementMultiply()
+    public void MultiplyElementWise()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] * vecs[i + 1];
+            @out[i] = vecs[i] * vecs[i + 1];
     }
 
     [Benchmark]
-    public void ElementDivide()
+    public void DivideElementWise()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] / vecs[i + 1];
+            @out[i] = vecs[i] / vecs[i + 1];
     }
 
-    /*[Benchmark]
+    [Benchmark]
     public void Abs()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vector2.Abs(vecs[i]);
+            @out[i] = Vector2.Abs(vecs[i]);
     }
 
     [Benchmark]
@@ -97,6 +94,6 @@ public class StressVector2 : BaseBench
     public void Normalize()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vector2.Normalize(vecs[i]);
-    }*/
+            @out[i] = Vector2.Normalize(vecs[i]);
+    }
 }

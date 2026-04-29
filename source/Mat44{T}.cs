@@ -1,8 +1,13 @@
 namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
-public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
-    where T : INumber<T>
+public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w) :
+    IMultiplyOperators<Mat44<T>, Mat44<T>, Mat44<T>>,
+    IAdditionOperators<Mat44<T>, Mat44<T>, Mat44<T>>,
+    ISubtractionOperators<Mat44<T>, Mat44<T>, Mat44<T>>,
+
+    IEqualityOperators<Mat44<T>, Mat44<T>, bool>
+        where T : unmanaged, INumber<T>
 {
     public Vec4<T> X = x, Y = y, Z = z, W = w;
 
@@ -24,11 +29,21 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
     public static Mat44<T> operator *(Mat44<T> m, T n)
     {
         if (SizeOf<T>() == 2 && Vector256<T>.IsSupported)
-            return From256(m.As256() * Vector256.Create(n));
+            return (m.As256() * n).Mat44();
 
-        if (SizeOf<T>() == 4 && Vector512<T>.IsSupported)
-            return From512(m.As512() * Vector512.Create(n));
+        if (Vector512<T>.IsSupported)
+        {
+            if (SizeOf<T>() == 4)
+                return (m.As512() * n).Mat44();
 
+            if (SizeOf<T>() == 8)
+            {
+                m.As512(out var xy, out var zw);
+                xy *= n;
+                zw *= n;
+                return xy.Mat44(zw);
+            }
+        }
         return new(m.X * n, m.Y * n, m.Z * n, m.W * n);
     }
 
@@ -36,11 +51,22 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
     public static Mat44<T> operator +(Mat44<T> a, Mat44<T> b)
     {
         if (SizeOf<T>() == 2 && Vector256<T>.IsSupported)
-            return From256(a.As256() + b.As256());
+            return (a.As256() + b.As256()).Mat44();
 
-        if (SizeOf<T>() == 4 && Vector512<T>.IsSupported)
-            return From512(a.As512() + b.As512());
+        if (Vector512<T>.IsSupported)
+        {
+            if (SizeOf<T>() == 4)
+                return (a.As512() + b.As512()).Mat44();
 
+            if (SizeOf<T>() == 8)
+            {
+                a.As512(out var axy, out var azw);
+                b.As512(out var bxy, out var bzw);
+                axy += bxy;
+                azw += bzw;
+                return axy.Mat44(azw);
+            }
+        }
         return new(a.X + b.X, a.Y + b.Y, a.Z + b.Z, a.W + b.W);
     }
 
@@ -48,27 +74,45 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
     public static Mat44<T> operator -(Mat44<T> a, Mat44<T> b)
     {
         if (SizeOf<T>() == 2 && Vector256<T>.IsSupported)
-            return From256(a.As256() - b.As256());
+            return (a.As256() - b.As256()).Mat44();
 
-        if (SizeOf<T>() == 4 && Vector512<T>.IsSupported)
-            return From512(a.As512() - b.As512());
+        if (Vector512<T>.IsSupported)
+        {
+            if (SizeOf<T>() == 4)
+                return (a.As512() - b.As512()).Mat44();
 
+            if (SizeOf<T>() == 8)
+            {
+                a.As512(out var axy, out var azw);
+                b.As512(out var bxy, out var bzw);
+                axy -= bxy;
+                azw -= bzw;
+                return axy.Mat44(azw);
+            }
+        }
         return new(a.X - b.X, a.Y - b.Y, a.Z - b.Z, a.W - b.W);
     }
 
     [MethodImpl(AggressiveInlining)]
     public static Mat44<T> operator *(Mat44<T> a, Mat44<T> b)
     {
+        // both "hand" and "transform" vectorized ways are non-optimal now
+        // asm is dummy different from System.Numerics - performance is close, but should be better
+
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return MultiplySize4(a, b);
+            return Multiply128(a, b);
 
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return MultiplySize8(a, b);
+            return Multiply256(a, b);
 
-        return new(a.X.Transform(b),
-                   a.Y.Transform(b),
-                   a.Z.Transform(b),
-                   a.W.Transform(b));
+        Mat44<T> m;
+
+        m.X = a.X.Transform(b);
+        m.Y = a.Y.Transform(b);
+        m.Z = a.Z.Transform(b);
+        m.W = a.W.Transform(b);
+
+        return m;
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -95,7 +139,7 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
         return a.X != b.X || a.Y != b.Y || a.Z != b.Z || a.W != b.W;
     }
 
-    [Obsolete("vectorize?")]
+    [Obsolete("vectorize")]
     [MethodImpl(AggressiveInlining)]
     public Mat44<T> Transpose() => new
     (
@@ -105,12 +149,12 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
         X.W, Y.W, Z.W, W.W
     );
 
-    // for tests readability
-    public override readonly string ToString() => $"{X} \n{Y} \n{Z} \n{W}";
+    public readonly bool Equals(Mat44<T> other) => other == this;
 
     public override readonly bool Equals(object? obj) => (obj is Mat44<T> mat) && mat == this;
 
     public override readonly int GetHashCode() => HashCode.Combine(X, Y, Z, W);
 
-    public readonly bool Equals(Mat44<T> other) => other == this;
+    // for tests readability
+    public override readonly string ToString() => $"\n{X} \n{Y} \n{Z} \n{W}";
 }

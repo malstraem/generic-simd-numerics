@@ -1,16 +1,29 @@
 namespace System.Numerics;
 
-public partial struct Vec2<T>
+// called in right cases
+// not optimal asm
+// check Vec2{T}.DISGUSTING_CARGO_CULT.cs for more
+internal static class ReinterpretateVec2
 {
-    // called in right cases
+    extension<T>(Vec2<T> v)
+        where T : unmanaged, INumber<T>
+    {
+        [MethodImpl(AggressiveInlining)]
+        internal Vector128<T> As128() => Vector128<T>.Indices
+            .WithElement(0, v.X)
+            .WithElement(1, v.Y);
+    }
 
-    [MethodImpl(AggressiveInlining)]
-    private readonly Vector128<T> As128() => BitCast<Vec2<T>, Vector128<T>>(this);
-
-    [MethodImpl(AggressiveInlining)]
-    private static Vec2<T> From128(Vector128<T> ymm) => BitCast<Vector128<T>, Vec2<T>>(ymm);
-
-    [MethodImpl(AggressiveInlining)]
-    public readonly Vec2<TOther> As<TOther>() where TOther : unmanaged, INumber<TOther>
-        => new(TOther.CreateTruncating(X), TOther.CreateTruncating(Y));
+    extension<T>(Vector128<T> xmm)
+        where T : unmanaged, INumber<T>
+    {
+        [MethodImpl(AggressiveInlining)]
+        internal Vec2<T> Vec2()
+        {
+            Vec2<T> v;
+            v.X = xmm[0];
+            v.Y = xmm[1];
+            return v;
+        }
+    }
 }

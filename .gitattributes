@@ -1,2 +1,4 @@
 * text eol=lf
 * text working-tree-encoding=UTF-8
+
+*.html -linguist-detectable

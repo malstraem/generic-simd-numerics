@@ -1,57 +1,63 @@
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
 
 using Silk.NET.Maths;
 
 namespace System.Numerics.Bench;
 
-[SimpleJob(RuntimeMoniker.Net10_0), DisassemblyDiagnoser]
-public class StressVector2D<T> : BaseBench
+[GenericTypeArguments(typeof(byte))]
+[GenericTypeArguments(typeof(short))]
+[GenericTypeArguments(typeof(int))]
+[GenericTypeArguments(typeof(long))]
+public class StressVector2DI<T> : StressVector2D<T>
+    where T : unmanaged, INumber<T>;
+
+[GenericTypeArguments(typeof(float))]
+[GenericTypeArguments(typeof(double))]
+public class StressVector2D<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
-    private static readonly T[] nums = new T[Count];
-
-    private static readonly Vector2D<T>[] vecs = new Vector2D<T>[Count];
+    private static readonly Vector2D<T>[] vecs = new Vector2D<T>[Count],
+                                          @out = new Vector2D<T>[Count];
 
     public StressVector2D()
     {
-        for (int i = 0; i < vecs.Length; i++)
-            vecs[i] = Vec2<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10))).Silk();
+        for (int i = 0; i < Count; i++)
+            vecs[i] = Vec2<T>.Gen(T.One).Silk();
     }
 
     [Benchmark]
     public void Add()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] + vecs[i + 1];
+            @out[i] = vecs[i] + vecs[i + 1];
     }
 
     [Benchmark]
     public void Subtract()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] - vecs[i + 1];
+            @out[i] = vecs[i] - vecs[i + 1];
     }
 
     [Benchmark]
-    public void ElementMultiply()
+    public void MultiplyElementWise()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] * vecs[i + 1];
+            @out[i] = vecs[i] * vecs[i + 1];
     }
 
     [Benchmark]
-    public void ElementDivide()
+    public void DivideElementWise()
     {
         for (int i = 0; i < Count - 1; i++)
-            vecs[i] = vecs[i] / vecs[i + 1];
+            @out[i] = vecs[i] / vecs[i + 1];
     }
 
-    /*[Benchmark]
+    [Benchmark]
     public void Abs()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vector2D.Abs(vecs[i]);
+            @out[i] = Vector2D.Abs(vecs[i]);
     }
 
     [Benchmark]
@@ -93,6 +99,6 @@ public class StressVector2D<T> : BaseBench
     public void Normalize()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vector2D.Normalize(vecs[i]);
-    }*/
+            @out[i] = Vector2D.Normalize(vecs[i]);
+    }
 }

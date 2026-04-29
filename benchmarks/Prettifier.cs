@@ -4,7 +4,7 @@ using BenchmarkDotNet.Running;
 
 namespace System.Numerics.Bench;
 
-// todo gen reports
+// todo gen "hand crafted" reports
 
 public static class Prettifier
 {

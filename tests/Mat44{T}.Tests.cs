@@ -1,10 +1,163 @@
-namespace System.Numerics.Tests.Matrix44;
+using Silk.NET.Maths;
+
+namespace System.Numerics.Mat44Tests;
+
+/* need more time investments
+    1) save and format random generation
+    2) provide more edge cases with better way */
 
 [InheritsTests]
-public class Mat44f32 : Mat44Base<float>;
+public class Mat44f32 : Mat44WithQuaternion<float>;
 
 [InheritsTests]
-public class Mat44f64 : Mat44Base<double>;
+public class Mat44f64 : Mat44WithQuaternion<double>;
+
+[InheritsTests]
+public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
+    where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+{
+    private static readonly bool system = typeof(T) == typeof(float);
+
+    protected static Quat<T> Rotation => new(
+        T.CreateTruncating(Random.Shared.NextDouble()),
+        T.CreateTruncating(Random.Shared.NextDouble()),
+        T.CreateTruncating(Random.Shared.NextDouble()),
+        T.CreateTruncating(Random.Shared.NextDouble()));
+
+    protected static Vec3<T> Position => new(
+        T.CreateTruncating(Random.Shared.NextDouble()),
+        T.CreateTruncating(Random.Shared.NextDouble()),
+        T.CreateTruncating(Random.Shared.NextDouble()));
+
+    protected static Vec3<T> Scale => new(
+        T.CreateTruncating(Random.Shared.NextDouble()),
+        T.CreateTruncating(Random.Shared.NextDouble()),
+        T.CreateTruncating(Random.Shared.NextDouble()));
+
+    protected void Affine(out Quat<T> r, out Vec3<T> s, out Vec3<T> t)
+    {
+        t = Position;
+        r = Rotation;
+        s = Scale;
+    }
+
+    [Test, Repeat(9), DisplayName("translation")]
+    public async Task FromTranslation()
+    {
+        var t = Position;
+
+        var translation = Mat44.Translation(t);
+
+        var expected = system ? Matrix4x4.CreateTranslation(t.System()).Mat44<T>()
+                              : Matrix4X4.CreateTranslation(t.Silk()).Mat44();
+
+        await Assert.That(translation).IsEqualTo(expected);
+    }
+
+    [Test, Repeat(9), DisplayName("rotation")]
+    public async Task FromRotation()
+    {
+        var r = Rotation;
+
+        var rotation = Mat44.Rotation(r);
+
+        var expected = system ? Matrix4x4.CreateFromQuaternion(r.System()).Mat44<T>()
+                              : Matrix4X4.CreateFromQuaternion(r.Silk()).Mat44();
+
+        await Assert.That(rotation).IsEqualTo(expected);
+    }
+
+    [Test, Repeat(9), DisplayName("scale")]
+    public async Task FromScale()
+    {
+        var s = Scale;
+
+        var scale = Mat44.Scale(s);
+
+        var expected = system ? Matrix4x4.CreateScale(s.System()).Mat44<T>()
+                              : Matrix4X4.CreateScale(s.Silk()).Mat44();
+
+        await Assert.That(scale).IsEqualTo(expected);
+    }
+
+    [Test]
+    [Skip("run to see differences, also check frobenius norm")]
+    public async Task Rotate()
+    {
+        var r = Rotation;
+
+        var rotated = Mat44.Rotate(a, r);
+
+        var expected = system ? Matrix4x4.Transform(a.System(), r.System()).Mat44<T>()
+                              : Matrix4X4.Transform(a.Silk(), r.Silk()).Mat44();
+
+        await Assert.That(rotated).IsEqualTo(expected).Because($"quaternion is {r}");
+    }
+
+    [Test, Repeat(999), DisplayName("rotate (frobenius norm)")]
+    [Skip("run to see differences")]
+    public async Task FrobeniusCompareRotations()
+    {
+        if (typeof(T) == typeof(double)) // nobody cares...
+            return;
+
+        var r = Rotation;
+
+        var draft = Mat44.Rotate(a, r).Silk().As<double>();
+
+        var system = Matrix4x4.Transform(a.System(), r.System()).Mat44<T>().Silk().As<double>();
+
+        if (draft == system)
+            return;
+
+        var target = Matrix4X4.Transform(a.Silk().As<double>(), r.Silk().As<double>());
+
+        double toler1 = (target.Row1 - draft.Row1).LengthSquared,
+               toler2 = (target.Row2 - draft.Row2).LengthSquared,
+               toler3 = (target.Row3 - draft.Row3).LengthSquared,
+               toler4 = (target.Row4 - draft.Row4).LengthSquared,
+
+               toler1System = (target.Row1 - system.Row1).LengthSquared,
+               toler2System = (target.Row2 - system.Row2).LengthSquared,
+               toler3System = (target.Row3 - system.Row3).LengthSquared,
+               toler4System = (target.Row4 - system.Row4).LengthSquared,
+
+        frob = double.Sqrt(toler1 + toler2 + toler3 + toler4),
+        frobSystem = double.Sqrt(toler1System + toler2System + toler3System + toler4System);
+
+        await Assert.That(frob).IsLessThan(frobSystem).Because(
+            @$"Quaternion {r}
+            Tolerance: draft | system
+            Row1: {toler1} | {toler1System}
+            Is System better? {toler1System < toler1}
+            Row2: {toler2} | {toler2System}
+            Is System better? {toler2System < toler2}
+            Row3: {toler3} | {toler3System}
+            Is System better? {toler3System < toler3}
+            Row4: {toler4} | {toler4System}
+            Is System better? {toler4System < toler4}
+            Frobenius norm: {frob} | {frobSystem}"
+        );
+    }
+
+    [Test, Repeat(9), DisplayName("affine")]
+    public async Task Affine()
+    {
+        Affine(out var r, out var s, out var t);
+
+        var affine = Mat44.Affine(r, s, t);
+
+        var expected = system ? (Matrix4x4.CreateScale(s.System())
+                               * Matrix4x4.CreateFromQuaternion(r.System())
+                               * Matrix4x4.CreateTranslation(t.System())).Mat44<T>()
+
+                              : (Matrix4X4.CreateScale(s.Silk())
+                               * Matrix4X4.CreateFromQuaternion(r.Silk())
+                               * Matrix4X4.CreateTranslation(t.Silk())).Mat44();
+
+        await Assert.That(affine).IsEqualTo(expected);
+    }
+}
 
 [InheritsTests]
 public class Mat44i8 : Mat44Base<sbyte>;
@@ -57,7 +210,7 @@ public abstract class Mat44Base<T>
         await Assert.That(sub).IsEqualTo(expected);
     }
 
-    [Test, DisplayName("a * b")]
+    [Test, DisplayName("a × b")]
     public async Task Multiply()
     {
         var mul = a * b;
