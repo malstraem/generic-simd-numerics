@@ -8,58 +8,66 @@ this SHIT CARGO CULT mirror System.Numerics.Vector2 handy asm to produce scalar 
 actually it's AVX `vmovs{scalar size}` to xmm -> right ops -> `vmovs{scalar size} to ptr` -> feels good
 
 slower in stress then naive cause JIT can't prove offsets and use regs instead, pls let me know JIT or ME is DUMMY
-
-this scalar moves should be generalized on Numerics or/and JIT level
-to implement fully vectorized Vec2/3/4 and fallback to naive when ISA is not support that
 */
 
 public partial struct Vec2<T>
 {
     [MethodImpl(AggressiveInlining)]
-    private readonly Vector128<T> As128S<S>()
-        where S : unmanaged, INumber<S>
-    {
-        unsafe
-        {
-            fixed (T* p = &X)
-                return Vector128.CreateScalar(*(S*)p).As<S, T>();
-        }
-    }
+    private static unsafe Vector128<T> FromScalar<S>(S* v)
+        where S : unmanaged, INumber<S> => Vector128.CreateScalar(*v).As<S, T>();
 
     [MethodImpl(AggressiveInlining)]
-    private static Vec2<T> From128S<S>(Vector128<T> xmm)
-        where S : unmanaged, INumber<S>
-    {
-        unsafe
-        {
-            Vec2<T> v;
-            *(S*)&v = Vector128.As<T, S>(xmm).ToScalar();
-            return v;
-        }
-    }
+    private static S ToScalar<S>(Vector128<T> xmm)
+        where S : unmanaged, INumber<S> => Vector128.As<T, S>(xmm).ToScalar();
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     public static Vec2<T> operator +(Vec2<T> a, Vec2<T> b)
     {
-        //if (Vector128<T>.IsSupported)
-        //    return (a.As128() + b.As128()).Vec2(); // this way use WithElement call
+        /* ???
+        check generated asm
+
+        float <-> 32-bit word
+        double <-> 64-bit word
+
+        && Vector128<size x2 type>.IsSupported is pointless? */
 
         if (Vector128<T>.IsSupported)
         {
-            /* ???
-            check generated asm
+            //return (a.As128() + b.As128()).Vec2(); // this way use WithElement call
 
-            float <-> 32-bit word
-            double <-> 64-bit word
-
-            && Vector128<size x2 type>.IsSupported is pointless? */
-
-            if (typeof(T) == typeof(short) || (typeof(T) == typeof(ushort) /*&& Vector128<float>.IsSupported*/))
-                return From128S<float>(a.As128S<float>() + b.As128S<float>());
-
-            if (typeof(T) == typeof(int) || typeof(T) == typeof(uint) || typeof(T) == typeof(float))
-                return From128S<double>(a.As128S<double>() + b.As128S<double>());
+            unsafe { AddUnsafe(&a, &b, &a); }
         }
-        return new(a.X + b.X, a.Y + b.Y);
+        else
+        {
+            a.X += b.X;
+            a.Y += b.Y;
+        }
+        return a;
     }
+
+    [MethodImpl(AggressiveInlining)]
+    public static unsafe void AddUnsafe(Vec2<T>* a, Vec2<T>* b, Vec2<T>* add)
+    {
+        if (SizeOf<T>() == 2)
+        {
+            AddUnsafe16(a, b, add);
+            return;
+        }
+        if (SizeOf<T>() == 4)
+        {
+            AddUnsafe32(a, b, add);
+            return;
+        }
+        // todo 64 for double/long/ulong
+        add->X = a->X + b->X;
+        add->Y = a->Y + b->Y;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static unsafe void AddUnsafe16(Vec2<T>* a, Vec2<T>* b, Vec2<T>* add)
+        => *(float*)add = ToScalar<float>(FromScalar((float*)a) + FromScalar((float*)b));
+
+    [MethodImpl(AggressiveInlining)]
+    public static unsafe void AddUnsafe32(Vec2<T>* a, Vec2<T>* b, Vec2<T>* add)
+        => *(double*)add = ToScalar<double>(FromScalar((double*)a) + FromScalar((double*)b));
 }

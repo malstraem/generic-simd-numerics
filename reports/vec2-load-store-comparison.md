@@ -15,12 +15,12 @@
        nop       dword ptr [rax]
 M00_L00:
        mov       r8d,eax
-       vmovsd    xmm0,qword ptr [rcx+r8*8+10] // nice...
+       vmovsd    xmm0,qword ptr [rcx+r8*8+10]  // nice...
        inc       eax
        mov       r10d,eax
        vmovsd    xmm1,qword ptr [rcx+r10*8+10] // nice...
        vaddps    xmm0,xmm1,xmm0
-       vmovsd    qword ptr [rdx+r8*8+10],xmm0 // nice...
+       vmovsd    qword ptr [rdx+r8*8+10],xmm0  // nice...
        cmp       eax,1869F
        jl        short M00_L00
        ret
@@ -34,11 +34,9 @@ M00_L00:
 ```assembly
        sub       rsp,18
        xor       eax,eax
-       mov       [rsp],rax
-       xor       eax,eax
-       mov       rcx,25A16C00CE0
+       mov       rcx,26BDE400CE0
        mov       rcx,[rcx]
-       mov       rdx,25A16C00CE8
+       mov       rdx,26BDE400CE8
        mov       rdx,[rdx]
 M00_L00:
        mov       r8d,eax
@@ -48,19 +46,17 @@ M00_L00:
        mov       r10d,eax
        mov       r10,[rcx+r10*8+10]
        mov       [rsp+8],r10
-       lea       r10,[rsp+10]
-       vmovsd    xmm0,qword ptr [r10]   // expected vmovsd, but regs used a lot for addresses :(
-       lea       r10,[rsp+8]
-       vmovsd    xmm1,qword ptr [r10]
-       vaddps    xmm0,xmm0,xmm1         // float add
-       vmovsd    qword ptr [rsp],xmm0
-       mov       r10,[rsp]
+       vmovsd    xmm0,qword ptr [rsp+10] // vmovsd as expected, but regs used a lot for addresses :(
+       vmovsd    xmm1,qword ptr [rsp+8]
+       vaddps    xmm0,xmm1,xmm0          // float addition
+       vmovsd    qword ptr [rsp+10],xmm0
+       mov       r10,[rsp+10]
        mov       [rdx+r8*8+10],r10
        cmp       eax,1869F
        jl        short M00_L00
        add       rsp,18
        ret
-; Total bytes of code 116
+; Total bytes of code 104
 ```
 
 ### `Vec2<int>`
@@ -68,11 +64,9 @@ M00_L00:
 ```assembly
        sub       rsp,18
        xor       eax,eax
-       mov       [rsp],rax
-       xor       eax,eax
-       mov       rcx,1F93D800CE0
+       mov       rcx,28BC3000CE0
        mov       rcx,[rcx]
-       mov       rdx,1F93D800CE8
+       mov       rdx,28BC3000CE8
        mov       rdx,[rdx]
 M00_L00:
        mov       r8d,eax
@@ -82,19 +76,17 @@ M00_L00:
        mov       r10d,eax
        mov       r10,[rcx+r10*8+10]
        mov       [rsp+8],r10
-       lea       r10,[rsp+10]
-       vmovsd    xmm0,qword ptr [r10]   // expected vmovsd, but regs used a lot for addresses :(
-       lea       r10,[rsp+8]
-       vmovsd    xmm1,qword ptr [r10]
-       vpaddd    xmm0,xmm0,xmm1         // integer add
-       vmovsd    qword ptr [rsp],xmm0
-       mov       r10,[rsp]
+       vmovsd    xmm0,qword ptr [rsp+10] // vmovsd as expected, but regs used a lot for addresses :(
+       vmovsd    xmm1,qword ptr [rsp+8]
+       vpaddd    xmm0,xmm1,xmm0          // integer addition
+       vmovsd    qword ptr [rsp+10],xmm0
+       mov       r10,[rsp+10]
        mov       [rdx+r8*8+10],r10
        cmp       eax,1869F
        jl        short M00_L00
        add       rsp,18
        ret
-; Total bytes of code 116
+; Total bytes of code 104
 ```
 
 ## `Vector128.WithElement` produce simple scalar moves/insertions, achieved by [this](../source/reinterpretate/Vec2{T}.Casts.cs) :(
