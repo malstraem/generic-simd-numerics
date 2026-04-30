@@ -5,7 +5,7 @@ namespace System.Numerics;
 // any ways to 256 float and 512 double?
 public partial struct Quat<T>
 {
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     private static Quat<T> Multiply128F(Quat<T> a, Quat<T> b)
     {
         a.Vec4().Broadcast128(out var c, out var d, out var e, out var f);
@@ -25,7 +25,7 @@ public partial struct Quat<T>
         return q.Quat();
     }
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     private static Quat<T> Multiply256D(Quat<T> a, Quat<T> b)
     {
         a.Vec4().Broadcast256(out var c, out var d, out var e, out var f);

@@ -3,19 +3,19 @@ namespace System.Numerics;
 // quite fast but asm is non-optimal
 public partial struct Mat44<T>
 {
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     private static Vec4<T> Accumulate(
         Vector128<T> x, Vector128<T> y, Vector128<T> z, Vector128<T> w,
         Vector128<T> c, Vector128<T> d, Vector128<T> e, Vector128<T> f)
             => (x.MultiplyAdd(c, y * d) + z.MultiplyAdd(e, w * f)).Vec4();
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     private static Vec4<T> Accumulate(
         Vector256<T> x, Vector256<T> y, Vector256<T> z, Vector256<T> w,
         Vector256<T> c, Vector256<T> d, Vector256<T> e, Vector256<T> f)
             => (x.MultiplyAdd(c, y * d) + z.MultiplyAdd(e, w * f)).Vec4();
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     private static Mat44<T> Multiply128(Mat44<T> a, Mat44<T> b)
     {
         var x = b.X.As128();
@@ -38,7 +38,7 @@ public partial struct Mat44<T>
         return b;
     }
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     private static Mat44<T> Multiply256(Mat44<T> a, Mat44<T> b)
     {
         var x = b.X.As256();

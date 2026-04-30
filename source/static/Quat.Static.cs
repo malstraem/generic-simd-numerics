@@ -8,7 +8,7 @@ public static class Quat
             => a + b;
 
     [MethodImpl(AggressiveInlining)]
-    public static Quat<T> Subtruct<T>(Quat<T> a, Quat<T> b)
+    public static Quat<T> Subtract<T>(Quat<T> a, Quat<T> b)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => a - b;
 

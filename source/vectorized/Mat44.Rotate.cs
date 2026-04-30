@@ -2,6 +2,7 @@ namespace System.Numerics;
 
 #pragma warning disable IDE0055, IDE0007, IDE0047
 
+// call in right cases
 public static partial class Mat44
 {
     [MethodImpl(AggressiveInlining)]

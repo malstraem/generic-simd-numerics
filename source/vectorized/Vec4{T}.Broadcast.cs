@@ -3,7 +3,7 @@ namespace System.Numerics;
 // called in right cases
 public partial struct Vec4<T>
 {
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     internal void Broadcast128(
         out Vector128<T> x, out Vector128<T> y,
         out Vector128<T> z, out Vector128<T> w)
@@ -16,7 +16,7 @@ public partial struct Vec4<T>
         w = Vector128.Create(xmm[3]);
     }
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     internal readonly void Broadcast256(
         out Vector256<T> x, out Vector256<T> y,
         out Vector256<T> z, out Vector256<T> w)

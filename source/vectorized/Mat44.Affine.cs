@@ -22,13 +22,13 @@ IBELIEVE:
 
 public static partial class Mat44
 {
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     internal static unsafe Mat44<T> Affine128<T>(Quat<T> r, Vec3<T>* s, Vec3<T>* t)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        var m = Rotation128(r);
-
         var tp = (T*)t; var sp = (T*)s;
+
+        var m = Rotation128(r);
 
         m.X *= *sp; // s->X is bad, idk why :(
         m.Y *= *(sp + 1);
@@ -41,13 +41,13 @@ public static partial class Mat44
         return m;
     }
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     internal static unsafe Mat44<T> Affine256<T>(Quat<T> r, Vec3<T>* s, Vec3<T>* t)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        var m = Rotation256(r);
-
         var tp = (T*)t; var sp = (T*)s;
+
+        var m = Rotation256(r);
 
         m.X *= *sp;
         m.Y *= *(sp + 1);
@@ -60,12 +60,10 @@ public static partial class Mat44
     // any way to mix with 256?
     // only 256 way?
     // JIT actually produce vshufd (idk how it's proved), so code can be more optimal
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     internal static Mat44<T> Rotation128<T>(Quat<T> r)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        Mat44<T> m = default;
-
         var w = r.As128();
 
         var x = w.Permute32(1, 2, 0, 3); // y, z, x, w
@@ -85,27 +83,23 @@ public static partial class Mat44
         w += w.Permute32(1, 2, 0, 3);   // xx + yy        | yy + zz        | zz + xx        | 4ww, no mean
         w = Vector128<T>.One - (w + w); // 1 - 2(xx + yy) | 1 - 2(yy + zz) | 1 - 2(zz + xx) | 1 - 4ww, no mean
 
-        x = z.WithElement(0, w[1]).WithElement(1, n[0]); // 1 - 2(yy + zz) | 2(xy + zw)     | 2(xz - yw)     | 0
-        y = z.WithElement(1, w[2]).WithElement(2, n[1]); // 2(xy - zw)     | 1 - 2(zz + xx) | 2(yz + xw)     | 0
-        z = z.WithElement(0, n[2]).WithElement(2, w[0]); // 2(xz + yw)     | 2(yz - xw)     | 1 - 2(xx + yy) | 0
+        Mat44<T> m;
 
-        m.X = x.Vec4();
-        m.Y = y.Vec4();
-        m.Z = z.Vec4();
-        m.W = Vec4<T>.UnitW.As128().Vec4(); // there is unnecessary transfers without bitcasting
-
+        m.X = z.WithElement(0, w[1]).WithElement(1, n[0]).Vec4(); // 1 - 2(yy + zz) | 2(xy + zw)     | 2(xz - yw)     | 0
+        m.Y = z.WithElement(1, w[2]).WithElement(2, n[1]).Vec4(); // 2(xy - zw)     | 1 - 2(zz + xx) | 2(yz + xw)     | 0
+        m.Z = z.WithElement(0, n[2]).WithElement(2, w[0]).Vec4(); // 2(xz + yw)     | 2(yz - xw)     | 1 - 2(xx + yy) | 0
+        // there is unnecessary transfers without bitcast
+        m.W = Vec4<T>.UnitW.As128().Vec4();
         return m;
     }
 
     // asm can be more optimal
     // any way to mix with 512?
     // only 512 way?
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     private static Mat44<T> Rotation256<T>(Quat<T> r)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        Mat44<T> m;
-
         var w = r.As256(); // x, y, z, w
 
         var x = w.Permute64(1, 2, 0, 3); // y, z, x, w
@@ -125,13 +119,11 @@ public static partial class Mat44
         w += w.Permute64(1, 2, 0, 3);   // xx + yy        | yy + zz        | zz + xx        | 4ww, no mean
         w = Vector256<T>.One - (w + w); // 1 - 2(xx + yy) | 1 - 2(yy + zz) | 1 - 2(zz + xx) | 1 - 4ww, no mean
 
-        x = z.WithElement(0, w[1]).WithElement(1, n[0]); // 1 - 2(yy + zz) | 2(xy + zw)     | 2(xz - yw)     | 0
-        y = z.WithElement(1, w[2]).WithElement(2, n[1]); // 2(xy - zw)     | 1 - 2(zz + xx) | 2(yz + xw)     | 0
-        z = z.WithElement(0, n[2]).WithElement(2, w[0]); // 2(xz + yw)     | 2(yz - xw)     | 1 - 2(xx + yy) | 0
+        Mat44<T> m;
 
-        m.X = x.Vec4();
-        m.Y = y.Vec4();
-        m.Z = z.Vec4();
+        m.X = z.WithElement(0, w[1]).WithElement(1, n[0]).Vec4(); // 1 - 2(yy + zz) | 2(xy + zw)     | 2(xz - yw)     | 0
+        m.Y = z.WithElement(1, w[2]).WithElement(2, n[1]).Vec4(); // 2(xy - zw)     | 1 - 2(zz + xx) | 2(yz + xw)     | 0
+        m.Z = z.WithElement(0, n[2]).WithElement(2, w[0]).Vec4(); // 2(xz + yw)     | 2(yz - xw)     | 1 - 2(xx + yy) | 0
         m.W = Vec4<T>.UnitW.As256().Vec4();
 
         return m;
