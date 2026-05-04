@@ -28,14 +28,14 @@ public class StressVector2 : BaseBench<float>
     }
 
     [Benchmark]
-    public void MultiplyElementWise()
+    public void Multiply()
     {
         for (int i = 0; i < Count - 1; i++)
             @out[i] = vecs[i] * vecs[i + 1];
     }
 
     [Benchmark]
-    public void DivideElementWise()
+    public void Divide()
     {
         for (int i = 0; i < Count - 1; i++)
             @out[i] = vecs[i] / vecs[i + 1];

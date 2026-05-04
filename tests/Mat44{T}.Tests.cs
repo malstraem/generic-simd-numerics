@@ -94,7 +94,7 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
         await Assert.That(rotated).IsEqualTo(expected).Because($"quaternion is {r}");
     }
 
-    [Test, Repeat(999), DisplayName("rotate (frobenius norm)")]
+    [Test, Repeat(999), DisplayName("compare rotations (kind of frobenius norm)")]
     [Skip("run to see differences")]
     public async Task FrobeniusCompareRotations()
     {
@@ -107,9 +107,6 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
 
         var system = Matrix4x4.Transform(a.System(), r.System()).Mat44<T>().Silk().As<double>();
 
-        if (draft == system)
-            return;
-
         var target = Matrix4X4.Transform(a.Silk().As<double>(), r.Silk().As<double>());
 
         double toler1 = (target.Row1 - draft.Row1).LengthSquared,
@@ -117,27 +114,31 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
                toler3 = (target.Row3 - draft.Row3).LengthSquared,
                toler4 = (target.Row4 - draft.Row4).LengthSquared,
 
-               toler1System = (target.Row1 - system.Row1).LengthSquared,
-               toler2System = (target.Row2 - system.Row2).LengthSquared,
-               toler3System = (target.Row3 - system.Row3).LengthSquared,
-               toler4System = (target.Row4 - system.Row4).LengthSquared,
+               tolerSys1 = (target.Row1 - system.Row1).LengthSquared,
+               tolerSys2 = (target.Row2 - system.Row2).LengthSquared,
+               tolerSys3 = (target.Row3 - system.Row3).LengthSquared,
+               tolerSys4 = (target.Row4 - system.Row4).LengthSquared,
 
         frob = double.Sqrt(toler1 + toler2 + toler3 + toler4),
-        frobSystem = double.Sqrt(toler1System + toler2System + toler3System + toler4System);
+        frobSystem = double.Sqrt(tolerSys1 + tolerSys2 + tolerSys3 + tolerSys4);
 
-        await Assert.That(frob).IsLessThan(frobSystem).Because(
-            @$"Quaternion {r}
+        if (frob < frobSystem)
+            return;
+
+        Assert.Fail(@$"Quaternion {r}
             Tolerance: draft | system
-            Row1: {toler1} | {toler1System}
-            Is System better? {toler1System < toler1}
-            Row2: {toler2} | {toler2System}
-            Is System better? {toler2System < toler2}
-            Row3: {toler3} | {toler3System}
-            Is System better? {toler3System < toler3}
-            Row4: {toler4} | {toler4System}
-            Is System better? {toler4System < toler4}
-            Frobenius norm: {frob} | {frobSystem}"
-        );
+            Row1: {toler1} | {tolerSys1}
+            Better? {(tolerSys1 < toler1 ? "system" : "draft")}
+
+            Row2: {toler2} | {tolerSys2}
+            Better? {(tolerSys2 < toler2 ? "system" : "draft")}
+
+            Row3: {toler3} | {tolerSys3}
+            Better? {(tolerSys3 < toler3 ? "system" : "draft")}
+
+            Row4: {toler4} | {tolerSys4}
+            Better? {(tolerSys4 < toler4 ? "system" : "draft")}
+            Frobenius norm: {frob} | {frobSystem}");
     }
 
     [Test, Repeat(9), DisplayName("affine")]

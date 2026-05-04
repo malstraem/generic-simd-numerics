@@ -121,18 +121,14 @@ public partial struct Vec3<T>(T x, T y, T z) :
         return new(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
     }
 
-    // use dot product instead element wise is personal choice
     [MethodImpl(AggressiveInlining)]
-    public static T operator *(Vec3<T> a, Vec3<T> b) => a.MultiplyWise(b).Sum();
-
-    /*[MethodImpl(AggressiveInlining)]
     public static Vec3<T> operator *(Vec3<T> a, Vec3<T> b)
     {
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return From128(a.As128() * b.As128());
+            return (a.As128() * b.As128()).Vec3();
 
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return From256(a.As256() * b.As256());
+            return (a.As256() * b.As256()).Vec3();
 
         return new(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
     }
@@ -141,13 +137,13 @@ public partial struct Vec3<T>(T x, T y, T z) :
     public static Vec3<T> operator /(Vec3<T> a, Vec3<T> b)
     {
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return From128(a.As128() / b.As128());
+            return (a.As128One() / b.As128One()).Vec3();
 
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return From256(a.As256() / b.As256());
+            return (a.As256One() / b.As256One()).Vec3();
 
         return new(a.X / b.X, a.Y / b.Y, a.Z / b.Z);
-    }*/
+    }
 
     [MethodImpl(AggressiveInlining)]
     public static bool operator ==(Vec3<T> a, Vec3<T> b)
@@ -223,32 +219,28 @@ public partial struct Vec3<T>(T x, T y, T z) :
     #endregion
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec3<T> MultiplyWise(Vec3<T> v)
+    public readonly T Sum()
     {
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return (this.As128() * v.As128()).Vec3();
+            return Vector128.Sum(this.As128());
 
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return (this.As256() * v.As256()).Vec3();
+            return Vector256.Sum(this.As256());
 
-        return new(X * v.X, Y * v.Y, Z * v.Z);
+        return X + Y + Z;
     }
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec3<T> DivideWise(Vec3<T> v)
+    public readonly T Dot(Vec3<T> v)
     {
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return (this.As128() / v.As128()).Vec3();
+            return Vector128.Dot(this.As128(), v.As128());
 
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return (this.As256() / v.As256()).Vec3();
+            return Vector256.Dot(this.As256(), v.As256());
 
-        return new(X / v.X, Y / v.Y, Z / v.Z);
+        return (this * v).Sum();
     }
-
-    [Obsolete("vectorize")]
-    [MethodImpl(AggressiveInlining)]
-    public readonly T Sum() => X + Y + Z;
 
     [MethodImpl(AggressiveInlining)]
     public readonly Vec3<T> Abs()
@@ -309,7 +301,7 @@ public partial struct Vec3<T>(T x, T y, T z) :
                                                     (X * v.Y) - (Y * v.X));
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T LengthSquared() => this * this;
+    public readonly T LengthSquared() => Dot(this);
 
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec3<T> v) => (this - v).LengthSquared();
@@ -367,6 +359,16 @@ public partial struct Vec3<T>(T x, T y, T z) :
         return new(T.CreateTruncating(R.Sqrt(R.CreateSaturating(X))),
                    T.CreateTruncating(R.Sqrt(R.CreateSaturating(Y))),
                    T.CreateTruncating(R.Sqrt(R.CreateSaturating(Z))));
+    }
+
+    internal readonly Vec4<T> ToVec4One()
+    {
+        if (SizeOf<T>() == 4)
+            return this.As128One().Vec4();
+        else if (SizeOf<T>() == 8)
+            return this.As256One().Vec4();
+        else
+            return new(X, Y, Z, T.One);
     }
 
     public readonly bool Equals(Vec3<T> other) => this == other;

@@ -23,7 +23,7 @@ public class StressQuat<T> : BaseBench<T>
             @out[i] = quats[i] * quats[i + 1];
     }
 
-    [Benchmark]
+    /*[Benchmark]
     public void Divide()
     {
         for (int i = 0; i < Count - 1; i++)
@@ -42,5 +42,5 @@ public class StressQuat<T> : BaseBench<T>
     {
         for (int i = 0; i < Count; i++)
             @out[i] = quats[i].Inverse();
-    }
+    }*/
 }

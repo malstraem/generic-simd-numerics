@@ -39,17 +39,17 @@ public class StressVec3<T, R> : BaseBench<T>
     }
 
     [Benchmark]
-    public void MultiplyElementWise()
+    public void Multiply()
     {
         for (int i = 0; i < Count - 1; i++)
-            @out[i] = vecs[i].MultiplyWise(vecs[i + 1]);
+            @out[i] = vecs[i] * vecs[i + 1];
     }
 
     [Benchmark]
-    public void DivideElementWise()
+    public void Divide()
     {
         for (int i = 0; i < Count - 1; i++)
-            @out[i] = vecs[i].DivideWise(vecs[i + 1]);
+            @out[i] = vecs[i] / vecs[i + 1];
     }
 
     [Benchmark]
@@ -70,7 +70,7 @@ public class StressVec3<T, R> : BaseBench<T>
     public void Dot()
     {
         for (int i = 0; i < Count - 1; i++)
-            nums[i] = vecs[i] * vecs[i + 1];
+            nums[i] = vecs[i].Dot(vecs[i + 1]);
     }
 
     [Benchmark]

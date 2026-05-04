@@ -13,35 +13,35 @@ public class Vec4f32 : Vec4Root<float>;
 public class Vec4f64 : Vec4Root<double>;
 
 [InheritsTests]
-public class Vec4i8 : Vec4Root<sbyte, float>;
+public class Vec4i8 : Vec4Signed<sbyte>;
 
 [InheritsTests]
-public class Vec4ui8 : Vec4Root<byte, float>;
+public class Vec4ui8 : Vec4Base<byte>;
 
 [InheritsTests]
-public class Vec4i16 : Vec4Root<short, float>;
+public class Vec4i16 : Vec4Signed<short>;
 
 [InheritsTests]
-public class Vec4ui16 : Vec4Root<ushort, float>;
+public class Vec4ui16 : Vec4Base<ushort>;
 
 [InheritsTests]
-public class Vec4i32 : Vec4Root<int, float>;
+public class Vec4i32 : Vec4Signed<int>;
 
 [InheritsTests]
-public class Vec4ui32 : Vec4Root<uint, float>;
+public class Vec4ui32 : Vec4Base<uint>;
 
 [InheritsTests]
-public class Vec4i64 : Vec4Root<long, double>;
+public class Vec4i64 : Vec4Signed<long>;
 
 [InheritsTests]
-public class Vec4ui64 : Vec4Root<ulong, double>;
+public class Vec4ui64 : Vec4Base<ulong>;
 
 [InheritsTests]
-public abstract class Vec4Root<T> : Vec4Root<T, T>
+public abstract class Vec4Root<T> : Vec4Base<T>
     where T : unmanaged, INumber<T>, IRootFunctions<T>
 {
-    [Test, DisplayName("len (sealed variant)")]
-    public async Task LengthSealed()
+    [Test, DisplayName("len")]
+    public async Task Length()
     {
         var length = a.Length();
 
@@ -51,8 +51,8 @@ public abstract class Vec4Root<T> : Vec4Root<T, T>
         await Assert.That(length).IsEqualTo(Vec4.Length(a));
     }
 
-    [Test, DisplayName("dist (sealed variant)")]
-    public async Task DistanceSealed()
+    [Test, DisplayName("dist")]
+    public async Task Distance()
     {
         var distance = a.Distance(b);
 
@@ -62,8 +62,8 @@ public abstract class Vec4Root<T> : Vec4Root<T, T>
         await Assert.That(distance).IsEqualTo(Vec4.Distance(a, b));
     }
 
-    [Test, DisplayName("norm (sealed variant)")]
-    public async Task NormalizeSealed()
+    [Test, DisplayName("norm")]
+    public async Task Normalize()
     {
         var normal = a.Normalize();
 
@@ -72,55 +72,35 @@ public abstract class Vec4Root<T> : Vec4Root<T, T>
         await Assert.That(normal).IsEqualTo(expected);
         await Assert.That(normal).IsEqualTo(Vec4.Normalize(a));
     }
-}
-
-[InheritsTests]
-public abstract class Vec4Root<T, R> : Vec4Base<T>
-    where T : unmanaged, INumber<T>
-    where R : unmanaged, INumber<R>, IRootFunctions<R>
-{
-    [Test, DisplayName("len")]
-    public async Task Length()
-    {
-        var length = a.Length<R>();
-
-        var expected = a.Silk().Length;
-
-        await Assert.That(length).IsEqualTo(expected);
-        await Assert.That(length).IsEqualTo(Vec4.Length<T, R>(a));
-    }
-
-    [Test, DisplayName("dist")]
-    public async Task Distance()
-    {
-        var distance = a.Distance<R>(b);
-
-        var expected = Vector4D.Distance(a.Silk(), b.Silk());
-
-        await Assert.That(distance).IsEqualTo(expected);
-        await Assert.That(distance).IsEqualTo(Vec4.Distance<T, R>(a, b));
-    }
-
-    [Test, DisplayName("norm")]
-    public async Task Normalize()
-    {
-        var normal = a.Normalize<R>();
-
-        var expected = Vector4D.Normalize(a.Silk()).Vec4();
-
-        await Assert.That(normal).IsEqualTo(expected);
-        await Assert.That(normal).IsEqualTo(Vec4.Normalize<T, R>(a));
-    }
 
     [Test, DisplayName("sqrt")]
     public async Task SquareRoot()
     {
-        var root = a.SquareRoot<R>();
+        var root = a.SquareRoot();
 
         var expected = Vector4D.SquareRoot(a.Silk()).Vec4();
 
         await Assert.That(root).IsEqualTo(expected);
-        await Assert.That(root).IsEqualTo(Vec4.SquareRoot<T, R>(a));
+        await Assert.That(root).IsEqualTo(Vec4.SquareRoot(a));
+    }
+}
+
+[InheritsTests]
+public abstract class Vec4Signed<T> : Vec4Base<T>
+    where T : unmanaged, INumber<T>, ISignedNumber<T>
+{
+    [Test, DisplayName("abs")]
+    public async Task Abs()
+    {
+        var negative = -a;
+
+        var abs = negative.Abs();
+
+        var expected = Vector4D.Abs((-a).Silk()).Vec4();
+
+        await Assert.That(abs).IsEqualTo(expected);
+        //await Assert.That(abs).IsEqualTo(Vec4.Abs(-a));
+        //await Assert.That(abs).IsEqualTo(Vec4.Abs(+a));
     }
 }
 
@@ -158,7 +138,7 @@ public abstract class Vec4Base<T>
     [Test, DisplayName("a × b")]
     public async Task Dot()
     {
-        var dot = a * b;
+        var dot = a.Dot(b);
 
         var expected = Vector4D.Dot(a.Silk(), b.Silk());
 
@@ -169,36 +149,23 @@ public abstract class Vec4Base<T>
     [Test, DisplayName("a × b (element wise)")]
     public async Task MultiplyWise()
     {
-        var mul = a.MultiplyWise(b);
+        var mul = a * b;
 
         var expected = (a.Silk() * b.Silk()).Vec4();
 
         await Assert.That(mul).IsEqualTo(expected);
-        await Assert.That(mul).IsEqualTo(Vec4.MultiplyWise(a, b));
+        await Assert.That(mul).IsEqualTo(Vec4.Multiply(a, b));
     }
 
     [Test, DisplayName("a / b (element wise)")]
     public async Task DivideWise()
     {
-        var div = a.DivideWise(b);
+        var div = a / b;
 
         var expected = (a.Silk() / b.Silk()).Vec4();
 
         await Assert.That(div).IsEqualTo(expected);
-        await Assert.That(div).IsEqualTo(Vec4.DivideWise(a, b));
-    }
-
-    [Test, DisplayName("abs")]
-    public async Task Abs()
-    {
-        var negative = -a;
-
-        var abs = negative.Abs();
-
-        var expected = Vector4D.Abs((-a).Silk()).Vec4();
-
-        await Assert.That(abs).IsEqualTo(expected);
-        await Assert.That(abs).IsEqualTo(Vec4.Abs(-a));
+        await Assert.That(div).IsEqualTo(Vec4.Divide(a, b));
     }
 
     [Test, DisplayName("sum")]

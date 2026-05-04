@@ -158,7 +158,7 @@ public abstract class Vec2Base<T>
     [Test, DisplayName("a × b")]
     public async Task Dot()
     {
-        var dot = a * b;
+        var dot = a.Dot(b);
 
         var expected = Vector2D.Dot(a.Silk(), b.Silk());
 
@@ -169,23 +169,23 @@ public abstract class Vec2Base<T>
     [Test, DisplayName("a × b (element wise)")]
     public async Task MultiplyWise()
     {
-        var mul = a.MultiplyWise(b);
+        var mul = a * b;
 
         var expected = (a.Silk() * b.Silk()).Vec2();
 
         await Assert.That(mul).IsEqualTo(expected);
-        await Assert.That(mul).IsEqualTo(Vec2.MultiplyWise(a, b));
+        await Assert.That(mul).IsEqualTo(Vec2.Multiply(a, b));
     }
 
     [Test, DisplayName("a / b (element wise)")]
     public async Task DivideWise()
     {
-        var div = a.DivideWise(b);
+        var div = a / b;
 
         var expected = (a.Silk() / b.Silk()).Vec2();
 
         await Assert.That(div).IsEqualTo(expected);
-        await Assert.That(div).IsEqualTo(Vec2.DivideWise(a, b));
+        await Assert.That(div).IsEqualTo(Vec2.Divide(a, b));
     }
 
     [Test, DisplayName("sum")]

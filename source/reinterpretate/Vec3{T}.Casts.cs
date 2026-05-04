@@ -1,6 +1,6 @@
 namespace System.Numerics;
 
-// called in right cases
+// calls in right cases
 // both 128 and 256 are not optimal asm
 // check Vec2{T}.DISGUSTING_CARGO_CULT.cs for more
 internal static class ReinterpretateVec3
@@ -9,13 +9,25 @@ internal static class ReinterpretateVec3
         where T : unmanaged, INumber<T>
     {
         [MethodImpl(AggressiveInlining)]
-        internal Vector128<T> As128() => Vector128<T>.Indices
+        internal Vector256<T> As256() => Vector256<T>.Zero
             .WithElement(0, v.X)
             .WithElement(1, v.Y)
             .WithElement(2, v.Z);
 
         [MethodImpl(AggressiveInlining)]
-        internal Vector256<T> As256() => Vector256<T>.Indices
+        internal Vector128<T> As128() => Vector128<T>.Zero
+            .WithElement(0, v.X)
+            .WithElement(1, v.Y)
+            .WithElement(2, v.Z);
+
+        [MethodImpl(AggressiveInlining)]
+        internal Vector128<T> As128One() => Vector128<T>.One
+            .WithElement(0, v.X)
+            .WithElement(1, v.Y)
+            .WithElement(2, v.Z);
+
+        [MethodImpl(AggressiveInlining)]
+        internal Vector256<T> As256One() => Vector256<T>.One
             .WithElement(0, v.X)
             .WithElement(1, v.Y)
             .WithElement(2, v.Z);

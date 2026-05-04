@@ -6,15 +6,21 @@ namespace System.Numerics;
 
 public static partial class Mat44
 {
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     public static Mat44<T> Affine<T>(Quat<T> r, Vec3<T> s, Vec3<T> t)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             unsafe { return Affine128(r, &s, &t); }
 
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            unsafe { return Affine256(r, &s, &t); }
+            unsafe { return Affine256(r, &s, &t); }*/
+
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            unsafe { return AffineV2(r, &s, t); }
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            unsafe { return AffineV2(r, &s, t); }
 
         T d = T.One + T.One, xx = r.X * r.X, yy = r.Y * r.Y, zz = r.Z * r.Z,
 
@@ -32,15 +38,21 @@ public static partial class Mat44
                    t.X,       t.Y,       t.Z,       T.One);
     }
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     public static Mat44<T> Rotation<T>(Quat<T> r)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return Rotation128(r);
 
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Rotation256(r);
+            return Rotation256(r);*/
+
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return RotationV2(r);
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return RotationV2(r);
 
         T d = T.One + T.One, xx = r.X * r.X, yy = r.Y * r.Y, zz = r.Z * r.Z,
 
@@ -58,15 +70,21 @@ public static partial class Mat44
                    T.Zero, T.Zero, T.Zero, T.One);
     }
 
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     public static Mat44<T> Rotate<T>(Mat44<T> m, Quat<T> r)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
             return Rotate128(m, r);
 
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Rotate256(m, r);
+            return Rotate256(m, r);*/
+
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return RotateV2(m, r);
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return RotateV2(m, r);
 
         T
         xx = r.X + r.X, yy = r.Y + r.Y, zz = r.Z + r.Z,
@@ -105,7 +123,7 @@ public static partial class Mat44
     }
 
     [Obsolete("vectorize, todo 'Scale' with input matrix")]
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     public static Mat44<T> Scale<T>(T s)
         where T : unmanaged, INumber<T>
             => new(s,      T.Zero, T.Zero, T.Zero,
@@ -114,7 +132,7 @@ public static partial class Mat44
                    T.Zero, T.Zero, T.Zero, T.One);
 
     [Obsolete("vectorize, todo 'Scale' with input matrix")]
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     public static Mat44<T> Scale<T>(Vec3<T> s)
         where T : unmanaged, INumber<T>
             => new(s.X,    T.Zero, T.Zero, T.Zero,
@@ -123,7 +141,7 @@ public static partial class Mat44
                    T.Zero, T.Zero, T.Zero, T.One);
 
     [Obsolete("vectorize, todo 'Translate' with input matrix")]
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     public static Mat44<T> Translation<T>(Vec3<T> t)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => new(T.One,  T.Zero, T.Zero, T.Zero,

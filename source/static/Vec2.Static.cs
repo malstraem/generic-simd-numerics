@@ -33,14 +33,14 @@ public static class Vec2
             => v / n;
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> MultiplyWise<T>(Vec2<T> a, Vec2<T> b)
+    public static Vec2<T> Multiply<T>(Vec2<T> a, Vec2<T> b)
         where T : unmanaged, INumber<T>
-            => a.MultiplyWise(b);
+            => a * b;
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> DivideWise<T>(Vec2<T> a, Vec2<T> b)
+    public static Vec2<T> Divide<T>(Vec2<T> a, Vec2<T> b)
         where T : unmanaged, INumber<T>
-            => a.DivideWise(b);
+            => a / b;
 
     [MethodImpl(AggressiveInlining)]
     public static T Sum<T>(Vec2<T> v)
@@ -50,7 +50,7 @@ public static class Vec2
     [MethodImpl(AggressiveInlining)]
     public static T Dot<T>(Vec2<T> a, Vec2<T> b)
         where T : unmanaged, INumber<T>
-            => a * b;
+            => a.Dot(b);
 
     [MethodImpl(AggressiveInlining)]
     public static Vec2<T> Abs<T>(Vec2<T> v)

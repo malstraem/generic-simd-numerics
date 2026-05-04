@@ -33,14 +33,14 @@ public static class Vec4
             => v / n;
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> MultiplyWise<T>(Vec4<T> a, Vec4<T> b)
+    public static Vec4<T> Multiply<T>(Vec4<T> a, Vec4<T> b)
         where T : unmanaged, INumber<T>
-            => a.MultiplyWise(b);
+            => a * b;
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> DivideWise<T>(Vec4<T> a, Vec4<T> b)
+    public static Vec4<T> Divide<T>(Vec4<T> a, Vec4<T> b)
         where T : unmanaged, INumber<T>
-            => a.DivideWise(b);
+            => a / b;
 
     [MethodImpl(AggressiveInlining)]
     public static T Sum<T>(Vec4<T> v)
@@ -50,12 +50,7 @@ public static class Vec4
     [MethodImpl(AggressiveInlining)]
     public static T Dot<T>(Vec4<T> a, Vec4<T> b)
         where T : unmanaged, INumber<T>
-            => a * b;
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Abs<T>(Vec4<T> v)
-        where T : unmanaged, INumber<T>
-            => v.Abs();
+            => a.Dot(b);
 
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> Min<T>(Vec4<T> a, Vec4<T> b)
@@ -91,28 +86,4 @@ public static class Vec4
     public static T DistanceSquared<T>(Vec4<T> a, Vec4<T> b)
         where T : unmanaged, INumber<T>
             => a.DistanceSquared(b);
-
-    [MethodImpl(AggressiveInlining)]
-    public static T Length<T, R>(Vec4<T> v)
-        where T : unmanaged, INumber<T>
-        where R : IRootFunctions<R>
-            => v.Length<R>();
-
-    [MethodImpl(AggressiveInlining)]
-    public static T Distance<T, R>(Vec4<T> a, Vec4<T> b)
-        where T : unmanaged, INumber<T>
-        where R : IRootFunctions<R>
-            => a.Distance<R>(b);
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Normalize<T, R>(Vec4<T> v)
-        where T : unmanaged, INumber<T>
-        where R : unmanaged, INumber<R>, IRootFunctions<R>
-            => v.Normalize<R>();
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> SquareRoot<T, R>(Vec4<T> v)
-        where T : unmanaged, INumber<T>
-        where R : IRootFunctions<R>
-            => v.SquareRoot<R>();
 }

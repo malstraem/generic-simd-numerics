@@ -42,14 +42,14 @@ public class StressVector4D<T> : BaseBench<T>
     }
 
     [Benchmark]
-    public void MultiplyElementWise()
+    public void Multiply()
     {
         for (int i = 0; i < Count - 1; i++)
             @out[i] = vecs[i] * vecs[i + 1];
     }
 
     [Benchmark]
-    public void DivideElementWise()
+    public void Divide()
     {
         for (int i = 0; i < Count - 1; i++)
             @out[i] = vecs[i] / vecs[i + 1];
@@ -81,27 +81,6 @@ public class StressVector4D<T> : BaseBench<T>
     {
         for (int i = 0; i < Count - 1; i++)
             nums[i] = Vector4D.DistanceSquared(vecs[i], vecs[i + 1]);
-    }
-
-    [Benchmark]
-    public void Length()
-    {
-        for (int i = 0; i < Count; i++)
-            nums[i] = vecs[i].Length;
-    }
-
-    [Benchmark]
-    public void Distance()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            nums[i] = Vector4D.Distance(vecs[i], vecs[i + 1]);
-    }
-
-    [Benchmark]
-    public void Normalize()
-    {
-        for (int i = 0; i < Count; i++)
-            @out[i] = Vector4D.Normalize(vecs[i]);
     }
 
     [Benchmark]
