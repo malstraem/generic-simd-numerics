@@ -17,10 +17,10 @@ public static partial class Mat44
             unsafe { return Affine256(r, &s, &t); }*/
 
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            unsafe { return AffineV2(r, &s, &t); }
+            unsafe { return AffineV2(r, &s, t); }
 
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            unsafe { return AffineV2(r, &s, &t); }
+            unsafe { return AffineV2(r, &s, t); }
 
         T d = T.One + T.One, xx = r.X * r.X, yy = r.Y * r.Y, zz = r.Z * r.Z,
 

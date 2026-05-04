@@ -1,12 +1,11 @@
 namespace System.Numerics;
 
-// called in right cases
-
+// calls in right cases
 // any ways to 256 float and 512 double?
 public partial struct Quat<T>
 {
     [MethodImpl(AggressiveInlining)]
-    private static Quat<T> Multiply128F(Quat<T> a, Quat<T> b)
+    private static Quat<T> Multiply128(Quat<T> a, Quat<T> b)
     {
         a.Vec4().Broadcast128(out var c, out var d, out var e, out var f);
 
@@ -18,15 +17,15 @@ public partial struct Quat<T>
 
         q *= f;
 
-        q = c.MultiplyAdd(Vector128.Create(+1, -1, +1, -1f).As<float, T>(), q);
-        q = d.MultiplyAdd(Vector128.Create(+1, +1, -1, -1f).As<float, T>(), q);
-        q = e.MultiplyAdd(Vector128.Create(-1, +1, +1, -1f).As<float, T>(), q);
+        q = c.Estimate(Vector128.Create(+1, -1, +1, -1f).As<float, T>(), q);
+        q = d.Estimate(Vector128.Create(+1, +1, -1, -1f).As<float, T>(), q);
+        q = e.Estimate(Vector128.Create(-1, +1, +1, -1f).As<float, T>(), q);
 
         return q.Quat();
     }
 
     [MethodImpl(AggressiveInlining)]
-    private static Quat<T> Multiply256D(Quat<T> a, Quat<T> b)
+    private static Quat<T> Multiply256(Quat<T> a, Quat<T> b)
     {
         a.Vec4().Broadcast256(out var c, out var d, out var e, out var f);
 
@@ -38,9 +37,9 @@ public partial struct Quat<T>
 
         q *= f;
 
-        q = c.MultiplyAdd(Vector256.Create(+1, -1, +1, -1d).As<double, T>(), q);
-        q = d.MultiplyAdd(Vector256.Create(+1, +1, -1, -1d).As<double, T>(), q);
-        q = e.MultiplyAdd(Vector256.Create(-1, +1, +1, -1d).As<double, T>(), q);
+        q = c.Estimate(Vector256.Create(+1, -1, +1, -1d).As<double, T>(), q);
+        q = d.Estimate(Vector256.Create(+1, +1, -1, -1d).As<double, T>(), q);
+        q = e.Estimate(Vector256.Create(-1, +1, +1, -1d).As<double, T>(), q);
 
         return q.Quat();
     }

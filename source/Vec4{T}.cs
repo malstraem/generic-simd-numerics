@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
@@ -10,7 +12,16 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
 
     public Vec4(T n) : this(n, n, n, n) { }
 
-    public static Vec4<T> One { get; } = new(T.One);
+    internal static readonly Vec4<T>
+        one = new(T.One),
+        unitW = new(T.Zero, T.Zero, T.Zero, T.One);
+
+    public static Vec4<T> One
+    {
+        [MethodImpl(AggressiveInlining)]
+        get => SizeOf<T>() == 4 ? one.As128().Vec4()
+             : SizeOf<T>() == 8 ? one.As256().Vec4() : one;
+    }
 
     public static Vec4<T> Zero { get; } = new(T.Zero);
 
@@ -20,7 +31,12 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
 
     public static Vec4<T> UnitZ { get; } = new(T.Zero, T.Zero, T.One, T.Zero);
 
-    public static Vec4<T> UnitW { get; } = new(T.Zero, T.Zero, T.Zero, T.One);
+    public static Vec4<T> UnitW
+    {
+        [MethodImpl(AggressiveInlining)]
+        get => SizeOf<T>() == 4 ? unitW.As128().Vec4()
+             : SizeOf<T>() == 8 ? unitW.As256().Vec4() : unitW;
+    }
 
     static Vec4<T> IAdditiveIdentity<Vec4<T>, Vec4<T>>.AdditiveIdentity => Zero;
 
@@ -254,9 +270,9 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     {
         var v = m.X * X;
 
-        v = m.Y.MultiplyAdd(Y, v);
-        v = m.Z.MultiplyAdd(Z, v);
-        v = m.W.MultiplyAdd(W, v);
+        v = m.Y.Estimate(Y, v);
+        v = m.Z.Estimate(Z, v);
+        v = m.W.Estimate(W, v);
 
         return v;
     }

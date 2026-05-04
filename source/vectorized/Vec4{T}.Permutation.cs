@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Numerics;
 
-// called in right cases
+// calls in right cases
 public partial struct Vec4<T>
 {
     [MethodImpl(AggressiveInlining)]

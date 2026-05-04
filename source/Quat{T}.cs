@@ -17,7 +17,7 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     [Obsolete("vectorize")]
     public Quat(Vec3<T> v, T w) : this(v.X, v.Y, v.Z, w) { }
 
-    public static Quat<T> Identity => new(Vec3<T>.Zero, T.One);
+    public static Quat<T> Identity { get; } = new(Vec3<T>.Zero, T.One);
 
     public readonly bool IsIdentity => this == Identity;
 
@@ -39,10 +39,10 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     public static Quat<T> operator *(Quat<T> a, Quat<T> b)
     {
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Multiply128F(a, b);
+            return Multiply128(a, b);
 
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Multiply256D(a, b);
+            return Multiply256(a, b);
 
         var c = b * a.W;
         var d = b * a.X;

@@ -1,6 +1,6 @@
 namespace System.Numerics;
 
-// called in right cases
+// calls in right cases
 // not optimal asm
 // check Vec2{T}.DISGUSTING_CARGO_CULT.cs for more
 internal static class ReinterpretateVec2

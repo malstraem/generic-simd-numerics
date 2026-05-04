@@ -2,7 +2,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Numerics;
 
-// why doesn't this just exist at System.Numerics with JIT fallback to naive?
 internal static class ProveMeWrong
 {
     extension<T>(Vector128<T> v)

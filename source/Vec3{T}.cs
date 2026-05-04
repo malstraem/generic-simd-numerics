@@ -321,6 +321,16 @@ public partial struct Vec3<T>(T x, T y, T z) :
                    T.CreateTruncating(R.Sqrt(R.CreateSaturating(Z))));
     }
 
+    internal readonly Vec4<T> ToVec4One()
+    {
+        if (SizeOf<T>() == 4)
+            return this.As128One().Vec4();
+        else if (SizeOf<T>() == 8)
+            return this.As256One().Vec4();
+        else
+            return new(X, Y, Z, T.One);
+    }
+
     public readonly bool Equals(Vec3<T> other) => this == other;
 
     public override readonly bool Equals(object? obj) => (obj is Vec3<T> other) && Equals(other);

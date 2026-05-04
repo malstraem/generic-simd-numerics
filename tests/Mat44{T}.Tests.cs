@@ -95,7 +95,7 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
     }
 
     [Test, Repeat(999), DisplayName("compare rotations (kind of frobenius norm)")]
-    //[Skip("run to see differences")]
+    [Skip("run to see differences")]
     public async Task FrobeniusCompareRotations()
     {
         if (typeof(T) == typeof(double)) // nobody cares...
