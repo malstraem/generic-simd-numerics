@@ -29,11 +29,11 @@ public static partial class Mat44
     {
         Vec4<T> w = r.Vec4(),
 
-        z = w.Permute(2, 0, 1, 3),                 // z,  x,  y,  w
-        x = w.Permute(1, 2, 0, 3).MultiplyWise(w), // xy, yz, xz, ww
-        y = w.Permute(3, 3, 3, 3).MultiplyWise(z); // zw, xw, yw, ww
+        z = w.Permute(2, 0, 1, 3),     // z,  x,  y,  w
+        x = w.Permute(1, 2, 0, 3) * w, // xy, yz, xz, ww
+        y = w.Permute(3, 3, 3, 3) * z; // zw, xw, yw, ww
 
-        w = w.MultiplyWise(w);                     // xx, yy, zz, ww
+        w *= w;                        // xx, yy, zz, ww
 
         (x, z) = (x + y, x - y); // xy +/- zw  | yz +/- xw  | xz +/- yw  | 2ww, no mean / 0
         x += x;                  // 2(xy + zw) | 2(yz + xw) | 2(xz + yw) | 4ww, no mean

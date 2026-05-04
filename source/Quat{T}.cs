@@ -65,7 +65,7 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     public static bool operator !=(Quat<T> a, Quat<T> b) => a.Vec4() != b.Vec4();
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T Dot(Quat<T> q) => this.Vec4() * q.Vec4();
+    public readonly T Dot(Quat<T> q) => this.Vec4().Dot(q.Vec4());
 
     [MethodImpl(AggressiveInlining)]
     public readonly T Length() => this.Vec4().Length();

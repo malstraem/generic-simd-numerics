@@ -1,5 +1,3 @@
-using System.ComponentModel;
-
 namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
@@ -139,17 +137,28 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         return new(a.X - b.X, a.Y - b.Y, a.Z - b.Z, a.W - b.W);
     }
 
-    // use dot product instead element wise is personal choice
     [MethodImpl(AggressiveInlining)]
-    public static T operator *(Vec4<T> a, Vec4<T> b)
+    public static Vec4<T> operator *(Vec4<T> a, Vec4<T> b)
     {
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vector128.Dot(a.As128(), b.As128());
+            return (a.As128() * b.As128()).Vec4();
 
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vector256.Dot(a.As256(), b.As256());
+            return (a.As256() * b.As256()).Vec4();
 
-        return a.MultiplyWise(b).Sum();
+        return new(a.X * b.X, a.Y * b.Y, a.Z * b.Z, a.W * b.W);
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec4<T> operator /(Vec4<T> a, Vec4<T> b)
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return (a.As128() / b.As128()).Vec4();
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return (a.As256() / b.As256()).Vec4();
+
+        return new(a.X / b.X, a.Y / b.Y, a.Z / b.Z, a.W / b.W);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -178,30 +187,6 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     #endregion
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec4<T> MultiplyWise(Vec4<T> v)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return (this.As128() * v.As128()).Vec4();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return (this.As256() * v.As256()).Vec4();
-
-        return new(X * v.X, Y * v.Y, Z * v.Z, W * v.W);
-    }
-
-    [MethodImpl(AggressiveInlining)]
-    public readonly Vec4<T> DivideWise(Vec4<T> v)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return (this.As128() / v.As128()).Vec4();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return (this.As256() / v.As256()).Vec4();
-
-        return new(X / v.X, Y / v.Y, Z / v.Z, W / v.W);
-    }
-
-    [MethodImpl(AggressiveInlining)]
     public readonly T Sum()
     {
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
@@ -211,6 +196,18 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
             return Vector256.Sum(this.As256());
 
         return X + Y + Z + W;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly T Dot(Vec4<T> v)
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return Vector128.Dot(this.As128(), v.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return Vector256.Dot(this.As256(), v.As256());
+
+        return (this * v).Sum();
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -278,7 +275,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     }
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T LengthSquared() => this * this;
+    public readonly T LengthSquared() => Dot(this);
 
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec4<T> v) => (this - v).LengthSquared();

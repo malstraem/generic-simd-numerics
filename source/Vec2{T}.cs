@@ -86,15 +86,11 @@ public partial struct Vec2<T>(T x, T y) :
         return new(a.X - b.X, a.Y - b.Y);
     }
 
-    // use dot product instead element wise is personal choice
     [MethodImpl(AggressiveInlining)]
-    public static T operator *(Vec2<T> a, Vec2<T> b) => a.MultiplyWise(b).Sum();
-
-    /*[MethodImpl(AggressiveInlining)]
     public static Vec2<T> operator *(Vec2<T> a, Vec2<T> b)
     {
-        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(a.As128() * b.As128());
+        /*if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
+            return (this.As128() * v.As128()).Vec2();*/
 
         return new(a.X * b.X, a.Y * b.Y);
     }
@@ -102,11 +98,11 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public static Vec2<T> operator /(Vec2<T> a, Vec2<T> b)
     {
-        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return From128(a.As128() / b.As128());
+        /*if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
+            return (this.As128() / v.As128()).Vec2();*/
 
         return new(a.X / b.X, a.Y / b.Y);
-    }*/
+    }
 
     [MethodImpl(AggressiveInlining)]
     public static bool operator ==(Vec2<T> a, Vec2<T> b)
@@ -128,30 +124,22 @@ public partial struct Vec2<T>(T x, T y) :
     #endregion
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec2<T> MultiplyWise(Vec2<T> v)
-    {
-        /*if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return (this.As128() * v.As128()).Vec2();*/
-
-        return new(X * v.X, Y * v.Y);
-    }
-
-    [MethodImpl(AggressiveInlining)]
-    public readonly Vec2<T> DivideWise(Vec2<T> v)
-    {
-        /*if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
-            return (this.As128() / v.As128()).Vec2();*/
-
-        return new(X / v.X, Y / v.Y);
-    }
-
-    [MethodImpl(AggressiveInlining)]
     public readonly T Sum()
     {
         /*if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
             return Vector128.Sum(this.As128());*/
 
         return X + Y;
+    }
+
+    // use dot product instead element wise is personal choice
+    [MethodImpl(AggressiveInlining)]
+    public readonly T Dot(Vec2<T> v)
+    {
+        /*if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
+            return Vector128.Dot(this.As128(), v.As128());*/
+
+        return (this * v).Sum();
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -195,7 +183,7 @@ public partial struct Vec2<T>(T x, T y) :
     public readonly Vec2<T> Lerp(Vec2<T> v, T am) => (this * (T.One - am)) + (v * am);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T LengthSquared() => this * this;
+    public readonly T LengthSquared() => Dot(this);
 
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec2<T> v) => (this - v).LengthSquared();

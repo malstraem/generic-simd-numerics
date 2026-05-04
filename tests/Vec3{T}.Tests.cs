@@ -169,23 +169,23 @@ public abstract class Vec3Base<T>
     [Test, DisplayName("a × b (element wise)")]
     public async Task MultiplyWise()
     {
-        var mul = a.MultiplyWise(b);
+        var mul = a * b;
 
         var expected = (a.Silk() * b.Silk()).Vec3();
 
         await Assert.That(mul).IsEqualTo(expected);
-        await Assert.That(mul).IsEqualTo(Vec3.MultiplyWise(a, b));
+        await Assert.That(mul).IsEqualTo(Vec3.Multiply(a, b));
     }
 
     [Test, DisplayName("a / b (element wise)")]
     public async Task DivideWise()
     {
-        var div = a.DivideWise(b);
+        var div = a / b;
 
         var expected = (a.Silk() / b.Silk()).Vec3();
 
         await Assert.That(div).IsEqualTo(expected);
-        await Assert.That(div).IsEqualTo(Vec3.DivideWise(a, b));
+        await Assert.That(div).IsEqualTo(Vec3.Divide(a, b));
     }
 
     [Test, DisplayName("sum")]

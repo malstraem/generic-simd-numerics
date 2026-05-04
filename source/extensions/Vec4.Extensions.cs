@@ -26,7 +26,7 @@ public static class Vec4Extensions
             if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
                 return a.As256().Estimate(b.As256(), c.As256()).Vec4();
 
-            return a.MultiplyWise(b) + c;
+            return (a * b) + c;
         }
     }
 
