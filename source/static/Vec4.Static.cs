@@ -53,11 +53,6 @@ public static class Vec4
             => a.Dot(b);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Abs<T>(Vec4<T> v)
-        where T : unmanaged, INumber<T>
-            => v.Abs();
-
-    [MethodImpl(AggressiveInlining)]
     public static Vec4<T> Min<T>(Vec4<T> a, Vec4<T> b)
         where T : unmanaged, INumber<T>
             => a.Min(b);
@@ -91,28 +86,4 @@ public static class Vec4
     public static T DistanceSquared<T>(Vec4<T> a, Vec4<T> b)
         where T : unmanaged, INumber<T>
             => a.DistanceSquared(b);
-
-    [MethodImpl(AggressiveInlining)]
-    public static T Length<T, R>(Vec4<T> v)
-        where T : unmanaged, INumber<T>
-        where R : IRootFunctions<R>
-            => v.Length<R>();
-
-    [MethodImpl(AggressiveInlining)]
-    public static T Distance<T, R>(Vec4<T> a, Vec4<T> b)
-        where T : unmanaged, INumber<T>
-        where R : IRootFunctions<R>
-            => a.Distance<R>(b);
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> Normalize<T, R>(Vec4<T> v)
-        where T : unmanaged, INumber<T>
-        where R : unmanaged, INumber<R>, IRootFunctions<R>
-            => v.Normalize<R>();
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> SquareRoot<T, R>(Vec4<T> v)
-        where T : unmanaged, INumber<T>
-        where R : IRootFunctions<R>
-            => v.SquareRoot<R>();
 }

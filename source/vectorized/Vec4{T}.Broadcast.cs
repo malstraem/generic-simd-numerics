@@ -4,6 +4,29 @@ namespace System.Numerics;
 public partial struct Vec4<T>
 {
     [MethodImpl(AggressiveInlining)]
+    internal void Broadcast(
+        out Vec4<T> x, out Vec4<T> y,
+        out Vec4<T> z, out Vec4<T> w)
+    {
+        if (SizeOf<T>() == 4)
+        {
+            Broadcast128(out var c, out var d, out var e, out var f);
+            x = c.Vec4();
+            y = d.Vec4();
+            z = e.Vec4();
+            w = f.Vec4();
+        }
+        else
+        {
+            Broadcast256(out var c, out var d, out var e, out var f);
+            x = c.Vec4();
+            y = d.Vec4();
+            z = e.Vec4();
+            w = f.Vec4();
+        }
+    }
+
+    [MethodImpl(AggressiveInlining)]
     internal void Broadcast128(
         out Vector128<T> x, out Vector128<T> y,
         out Vector128<T> z, out Vector128<T> w)

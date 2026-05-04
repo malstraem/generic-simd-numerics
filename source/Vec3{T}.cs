@@ -137,10 +137,10 @@ public partial struct Vec3<T>(T x, T y, T z) :
     public static Vec3<T> operator /(Vec3<T> a, Vec3<T> b)
     {
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return (a.As128() / b.As128()).Vec3();
+            return (a.As128One() / b.As128One()).Vec3();
 
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return (a.As256() / b.As256()).Vec3();
+            return (a.As256One() / b.As256One()).Vec3();
 
         return new(a.X / b.X, a.Y / b.Y, a.Z / b.Z);
     }

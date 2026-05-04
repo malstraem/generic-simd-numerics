@@ -158,7 +158,7 @@ public abstract class Vec3Base<T>
     [Test, DisplayName("a × b")]
     public async Task Dot()
     {
-        var dot = a * b;
+        var dot = a.Dot(b);
 
         var expected = Vector3D.Dot(a.Silk(), b.Silk());
 

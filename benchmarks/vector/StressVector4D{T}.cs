@@ -84,27 +84,6 @@ public class StressVector4D<T> : BaseBench<T>
     }
 
     [Benchmark]
-    public void Length()
-    {
-        for (int i = 0; i < Count; i++)
-            nums[i] = vecs[i].Length;
-    }
-
-    [Benchmark]
-    public void Distance()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            nums[i] = Vector4D.Distance(vecs[i], vecs[i + 1]);
-    }
-
-    [Benchmark]
-    public void Normalize()
-    {
-        for (int i = 0; i < Count; i++)
-            @out[i] = Vector4D.Normalize(vecs[i]);
-    }
-
-    [Benchmark]
     public void Transform()
     {
         for (int i = 0; i < Count; i++)

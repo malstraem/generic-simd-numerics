@@ -9,7 +9,12 @@ internal static class ReinterpretateVec2
         where T : unmanaged, INumber<T>
     {
         [MethodImpl(AggressiveInlining)]
-        internal Vector128<T> As128() => Vector128<T>.Indices
+        internal Vector128<T> As128() => Vector128<T>.Zero
+            .WithElement(0, v.X)
+            .WithElement(1, v.Y);
+
+        [MethodImpl(AggressiveInlining)]
+        internal Vector128<T> As128One() => Vector128<T>.One
             .WithElement(0, v.X)
             .WithElement(1, v.Y);
     }

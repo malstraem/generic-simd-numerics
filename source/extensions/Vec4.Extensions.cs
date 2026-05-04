@@ -8,10 +8,10 @@ public static class Vec4Extensions
         [MethodImpl(AggressiveInlining)]
         public Vec4<T> Estimate(T b, Vec4<T> c)
         {
-            if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
                 return a.As128().Estimate(Vector128.Create(b), c.As128()).Vec4();
 
-            if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
                 return a.As256().Estimate(Vector256.Create(b), c.As256()).Vec4();
 
             return (a * b) + c;
@@ -20,17 +20,17 @@ public static class Vec4Extensions
         [MethodImpl(AggressiveInlining)]
         public Vec4<T> Estimate(Vec4<T> b, Vec4<T> c)
         {
-            if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
                 return a.As128().Estimate(b.As128(), c.As128()).Vec4();
 
-            if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
                 return a.As256().Estimate(b.As256(), c.As256()).Vec4();
 
             return (a * b) + c;
         }
     }
 
-    extension<T>(Vec4<T> v)
+    /*extension<T>(Vec4<T> v)
         where T : unmanaged, INumber<T>, IRootFunctions<T>
     {
         [MethodImpl(AggressiveInlining)]
@@ -44,10 +44,10 @@ public static class Vec4Extensions
 
         [MethodImpl(AggressiveInlining)]
         public Vec4<T> SquareRoot() => v.SquareRoot<T>();
-    }
+    }*/
 }
 
-public static class Vec4StaticExtensions
+/*public static class Vec4StaticExtensions
 {
     extension<T>(Vec4)
         where T : unmanaged, INumber<T>, IRootFunctions<T>
@@ -64,4 +64,4 @@ public static class Vec4StaticExtensions
         [MethodImpl(AggressiveInlining)]
         public static Vec4<T> SquareRoot(Vec4<T> v) => Vec4.SquareRoot<T, T>(v);
     }
-}
+}*/
