@@ -100,10 +100,10 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w) :
         // asm is dummy different from System.Numerics - performance is close, but should be better
 
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Multiply128(a, b);
+            return CoolMultiply128(a, b);
 
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Multiply256(a, b);
+            return CoolMultiply256(a, b);
 
         Mat44<T> m;
 

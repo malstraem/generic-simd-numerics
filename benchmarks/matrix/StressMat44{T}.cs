@@ -44,10 +44,12 @@ public class StressMat44WithQuat<T> : StressMat44<T>
     }
 }
 
-[GenericTypeArguments(typeof(byte))]
-[GenericTypeArguments(typeof(short))]
-[GenericTypeArguments(typeof(int))]
-[GenericTypeArguments(typeof(long))]
+//[GenericTypeArguments(typeof(byte))]
+//[GenericTypeArguments(typeof(short))]
+//[GenericTypeArguments(typeof(int))]
+//[GenericTypeArguments(typeof(long))]
+//[GenericTypeArguments(typeof(float))]
+[GenericTypeArguments(typeof(double))]
 public class StressMat44<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
@@ -60,19 +62,19 @@ public class StressMat44<T> : BaseBench<T>
             mats[i] = Mat44<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
     }
 
-    [Benchmark]
-    public void Add()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            @out[i] = mats[i] + mats[i + 1];
-    }
+    //[Benchmark]
+    //public void Add()
+    //{
+    //    for (int i = 0; i < Count - 1; i++)
+    //        @out[i] = mats[i] + mats[i + 1];
+    //}
 
-    [Benchmark]
-    public void Subtract()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            @out[i] = mats[i] - mats[i + 1];
-    }
+    //[Benchmark]
+    //public void Subtract()
+    //{
+    //    for (int i = 0; i < Count - 1; i++)
+    //        @out[i] = mats[i] - mats[i + 1];
+    //}
 
     [Benchmark]
     public void Multiply()
