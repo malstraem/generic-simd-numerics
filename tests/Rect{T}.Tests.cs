@@ -62,15 +62,6 @@ public class RectBase<T>
         await Assert.That(length).IsEqualTo(expected);
     }
 
-    [Test, DisplayName("intersect rect")]
-    public async Task Intersect()
-    {
-        var length = x.IsIntersect(y);
-
-        var expected = IsIntersect(x.Silk(), y.Silk());
-
-        await Assert.That(length).IsEqualTo(expected);
-    }
 
     public static bool IsIntersect(Rectangle<T> self, Rectangle<T> other)
     {

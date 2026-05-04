@@ -27,12 +27,23 @@ public class StressRect<T> : BaseBench<T>
     }
 
     [Benchmark]
-    public bool IsIntersect()
+    public bool IsIntersectInvert()
     {
         bool intersect = false;
 
         for (int i = 0; i < Count - 1; i++)
-            intersect = rects[i].IsIntersectVectorized(rects[i + 1]);
+            intersect = rects[i].IsIntersectVectorizedInvert(rects[i + 1]);
+
+        return intersect;
+    }
+
+    [Benchmark]
+    public bool IsIntersectSwap()
+    {
+        bool intersect = false;
+
+        for (int i = 0; i < Count - 1; i++)
+            intersect = rects[i].IsIntersectVectorizedSwap(rects[i + 1]);
 
         return intersect;
     }

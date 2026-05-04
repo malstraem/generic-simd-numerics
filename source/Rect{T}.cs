@@ -1,7 +1,7 @@
 namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
-public struct Rect<T>(Vec2<T> origin, Vec2<T> max)
+public partial struct Rect<T>(Vec2<T> origin, Vec2<T> max)
     where T : unmanaged, INumber<T>
 {
     public Vec2<T> Origin = origin, Max = max;
@@ -31,16 +31,6 @@ public struct Rect<T>(Vec2<T> origin, Vec2<T> max)
 
     [MethodImpl(AggressiveInlining)]
     public readonly bool IsIntersectNaive(Rect<T> other) => Origin <= other.Max && other.Origin <= Max;
-
-    [MethodImpl(AggressiveInlining)]
-    [Obsolete("hardcode todo")]
-    public readonly bool IsIntersectVectorized(Rect<T> other)
-    {
-        var a = this.As128();
-        var b = other.As128().Permute32(2, 3, 0, 1);
-
-        return Vector128.LessThanOrEqualAll(a, b);
-    }
 
     public readonly bool Equals(Rect<T> other) => this == other;
 
