@@ -6,9 +6,7 @@ public partial struct Rect<T>(Vec2<T> origin, Vec2<T> max)
 {
     public Vec2<T> Origin = origin, Max = max;
 
-    public Rect(T oX, T oY, T mX, T mY) : this(new(oX, oY), new(mX, mY)) { }
-
-    public readonly Vec2<T> Size => Max - Origin;
+    public Rect(T ox, T oy, T mx, T my) : this(new(ox, oy), new(mx, my)) { }
 
     [MethodImpl(AggressiveInlining)]
     public static bool operator ==(Rect<T> a, Rect<T> b) => a.Vec4() == b.Vec4();
@@ -16,6 +14,10 @@ public partial struct Rect<T>(Vec2<T> origin, Vec2<T> max)
     [MethodImpl(AggressiveInlining)]
     public static bool operator !=(Rect<T> a, Rect<T> b) => a.Vec4() != b.Vec4();
 
+    [Obsolete("vectorize")]
+    public readonly Vec2<T> Size => Max - Origin;
+
+    [Obsolete("vectorize")]
     [MethodImpl(AggressiveInlining)]
     public readonly T Square()
     {
@@ -23,9 +25,11 @@ public partial struct Rect<T>(Vec2<T> origin, Vec2<T> max)
         return size.X * size.Y;
     }
 
+    [Obsolete("vectorize")]
     [MethodImpl(AggressiveInlining)]
     public readonly bool Contains(Vec2<T> point) => point >= Origin && point <= Max;
 
+    [Obsolete("vectorize")]
     [MethodImpl(AggressiveInlining)]
     public readonly bool Contains(Rect<T> other) => other.Origin >= Origin && other.Max <= Max;
 
