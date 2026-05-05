@@ -146,6 +146,54 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
 
         return a.X != b.X && a.Y != b.Y && a.Z != b.Z && a.W != b.W;
     }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator <=(Vec4<T> a, Vec4<T> b)
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return Vector128.LessThanOrEqualAll(a.As128(), b.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return Vector256.LessThanOrEqualAll(a.As256(), b.As256());
+
+        return a.X <= b.X && a.Y <= b.Y && a.Z <= b.Z && a.W <= b.W;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator >=(Vec4<T> a, Vec4<T> b)
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return Vector128.GreaterThanOrEqualAll(a.As128(), b.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return Vector256.GreaterThanOrEqualAll(a.As256(), b.As256());
+
+        return a.X >= b.X && a.Y >= b.Y && a.Z >= b.Z && a.W >= b.W;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator >(Vec4<T> a, Vec4<T> b)
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return Vector128.GreaterThanAll(a.As128(), b.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return Vector256.GreaterThanAll(a.As256(), b.As256());
+
+        return a.X > b.X && a.Y > b.Y && a.Z > b.Z && a.W > b.W;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator <(Vec4<T> a, Vec4<T> b)
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+            return Vector128.LessThanAll(a.As128(), b.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+            return Vector256.LessThanAll(a.As256(), b.As256());
+
+        return a.X < b.X && a.Y < b.Y && a.Z < b.Z && a.W < b.W;
+    }
     #endregion
 
     [MethodImpl(AggressiveInlining)]

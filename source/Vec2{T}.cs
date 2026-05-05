@@ -121,6 +121,42 @@ public partial struct Vec2<T>(T x, T y) :
 
         return a.X != b.X && a.Y != b.Y;
     }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator <=(Vec2<T> a, Vec2<T> b)
+    {
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
+            return Vector128.LessThanOrEqualAll(a.As128(), b.As128());
+
+        return a.X <= b.X && a.Y <= b.Y;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator >=(Vec2<T> a, Vec2<T> b)
+    {
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
+            return Vector128.GreaterThanOrEqualAll(a.As128(), b.As128());
+
+        return a.X >= b.X && a.Y >= b.Y;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator >(Vec2<T> a, Vec2<T> b)
+    {
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
+            return Vector128.GreaterThanAll(a.As128(), b.As128());
+
+        return a.X > b.X && a.Y > b.Y;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator <(Vec2<T> a, Vec2<T> b)
+    {
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported)
+            return Vector128.LessThanAll(a.As128(), b.As128());
+
+        return a.X < b.X && a.Y < b.Y;
+    }
     #endregion
 
     [MethodImpl(AggressiveInlining)]
