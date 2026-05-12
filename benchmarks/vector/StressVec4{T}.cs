@@ -37,7 +37,7 @@ public class StressBaseVec4<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
     protected static readonly Vec4<T>[] vecs = new Vec4<T>[Count],
-                                      @out = new Vec4<T>[Count];
+                                        @out = new Vec4<T>[Count];
 
     private static readonly Mat44<T> m = Mat44<T>.Gen(T.One);
 
@@ -74,13 +74,6 @@ public class StressBaseVec4<T> : BaseBench<T>
         for (int i = 0; i < Count - 1; i++)
             @out[i] = vecs[i] / vecs[i + 1];
     }
-
-    //[Benchmark]
-    //public void Abs()
-    //{
-    //    for (int i = 0; i < Count; i++)
-    //        @out[i] = vecs[i].Abs();
-    //}
 
     [Benchmark]
     public void Sum()

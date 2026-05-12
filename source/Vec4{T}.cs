@@ -278,62 +278,6 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec4<T> v) => (this - v).LengthSquared();
 
-    // not sure about the truncate/saturate
-    // float and double are sealed using extensions
-
-    //[MethodImpl(AggressiveInlining)]
-    //public readonly R LengthSaturating<R>()
-    //    where R : IRootFunctions<R>
-    //        => R.Sqrt(R.CreateSaturating(LengthSquared()));
-
-    //[MethodImpl(AggressiveInlining)]
-    //public readonly R LengthTruncating<R>()
-    //    where R : IRootFunctions<R>
-    //        => R.Sqrt(R.CreateTruncating(LengthSquared()));
-
-    //[MethodImpl(AggressiveInlining)]
-    //public readonly T Length<R>()
-    //    where R : IRootFunctions<R>
-    //        => T.CreateTruncating(LengthSaturating<R>());
-
-    //[MethodImpl(AggressiveInlining)]
-    //public readonly R DistanceSaturating<R>(Vec4<T> v)
-    //    where R : IRootFunctions<R>
-    //        => R.Sqrt(R.CreateSaturating(DistanceSquared(v)));
-
-    //[MethodImpl(AggressiveInlining)]
-    //public readonly R DistanceTruncating<R>(Vec4<T> v)
-    //    where R : IRootFunctions<R>
-    //        => R.CreateTruncating(DistanceSquared(v));
-
-    //[MethodImpl(AggressiveInlining)]
-    //public readonly T Distance<R>(Vec4<T> v)
-    //    where R : IRootFunctions<R>
-    //        => T.CreateTruncating(DistanceSaturating<R>(v));
-
-    //[MethodImpl(AggressiveInlining)]
-    //public readonly Vec4<T> Normalize<R>()
-    //    where R : INumber<R>, IRootFunctions<R>
-    //        => this / Length<R>();
-
-    //[MethodImpl(AggressiveInlining)]
-    //public readonly Vec4<T> SquareRoot<R>() where R : IRootFunctions<R>
-    //{
-    //    // looks like intrinsics works with integers
-    //    // but maybe it would be better to make Vec{N}<T>.SquareRoot<R> return Vec{N}<R>?
-
-    //    if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-    //        return Vector128.Sqrt(this.As128()).Vec4();
-
-    //    if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-    //        return Vector256.Sqrt(this.As256()).Vec4();
-
-    //    return new(T.CreateTruncating(R.Sqrt(R.CreateTruncating(X))),
-    //               T.CreateTruncating(R.Sqrt(R.CreateTruncating(Y))),
-    //               T.CreateTruncating(R.Sqrt(R.CreateTruncating(Z))),
-    //               T.CreateTruncating(R.Sqrt(R.CreateTruncating(W))));
-    //}
-
     public readonly bool Equals(Vec4<T> other) => this == other;
 
     public override readonly bool Equals(object? obj) => (obj is Vec4<T> other) && Equals(other);

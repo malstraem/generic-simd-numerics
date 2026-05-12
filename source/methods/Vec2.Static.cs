@@ -1,5 +1,7 @@
 namespace System.Numerics;
 
+#pragma warning disable IDE0022
+
 public static class Vec2
 {
     [MethodImpl(AggressiveInlining)]
@@ -53,11 +55,6 @@ public static class Vec2
             => a.Dot(b);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> Abs<T>(Vec2<T> v)
-        where T : unmanaged, INumber<T>
-            => v.Abs();
-
-    [MethodImpl(AggressiveInlining)]
     public static Vec2<T> Min<T>(Vec2<T> a, Vec2<T> b)
         where T : unmanaged, INumber<T>
             => a.Min(b);
@@ -88,26 +85,37 @@ public static class Vec2
             => a.DistanceSquared(b);
 
     [MethodImpl(AggressiveInlining)]
-    public static T Length<T, R>(Vec2<T> v)
-        where T : unmanaged, INumber<T>
-        where R : IRootFunctions<R>
-            => v.Length<R>();
+    public static T Length<T>(Vec2<T> v)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>
+            => T.Sqrt(LengthSquared(v));
 
     [MethodImpl(AggressiveInlining)]
-    public static T Distance<T, R>(Vec2<T> a, Vec2<T> b)
-        where T : unmanaged, INumber<T>
-        where R : IRootFunctions<R>
-            => a.Distance<R>(b);
+    public static T Distance<T>(Vec2<T> a, Vec2<T> b)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>
+            => T.Sqrt(DistanceSquared(a, b));
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> Normalize<T, R>(Vec2<T> v)
-        where T : unmanaged, INumber<T>
-        where R : IRootFunctions<R>
-            => v.Normalize<R>();
+    public static Vec2<T> Normalize<T>(Vec2<T> v)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>
+            => v / Length(v);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> SquareRoot<T, R>(Vec2<T> v)
-        where T : unmanaged, INumber<T>
-        where R : IRootFunctions<R>
-            => v.SquareRoot<R>();
+    public static Vec2<T> SquareRoot<T>(Vec2<T> v)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>
+    {
+        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.Sqrt(v.As128()).Vec3();*/
+
+        return new(T.Sqrt(v.X), T.Sqrt(v.Y));
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec2<T> Abs<T>(Vec2<T> v)
+        where T : unmanaged, INumber<T>, ISignedNumber<T>
+    {
+        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.Abs(v.As128()).Vec2();*/
+
+        return new(T.Abs(v.X), T.Abs(v.Y));
+    }
 }

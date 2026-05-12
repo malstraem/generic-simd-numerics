@@ -4,21 +4,42 @@ namespace System.Numerics.Bench;
 
 [GenericTypeArguments(typeof(float))]
 [GenericTypeArguments(typeof(double))]
-public class StressVec3<T> : StressVec3<T, T>
-    where T : unmanaged, INumber<T>, IRootFunctions<T>;
-
-[GenericTypeArguments(typeof(byte), typeof(float))]
-[GenericTypeArguments(typeof(short), typeof(float))]
-[GenericTypeArguments(typeof(int), typeof(float))]
-[GenericTypeArguments(typeof(long), typeof(double))]
-public class StressVec3<T, R> : BaseBench<T>
-    where T : unmanaged, INumber<T>
-    where R : unmanaged, IRootFunctions<R>
+public class StressVec3<T> : StressBaseVec3<T>
+    where T : unmanaged, INumber<T>, IRootFunctions<T>
 {
-    private static readonly Vec3<T>[] vecs = new Vec3<T>[Count],
-                                      @out = new Vec3<T>[Count];
+    [Benchmark]
+    public void Length()
+    {
+        for (int i = 0; i < Count; i++)
+            nums[i] = vecs[i].Length();
+    }
 
-    public StressVec3()
+    [Benchmark]
+    public void Distance()
+    {
+        for (int i = 0; i < Count - 1; i++)
+            nums[i] = vecs[i].Distance(vecs[i + 1]);
+    }
+
+    [Benchmark]
+    public void Normalize()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = vecs[i].Normalize();
+    }
+}
+
+[GenericTypeArguments(typeof(byte))]
+[GenericTypeArguments(typeof(short))]
+[GenericTypeArguments(typeof(int))]
+[GenericTypeArguments(typeof(long))]
+public class StressBaseVec3<T> : BaseBench<T>
+    where T : unmanaged, INumber<T>
+{
+    protected static readonly Vec3<T>[] vecs = new Vec3<T>[Count],
+                                        @out = new Vec3<T>[Count];
+
+    public StressBaseVec3()
     {
         for (int i = 0; i < Count; i++)
             vecs[i] = Vec3<T>.Gen(T.One);
@@ -53,13 +74,6 @@ public class StressVec3<T, R> : BaseBench<T>
     }
 
     [Benchmark]
-    public void Abs()
-    {
-        for (int i = 0; i < Count; i++)
-            @out[i] = vecs[i].Abs();
-    }
-
-    [Benchmark]
     public void Sum()
     {
         for (int i = 0; i < Count; i++)
@@ -85,26 +99,5 @@ public class StressVec3<T, R> : BaseBench<T>
     {
         for (int i = 0; i < Count - 1; i++)
             nums[i] = vecs[i].DistanceSquared(vecs[i + 1]);
-    }
-
-    [Benchmark]
-    public void Length()
-    {
-        for (int i = 0; i < Count; i++)
-            nums[i] = vecs[i].Length<R>();
-    }
-
-    [Benchmark]
-    public void Distance()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            nums[i] = vecs[i].Distance<R>(vecs[i + 1]);
-    }
-
-    [Benchmark]
-    public void Normalize()
-    {
-        for (int i = 0; i < Count; i++)
-            @out[i] = vecs[i].Normalize<R>();
     }
 }

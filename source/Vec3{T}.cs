@@ -26,36 +26,12 @@ public partial struct Vec3<T>(T x, T y, T z) :
 
     #region Operators
     [MethodImpl(AggressiveInlining)]
-    public static Vec3<T> operator +(Vec3<T> v)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return (+v.As128()).Vec3();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return (+v.As256()).Vec3();
-
-        return new(+v.X, +v.Y, +v.Z);
-    }
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec3<T> operator -(Vec3<T> v)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return (-v.As128()).Vec3();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return (-v.As256()).Vec3();
-
-        return new(-v.X, -v.Y, -v.Z);
-    }
-
-    [MethodImpl(AggressiveInlining)]
     public static Vec3<T> operator +(Vec3<T> v, T n)
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
             return (v.As128() + Vector128.Create(n)).Vec3();
 
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return (v.As256() + Vector256.Create(n)).Vec3();
 
         return new(v.X + n, v.Y + n, v.Z + n);
@@ -64,10 +40,10 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public static Vec3<T> operator -(Vec3<T> v, T n)
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
             return (v.As128() - Vector128.Create(n)).Vec3();
 
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return (v.As256() - Vector256.Create(n)).Vec3();
 
         return new(v.X - n, v.Y - n, v.Z - n);
@@ -76,10 +52,10 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public static Vec3<T> operator *(Vec3<T> v, T n)
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
             return (v.As128() * n).Vec3();
 
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return (v.As256() * n).Vec3();
 
         return new(v.X * n, v.Y * n, v.Z * n);
@@ -88,10 +64,10 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public static Vec3<T> operator /(Vec3<T> v, T n)
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
             return (v.As128() / n).Vec3();
 
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return (v.As256() / n).Vec3();
 
         return new(v.X / n, v.Y / n, v.Z / n);
@@ -100,10 +76,10 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public static Vec3<T> operator +(Vec3<T> a, Vec3<T> b)
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
             return (a.As128() + b.As128()).Vec3();
 
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return (a.As256() + b.As256()).Vec3();
 
         return new(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
@@ -112,10 +88,10 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public static Vec3<T> operator -(Vec3<T> a, Vec3<T> b)
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
             return (a.As128() - b.As128()).Vec3();
 
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return (a.As256() - b.As256()).Vec3();
 
         return new(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
@@ -124,10 +100,10 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public static Vec3<T> operator *(Vec3<T> a, Vec3<T> b)
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
             return (a.As128() * b.As128()).Vec3();
 
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return (a.As256() * b.As256()).Vec3();
 
         return new(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
@@ -136,10 +112,10 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public static Vec3<T> operator /(Vec3<T> a, Vec3<T> b)
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
             return (a.As128One() / b.As128One()).Vec3();
 
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return (a.As256One() / b.As256One()).Vec3();
 
         return new(a.X / b.X, a.Y / b.Y, a.Z / b.Z);
@@ -148,10 +124,10 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public static bool operator ==(Vec3<T> a, Vec3<T> b)
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
             return a.As128() == b.As128();
 
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return a.As256() == b.As256();
 
         return a.X == b.X && a.Y == b.Y && a.Z == b.Z;
@@ -160,10 +136,10 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public static bool operator !=(Vec3<T> a, Vec3<T> b)
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
             return a.As128() != b.As128();
 
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return a.As256() != b.As256();
 
         return a.X != b.X && a.Y != b.Y && a.Z != b.Z;
@@ -172,10 +148,10 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public static bool operator <=(Vec3<T> a, Vec3<T> b)
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
             return Vector128.LessThanOrEqualAll(a.As128(), b.As128());
 
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return Vector256.LessThanOrEqualAll(a.As256(), b.As256());
 
         return a.X <= b.X && a.Y <= b.Y && a.Z <= b.Z;
@@ -184,10 +160,10 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public static bool operator >=(Vec3<T> a, Vec3<T> b)
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
             return Vector128.GreaterThanOrEqualAll(a.As128(), b.As128());
 
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return Vector256.GreaterThanOrEqualAll(a.As256(), b.As256());
 
         return a.X >= b.X && a.Y >= b.Y && a.Z >= b.Z;
@@ -196,10 +172,10 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public static bool operator >(Vec3<T> a, Vec3<T> b)
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
             return Vector128.GreaterThanAll(a.As128(), b.As128());
 
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return Vector256.GreaterThanAll(a.As256(), b.As256());
 
         return a.X > b.X && a.Y > b.Y && a.Z > b.Z;
@@ -208,10 +184,10 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public static bool operator <(Vec3<T> a, Vec3<T> b)
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
             return Vector128.LessThanAll(a.As128(), b.As128());
 
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return Vector256.LessThanAll(a.As256(), b.As256());
 
         return a.X < b.X && a.Y < b.Y && a.Z < b.Z;
@@ -221,10 +197,10 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public readonly T Sum()
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
             return Vector128.Sum(this.As128());
 
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return Vector256.Sum(this.As256());
 
         return X + Y + Z;
@@ -233,34 +209,22 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public readonly T Dot(Vec3<T> v)
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
             return Vector128.Dot(this.As128(), v.As128());
 
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return Vector256.Dot(this.As256(), v.As256());
 
         return (this * v).Sum();
     }
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec3<T> Abs()
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vector128.Abs(this.As128()).Vec3();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vector256.Abs(this.As256()).Vec3();
-
-        return new(T.Abs(X), T.Abs(Y), T.Abs(Z));
-    }
-
-    [MethodImpl(AggressiveInlining)]
     public readonly Vec3<T> Min(Vec3<T> v)
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
             return Vector128.Min(this.As128(), v.As128()).Vec3();
 
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return Vector256.Min(this.As256(), v.As256()).Vec3();
 
         return new(T.Min(X, v.X), T.Min(Y, v.Y), T.Min(Z, v.Z));
@@ -269,10 +233,10 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec3<T> Max(Vec3<T> v)
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
             return Vector128.Max(this.As128(), v.As128()).Vec3();
 
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return Vector256.Max(this.As256(), v.As256()).Vec3();
 
         return new(T.Max(X, v.X), T.Max(Y, v.Y), T.Max(Z, v.Z));
@@ -281,10 +245,10 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec3<T> Clamp(Vec3<T> min, Vec3<T> max)
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
             return Vector128.Clamp(this.As128(), min.As128(), max.As128()).Vec3();
 
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return Vector256.Clamp(this.As256(), min.As256(), max.As256()).Vec3();
 
         return max.Min(Max(min));
@@ -294,72 +258,17 @@ public partial struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec3<T> Lerp(Vec3<T> v, T am) => (this * (T.One - am)) + (v * am);
 
-    [Obsolete("vectorize")]
-    [MethodImpl(AggressiveInlining)]
-    public readonly Vec3<T> Cross(Vec3<T> v) => new((Y * v.Z) - (Z * v.Y),
-                                                    (Z * v.X) - (X * v.Z),
-                                                    (X * v.Y) - (Y * v.X));
-
     [MethodImpl(AggressiveInlining)]
     public readonly T LengthSquared() => Dot(this);
 
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec3<T> v) => (this - v).LengthSquared();
 
-    // not sure about the truncate/saturate
-    // float and double are sealed using extensions
-
+    [Obsolete("vectorize")]
     [MethodImpl(AggressiveInlining)]
-    public readonly R LengthSaturating<R>()
-        where R : IRootFunctions<R>
-            => R.Sqrt(R.CreateSaturating(LengthSquared()));
-
-    [MethodImpl(AggressiveInlining)]
-    public readonly R LengthTruncating<R>()
-        where R : IRootFunctions<R>
-            => R.Sqrt(R.CreateTruncating(LengthSquared()));
-
-    [MethodImpl(AggressiveInlining)]
-    public readonly T Length<R>()
-        where R : IRootFunctions<R>
-            => T.CreateTruncating(LengthSaturating<R>());
-
-    [MethodImpl(AggressiveInlining)]
-    public readonly R DistanceSaturating<R>(Vec3<T> v)
-        where R : IRootFunctions<R>
-            => R.Sqrt(R.CreateSaturating(DistanceSquared(v)));
-
-    [MethodImpl(AggressiveInlining)]
-    public readonly R DistanceTruncating<R>(Vec3<T> v)
-        where R : IRootFunctions<R>
-            => R.CreateTruncating(DistanceSquared(v));
-
-    [MethodImpl(AggressiveInlining)]
-    public readonly T Distance<R>(Vec3<T> v)
-        where R : IRootFunctions<R>
-            => T.CreateTruncating(DistanceSaturating<R>(v));
-
-    [MethodImpl(AggressiveInlining)]
-    public readonly Vec3<T> Normalize<R>()
-        where R : IRootFunctions<R>
-            => this / Length<R>();
-
-    [MethodImpl(AggressiveInlining)]
-    public readonly Vec3<T> SquareRoot<R>() where R : IRootFunctions<R>
-    {
-        // looks like intrinsics works with integers
-        // but maybe it would be better to make Vec{N}<T>.SquareRoot<R> return Vec{N}<R>?
-
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vector128.Sqrt(this.As128()).Vec3();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vector256.Sqrt(this.As256()).Vec3();
-
-        return new(T.CreateTruncating(R.Sqrt(R.CreateSaturating(X))),
-                   T.CreateTruncating(R.Sqrt(R.CreateSaturating(Y))),
-                   T.CreateTruncating(R.Sqrt(R.CreateSaturating(Z))));
-    }
+    public readonly Vec3<T> Cross(Vec3<T> v) => new((Y * v.Z) - (Z * v.Y),
+                                                (Z * v.X) - (X * v.Z),
+                                                (X * v.Y) - (Y * v.X));
 
     internal readonly Vec4<T> ToVec4One()
     {

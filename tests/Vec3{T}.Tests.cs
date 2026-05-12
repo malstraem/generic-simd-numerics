@@ -1,3 +1,5 @@
+using System.Numerics.Vec4Tests;
+
 using Silk.NET.Maths;
 
 namespace System.Numerics.Vec3Tests;
@@ -13,46 +15,63 @@ public class Vec3f32 : Vec3Root<float>;
 public class Vec3f64 : Vec3Root<float>;
 
 [InheritsTests]
-public class Vec3i8 : Vec3Root<sbyte, float>;
+public class Vec3i8 : Vec3Signed<sbyte>;
 
 [InheritsTests]
-public class Vec3ui8 : Vec3Root<byte, float>;
+public class Vec3ui8 : Vec3Base<byte>;
 
 [InheritsTests]
-public class Vec3i16 : Vec3Root<short, float>;
+public class Vec3i16 : Vec3Signed<short>;
 
 [InheritsTests]
-public class Vec3ui16 : Vec3Root<ushort, float>;
+public class Vec3ui16 : Vec3Base<ushort>;
 
 [InheritsTests]
-public class Vec3i32 : Vec3Root<int, float>;
+public class Vec3i32 : Vec3Signed<int>;
 
 [InheritsTests]
-public class Vec3ui32 : Vec3Root<uint, float>;
+public class Vec3ui32 : Vec3Base<uint>;
 
 [InheritsTests]
-public class Vec3i64 : Vec3Root<long, double>;
+public class Vec3i64 : Vec3Signed<long>;
 
 [InheritsTests]
-public class Vec3ui64 : Vec3Root<ulong, double>;
+public class Vec3ui64 : Vec3Base<ulong>;
 
 [InheritsTests]
-public abstract class Vec3Root<T> : Vec3Root<T, T>
+public abstract class Vec3Signed<T> : Vec3Base<T>
+    where T : unmanaged, INumber<T>, ISignedNumber<T>
+{
+    [Test, DisplayName("abs")]
+    public async Task Abs()
+    {
+        var negative = -a;
+
+        var abs = negative.Abs();
+
+        var expected = Vector3D.Abs((-a).Silk()).Vec3();
+
+        await Assert.That(abs).IsEqualTo(expected);
+    }
+}
+
+[InheritsTests]
+public abstract class Vec3Root<T> : Vec3Base<T>
     where T : unmanaged, INumber<T>, IRootFunctions<T>
 {
-    [Test, DisplayName("len (sealed variant)")]
-    public async Task LengthSealed()
+    [Test, DisplayName("len")]
+    public async Task Length()
     {
         var length = a.Length();
 
         var expected = a.Silk().Length;
 
-        await Assert.That(length).IsEqualTo(expected);
         await Assert.That(length).IsEqualTo(Vec3.Length(a));
+        await Assert.That(length).IsEqualTo(expected);
     }
 
-    [Test, DisplayName("dist (sealed variant)")]
-    public async Task DistanceSealed()
+    [Test, DisplayName("dist")]
+    public async Task Distance()
     {
         var distance = a.Distance(b);
 
@@ -62,8 +81,8 @@ public abstract class Vec3Root<T> : Vec3Root<T, T>
         await Assert.That(distance).IsEqualTo(Vec3.Distance(a, b));
     }
 
-    [Test, DisplayName("norm (sealed variant)")]
-    public async Task NormalizeSealed()
+    [Test, DisplayName("norm")]
+    public async Task Normalize()
     {
         var normal = a.Normalize();
 
@@ -72,55 +91,16 @@ public abstract class Vec3Root<T> : Vec3Root<T, T>
         await Assert.That(normal).IsEqualTo(expected);
         await Assert.That(normal).IsEqualTo(Vec3.Normalize(a));
     }
-}
-
-[InheritsTests]
-public abstract class Vec3Root<T, R> : Vec3Base<T>
-    where T : unmanaged, INumber<T>
-    where R : IRootFunctions<R>
-{
-    [Test, DisplayName("len")]
-    public async Task Length()
-    {
-        var length = a.Length<R>();
-
-        var expected = a.Silk().Length;
-
-        await Assert.That(length).IsEqualTo(Vec3.Length<T, R>(a));
-        await Assert.That(length).IsEqualTo(expected);
-    }
-
-    [Test, DisplayName("dist")]
-    public async Task Distance()
-    {
-        var distance = a.Distance<R>(b);
-
-        var expected = Vector3D.Distance(a.Silk(), b.Silk());
-
-        await Assert.That(distance).IsEqualTo(expected);
-        await Assert.That(distance).IsEqualTo(Vec3.Distance<T, R>(a, b));
-    }
-
-    [Test, DisplayName("norm")]
-    public async Task Normalize()
-    {
-        var normal = a.Normalize<R>();
-
-        var expected = Vector3D.Normalize(a.Silk()).Vec3();
-
-        await Assert.That(normal).IsEqualTo(expected);
-        await Assert.That(normal).IsEqualTo(Vec3.Normalize<T, R>(a));
-    }
 
     [Test, DisplayName("sqrt")]
     public async Task SquareRoot()
     {
-        var root = a.SquareRoot<R>();
+        var root = a.SquareRoot();
 
         var expected = Vector3D.SquareRoot(a.Silk()).Vec3();
 
         await Assert.That(root).IsEqualTo(expected);
-        await Assert.That(root).IsEqualTo(Vec3.SquareRoot<T, R>(a));
+        await Assert.That(root).IsEqualTo(Vec3.SquareRoot(a));
     }
 }
 
@@ -197,17 +177,6 @@ public abstract class Vec3Base<T>
 
         await Assert.That(sum).IsEqualTo(expected);
         await Assert.That(sum).IsEqualTo(Vec3.Sum(a));
-    }
-
-    [Test, DisplayName("abs")]
-    public async Task Abs()
-    {
-        var abs = (-a).Abs();
-
-        var expected = Vector3D.Abs((-a).Silk()).Vec3();
-
-        await Assert.That(abs).IsEqualTo(expected);
-        await Assert.That(abs).IsEqualTo(Vec3.Abs(-a));
     }
 
     [Test, DisplayName("min")]

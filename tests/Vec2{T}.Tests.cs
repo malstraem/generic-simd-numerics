@@ -1,3 +1,6 @@
+using System.Numerics.Vec3Tests;
+using System.Numerics.Vec4Tests;
+
 using Silk.NET.Maths;
 
 namespace System.Numerics.Vec2Tests;
@@ -7,52 +10,68 @@ namespace System.Numerics.Vec2Tests;
     2) provide more edge cases with better way */
 
 [InheritsTests]
-public class Vec2f32 : Vec2Root<float>;
+public class Vec2f32 : Vec3Root<float>;
 
 [InheritsTests]
-public class Vec2f64 : Vec2Root<double>;
+public class Vec3f64 : Vec3Root<float>;
 
 [InheritsTests]
-public class Vec2i8 : Vec2Root<sbyte, float>;
+public class Vec3i8 : Vec3Signed<sbyte>;
 
 [InheritsTests]
-public class Vec2ui8 : Vec2Root<byte, float>;
+public class Vec3ui8 : Vec3Base<byte>;
 
 [InheritsTests]
-public class Vec2i16 : Vec2Root<short, float>;
+public class Vec3i16 : Vec3Signed<short>;
 
 [InheritsTests]
-public class Vec2ui16 : Vec2Root<ushort, float>;
+public class Vec3ui16 : Vec3Base<ushort>;
 
 [InheritsTests]
-public class Vec2i32 : Vec2Root<int, float>;
+public class Vec3i32 : Vec3Signed<int>;
 
 [InheritsTests]
-public class Vec2ui32 : Vec2Root<uint, float>;
+public class Vec3ui32 : Vec3Base<uint>;
 
 [InheritsTests]
-public class Vec2i64 : Vec2Root<long, double>;
+public class Vec3i64 : Vec3Signed<long>;
 
 [InheritsTests]
-public class Vec2ui64 : Vec2Root<ulong, double>;
+public class Vec3ui64 : Vec3Base<ulong>;
 
 [InheritsTests]
-public abstract class Vec2Root<T> : Vec2Root<T, T>
+public abstract class Vec2Signed<T> : Vec2Base<T>
+    where T : unmanaged, INumber<T>, ISignedNumber<T>
+{
+    [Test, DisplayName("abs")]
+    public async Task Abs()
+    {
+        var negative = -a;
+
+        var abs = negative.Abs();
+
+        var expected = Vector2D.Abs((-a).Silk()).Vec2();
+
+        await Assert.That(abs).IsEqualTo(expected);
+    }
+}
+[InheritsTests]
+public abstract class Vec2Root<T> : Vec2Base<T>
     where T : unmanaged, INumber<T>, IRootFunctions<T>
 {
-    [Test, DisplayName("len (sealed variant)")]
-    public async Task LengthSealed()
+    [Test, DisplayName("len")]
+    public async Task Length()
     {
         var length = a.Length();
 
         var expected = a.Silk().Length;
 
-        await Assert.That(length).IsEqualTo(expected);
         await Assert.That(length).IsEqualTo(Vec2.Length(a));
+        await Assert.That(length).IsEqualTo(expected);
     }
 
-    [Test, DisplayName("dist (sealed variant)")]
-    public async Task DistanceSealed()
+    [Test, DisplayName("dist")]
+    public async Task Distance()
     {
         var distance = a.Distance(b);
 
@@ -62,8 +81,8 @@ public abstract class Vec2Root<T> : Vec2Root<T, T>
         await Assert.That(distance).IsEqualTo(Vec2.Distance(a, b));
     }
 
-    [Test, DisplayName("norm (sealed variant)")]
-    public async Task NormalizeSealed()
+    [Test, DisplayName("norm")]
+    public async Task Normalize()
     {
         var normal = a.Normalize();
 
@@ -72,55 +91,16 @@ public abstract class Vec2Root<T> : Vec2Root<T, T>
         await Assert.That(normal).IsEqualTo(expected);
         await Assert.That(normal).IsEqualTo(Vec2.Normalize(a));
     }
-}
-
-[InheritsTests]
-public abstract class Vec2Root<T, R> : Vec2Base<T>
-    where T : unmanaged, INumber<T>
-    where R : IRootFunctions<R>
-{
-    [Test, DisplayName("len")]
-    public async Task Length()
-    {
-        var length = a.Length<R>();
-
-        var expected = a.Silk().Length;
-
-        await Assert.That(length).IsEqualTo(Vec2.Length<T, R>(a));
-        await Assert.That(length).IsEqualTo(expected);
-    }
-
-    [Test, DisplayName("dist")]
-    public async Task Distance()
-    {
-        var distance = a.Distance<R>(b);
-
-        var expected = Vector2D.Distance(a.Silk(), b.Silk());
-
-        await Assert.That(distance).IsEqualTo(expected);
-        await Assert.That(distance).IsEqualTo(Vec2.Distance<T, R>(a, b));
-    }
-
-    [Test, DisplayName("norm")]
-    public async Task Normalize()
-    {
-        var normal = a.Normalize<R>();
-
-        var expected = Vector2D.Normalize(a.Silk()).Vec2();
-
-        await Assert.That(normal).IsEqualTo(expected);
-        await Assert.That(normal).IsEqualTo(Vec2.Normalize<T, R>(a));
-    }
 
     [Test, DisplayName("sqrt")]
     public async Task SquareRoot()
     {
-        var root = a.SquareRoot<R>();
+        var root = a.SquareRoot();
 
         var expected = Vector2D.SquareRoot(a.Silk()).Vec2();
 
         await Assert.That(root).IsEqualTo(expected);
-        await Assert.That(root).IsEqualTo(Vec2.SquareRoot<T, R>(a));
+        await Assert.That(root).IsEqualTo(Vec2.SquareRoot(a));
     }
 }
 
@@ -197,17 +177,6 @@ public abstract class Vec2Base<T>
 
         await Assert.That(sum).IsEqualTo(expected);
         await Assert.That(sum).IsEqualTo(Vec2.Sum(a));
-    }
-
-    [Test, DisplayName("abs")]
-    public async Task Abs()
-    {
-        var abs = (-a).Abs();
-
-        var expected = Vector2D.Abs((-a).Silk()).Vec2();
-
-        await Assert.That(abs).IsEqualTo(expected);
-        await Assert.That(abs).IsEqualTo(Vec2.Abs(-a));
     }
 
     [Test, DisplayName("min")]

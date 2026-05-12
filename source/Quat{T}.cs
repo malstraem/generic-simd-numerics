@@ -38,18 +38,11 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining | AggressiveOptimization)]
     public static Quat<T> operator *(Quat<T> a, Quat<T> b)
     {
-        /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Multiply128(a, b);
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Multiply256(a, b);*/
-
-        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+        if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+         || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
+        {
             return MultiplyV2(a, b);
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return MultiplyV2(a, b);
-
+        }
         var c = b * a.W;
         var d = b * a.X;
         var e = b * a.Y;

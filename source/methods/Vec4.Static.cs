@@ -86,4 +86,45 @@ public static class Vec4
     public static T DistanceSquared<T>(Vec4<T> a, Vec4<T> b)
         where T : unmanaged, INumber<T>
             => a.DistanceSquared(b);
+
+    [MethodImpl(AggressiveInlining)]
+    public static T Length<T>(Vec4<T> v)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>
+            => T.Sqrt(LengthSquared(v));
+
+    [MethodImpl(AggressiveInlining)]
+    public static T Distance<T>(Vec4<T> a, Vec4<T> b)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>
+            => T.Sqrt(DistanceSquared(a, b));
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec4<T> Normalize<T>(Vec4<T> v)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>
+            => v / Length(v);
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec4<T> SquareRoot<T>(Vec4<T> v)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.Sqrt(v.As128()).Vec4();
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return Vector256.Sqrt(v.As256()).Vec4();
+
+        return new(T.Sqrt(v.X), T.Sqrt(v.Y), T.Sqrt(v.Z), T.Sqrt(v.W));
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec4<T> Abs<T>(Vec4<T> v)
+        where T : unmanaged, INumber<T>, ISignedNumber<T>
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.Abs(v.As128()).Vec4();
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return Vector256.Abs(v.As256()).Vec4();
+
+        return new(T.Abs(v.X), T.Abs(v.Y), T.Abs(v.Z), T.Abs(v.W));
+    }
 }

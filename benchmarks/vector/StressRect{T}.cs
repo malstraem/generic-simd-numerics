@@ -2,12 +2,15 @@ using BenchmarkDotNet.Attributes;
 
 namespace System.Numerics.Bench;
 
-[GenericTypeArguments(typeof(float))]
 [GenericTypeArguments(typeof(int))]
+[GenericTypeArguments(typeof(float))]
+[GenericTypeArguments(typeof(double))]
 public class StressRect<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
     private static readonly Rect<T>[] rects = new Rect<T>[Count];
+
+    private static readonly bool[] bools = new bool[Count];
 
     public StressRect()
     {
@@ -16,35 +19,23 @@ public class StressRect<T> : BaseBench<T>
     }
 
     [Benchmark]
-    public bool IsIntersectNaive()
+    public void IsIntersect()
     {
-        bool intersect = false;
-
         for (int i = 0; i < Count - 1; i++)
-            intersect = rects[i].IsIntersectNaive(rects[i + 1]);
-
-        return intersect;
+            bools[i] = rects[i].IsIntersect(rects[i + 1]);
     }
 
     [Benchmark]
-    public bool IsIntersectInvert()
+    public void Contains()
     {
-        bool intersect = false;
-
         for (int i = 0; i < Count - 1; i++)
-            intersect = rects[i].IsIntersectVectorizedInvert(rects[i + 1]);
-
-        return intersect;
+            bools[i] = rects[i].Contains(rects[i + 1]);
     }
 
     [Benchmark]
-    public bool IsIntersectSwap()
+    public void Square()
     {
-        bool intersect = false;
-
         for (int i = 0; i < Count - 1; i++)
-            intersect = rects[i].IsIntersectVectorizedSwap(rects[i + 1]);
-
-        return intersect;
+            nums[i] = rects[i].Square();
     }
 }

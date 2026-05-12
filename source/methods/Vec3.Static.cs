@@ -53,11 +53,6 @@ public static class Vec3
             => a.Dot(b);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec3<T> Abs<T>(Vec3<T> v)
-        where T : unmanaged, INumber<T>
-            => v.Abs();
-
-    [MethodImpl(AggressiveInlining)]
     public static Vec3<T> Min<T>(Vec3<T> a, Vec3<T> b)
         where T : unmanaged, INumber<T>
             => a.Min(b);
@@ -93,26 +88,43 @@ public static class Vec3
             => a.DistanceSquared(b);
 
     [MethodImpl(AggressiveInlining)]
-    public static T Length<T, R>(Vec3<T> v)
-        where T : unmanaged, INumber<T>
-        where R : IRootFunctions<R>
-            => v.Length<R>();
+    public static T Length<T>(Vec3<T> v)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>
+            => T.Sqrt(LengthSquared(v));
 
     [MethodImpl(AggressiveInlining)]
-    public static T Distance<T, R>(Vec3<T> a, Vec3<T> b)
-        where T : unmanaged, INumber<T>
-        where R : IRootFunctions<R>
-            => a.Distance<R>(b);
+    public static T Distance<T>(Vec3<T> a, Vec3<T> b)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>
+            => T.Sqrt(DistanceSquared(a, b));
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec3<T> Normalize<T, R>(Vec3<T> v)
-        where T : unmanaged, INumber<T>
-        where R : IRootFunctions<R>
-            => v.Normalize<R>();
+    public static Vec3<T> Normalize<T>(Vec3<T> v)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>
+            => v / Length(v);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec3<T> SquareRoot<T, R>(Vec3<T> v)
-        where T : unmanaged, INumber<T>
-        where R : IRootFunctions<R>
-            => v.SquareRoot<R>();
+    public static Vec3<T> SquareRoot<T>(Vec3<T> v)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.Sqrt(v.As128()).Vec3();
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return Vector256.Sqrt(v.As256()).Vec3();
+
+        return new(T.Sqrt(v.X), T.Sqrt(v.Y), T.Sqrt(v.Z));
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec3<T> Abs<T>(Vec3<T> v)
+        where T : unmanaged, INumber<T>, ISignedNumber<T>
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.Abs(v.As128()).Vec3();
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return Vector256.Abs(v.As256()).Vec3();
+
+        return new(T.Abs(v.X), T.Abs(v.Y), T.Abs(v.Z));
+    }
 }

@@ -14,27 +14,48 @@ public partial struct Rect<T>(Vec2<T> origin, Vec2<T> max)
     [MethodImpl(AggressiveInlining)]
     public static bool operator !=(Rect<T> a, Rect<T> b) => a.Vec4() != b.Vec4();
 
-    [Obsolete("vectorize")]
     public readonly Vec2<T> Size => Max - Origin;
 
-    [Obsolete("vectorize")]
     [MethodImpl(AggressiveInlining)]
     public readonly T Square()
     {
+        if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+         || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
+        {
+            return Square(this.Vec4());
+        }
         var size = Size;
         return size.X * size.Y;
     }
 
     [Obsolete("vectorize")]
     [MethodImpl(AggressiveInlining)]
-    public readonly bool Contains(Vec2<T> point) => point >= Origin && point <= Max;
+    public readonly bool Contains(Vec2<T> point)
+    {
+        return point >= Origin && point <= Max;
+    }
 
-    [Obsolete("vectorize")]
     [MethodImpl(AggressiveInlining)]
-    public readonly bool Contains(Rect<T> other) => other.Origin >= Origin && other.Max <= Max;
+    public readonly bool Contains(Rect<T> rect)
+    {
+        if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+         || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
+        {
+            return Contains(rect.Vec4());
+        }
+        return rect.Origin >= Origin && rect.Max <= Max;
+    }
 
     [MethodImpl(AggressiveInlining)]
-    public readonly bool IsIntersectNaive(Rect<T> other) => Origin <= other.Max && other.Origin <= Max;
+    public readonly bool IsIntersect(Rect<T> rect)
+    {
+        if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+         || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
+        {
+            return IsIntersect(rect.Vec4());
+        }
+        return Origin <= rect.Max && rect.Origin <= Max;
+    }
 
     public readonly bool Equals(Rect<T> other) => this == other;
 

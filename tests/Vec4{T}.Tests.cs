@@ -99,8 +99,6 @@ public abstract class Vec4Signed<T> : Vec4Base<T>
         var expected = Vector4D.Abs((-a).Silk()).Vec4();
 
         await Assert.That(abs).IsEqualTo(expected);
-        //await Assert.That(abs).IsEqualTo(Vec4.Abs(-a));
-        //await Assert.That(abs).IsEqualTo(Vec4.Abs(+a));
     }
 }
 
