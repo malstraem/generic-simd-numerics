@@ -24,38 +24,22 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     static Quat<T> IMultiplicativeIdentity<Quat<T>, Quat<T>>.MultiplicativeIdentity => Identity;
 
     [MethodImpl(AggressiveInlining)]
-    public static Quat<T> operator *(Quat<T> q, T n) => (q.Vec4() * n).Quat();
+    public static Quat<T> operator *(Quat<T> q, T n) => Quat.Multiply(q, n);
 
     [MethodImpl(AggressiveInlining)]
-    public static Quat<T> operator /(Quat<T> q, T n) => (q.Vec4() / n).Quat();
+    public static Quat<T> operator /(Quat<T> q, T n) => Quat.Divide(q, n);
 
     [MethodImpl(AggressiveInlining)]
-    public static Quat<T> operator +(Quat<T> a, Quat<T> b) => (a.Vec4() + b.Vec4()).Quat();
+    public static Quat<T> operator +(Quat<T> a, Quat<T> b) => Quat.Add(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static Quat<T> operator -(Quat<T> a, Quat<T> b) => (a.Vec4() - b.Vec4()).Quat();
-
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
-    public static Quat<T> operator *(Quat<T> a, Quat<T> b)
-    {
-        if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-         || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
-        {
-            return MultiplyV2(a, b);
-        }
-        var c = b * a.W;
-        var d = b * a.X;
-        var e = b * a.Y;
-        var f = b * a.Z;
-
-        return new(c.X + d.W + e.Z - f.Y,
-                   c.Y - d.Z + e.W + f.X,
-                   c.Z + d.Y - e.X + f.W,
-                   c.W - d.X - e.Y - f.Z);
-    }
+    public static Quat<T> operator -(Quat<T> a, Quat<T> b) => Quat.Subtract(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static Quat<T> operator /(Quat<T> a, Quat<T> b) => a * b.Inverse();
+    public static Quat<T> operator *(Quat<T> a, Quat<T> b) => Quat.Multiply(a, b);
+
+    [MethodImpl(AggressiveInlining)]
+    public static Quat<T> operator /(Quat<T> a, Quat<T> b) => Quat.Divide(a, b);
 
     [MethodImpl(AggressiveInlining)]
     public static bool operator ==(Quat<T> a, Quat<T> b) => a.Vec4() == b.Vec4();
@@ -64,65 +48,25 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     public static bool operator !=(Quat<T> a, Quat<T> b) => a.Vec4() != b.Vec4();
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T Dot(Quat<T> q) => this.Vec4().Dot(q.Vec4());
+    public readonly T Dot(Quat<T> q) => Quat.Dot(this, q);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T Length() => this.Vec4().Length();
+    public readonly T Length() => Quat.Length(this);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T LengthSquared() => this.Vec4().LengthSquared();
+    public readonly T LengthSquared() => Quat.LengthSquared(this);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Quat<T> Conjugate()
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-        {
-            var xmm = this.As128();
-            xmm *= Vector128.Create(-1, -1, -1, 1f).As<float, T>();
-            return xmm.Quat();
-        }
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector128.IsHardwareAccelerated)
-        {
-            var ymm = this.As256();
-            ymm *= Vector256.Create(-1, -1, -1, 1d).As<double, T>();
-            return ymm.Quat();
-        }
-        return new(-X, -Y, -Z, W);
-    }
+    public readonly Quat<T> Conjugate() => Quat.Conjugate(this);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Quat<T> Normalize() => this.Vec4().Normalize().Quat();
+    public readonly Quat<T> Normalize() => Quat.Normalize(this);
 
-    [Obsolete("reciprocal?")]
     [MethodImpl(AggressiveInlining)]
-    public readonly Quat<T> Inverse()
-    {
-        var ls = LengthSquared();
+    public readonly Quat<T> Inverse() => Quat.Inverse(this);
 
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-        {
-            var lsv = Vector128.Create(ls);
-
-            var compare = Vector128.LessThanOrEqual(lsv, Vector128.Create(T.CreateChecked(1.192092896e-7f)));
-
-            return Vector128.AndNot(Conjugate().As128() / lsv, compare).Quat();
-        }
-
-        // todo 256 way with epsilon
-
-        return Conjugate() * (T.One / ls);
-    }
-
-    [Obsolete("not sure")]
     [MethodImpl(AggressiveInlining)]
-    public readonly Quat<T> Lerp(Quat<T> q, T am)
-    {
-        var v = Dot(q) >= T.Zero ? this.Vec4().Lerp(q.Vec4(), am)
-                               : ((this.Vec4() * (T.One - am)) - (q.Vec4() * am));
-
-        return v.Normalize().Quat();
-    }
+    public readonly Quat<T> Lerp(Quat<T> q, T am) => Quat.Lerp(this, q, am);
 
     public readonly bool Equals(Quat<T> other) => this == other;
 

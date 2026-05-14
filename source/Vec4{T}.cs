@@ -256,7 +256,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
         return max.Min(Max(min));
     }
 
-    // Vector{XXX}.Lerp<T> should exist, isn't?
+    // VectorNNN.Lerp<T> should exist, isn't?
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Lerp(Vec4<T> v, T am) => (this * (T.One - am)) + (v * am);
 

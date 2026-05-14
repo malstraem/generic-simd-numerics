@@ -14,11 +14,17 @@ internal static class ReinterpretateVec3
             .WithElement(1, v.Y)
             .WithElement(2, v.Z);
 
-        [MethodImpl(AggressiveInlining)]
-        internal Vector128<T> As128() => Vector128<T>.Zero
-            .WithElement(0, v.X)
-            .WithElement(1, v.Y)
-            .WithElement(2, v.Z);
+        [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+        internal Vector128<T> As128()
+        {
+            unsafe
+            {
+                return Vector128<T>.Zero
+                    .WithElement(0, *&v.X)
+                    .WithElement(1, *(&v.X + 1))
+                    .WithElement(2, *(&v.X + 2));
+            }
+        }
 
         [MethodImpl(AggressiveInlining)]
         internal Vector128<T> As128One() => Vector128<T>.One
@@ -37,7 +43,12 @@ internal static class ReinterpretateVec3
         where T : unmanaged, INumber<T>
     {
         [MethodImpl(AggressiveInlining)]
-        internal Vec3<T> Vec3() => new(xmm[0], xmm[1], xmm[2]);
+        internal Vec3<T> Vec3()
+        {
+            Vec3<T> v;
+            v.X = xmm[0]; v.Y = xmm[1]; v.Z = xmm[2];
+            return v;
+        }
     }
 
     extension<T>(Vector256<T> ymm)

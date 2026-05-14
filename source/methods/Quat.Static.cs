@@ -3,64 +3,122 @@ namespace System.Numerics;
 public static class Quat
 {
     [MethodImpl(AggressiveInlining)]
+    public static Quat<T> Add<T>(Quat<T> a, T n)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+            => Vec4.Add(a.Vec4(), n).Quat();
+
+    [MethodImpl(AggressiveInlining)]
+    public static Quat<T> Subtract<T>(Quat<T> a, T n)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+            => Vec4.Subtract(a.Vec4(), n).Quat();
+
+    [MethodImpl(AggressiveInlining)]
     public static Quat<T> Add<T>(Quat<T> a, Quat<T> b)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
-            => a + b;
+            => Vec4.Add(a.Vec4(), b.Vec4()).Quat();
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Subtract<T>(Quat<T> a, Quat<T> b)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
-            => a - b;
+            => Vec4.Subtract(a.Vec4(), b.Vec4()).Quat();
 
     [MethodImpl(AggressiveInlining)]
-    public static Quat<T> Multiply<T>(Quat<T> a, T n)
+    public static Quat<T> Multiply<T>(Quat<T> q, T n)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
-            => a * n;
+            => Vec4.Multiply(q.Vec4(), n).Quat();
+
+    [MethodImpl(AggressiveInlining)]
+    public static Quat<T> Divide<T>(Quat<T> q, T n)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+            => Vec4.Divide(q.Vec4(), n).Quat();
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Multiply<T>(Quat<T> a, Quat<T> b)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
-            => a * b;
+    {
+        if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+         || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
+        {
+            return Quat<T>.Multiply(a, b);
+        }
+        var c = b * a.W;
+        var d = b * a.X;
+        var e = b * a.Y;
+        var f = b * a.Z;
 
-    [MethodImpl(AggressiveInlining)]
-    public static T Dot<T>(Quat<T> a, Quat<T> b)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
-            => a.Dot(b);
+        return new(c.X + d.W + e.Z - f.Y,
+                   c.Y - d.Z + e.W + f.X,
+                   c.Z + d.Y - e.X + f.W,
+                   c.W - d.X - e.Y - f.Z);
+    }
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Divide<T>(Quat<T> a, Quat<T> b)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
-            => a / b;
+            => Multiply(a, Inverse(b));
+
+    [MethodImpl(AggressiveInlining)]
+    public static T Dot<T>(Quat<T> a, Quat<T> b)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+            => Vec4.Dot(a.Vec4(), b.Vec4());
 
     [MethodImpl(AggressiveInlining)]
     public static T Length<T>(Quat<T> q)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
-            => q.Length();
+            => Vec4.Length(q.Vec4());
 
     [MethodImpl(AggressiveInlining)]
     public static T LengthSquared<T>(Quat<T> q)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
-            => q.LengthSquared();
+            => Vec4.LengthSquared(q.Vec4());
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Normalize<T>(Quat<T> q)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
-            => q.Normalize();
+            => Vec4.Normalize(q.Vec4()).Quat();
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Conjugate<T>(Quat<T> q)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
-            => q.Conjugate();
+    {
+        if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+         || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector128.IsHardwareAccelerated))
+        {
+            return Quat<T>.Conjugate(q);
+        }
+        return new(-q.X, -q.Y, -q.Z, q.W);
+    }
 
+    [Obsolete("reciprocal?")]
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Inverse<T>(Quat<T> q)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
-            => q.Inverse();
+    {
+        var ls = LengthSquared(q);
 
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+        {
+            var lsv = Vector128.Create(ls);
+
+            var compare = Vector128.LessThanOrEqual(lsv, Vector128.Create(T.CreateChecked(1.192092896e-7f)));
+
+            return Vector128.AndNot(Quat<T>.Conjugate(q).As128() / lsv, compare).Quat();
+        }
+
+        // todo 256 way with epsilon
+
+        return Conjugate(q) * (T.One / ls);
+    }
+
+    [Obsolete("not sure")]
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Lerp<T>(Quat<T> a, Quat<T> b, T am)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
-            => a.Lerp(b, am);
+    {
+        var v = Vec4.Dot(a.Vec4(), b.Vec4()) >= T.Zero ? a.Vec4().Lerp(b.Vec4(), am)
+                                                     : ((a.Vec4() * (T.One - am)) - (b.Vec4() * am));
+        return Vec4.Normalize(v).Quat();
+    }
 
     [Obsolete("vectorize")]
     [MethodImpl(AggressiveInlining)]
@@ -72,7 +130,7 @@ public static class Quat
     }
 
     [Obsolete("any way to vectorize?")]
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     public static Quat<T> Rotation<T>(Mat44<T> m)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
@@ -118,7 +176,7 @@ public static class Quat
     }
 
     [Obsolete("any way to vectorize?")]
-    [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+    [MethodImpl(AggressiveInlining)]
     public static Quat<T> YawPitchRoll<T>(T yaw, T pitch, T roll)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {

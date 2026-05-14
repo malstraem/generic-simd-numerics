@@ -1,7 +1,7 @@
 namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
-public partial struct Vec3<T>(T x, T y, T z) :
+public struct Vec3<T>(T x, T y, T z) :
     IVector<Vec3<T>, T>,
     IVectorScalarOperators<Vec3<T>, T>
         where T : unmanaged, INumber<T> // real number behavior is exposed only where needed
@@ -254,7 +254,7 @@ public partial struct Vec3<T>(T x, T y, T z) :
         return max.Min(Max(min));
     }
 
-    // Vector{XXX}.Lerp<T> should exist, isn't?
+    // VectorNNN.Lerp<T> should exist, isn't?
     [MethodImpl(AggressiveInlining)]
     public readonly Vec3<T> Lerp(Vec3<T> v, T am) => (this * (T.One - am)) + (v * am);
 
@@ -266,19 +266,7 @@ public partial struct Vec3<T>(T x, T y, T z) :
 
     [Obsolete("vectorize")]
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec3<T> Cross(Vec3<T> v) => new((Y * v.Z) - (Z * v.Y),
-                                                (Z * v.X) - (X * v.Z),
-                                                (X * v.Y) - (Y * v.X));
-
-    internal readonly Vec4<T> ToVec4One()
-    {
-        if (SizeOf<T>() == 4)
-            return this.As128One().Vec4();
-        else if (SizeOf<T>() == 8)
-            return this.As256One().Vec4();
-        else
-            return new(X, Y, Z, T.One);
-    }
+    public readonly Vec3<T> Cross(Vec3<T> v) => new((Y * v.Z) - (Z * v.Y), (Z * v.X) - (X * v.Z), (X * v.Y) - (Y * v.X));
 
     public readonly bool Equals(Vec3<T> other) => this == other;
 
