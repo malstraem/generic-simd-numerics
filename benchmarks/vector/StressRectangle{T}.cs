@@ -1,28 +1,23 @@
 using BenchmarkDotNet.Attributes;
 
+using Silk.NET.Maths;
+
 namespace System.Numerics.Bench;
 
 [GenericTypeArguments(typeof(int))]
 [GenericTypeArguments(typeof(float))]
 [GenericTypeArguments(typeof(double))]
-public class StressRect<T> : BaseBench<T>
+public class StressRectangle<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
-    private static readonly Rect<T>[] rects = new Rect<T>[Count];
+    private static readonly Rectangle<T>[] rects = new Rectangle<T>[Count];
 
     private static readonly bool[] bools = new bool[Count];
 
-    public StressRect()
+    public StressRectangle()
     {
         for (int i = 0; i < Count; i++)
-            rects[i] = Vec4<T>.Gen(T.One).Rect();
-    }
-
-    [Benchmark]
-    public void IsIntersect()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            bools[i] = rects[i].Intersects(rects[i + 1]);
+            rects[i] = Rect<T>.Gen(T.One).Silk();
     }
 
     [Benchmark]
@@ -36,6 +31,9 @@ public class StressRect<T> : BaseBench<T>
     public void Area()
     {
         for (int i = 0; i < Count - 1; i++)
-            nums[i] = rects[i].Area();
+        {
+            var rect = rects[i];
+            nums[i] = rect.Size.X * rect.Size.Y;
+        }
     }
 }

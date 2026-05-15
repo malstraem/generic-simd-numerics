@@ -4,22 +4,44 @@ using Silk.NET.Maths;
 
 namespace System.Numerics.Bench;
 
+[GenericTypeArguments(typeof(float))]
+[GenericTypeArguments(typeof(double))]
+public class StressVector3D<T> : StressVector3DI<T>
+    where T : unmanaged, INumber<T>
+{
+    [Benchmark]
+    public void Length()
+    {
+        for (int i = 0; i < Count; i++)
+            nums[i] = vecs[i].Length;
+    }
+
+    [Benchmark]
+    public void Distance()
+    {
+        for (int i = 0; i < Count - 1; i++)
+            nums[i] = Vector3D.Distance(vecs[i], vecs[i + 1]);
+    }
+
+    [Benchmark]
+    public void Normalize()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Vector3D.Normalize(vecs[i]);
+    }
+}
+
 [GenericTypeArguments(typeof(byte))]
 [GenericTypeArguments(typeof(short))]
 [GenericTypeArguments(typeof(int))]
 [GenericTypeArguments(typeof(long))]
-public class StressVector3DI<T> : StressVector3D<T>
-    where T : unmanaged, INumber<T>;
-
-[GenericTypeArguments(typeof(float))]
-[GenericTypeArguments(typeof(double))]
-public class StressVector3D<T> : BaseBench<T>
+public class StressVector3DI<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
-    private static readonly Vector3D<T>[] vecs = new Vector3D<T>[Count],
-                                          @out = new Vector3D<T>[Count];
+    protected static readonly Vector3D<T>[] vecs = new Vector3D<T>[Count],
+                                            @out = new Vector3D<T>[Count];
 
-    public StressVector3D()
+    public StressVector3DI()
     {
         for (int i = 0; i < Count; i++)
             vecs[i] = Vec3<T>.Gen(T.One).Silk();
@@ -79,26 +101,5 @@ public class StressVector3D<T> : BaseBench<T>
     {
         for (int i = 0; i < Count - 1; i++)
             nums[i] = Vector3D.DistanceSquared(vecs[i], vecs[i + 1]);
-    }
-
-    [Benchmark]
-    public void Length()
-    {
-        for (int i = 0; i < Count; i++)
-            nums[i] = vecs[i].Length;
-    }
-
-    [Benchmark]
-    public void Distance()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            nums[i] = Vector3D.Distance(vecs[i], vecs[i + 1]);
-    }
-
-    [Benchmark]
-    public void Normalize()
-    {
-        for (int i = 0; i < Count; i++)
-            @out[i] = Vector3D.Normalize(vecs[i]);
     }
 }

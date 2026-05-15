@@ -19,7 +19,7 @@ public partial struct Rect<T>(Vec2<T> origin, Vec2<T> max) :
     public static bool operator !=(Rect<T> a, Rect<T> b) => a.Vec4() != b.Vec4();
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T Square() => Rect.Square(this);
+    public readonly T Area() => Rect.Area(this);
 
     [MethodImpl(AggressiveInlining)]
     public readonly bool Contains(Vec2<T> point) => Rect.Contains(this, point);
@@ -28,7 +28,7 @@ public partial struct Rect<T>(Vec2<T> origin, Vec2<T> max) :
     public readonly bool Contains(Rect<T> rect) => Rect.Contains(this, rect);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly bool IsIntersect(Rect<T> rect) => Rect.IsIntersect(this, rect);
+    public readonly bool Intersects(Rect<T> rect) => Rect.Intersect(this, rect);
 
     public readonly bool Equals(Rect<T> other) => this == other;
 

@@ -3,13 +3,13 @@ namespace System.Numerics;
 public static class Rect
 {
     [MethodImpl(AggressiveInlining)]
-    public static T Square<T>(Rect<T> rect)
+    public static T Area<T>(Rect<T> rect)
         where T : unmanaged, INumber<T>
     {
         if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
          || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
         {
-            return Rect<T>.Square(rect.Vec4());
+            return Rect<T>.Area(rect.Vec4());
         }
         var size = rect.Size;
         return size.X * size.Y;
@@ -34,13 +34,13 @@ public static class Rect
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static bool IsIntersect<T>(Rect<T> a, Rect<T> b)
+    public static bool Intersect<T>(Rect<T> a, Rect<T> b)
         where T : unmanaged, INumber<T>
     {
         if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
          || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
         {
-            return Rect<T>.IsIntersect(a.Vec4(), b.Vec4());
+            return Rect<T>.Intersects(a.Vec4(), b.Vec4());
         }
         return a.Origin <= b.Max && b.Origin <= a.Max;
     }
@@ -64,7 +64,7 @@ public static class Rect
         if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
          || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
         {
-            return Rect<T>.IsIntersectExclusive(a.Vec4(), b.Vec4());
+            return Rect<T>.IntersectsExclusive(a.Vec4(), b.Vec4());
         }
         return a.Origin < b.Max && b.Origin < a.Max;
     }
@@ -75,7 +75,7 @@ public partial struct Rect<T>
     private static Vec4<T> inverse = new(-T.One, -T.One, T.One, T.One);
 
     [MethodImpl(AggressiveInlining)]
-    internal static T Square(Vec4<T> r)
+    internal static T Area(Vec4<T> r)
     {
         var size = r.ZWXY() - r;
 
@@ -88,11 +88,11 @@ public partial struct Rect<T>
     internal static bool Contains(Vec4<T> a, Vec4<T> b) => b * inverse <= a * inverse;
 
     [MethodImpl(AggressiveInlining)]
-    internal static bool IsIntersect(Vec4<T> a, Vec4<T> b) => a.ZWXY() * inverse <= b * inverse;
+    internal static bool Intersects(Vec4<T> a, Vec4<T> b) => a.ZWXY() * inverse <= b * inverse;
 
     [MethodImpl(AggressiveInlining)]
     internal static bool ContainsExclusive(Vec4<T> a, Vec4<T> b) => b * inverse < a * inverse;
 
     [MethodImpl(AggressiveInlining)]
-    internal static bool IsIntersectExclusive(Vec4<T> a, Vec4<T> b) => a.ZWXY() * inverse < b * inverse;
+    internal static bool IntersectsExclusive(Vec4<T> a, Vec4<T> b) => a.ZWXY() * inverse < b * inverse;
 }
