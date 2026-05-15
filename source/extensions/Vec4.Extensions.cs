@@ -6,7 +6,7 @@ public static class Vec4Extensions
         where T : unmanaged, INumber<T>
     {
         [MethodImpl(AggressiveInlining)]
-        public Vec4<T> Estimate(T b, Vec4<T> c)
+        internal Vec4<T> Estimate(T b, Vec4<T> c)
         {
             if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
                 return a.As128().Estimate(Vector128.Create(b), c.As128()).Vec4();
@@ -18,7 +18,7 @@ public static class Vec4Extensions
         }
 
         [MethodImpl(AggressiveInlining)]
-        public Vec4<T> Estimate(Vec4<T> b, Vec4<T> c)
+        internal Vec4<T> Estimate(Vec4<T> b, Vec4<T> c)
         {
             if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
                 return a.As128().Estimate(b.As128(), c.As128()).Vec4();

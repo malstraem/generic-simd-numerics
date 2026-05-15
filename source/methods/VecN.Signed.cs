@@ -2,7 +2,7 @@ namespace System.Numerics;
 
 #pragma warning disable IDE0022, IDE0024
 
-public static class Vec4Signed
+public static class VecNSigned
 {
     extension<T>(Vec2<T>)
         where T : unmanaged, INumber<T>, ISignedNumber<T>

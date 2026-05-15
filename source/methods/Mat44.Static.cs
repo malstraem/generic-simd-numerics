@@ -6,6 +6,109 @@ namespace System.Numerics;
 
 public static partial class Mat44
 {
+    [MethodImpl(AggressiveInlining)]
+    public static Mat44<T> Add<T>(Mat44<T> a, Mat44<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        if (SizeOf<T>() == 2 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return (a.As256() + b.As256()).Mat44();
+
+        if (Vector512<T>.IsSupported && Vector512.IsHardwareAccelerated)
+        {
+            if (SizeOf<T>() == 4)
+                return (a.As512() + b.As512()).Mat44();
+
+            if (SizeOf<T>() == 8)
+            {
+                a.As512(out var axy, out var azw);
+                b.As512(out var bxy, out var bzw);
+                axy += bxy;
+                azw += bzw;
+                return axy.Mat44(azw);
+            }
+        }
+        return new(a.X + b.X, a.Y + b.Y, a.Z + b.Z, a.W + b.W);
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Mat44<T> Subtract<T>(Mat44<T> a, Mat44<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        if (SizeOf<T>() == 2 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return (a.As256() - b.As256()).Mat44();
+
+        if (Vector512<T>.IsSupported && Vector512.IsHardwareAccelerated)
+        {
+            if (SizeOf<T>() == 4)
+                return (a.As512() - b.As512()).Mat44();
+
+            if (SizeOf<T>() == 8)
+            {
+                a.As512(out var axy, out var azw);
+                b.As512(out var bxy, out var bzw);
+                axy -= bxy;
+                azw -= bzw;
+                return axy.Mat44(azw);
+            }
+        }
+        return new(a.X - b.X, a.Y - b.Y, a.Z - b.Z, a.W - b.W);
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Mat44<T> Multiply<T>(Mat44<T> m, T n)
+        where T : unmanaged, INumber<T>
+    {
+        if (SizeOf<T>() == 2 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return (m.As256() * n).Mat44();
+
+        if (Vector512<T>.IsSupported && Vector512.IsHardwareAccelerated)
+        {
+            if (SizeOf<T>() == 4)
+                return (m.As512() * n).Mat44();
+
+            if (SizeOf<T>() == 8)
+            {
+                m.As512(out var xy, out var zw);
+                xy *= n;
+                zw *= n;
+                return xy.Mat44(zw);
+            }
+        }
+        return new(m.X * n, m.Y * n, m.Z * n, m.W * n);
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Mat44<T> Multiply<T>(Mat44<T> a, Mat44<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        // both "hand" and "transform" vectorized ways are non-optimal currently
+        // asm is different from System.Numerics - performance is close, but should be better
+
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Mat44<T>.Multiply128(a, b);
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return Mat44<T>.Multiply256(a, b);
+
+        a.X = a.X.Transform(b);
+        a.Y = a.Y.Transform(b);
+        a.Z = a.Z.Transform(b);
+        a.W = a.W.Transform(b);
+
+        return a;
+    }
+
+    [Obsolete("vectorize")]
+    [MethodImpl(AggressiveInlining)]
+    public static Mat44<T> Transpose<T>(Mat44<T> m)
+        where T : unmanaged, INumber<T> => new
+    (
+        m.X.X, m.Y.X, m.Z.X, m.W.X,
+        m.X.Y, m.Y.Y, m.Z.Y, m.W.Y,
+        m.X.Z, m.Y.Z, m.Z.Z, m.W.Z,
+        m.X.W, m.Y.W, m.Z.W, m.W.W
+    );
+
     /**<summary>
     Creates a matrix with the rotation, scale and translation components.
     </summary>
@@ -20,7 +123,7 @@ public static partial class Mat44
         if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
          || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
         {
-            unsafe { return Affine(rotation.Vec4(), in scale, translation); }
+            return Affine(rotation.Vec4(), in scale, translation);
         }
 
         var q = rotation; var s = scale; var t = translation;
@@ -50,11 +153,11 @@ public static partial class Mat44
     public static Mat44<T> Rotation<T>(Quat<T> rotation)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
+        if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+         || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
+        {
             return Rotation(rotation.Vec4());
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Rotation(rotation.Vec4());
+        }
 
         var q = rotation;
 

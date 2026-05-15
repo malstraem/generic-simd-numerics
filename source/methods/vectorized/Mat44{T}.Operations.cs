@@ -19,7 +19,7 @@ public partial struct Mat44<T>
             => (x.Estimate(c, y * d) + z.Estimate(e, w * f)).Vec4();
 
     [MethodImpl(AggressiveInlining)]
-    private static Mat44<T> Multiply128(Mat44<T> a, Mat44<T> b)
+    internal static Mat44<T> Multiply128(Mat44<T> a, Mat44<T> b)
     {
         var x = b.X.As128();
         var y = b.Y.As128();
@@ -42,7 +42,7 @@ public partial struct Mat44<T>
     }
 
     [MethodImpl(AggressiveInlining)]
-    private static Mat44<T> Multiply256(Mat44<T> a, Mat44<T> b)
+    internal static Mat44<T> Multiply256(Mat44<T> a, Mat44<T> b)
     {
         var x = b.X.As256();
         var y = b.Y.As256();
@@ -72,8 +72,6 @@ public static partial class Mat44
     private static unsafe Mat44<T> Affine<T>(Vec4<T> r, in Vec3<T> s, Vec3<T> t)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        //T* sp = (T*)&s;
-
         var m = Rotation(r);
 
         fixed (Vec3<T>* p = &s)
@@ -82,7 +80,7 @@ public static partial class Mat44
             m.Y *= *((T*)p + 1);
             m.Z *= *((T*)p + 2);
         }
-        m.W = SizeOf<T>() == 4 ? t.As128One().Vec4() : t.As128One().Vec4();
+        m.W = SizeOf<T>() == 4 ? t.As128One().Vec4() : t.As256One().Vec4();
 
         return m;
     }

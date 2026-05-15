@@ -21,7 +21,7 @@ var bench = BenchmarkSwitcher.FromTypes([
     //typeof(StressVector3DI<>),
 
     //typeof(StressVector4),
-    //typeof(StressVec4<>),
+    typeof(StressVec4<>),
     //typeof(StressVector4D<>),
 
     //typeof(StressVec4I<>),
@@ -35,10 +35,10 @@ var bench = BenchmarkSwitcher.FromTypes([
     //typeof(StressMatrix4X4WithQuaternion<>),
 
     //typeof(StressQuaternion),
-    //typeof(StressQuat<>),
+    typeof(StressQuat<>),
     //typeof(StressQuaternion<>),
 
-    //typeof(StressRect<>)
+    typeof(StressRect<>)
 ]);
 
 var summaries = bench.RunAll();
