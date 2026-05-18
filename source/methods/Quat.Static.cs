@@ -89,7 +89,7 @@ public static class Quat
         return new(-q.X, -q.Y, -q.Z, q.W);
     }
 
-    [Obsolete("reciprocal?")]
+    [Obsolete("use reciprocal?")]
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Inverse<T>(Quat<T> q)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
@@ -115,8 +115,10 @@ public static class Quat
     public static Quat<T> Lerp<T>(Quat<T> a, Quat<T> b, T am)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        var v = Vec4.Dot(a.Vec4(), b.Vec4()) >= T.Zero ? a.Vec4().Lerp(b.Vec4(), am)
-                                                     : ((a.Vec4() * (T.One - am)) - (b.Vec4() * am));
+        var (av, bv) = (a.Vec4(), b.Vec4());
+
+        var v = Vec4.Dot(av, bv) >= T.Zero ? Vec4.Lerp(av, bv, am) : ((av * (T.One - am)) - (bv * am));
+
         return Vec4.Normalize(v).Quat();
     }
 

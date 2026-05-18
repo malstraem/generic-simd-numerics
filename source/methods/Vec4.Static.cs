@@ -2,6 +2,86 @@ namespace System.Numerics;
 
 public static class Vec4
 {
+    [Obsolete("add overload with target eps")]
+    [MethodImpl(AggressiveInlining)]
+    public static bool Equal<T>(Vec4<T> a, Vec4<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return a.As128() == b.As128();
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return a.As256() == b.As256();
+
+        return a.X == b.X && a.Y == b.Y && a.Z == b.Z && a.W == b.W;
+    }
+
+    [Obsolete("add overload with target eps")]
+    [MethodImpl(AggressiveInlining)]
+    public static bool NotEqual<T>(Vec4<T> a, Vec4<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return a.As128() != b.As128();
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return a.As256() != b.As256();
+
+        return a.X != b.X && a.Y != b.Y && a.Z != b.Z && a.W != b.W;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool LessOrEqual<T>(Vec4<T> a, Vec4<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.LessThanOrEqualAll(a.As128(), b.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return Vector256.LessThanOrEqualAll(a.As256(), b.As256());
+
+        return a.X <= b.X && a.Y <= b.Y && a.Z <= b.Z && a.W <= b.W;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool GreaterOrEqual<T>(Vec4<T> a, Vec4<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.GreaterThanOrEqualAll(a.As128(), b.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return Vector256.GreaterThanOrEqualAll(a.As256(), b.As256());
+
+        return a.X >= b.X && a.Y >= b.Y && a.Z >= b.Z && a.W >= b.W;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool Greater<T>(Vec4<T> a, Vec4<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.GreaterThanAll(a.As128(), b.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return Vector256.GreaterThanAll(a.As256(), b.As256());
+
+        return a.X > b.X && a.Y > b.Y && a.Z > b.Z && a.W > b.W;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool Less<T>(Vec4<T> a, Vec4<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.LessThanAll(a.As128(), b.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return Vector256.LessThanAll(a.As256(), b.As256());
+
+        return a.X < b.X && a.Y < b.Y && a.Z < b.Z && a.W < b.W;
+    }
+
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> Add<T>(Vec4<T> v, T n)
         where T : unmanaged, INumber<T>
@@ -129,7 +209,7 @@ public static class Vec4
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return Vector256.Dot(a.As256(), b.As256());
 
-        return (a * b).Sum();
+        return Sum(a * b);
     }
 
     [MethodImpl(AggressiveInlining)]

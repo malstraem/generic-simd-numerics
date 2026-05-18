@@ -14,7 +14,7 @@ internal static class ReinterpretateVec3
             .WithElement(1, v.Y)
             .WithElement(2, v.Z);
 
-        [MethodImpl(AggressiveInlining | AggressiveOptimization)]
+        [MethodImpl(AggressiveInlining)]
         internal Vector128<T> As128()
         {
             unsafe

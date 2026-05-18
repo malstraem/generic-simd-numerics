@@ -67,7 +67,7 @@ public partial struct Mat44<T>
 
 public static partial class Mat44
 {
-    // asm could be lighter
+    /// <inheritdoc cref="Affine{T}(Quat{T}, Vec3{T}, Vec3{T})"/>
     [MethodImpl(AggressiveInlining)]
     private static unsafe Mat44<T> Affine<T>(Vec4<T> r, in Vec3<T> s, Vec3<T> t)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
@@ -96,10 +96,10 @@ public static partial class Mat44
         y = w.WWWW() * z; // zw, xw, yw, ww
         w *= w;           // xx, yy, zz, ww
 
-        (x, z) = (x + y, x - y); // xy +/- zw  | yz +/- xw  | xz +/- yw  | 2ww, no mean / 0
-        x += x;                  // 2(xy + zw) | 2(yz + xw) | 2(xz + yw) | 4ww, no mean
+        (x, z) = (x + y, x - y); // xy +/- zw  | yz +/- xw  | xz +/- yw  | 2ww (no mean) \ 0
+        x += x;                  // 2(xy + zw) | 2(yz + xw) | 2(xz + yw) | 4ww (no mean)
         z += z;                  // 2(xy - zw) | 2(yz - xw) | 2(xz - yw) | 0
-        w += w.YZXW();           // xx + yy    | yy + zz    | zz + xx    | 4ww, no mean
+        w += w.YZXW();           // xx + yy    | yy + zz    | zz + xx    | 4ww (no mean)
 
         w = SizeOf<T>() == 4     // 1 - 2(xx + yy) | 1 - 2(yy + zz) | 1 - 2(zz + xx) | 1 - 4ww, no mean
            ? Vector128<T>.One.Vec4() - (w + w)
@@ -111,7 +111,7 @@ public static partial class Mat44
         m.Y = z.Insert(1, 2, w).Insert(2, 1, x); // 2(xy - zw)     | 1 - 2(zz + xx) | 2(yz + xw)     | 0
         m.Z = z.Insert(0, 2, x).Insert(2, 0, w); // 2(xz + yw)     | 2(yz - xw)     | 1 - 2(xx + yy) | 0
 
-        m.W = SizeOf<T>() == 4  // JIT compiler currently can't move the last row to a vector register outside the loop
+        m.W = SizeOf<T>() == 4  // JIT compiler currently can't move Vec4<T>.UnitW to a vector register outside the loop without bitcasting
            ? Vec4<T>.UnitW.As128().Vec4()
            : Vec4<T>.UnitW.As256().Vec4();
 

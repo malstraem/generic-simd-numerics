@@ -6,6 +6,34 @@ namespace System.Numerics;
 
 public static partial class Mat44
 {
+    [Obsolete("add overload with target eps")]
+    [MethodImpl(AggressiveInlining)]
+    public static bool Equal<T>(Mat44<T> a, Mat44<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        if (SizeOf<T>() == 2 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return a.As256() == b.As256();
+
+        if (SizeOf<T>() == 4 && Vector512<T>.IsSupported && Vector512.IsHardwareAccelerated)
+            return a.As512() == b.As512();
+
+        return a.X == b.X && a.Y == b.Y && a.Z == b.Z && a.W == b.W;
+    }
+
+    [Obsolete("add overload with target eps")]
+    [MethodImpl(AggressiveInlining)]
+    public static bool NotEqual<T>(Mat44<T> a, Mat44<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        if (SizeOf<T>() == 2 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return a.As256() != b.As256();
+
+        if (SizeOf<T>() == 4 && Vector512<T>.IsSupported && Vector512.IsHardwareAccelerated)
+            return a.As512() != b.As512();
+
+        return a.X != b.X || a.Y != b.Y || a.Z != b.Z || a.W != b.W;
+    }
+
     [MethodImpl(AggressiveInlining)]
     public static Mat44<T> Add<T>(Mat44<T> a, Mat44<T> b)
         where T : unmanaged, INumber<T>

@@ -28,76 +28,22 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
 
     #region Operators
     [MethodImpl(AggressiveInlining)]
-    public static bool operator ==(Vec4<T> a, Vec4<T> b)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return a.As128() == b.As128();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return a.As256() == b.As256();
-
-        return a.X == b.X && a.Y == b.Y && a.Z == b.Z && a.W == b.W;
-    }
+    public static bool operator ==(Vec4<T> a, Vec4<T> b) => Vec4.Equal(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator !=(Vec4<T> a, Vec4<T> b)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return a.As128() != b.As128();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return a.As256() != b.As256();
-
-        return a.X != b.X && a.Y != b.Y && a.Z != b.Z && a.W != b.W;
-    }
+    public static bool operator !=(Vec4<T> a, Vec4<T> b) => Vec4.NotEqual(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator <=(Vec4<T> a, Vec4<T> b)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vector128.LessThanOrEqualAll(a.As128(), b.As128());
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vector256.LessThanOrEqualAll(a.As256(), b.As256());
-
-        return a.X <= b.X && a.Y <= b.Y && a.Z <= b.Z && a.W <= b.W;
-    }
+    public static bool operator >=(Vec4<T> a, Vec4<T> b) => Vec4.GreaterOrEqual(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator >=(Vec4<T> a, Vec4<T> b)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vector128.GreaterThanOrEqualAll(a.As128(), b.As128());
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vector256.GreaterThanOrEqualAll(a.As256(), b.As256());
-
-        return a.X >= b.X && a.Y >= b.Y && a.Z >= b.Z && a.W >= b.W;
-    }
+    public static bool operator <=(Vec4<T> a, Vec4<T> b) => Vec4.LessOrEqual(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator >(Vec4<T> a, Vec4<T> b)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vector128.GreaterThanAll(a.As128(), b.As128());
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vector256.GreaterThanAll(a.As256(), b.As256());
-
-        return a.X > b.X && a.Y > b.Y && a.Z > b.Z && a.W > b.W;
-    }
+    public static bool operator >(Vec4<T> a, Vec4<T> b) => Vec4.Greater(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator <(Vec4<T> a, Vec4<T> b)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vector128.LessThanAll(a.As128(), b.As128());
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vector256.LessThanAll(a.As256(), b.As256());
-
-        return a.X < b.X && a.Y < b.Y && a.Z < b.Z && a.W < b.W;
-    }
+    public static bool operator <(Vec4<T> a, Vec4<T> b) => Vec4.Less(a, b);
 
     [MethodImpl(AggressiveInlining)]
     public static Vec4<T> operator +(Vec4<T> v, T n) => Vec4.Add(v, n);
@@ -140,7 +86,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     public readonly Vec4<T> Clamp(Vec4<T> min, Vec4<T> max) => Vec4.Clamp(this, min, max);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec4<T> Lerp(Vec4<T> v, T am) => (this * (T.One - am)) + (v * am);
+    public readonly Vec4<T> Lerp(Vec4<T> v, T am) => Vec4.Lerp(this, v, am);
 
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Transform(Mat44<T> m) => Vec4.Transform(this, m);
@@ -151,9 +97,9 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec4<T> v) => Vec4.DistanceSquared(this, v);
 
-    public readonly bool Equals(Vec4<T> other) => this == other;
+    public readonly bool Equals(Vec4<T> other) => Vec4.Equal(this, other);
 
-    public override readonly bool Equals(object? obj) => (obj is Vec4<T> other) && Equals(other);
+    public override readonly bool Equals(object? obj) => (obj is Vec4<T> other) && Vec4.Equal(this, other);
 
     public override readonly int GetHashCode() => HashCode.Combine(X, Y, Z, W);
 

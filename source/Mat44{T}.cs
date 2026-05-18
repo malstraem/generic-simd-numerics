@@ -30,28 +30,10 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w) :
 
     #region Operators
     [MethodImpl(AggressiveInlining)]
-    public static bool operator ==(Mat44<T> a, Mat44<T> b)
-    {
-        if (SizeOf<T>() == 2 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return a.As256() == b.As256();
-
-        if (SizeOf<T>() == 4 && Vector512<T>.IsSupported && Vector512.IsHardwareAccelerated)
-            return a.As512() == b.As512();
-
-        return a.X == b.X && a.Y == b.Y && a.Z == b.Z && a.W == b.W;
-    }
+    public static bool operator ==(Mat44<T> a, Mat44<T> b) => Mat44.Equal(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator !=(Mat44<T> a, Mat44<T> b)
-    {
-        if (SizeOf<T>() == 2 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return a.As256() != b.As256();
-
-        if (SizeOf<T>() == 4 && Vector512<T>.IsSupported && Vector512.IsHardwareAccelerated)
-            return a.As512() != b.As512();
-
-        return a.X != b.X || a.Y != b.Y || a.Z != b.Z || a.W != b.W;
-    }
+    public static bool operator !=(Mat44<T> a, Mat44<T> b) => Mat44.NotEqual(a, b);
 
     [MethodImpl(AggressiveInlining)]
     public static Mat44<T> operator *(Mat44<T> m, T n) => Mat44.Multiply(m, n);
@@ -69,9 +51,9 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Mat44<T> Transpose() => Mat44.Transpose(this);
 
-    public readonly bool Equals(Mat44<T> other) => other == this;
+    public readonly bool Equals(Mat44<T> other) => Mat44.Equal(this, other);
 
-    public override readonly bool Equals(object? obj) => (obj is Mat44<T> mat) && mat == this;
+    public override readonly bool Equals(object? obj) => (obj is Mat44<T> other) && Mat44.Equal(this, other);
 
     public override readonly int GetHashCode() => HashCode.Combine(X, Y, Z, W);
 
