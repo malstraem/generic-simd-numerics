@@ -10,21 +10,21 @@ var bench = BenchmarkSwitcher.FromTypes([
     typeof(StressVec2<>),
     typeof(StressVector2D<>),
 
-    typeof(StressBaseVec2<>),
+    typeof(StressVec2I<>),
     typeof(StressVector2DI<>),
 
     typeof(StressVector3),
     typeof(StressVec3<>),
     typeof(StressVector3D<>),
 
-    typeof(StressBaseVec3<>),
+    typeof(StressVec3I<>),
     typeof(StressVector3DI<>),
 
     typeof(StressVector4),
     typeof(StressVec4<>),
     typeof(StressVector4D<>),
 
-    typeof(StressBaseVec4<>),
+    typeof(StressVec4I<>),
     typeof(StressVector4DI<>),
 
     typeof(StressMat44<>),

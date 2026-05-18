@@ -1,6 +1,4 @@
-using Silk.NET.Maths;
-
-namespace System.Numerics.Tests.Rect;
+namespace System.Numerics.RectTests;
 
 [InheritsTests]
 public class Rectf32 : RectBase<float>;
@@ -36,38 +34,31 @@ public class RectBase<T>
     where T : unmanaged, INumber<T>
 {
     protected static readonly Vec2<T>
-       vec = Vec2<T>.Gen(T.One);
+       point = Vec2<T>.Gen(T.One);
 
     protected static readonly Rect<T>
-       x = Rect<T>.Gen(T.One),
-       y = Rect<T>.Gen(T.One + T.One);
+       a = Rect<T>.Gen(T.One),
+       b = Rect<T>.Gen(T.One + T.One);
 
-    [Test, DisplayName("contains point")]
+    [Test, DisplayName("contains")]
+    public async Task Contains()
+    {
+        bool contains = a.Contains(b);
+
+        bool expected = a.Silk().Contains(b.Silk());
+
+        await Assert.That(contains).IsEqualTo(expected);
+        await Assert.That(contains).IsEqualTo(Rect.Contains(a, b));
+    }
+
+    [Test, DisplayName("contains (point)")]
     public async Task ContainsPoint()
     {
-        var dot = x.Contains(vec);
+        bool contains = a.Contains(point);
 
-        var expected = x.Silk().Contains(vec.Silk());
+        bool expected = a.Silk().Contains(point.Silk());
 
-        await Assert.That(dot).IsEqualTo(expected);
-    }
-
-    [Test, DisplayName("contains rect")]
-    public async Task ContainsRect()
-    {
-        var length = x.Contains(y);
-
-        var expected = x.Silk().Contains(y.Silk());
-
-        await Assert.That(length).IsEqualTo(expected);
-    }
-
-
-    public static bool IsIntersect(Rectangle<T> self, Rectangle<T> other)
-    {
-        return self.Origin.X <= other.Max.X &&
-               self.Origin.Y <= other.Max.Y &&
-               self.Max.X >= other.Origin.X &&
-               self.Max.Y >= other.Origin.Y;
+        await Assert.That(contains).IsEqualTo(expected);
+        await Assert.That(contains).IsEqualTo(Rect.Contains(a, point));
     }
 }

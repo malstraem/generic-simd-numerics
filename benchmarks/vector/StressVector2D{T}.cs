@@ -4,22 +4,44 @@ using Silk.NET.Maths;
 
 namespace System.Numerics.Bench;
 
+[GenericTypeArguments(typeof(float))]
+[GenericTypeArguments(typeof(double))]
+public class StressVector2D<T> : StressVector2DI<T>
+    where T : unmanaged, INumber<T>
+{
+    [Benchmark]
+    public void Length()
+    {
+        for (int i = 0; i < Count; i++)
+            nums[i] = vecs[i].Length;
+    }
+
+    [Benchmark]
+    public void Distance()
+    {
+        for (int i = 0; i < Count - 1; i++)
+            nums[i] = Vector2D.Distance(vecs[i], vecs[i + 1]);
+    }
+
+    [Benchmark]
+    public void Normalize()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Vector2D.Normalize(vecs[i]);
+    }
+}
+
 [GenericTypeArguments(typeof(byte))]
 [GenericTypeArguments(typeof(short))]
 [GenericTypeArguments(typeof(int))]
 [GenericTypeArguments(typeof(long))]
-public class StressVector2DI<T> : StressVector2D<T>
-    where T : unmanaged, INumber<T>;
-
-[GenericTypeArguments(typeof(float))]
-[GenericTypeArguments(typeof(double))]
-public class StressVector2D<T> : BaseBench<T>
+public class StressVector2DI<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
-    private static readonly Vector2D<T>[] vecs = new Vector2D<T>[Count],
-                                          @out = new Vector2D<T>[Count];
+    protected static readonly Vector2D<T>[] vecs = new Vector2D<T>[Count],
+                                            @out = new Vector2D<T>[Count];
 
-    public StressVector2D()
+    public StressVector2DI()
     {
         for (int i = 0; i < Count; i++)
             vecs[i] = Vec2<T>.Gen(T.One).Silk();
@@ -79,26 +101,5 @@ public class StressVector2D<T> : BaseBench<T>
     {
         for (int i = 0; i < Count - 1; i++)
             nums[i] = Vector2D.DistanceSquared(vecs[i], vecs[i + 1]);
-    }
-
-    [Benchmark]
-    public void Length()
-    {
-        for (int i = 0; i < Count; i++)
-            nums[i] = vecs[i].Length;
-    }
-
-    [Benchmark]
-    public void Distance()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            nums[i] = Vector2D.Distance(vecs[i], vecs[i + 1]);
-    }
-
-    [Benchmark]
-    public void Normalize()
-    {
-        for (int i = 0; i < Count; i++)
-            @out[i] = Vector2D.Normalize(vecs[i]);
     }
 }

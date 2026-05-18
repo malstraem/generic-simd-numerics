@@ -15,7 +15,7 @@ public partial struct Vec4<T>
 
     [MethodImpl(AggressiveInlining)]
     internal Vec4<T> Permute([ConstantExpected] byte e0, [ConstantExpected] byte e1,
-                         [ConstantExpected] byte e2, [ConstantExpected] byte e3)
+                             [ConstantExpected] byte e2, [ConstantExpected] byte e3)
     {
         if (SizeOf<T>() == 4)
             return this.As128().Permute32(e0, e1, e2, e3).Vec4();

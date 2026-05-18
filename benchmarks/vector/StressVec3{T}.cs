@@ -4,7 +4,7 @@ namespace System.Numerics.Bench;
 
 [GenericTypeArguments(typeof(float))]
 [GenericTypeArguments(typeof(double))]
-public class StressVec3<T> : StressBaseVec3<T>
+public class StressVec3<T> : StressVec3I<T>
     where T : unmanaged, INumber<T>, IRootFunctions<T>
 {
     [Benchmark]
@@ -33,13 +33,13 @@ public class StressVec3<T> : StressBaseVec3<T>
 [GenericTypeArguments(typeof(short))]
 [GenericTypeArguments(typeof(int))]
 [GenericTypeArguments(typeof(long))]
-public class StressBaseVec3<T> : BaseBench<T>
+public class StressVec3I<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
     protected static readonly Vec3<T>[] vecs = new Vec3<T>[Count],
                                         @out = new Vec3<T>[Count];
 
-    public StressBaseVec3()
+    public StressVec3I()
     {
         for (int i = 0; i < Count; i++)
             vecs[i] = Vec3<T>.Gen(T.One);

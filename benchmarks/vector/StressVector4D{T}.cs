@@ -4,24 +4,46 @@ using Silk.NET.Maths;
 
 namespace System.Numerics.Bench;
 
+[GenericTypeArguments(typeof(float))]
+[GenericTypeArguments(typeof(double))]
+public class StressVector4D<T> : StressVector4DI<T>
+    where T : unmanaged, INumber<T>
+{
+    [Benchmark]
+    public void Length()
+    {
+        for (int i = 0; i < Count; i++)
+            nums[i] = vecs[i].Length;
+    }
+
+    [Benchmark]
+    public void Distance()
+    {
+        for (int i = 0; i < Count - 1; i++)
+            nums[i] = Vector4D.Distance(vecs[i], vecs[i + 1]);
+    }
+
+    [Benchmark]
+    public void Normalize()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Vector4D.Normalize(vecs[i]);
+    }
+}
+
 [GenericTypeArguments(typeof(byte))]
 [GenericTypeArguments(typeof(short))]
 [GenericTypeArguments(typeof(int))]
 [GenericTypeArguments(typeof(long))]
-public class StressVector4DI<T> : StressVector4D<T>
-    where T : unmanaged, INumber<T>;
-
-[GenericTypeArguments(typeof(float))]
-[GenericTypeArguments(typeof(double))]
-public class StressVector4D<T> : BaseBench<T>
+public class StressVector4DI<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
-    private static readonly Vector4D<T>[] vecs = new Vector4D<T>[Count],
-                                          @out = new Vector4D<T>[Count];
+    protected static readonly Vector4D<T>[] vecs = new Vector4D<T>[Count],
+                                            @out = new Vector4D<T>[Count];
 
     private static readonly Matrix4X4<T> m = Mat44<T>.Gen(T.One).Silk();
 
-    public StressVector4D()
+    public StressVector4DI()
     {
         for (int i = 0; i < Count; i++)
             vecs[i] = Vec4<T>.Gen(T.One).Silk();

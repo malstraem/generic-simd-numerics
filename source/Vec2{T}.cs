@@ -26,180 +26,72 @@ public partial struct Vec2<T>(T x, T y) :
 
     #region Operators
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> operator +(Vec2<T> v, T n)
-    {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (v.As128() + Vector128.Create(n)).Vec2();*/
-
-        return new(v.X + n, v.Y + n);
-    }
+    public static bool operator ==(Vec2<T> a, Vec2<T> b) => Vec2.Equal(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> operator -(Vec2<T> v, T n)
-    {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (v.As128() - Vector128.Create(n)).Vec2();*/
-
-        return new(v.X - n, v.Y - n);
-    }
+    public static bool operator !=(Vec2<T> a, Vec2<T> b) => Vec2.NotEqual(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> operator *(Vec2<T> v, T n)
-    {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (v.As128() * n).Vec2();*/
-
-        return new(v.X * n, v.Y * n);
-    }
+    public static bool operator >=(Vec2<T> a, Vec2<T> b) => Vec2.GreaterOrEqual(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> operator /(Vec2<T> v, T n)
-    {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (v.As128() / n).Vec2();*/
-
-        return new(v.X / n, v.Y / n);
-    }
+    public static bool operator <=(Vec2<T> a, Vec2<T> b) => Vec2.LessOrEqual(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> operator -(Vec2<T> a, Vec2<T> b)
-    {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (a.As128() - b.As128()).Vec2();*/
-
-        return new(a.X - b.X, a.Y - b.Y);
-    }
+    public static bool operator >(Vec2<T> a, Vec2<T> b) => Vec2.Greater(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> operator *(Vec2<T> a, Vec2<T> b)
-    {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (this.As128() * v.As128()).Vec2();*/
-
-        return new(a.X * b.X, a.Y * b.Y);
-    }
+    public static bool operator <(Vec2<T> a, Vec2<T> b) => Vec2.Less(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec2<T> operator /(Vec2<T> a, Vec2<T> b)
-    {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (this.As128() / v.As128()).Vec2();*/
-
-        return new(a.X / b.X, a.Y / b.Y);
-    }
+    public static Vec2<T> operator +(Vec2<T> v, T n) => Vec2.Add(v, n);
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator ==(Vec2<T> a, Vec2<T> b)
-    {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return a.As128() == b.As128();*/
-
-        return a.X == b.X && a.Y == b.Y;
-    }
+    public static Vec2<T> operator -(Vec2<T> v, T n) => Vec2.Subtract(v, n);
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator !=(Vec2<T> a, Vec2<T> b)
-    {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return a.As128() != b.As128();*/
-
-        return a.X != b.X && a.Y != b.Y;
-    }
+    public static Vec2<T> operator *(Vec2<T> v, T n) => Vec2.Multiply(v, n);
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator <=(Vec2<T> a, Vec2<T> b)
-    {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.LessThanOrEqualAll(a.As128(), b.As128());*/
-
-        return a.X <= b.X && a.Y <= b.Y;
-    }
+    public static Vec2<T> operator /(Vec2<T> v, T n) => Vec2.Divide(v, n);
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator >=(Vec2<T> a, Vec2<T> b)
-    {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.GreaterThanOrEqualAll(a.As128(), b.As128());*/
-
-        return a.X >= b.X && a.Y >= b.Y;
-    }
+    public static Vec2<T> operator -(Vec2<T> a, Vec2<T> b) => Vec2.Subtract(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator >(Vec2<T> a, Vec2<T> b)
-    {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.GreaterThanAll(a.As128(), b.As128());*/
-
-        return a.X > b.X && a.Y > b.Y;
-    }
+    public static Vec2<T> operator *(Vec2<T> a, Vec2<T> b) => Vec2.Multiply(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator <(Vec2<T> a, Vec2<T> b)
-    {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.LessThanAll(a.As128(), b.As128());*/
-
-        return a.X < b.X && a.Y < b.Y;
-    }
+    public static Vec2<T> operator /(Vec2<T> a, Vec2<T> b) => Vec2.Divide(a, b);
     #endregion
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T Sum()
-    {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.Sum(this.As128());*/
-
-        return X + Y;
-    }
+    public readonly T Sum() => Vec2.Sum(this);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T Dot(Vec2<T> v)
-    {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.Dot(this.As128(), v.As128());*/
-
-        return (this * v).Sum();
-    }
+    public readonly T Dot(Vec2<T> v) => Vec2.Dot(this, v);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec2<T> Min(Vec2<T> v)
-    {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.Min(this.As128(), v.As128()).Vec2();*/
-
-        return new(T.Min(X, v.X), T.Min(Y, v.Y));
-    }
+    public readonly Vec2<T> Min(Vec2<T> v) => Vec2.Min(this, v);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec2<T> Max(Vec2<T> v)
-    {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.Max(this.As128(), v.As128()).Vec2();*/
-
-        return new(T.Max(X, v.X), T.Max(Y, v.Y));
-    }
+    public readonly Vec2<T> Max(Vec2<T> v) => Vec2.Max(this, v);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec2<T> Clamp(Vec2<T> min, Vec2<T> max)
-    {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.Clamp(this.As128(), min.As128(), max.As128()).Vec2();*/
-
-        return max.Min(Max(min));
-    }
+    public readonly Vec2<T> Clamp(Vec2<T> min, Vec2<T> max) => Vec2.Clamp(this, min, max);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec2<T> Lerp(Vec2<T> v, T am) => (this * (T.One - am)) + (v * am);
+    public readonly Vec2<T> Lerp(Vec2<T> v, T am) => Vec2.Lerp(this, v, am);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T LengthSquared() => Dot(this);
+    public readonly T LengthSquared() => Vec2.LengthSquared(this);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T DistanceSquared(Vec2<T> v) => (this - v).LengthSquared();
+    public readonly T DistanceSquared(Vec2<T> v) => Vec2.DistanceSquared(this, v);
 
-    public readonly bool Equals(Vec2<T> other) => this == other;
+    public readonly bool Equals(Vec2<T> other) => Vec2.Equal(this, other);
 
-    public override readonly bool Equals(object? obj) => (obj is Vec2<T> other) && Equals(other);
+    public override readonly bool Equals(object? obj) => (obj is Vec2<T> other) && Vec2.Equal(this, other);
 
     public override readonly int GetHashCode() => HashCode.Combine(X, Y);
 

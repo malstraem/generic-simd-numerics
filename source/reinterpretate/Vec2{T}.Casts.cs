@@ -26,8 +26,7 @@ internal static class ReinterpretateVec2
         internal Vec2<T> Vec2()
         {
             Vec2<T> v;
-            v.X = xmm[0];
-            v.Y = xmm[1];
+            v.X = xmm[0]; v.Y = xmm[1];
             return v;
         }
     }

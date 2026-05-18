@@ -1,6 +1,6 @@
 namespace System.Numerics;
 
-public static class Vec4Root
+public static class VecNRoot
 {
     extension<T>(Vec2<T> v)
        where T : unmanaged, INumber<T>, IRootFunctions<T>

@@ -28,259 +28,78 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
 
     #region Operators
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> operator +(Vec4<T> v, T n)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (v.As128() + Vector128.Create(n)).Vec4();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return (v.As256() + Vector256.Create(n)).Vec4();
-
-        return new(v.X + n, v.Y + n, v.Z + n, v.W + n);
-    }
+    public static bool operator ==(Vec4<T> a, Vec4<T> b) => Vec4.Equal(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> operator -(Vec4<T> v, T n)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (v.As128() - Vector128.Create(n)).Vec4();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return (v.As256() - Vector256.Create(n)).Vec4();
-
-        return new(v.X - n, v.Y - n, v.Z - n, v.W - n);
-    }
+    public static bool operator !=(Vec4<T> a, Vec4<T> b) => Vec4.NotEqual(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> operator *(Vec4<T> v, T n)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (v.As128() * n).Vec4();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return (v.As256() * n).Vec4();
-
-        return new(v.X * n, v.Y * n, v.Z * n, v.W * n);
-    }
+    public static bool operator >=(Vec4<T> a, Vec4<T> b) => Vec4.GreaterOrEqual(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> operator /(Vec4<T> v, T n)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (v.As128() / n).Vec4();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return (v.As256() / n).Vec4();
-
-        return new(v.X / n, v.Y / n, v.Z / n, v.W / n);
-    }
+    public static bool operator <=(Vec4<T> a, Vec4<T> b) => Vec4.LessOrEqual(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> operator +(Vec4<T> a, Vec4<T> b)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (a.As128() + b.As128()).Vec4();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return (a.As256() + b.As256()).Vec4();
-
-        return new(a.X + b.X, a.Y + b.Y, a.Z + b.Z, a.W + b.W);
-    }
+    public static bool operator >(Vec4<T> a, Vec4<T> b) => Vec4.Greater(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> operator -(Vec4<T> a, Vec4<T> b)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (a.As128() - b.As128()).Vec4();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return (a.As256() - b.As256()).Vec4();
-
-        return new(a.X - b.X, a.Y - b.Y, a.Z - b.Z, a.W - b.W);
-    }
+    public static bool operator <(Vec4<T> a, Vec4<T> b) => Vec4.Less(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> operator *(Vec4<T> a, Vec4<T> b)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (a.As128() * b.As128()).Vec4();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return (a.As256() * b.As256()).Vec4();
-
-        return new(a.X * b.X, a.Y * b.Y, a.Z * b.Z, a.W * b.W);
-    }
+    public static Vec4<T> operator +(Vec4<T> v, T n) => Vec4.Add(v, n);
 
     [MethodImpl(AggressiveInlining)]
-    public static Vec4<T> operator /(Vec4<T> a, Vec4<T> b)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (a.As128() / b.As128()).Vec4();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return (a.As256() / b.As256()).Vec4();
-
-        return new(a.X / b.X, a.Y / b.Y, a.Z / b.Z, a.W / b.W);
-    }
+    public static Vec4<T> operator -(Vec4<T> v, T n) => Vec4.Subtract(v, n);
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator ==(Vec4<T> a, Vec4<T> b)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return a.As128() == b.As128();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return a.As256() == b.As256();
-
-        return a.X == b.X && a.Y == b.Y && a.Z == b.Z && a.W == b.W;
-    }
+    public static Vec4<T> operator *(Vec4<T> v, T n) => Vec4.Multiply(v, n);
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator !=(Vec4<T> a, Vec4<T> b)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return a.As128() != b.As128();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return a.As256() != b.As256();
-
-        return a.X != b.X && a.Y != b.Y && a.Z != b.Z && a.W != b.W;
-    }
+    public static Vec4<T> operator /(Vec4<T> v, T n) => Vec4.Divide(v, n);
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator <=(Vec4<T> a, Vec4<T> b)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vector128.LessThanOrEqualAll(a.As128(), b.As128());
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vector256.LessThanOrEqualAll(a.As256(), b.As256());
-
-        return a.X <= b.X && a.Y <= b.Y && a.Z <= b.Z && a.W <= b.W;
-    }
+    public static Vec4<T> operator +(Vec4<T> a, Vec4<T> b) => Vec4.Add(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator >=(Vec4<T> a, Vec4<T> b)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vector128.GreaterThanOrEqualAll(a.As128(), b.As128());
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vector256.GreaterThanOrEqualAll(a.As256(), b.As256());
-
-        return a.X >= b.X && a.Y >= b.Y && a.Z >= b.Z && a.W >= b.W;
-    }
+    public static Vec4<T> operator -(Vec4<T> a, Vec4<T> b) => Vec4.Subtract(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator >(Vec4<T> a, Vec4<T> b)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vector128.GreaterThanAll(a.As128(), b.As128());
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vector256.GreaterThanAll(a.As256(), b.As256());
-
-        return a.X > b.X && a.Y > b.Y && a.Z > b.Z && a.W > b.W;
-    }
+    public static Vec4<T> operator *(Vec4<T> a, Vec4<T> b) => Vec4.Multiply(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator <(Vec4<T> a, Vec4<T> b)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported)
-            return Vector128.LessThanAll(a.As128(), b.As128());
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported)
-            return Vector256.LessThanAll(a.As256(), b.As256());
-
-        return a.X < b.X && a.Y < b.Y && a.Z < b.Z && a.W < b.W;
-    }
+    public static Vec4<T> operator /(Vec4<T> a, Vec4<T> b) => Vec4.Divide(a, b);
     #endregion
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T Sum()
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.Sum(this.As128());
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return Vector256.Sum(this.As256());
-
-        return X + Y + Z + W;
-    }
+    public readonly T Sum() => Vec4.Sum(this);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T Dot(Vec4<T> v)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.Dot(this.As128(), v.As128());
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return Vector256.Dot(this.As256(), v.As256());
-
-        return (this * v).Sum();
-    }
+    public readonly T Dot(Vec4<T> v) => Vec4.Dot(this, v);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec4<T> Min(Vec4<T> v)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.Min(this.As128(), v.As128()).Vec4();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return Vector256.Min(this.As256(), v.As256()).Vec4();
-
-        return new(T.Min(X, v.X), T.Min(Y, v.Y), T.Min(Z, v.Z), T.Min(W, v.W));
-    }
+    public readonly Vec4<T> Min(Vec4<T> v) => Vec4.Min(this, v);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec4<T> Max(Vec4<T> v)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.Max(this.As128(), v.As128()).Vec4();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return Vector256.Max(this.As256(), v.As256()).Vec4();
-
-        return new(T.Max(X, v.X), T.Max(Y, v.Y), T.Max(Z, v.Z), T.Max(W, v.W));
-    }
+    public readonly Vec4<T> Max(Vec4<T> v) => Vec4.Max(this, v);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec4<T> Clamp(Vec4<T> min, Vec4<T> max)
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.Clamp(this.As128(), min.As128(), max.As128()).Vec4();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return Vector256.Clamp(this.As256(), min.As256(), max.As256()).Vec4();
-
-        return max.Min(Max(min));
-    }
-
-    // Vector{XXX}.Lerp<T> should exist, isn't?
-    [MethodImpl(AggressiveInlining)]
-    public readonly Vec4<T> Lerp(Vec4<T> v, T am) => (this * (T.One - am)) + (v * am);
+    public readonly Vec4<T> Clamp(Vec4<T> min, Vec4<T> max) => Vec4.Clamp(this, min, max);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly Vec4<T> Transform(Mat44<T> m)
-    {
-        var v = m.X * X;
-
-        v = m.Y.Estimate(Y, v);
-        v = m.Z.Estimate(Z, v);
-        v = m.W.Estimate(W, v);
-
-        return v;
-    }
+    public readonly Vec4<T> Lerp(Vec4<T> v, T am) => Vec4.Lerp(this, v, am);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T LengthSquared() => Dot(this);
+    public readonly Vec4<T> Transform(Mat44<T> m) => Vec4.Transform(this, m);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly T DistanceSquared(Vec4<T> v) => (this - v).LengthSquared();
+    public readonly T LengthSquared() => Vec4.LengthSquared(this);
 
-    public readonly bool Equals(Vec4<T> other) => this == other;
+    [MethodImpl(AggressiveInlining)]
+    public readonly T DistanceSquared(Vec4<T> v) => Vec4.DistanceSquared(this, v);
 
-    public override readonly bool Equals(object? obj) => (obj is Vec4<T> other) && Equals(other);
+    public readonly bool Equals(Vec4<T> other) => Vec4.Equal(this, other);
+
+    public override readonly bool Equals(object? obj) => (obj is Vec4<T> other) && Vec4.Equal(this, other);
 
     public override readonly int GetHashCode() => HashCode.Combine(X, Y, Z, W);
 
