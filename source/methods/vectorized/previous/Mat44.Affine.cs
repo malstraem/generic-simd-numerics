@@ -2,11 +2,11 @@ namespace System.Numerics;
 
 #pragma warning disable IDE0055, IDE0007, IDE0047
 
-/* called in right cases
+/* calls in right cases
 
 IBELIEVE:
 
-1) asm could be more lighter for both single/double, there is few unnecessary instructions
+1) asm could be lighter for both single/double, there is few unnecessary instructions
 
 2) shuffle/permute can be generalized to Permute<T> with only byte indices, isn't?
 

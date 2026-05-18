@@ -23,45 +23,45 @@ public class StressMatrix4x4 : BaseBench<float>
         }
     }
 
-    //[Benchmark]
-    //public void Add()
-    //{
-    //    for (int i = 0; i < Count - 1; i++)
-    //        @out[i] = mats[i] + mats[i + 1];
-    //}
+    [Benchmark]
+    public void Add()
+    {
+        for (int i = 0; i < Count - 1; i++)
+            @out[i] = mats[i] + mats[i + 1];
+    }
 
-    //[Benchmark]
-    //public void Subtract()
-    //{
-    //    for (int i = 0; i < Count - 1; i++)
-    //        @out[i] = mats[i] - mats[i + 1];
-    //}
-
-    //[Benchmark]
-    //public void Rotation()
-    //{
-    //    for (int i = 0; i < Count; i++)
-    //        @out[i] = Matrix4x4.CreateFromQuaternion(quats[i]);
-    //}
-
-    //[Benchmark]
-    //public void Transform()
-    //{
-    //    for (int i = 0; i < Count; i++)
-    //        @out[i] = Matrix4x4.Transform(mats[i], quats[i]);
-    //}
-
-    //[Benchmark]
-    //public void Affine()
-    //{
-    //    for (int i = 0; i < Count; i++)
-    //        @out[i] = Matrix4x4.Transform(Matrix4x4.CreateScale(scales[i]), quats[i]) * Matrix4x4.CreateTranslation(positions[i]);
-    //}
+    [Benchmark]
+    public void Subtract()
+    {
+        for (int i = 0; i < Count - 1; i++)
+            @out[i] = mats[i] - mats[i + 1];
+    }
 
     [Benchmark]
     public void Multiply()
     {
         for (int i = 0; i < Count - 1; i++)
             @out[i] = mats[i] * mats[i + 1];
+    }
+
+    [Benchmark]
+    public void Rotation()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Matrix4x4.CreateFromQuaternion(quats[i]);
+    }
+
+    [Benchmark]
+    public void Transform()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Matrix4x4.Transform(mats[i], quats[i]);
+    }
+
+    [Benchmark]
+    public void Affine()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Matrix4x4.Transform(Matrix4x4.CreateScale(scales[i]), quats[i]) * Matrix4x4.CreateTranslation(positions[i]);
     }
 }

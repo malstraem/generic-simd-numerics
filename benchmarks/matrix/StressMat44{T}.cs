@@ -22,34 +22,32 @@ public class StressMat44WithQuat<T> : StressMat44<T>
         }
     }
 
-    [Benchmark]
-    public void Rotation()
-    {
-        for (int i = 0; i < Count; i++)
-            @out[i] = Mat44.Rotation(quats[i]);
-    }
+    //[Benchmark]
+    //public void Rotation()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        @out[i] = Mat44.Rotation(quats[i]);
+    //}
 
-    [Benchmark]
-    public void Transform()
-    {
-        for (int i = 0; i < Count; i++)
-            @out[i] = Mat44.Rotate(mats[i], quats[i]);
-    }
+    //[Benchmark]
+    //public void Transform()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        @out[i] = Mat44.Rotate(mats[i], quats[i]);
+    //}
 
-    [Benchmark]
-    public void Affine()
-    {
-        for (int i = 0; i < Count; i++)
-            @out[i] = Mat44.Affine(quats[i], scales[i], positions[i]);
-    }
+    //[Benchmark]
+    //public void Affine()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        @out[i] = Mat44.Affine(quats[i], scales[i], positions[i]);
+    //}
 }
 
-//[GenericTypeArguments(typeof(byte))]
-//[GenericTypeArguments(typeof(short))]
-//[GenericTypeArguments(typeof(int))]
-//[GenericTypeArguments(typeof(long))]
-//[GenericTypeArguments(typeof(float))]
-[GenericTypeArguments(typeof(double))]
+[GenericTypeArguments(typeof(byte))]
+[GenericTypeArguments(typeof(short))]
+[GenericTypeArguments(typeof(int))]
+[GenericTypeArguments(typeof(long))]
 public class StressMat44<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {

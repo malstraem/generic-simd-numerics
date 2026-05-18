@@ -4,21 +4,42 @@ namespace System.Numerics.Bench;
 
 [GenericTypeArguments(typeof(float))]
 [GenericTypeArguments(typeof(double))]
-public class StressVec3<T> : StressVec3<T, T>
-    where T : unmanaged, INumber<T>, IRootFunctions<T>;
-
-[GenericTypeArguments(typeof(byte), typeof(float))]
-[GenericTypeArguments(typeof(short), typeof(float))]
-[GenericTypeArguments(typeof(int), typeof(float))]
-[GenericTypeArguments(typeof(long), typeof(double))]
-public class StressVec3<T, R> : BaseBench<T>
-    where T : unmanaged, INumber<T>
-    where R : unmanaged, IRootFunctions<R>
+public class StressVec3<T> : StressVec3I<T>
+    where T : unmanaged, INumber<T>, IRootFunctions<T>
 {
-    private static readonly Vec3<T>[] vecs = new Vec3<T>[Count],
-                                      @out = new Vec3<T>[Count];
+    [Benchmark]
+    public void Length()
+    {
+        for (int i = 0; i < Count; i++)
+            nums[i] = vecs[i].Length();
+    }
 
-    public StressVec3()
+    [Benchmark]
+    public void Distance()
+    {
+        for (int i = 0; i < Count - 1; i++)
+            nums[i] = vecs[i].Distance(vecs[i + 1]);
+    }
+
+    [Benchmark]
+    public void Normalize()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = vecs[i].Normalize();
+    }
+}
+
+[GenericTypeArguments(typeof(byte))]
+[GenericTypeArguments(typeof(short))]
+[GenericTypeArguments(typeof(int))]
+[GenericTypeArguments(typeof(long))]
+public class StressVec3I<T> : BaseBench<T>
+    where T : unmanaged, INumber<T>
+{
+    protected static readonly Vec3<T>[] vecs = new Vec3<T>[Count],
+                                        @out = new Vec3<T>[Count];
+
+    public StressVec3I()
     {
         for (int i = 0; i < Count; i++)
             vecs[i] = Vec3<T>.Gen(T.One);
@@ -39,24 +60,17 @@ public class StressVec3<T, R> : BaseBench<T>
     }
 
     [Benchmark]
-    public void MultiplyElementWise()
+    public void Multiply()
     {
         for (int i = 0; i < Count - 1; i++)
-            @out[i] = vecs[i].MultiplyWise(vecs[i + 1]);
+            @out[i] = vecs[i] * vecs[i + 1];
     }
 
     [Benchmark]
-    public void DivideElementWise()
+    public void Divide()
     {
         for (int i = 0; i < Count - 1; i++)
-            @out[i] = vecs[i].DivideWise(vecs[i + 1]);
-    }
-
-    [Benchmark]
-    public void Abs()
-    {
-        for (int i = 0; i < Count; i++)
-            @out[i] = vecs[i].Abs();
+            @out[i] = vecs[i] / vecs[i + 1];
     }
 
     [Benchmark]
@@ -70,7 +84,7 @@ public class StressVec3<T, R> : BaseBench<T>
     public void Dot()
     {
         for (int i = 0; i < Count - 1; i++)
-            nums[i] = vecs[i] * vecs[i + 1];
+            nums[i] = vecs[i].Dot(vecs[i + 1]);
     }
 
     [Benchmark]
@@ -85,26 +99,5 @@ public class StressVec3<T, R> : BaseBench<T>
     {
         for (int i = 0; i < Count - 1; i++)
             nums[i] = vecs[i].DistanceSquared(vecs[i + 1]);
-    }
-
-    [Benchmark]
-    public void Length()
-    {
-        for (int i = 0; i < Count; i++)
-            nums[i] = vecs[i].Length<R>();
-    }
-
-    [Benchmark]
-    public void Distance()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            nums[i] = vecs[i].Distance<R>(vecs[i + 1]);
-    }
-
-    [Benchmark]
-    public void Normalize()
-    {
-        for (int i = 0; i < Count; i++)
-            @out[i] = vecs[i].Normalize<R>();
     }
 }

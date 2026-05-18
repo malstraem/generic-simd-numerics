@@ -58,7 +58,6 @@ public partial struct Vec2<T>
             AddUnsafe32(a, b, add);
             return;
         }
-        // todo 64 for double/long/ulong
         add->X = a->X + b->X;
         add->Y = a->Y + b->Y;
     }
