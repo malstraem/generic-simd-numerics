@@ -8,8 +8,7 @@ this is primarily for in-house engine, but possibly helpful draft for https://gi
 next step is hardware accelerated ways for type conversions like `Vec4<int>` <-> `Vec4<float>` 🚧
 
 > [!NOTE]
-check [benchmark reports](./reports) for generated asm and timings
-
+check [benchmark reports](./reports) for generated asm and timings</br></br>
 tested and benchmarked on AMD Ryzen 9 7900X that have</br></br>
 `AVX512 - BITALG+VBMI2+VNNI+VPOPCNTDQ+IFMA+VBMI+F+BW+CD+DQ+VL`</br></br>
 `AVX2 - BMI1+BMI2+F16C+FMA+LZCNT+MOVBE`</br></br>
