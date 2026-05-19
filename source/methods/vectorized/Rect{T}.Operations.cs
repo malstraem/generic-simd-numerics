@@ -1,5 +1,32 @@
 namespace System.Numerics;
 
+public partial struct Rect<T>
+{
+    private static Vec4<T> inverse = new(-T.One, -T.One, T.One, T.One);
+
+    [MethodImpl(AggressiveInlining)]
+    internal static T Area(Vec4<T> r)
+    {
+        var size = r.ZWXY() - r;
+
+        size *= size.YXWZ();
+
+        return SizeOf<T>() == 4 ? size.As128()[0] : size.As256()[0];
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    internal static bool Contains(Vec4<T> a, Vec4<T> b) => b * inverse <= a * inverse;
+
+    [MethodImpl(AggressiveInlining)]
+    internal static bool Intersects(Vec4<T> a, Vec4<T> b) => a.ZWXY() * inverse <= b * inverse;
+
+    [MethodImpl(AggressiveInlining)]
+    internal static bool ContainsExclusive(Vec4<T> a, Vec4<T> b) => b * inverse < a * inverse;
+
+    [MethodImpl(AggressiveInlining)]
+    internal static bool IntersectsExclusive(Vec4<T> a, Vec4<T> b) => a.ZWXY() * inverse < b * inverse;
+}
+
 public static class Rect
 {
     [MethodImpl(AggressiveInlining)]
@@ -68,31 +95,4 @@ public static class Rect
         }
         return a.Origin < b.Max && b.Origin < a.Max;
     }
-}
-
-public partial struct Rect<T>
-{
-    private static Vec4<T> inverse = new(-T.One, -T.One, T.One, T.One);
-
-    [MethodImpl(AggressiveInlining)]
-    internal static T Area(Vec4<T> r)
-    {
-        var size = r.ZWXY() - r;
-
-        size *= size.YXWZ();
-
-        return SizeOf<T>() == 4 ? size.As128()[0] : size.As256()[0];
-    }
-
-    [MethodImpl(AggressiveInlining)]
-    internal static bool Contains(Vec4<T> a, Vec4<T> b) => b * inverse <= a * inverse;
-
-    [MethodImpl(AggressiveInlining)]
-    internal static bool Intersects(Vec4<T> a, Vec4<T> b) => a.ZWXY() * inverse <= b * inverse;
-
-    [MethodImpl(AggressiveInlining)]
-    internal static bool ContainsExclusive(Vec4<T> a, Vec4<T> b) => b * inverse < a * inverse;
-
-    [MethodImpl(AggressiveInlining)]
-    internal static bool IntersectsExclusive(Vec4<T> a, Vec4<T> b) => a.ZWXY() * inverse < b * inverse;
 }

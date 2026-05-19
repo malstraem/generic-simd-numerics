@@ -4,67 +4,6 @@ namespace System.Numerics;
 
 // calls in right cases
 // this version combines 128 and 256 ways into one
-public partial struct Mat44<T>
-{
-    [MethodImpl(AggressiveInlining)]
-    private static Vec4<T> Accumulate(
-        Vector128<T> x, Vector128<T> y, Vector128<T> z, Vector128<T> w,
-        Vector128<T> c, Vector128<T> d, Vector128<T> e, Vector128<T> f)
-            => (x.Estimate(c, y * d) + z.Estimate(e, w * f)).Vec4();
-
-    [MethodImpl(AggressiveInlining)]
-    private static Vec4<T> Accumulate(
-        Vector256<T> x, Vector256<T> y, Vector256<T> z, Vector256<T> w,
-        Vector256<T> c, Vector256<T> d, Vector256<T> e, Vector256<T> f)
-            => (x.Estimate(c, y * d) + z.Estimate(e, w * f)).Vec4();
-
-    [MethodImpl(AggressiveInlining)]
-    internal static Mat44<T> Multiply128(Mat44<T> a, Mat44<T> b)
-    {
-        var x = b.X.As128();
-        var y = b.Y.As128();
-        var z = b.Z.As128();
-        var w = b.W.As128();
-
-        a.X.Broadcast128(out var c, out var d, out var e, out var f);
-        b.X = Accumulate(x, y, z, w, c, d, e, f);
-
-        a.Y.Broadcast128(out c, out d, out e, out f);
-        b.Y = Accumulate(x, y, z, w, c, d, e, f);
-
-        a.Z.Broadcast128(out c, out d, out e, out f);
-        b.Z = Accumulate(x, y, z, w, c, d, e, f);
-
-        a.W.Broadcast128(out c, out d, out e, out f);
-        b.W = Accumulate(x, y, z, w, c, d, e, f);
-
-        return b;
-    }
-
-    [MethodImpl(AggressiveInlining)]
-    internal static Mat44<T> Multiply256(Mat44<T> a, Mat44<T> b)
-    {
-        var x = b.X.As256();
-        var y = b.Y.As256();
-        var z = b.Z.As256();
-        var w = b.W.As256();
-
-        a.X.Broadcast256(out var c, out var d, out var e, out var f);
-        b.X = Accumulate(x, y, z, w, c, d, e, f);
-
-        a.Y.Broadcast256(out c, out d, out e, out f);
-        b.Y = Accumulate(x, y, z, w, c, d, e, f);
-
-        a.Z.Broadcast256(out c, out d, out e, out f);
-        b.Z = Accumulate(x, y, z, w, c, d, e, f);
-
-        a.W.Broadcast256(out c, out d, out e, out f);
-        b.W = Accumulate(x, y, z, w, c, d, e, f);
-
-        return b;
-    }
-}
-
 public static partial class Mat44
 {
     /// <inheritdoc cref="Affine{T}(Quat{T}, Vec3{T}, Vec3{T})"/>
@@ -96,7 +35,7 @@ public static partial class Mat44
         y = w.WWWW() * z; // zw, xw, yw, ww
         w *= w;           // xx, yy, zz, ww
 
-        (x, z) = (x + y, x - y); // xy +/- zw  | yz +/- xw  | xz +/- yw  | 2ww (no mean) \ 0
+        (x, z) = (x + y, x - y); // xy +\- zw  | yz +\- xw  | xz +\- yw  | 2ww (no mean) \ 0
         x += x;                  // 2(xy + zw) | 2(yz + xw) | 2(xz + yw) | 4ww (no mean)
         z += z;                  // 2(xy - zw) | 2(yz - xw) | 2(xz - yw) | 0
         w += w.YZXW();           // xx + yy    | yy + zz    | zz + xx    | 4ww (no mean)

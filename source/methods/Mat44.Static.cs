@@ -109,24 +109,14 @@ public static partial class Mat44
     public static Mat44<T> Multiply<T>(Mat44<T> a, Mat44<T> b)
         where T : unmanaged, INumber<T>
     {
-        // both "hand" and "transform" vectorized ways are non-optimal currently
-        // asm is different from System.Numerics - performance is close, but should be better
+        Mat44<T> m;
 
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            //return Mat44<T>.Multiply128(a, b);
+        m.X = Vec4.Transform(a.X, b);
+        m.Y = Vec4.Transform(a.Y, b);
+        m.Z = Vec4.Transform(a.Z, b);
+        m.W = Vec4.Transform(a.W, b);
 
-            return Mat44<T>.CoolMultiply128(a, b);
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            //return Mat44<T>.Multiply256(a, b);
-            return Mat44<T>.CoolMultiply256(a, b);
-
-        a.X = a.X.Transform(b);
-        a.Y = a.Y.Transform(b);
-        a.Z = a.Z.Transform(b);
-        a.W = a.W.Transform(b);
-
-        return a;
+        return m;
     }
 
     [Obsolete("vectorize")]
