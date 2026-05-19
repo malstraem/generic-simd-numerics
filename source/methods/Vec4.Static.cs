@@ -1,3 +1,5 @@
+using System.Transactions;
+
 namespace System.Numerics;
 
 public static class Vec4
@@ -261,12 +263,27 @@ public static class Vec4
     public static Vec4<T> Transform<T>(Vec4<T> v, Mat44<T> m)
         where T : unmanaged, INumber<T>
     {
-        var t = m.X * v.X;
+        Vec4<T> t;
 
-        t = m.Y.Estimate(v.Y, t);
-        t = m.Z.Estimate(v.Z, t);
-        t = m.W.Estimate(v.W, t);
+        if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+         || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
+        {
+            v.Broadcast(out var x, out var y, out var z, out var w);
 
+            t = m.X * x;
+
+            t = m.Y.Estimate(y, t);
+            t = m.Z.Estimate(z, t);
+            t = m.W.Estimate(w, t);
+        }
+        else
+        {
+            t = m.X * v.X;
+
+            t += m.Y * v.Y;
+            t += m.Z * v.Z;
+            t += m.W * v.W;
+        }
         return t;
     }
 
