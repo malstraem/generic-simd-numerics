@@ -62,6 +62,6 @@ public class StressMatrix4x4 : BaseBench<float>
     public void Affine()
     {
         for (int i = 0; i < Count; i++)
-            @out[i] = Matrix4x4.Transform(Matrix4x4.CreateScale(scales[i]), quats[i]) * Matrix4x4.CreateTranslation(positions[i]);
+            @out[i] = Matrix4x4.CreateFromQuaternion(quats[i]) * Matrix4x4.CreateScale(scales[i]) * Matrix4x4.CreateTranslation(positions[i]);
     }
 }

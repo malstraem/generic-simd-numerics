@@ -1,13 +1,13 @@
-## .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
 
 ```assembly
 ; System.Numerics.Bench.StressQuaternion.Multiply()
        push      rbx
        sub       rsp,20
        mov       rax,[rcx+10]
-       vmovups   xmm0,[7FFF43199E40]
-       vmovddup  xmm1,qword ptr [7FFF43199E50]
-       vmovups   xmm2,[7FFF43199E60]
+       vmovups   xmm0,[7FF7FD4E9E40]
+       vmovddup  xmm1,qword ptr [7FF7FD4E9E50]
+       vmovups   xmm2,[7FF7FD4E9E60]
        xor       edx,edx
 M00_L00:
        mov       r8,rax
@@ -58,7 +58,7 @@ M00_L01:
 ; Total bytes of code 243
 ```
 
-## .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
 
 ```assembly
 ; System.Numerics.Bench.StressQuaternion.Divide()
@@ -67,11 +67,11 @@ M00_L01:
        vmovaps   [rsp+30],xmm6
        vmovaps   [rsp+20],xmm7
        mov       rax,[rcx+10]
-       vmovups   xmm0,[7FFF431C9F40]
-       vbroadcastss xmm1,dword ptr [7FFF431C9F50]
-       vmovups   xmm2,[7FFF431C9F60]
-       vmovddup  xmm3,qword ptr [7FFF431C9F70]
-       vmovups   xmm4,[7FFF431C9F80]
+       vmovups   xmm0,[7FF7FD4D9F40]
+       vbroadcastss xmm1,dword ptr [7FF7FD4D9F50]
+       vmovups   xmm2,[7FF7FD4D9F60]
+       vmovddup  xmm3,qword ptr [7FF7FD4D9F70]
+       vmovups   xmm4,[7FF7FD4D9F80]
        xor       edx,edx
 M00_L00:
        mov       r8,rax
@@ -129,13 +129,13 @@ M00_L01:
 ; Total bytes of code 319
 ```
 
-## .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
 
 ```assembly
 ; System.Numerics.Bench.StressQuaternion.Conjugate()
        sub       rsp,28
        mov       rax,[rcx+10]
-       vmovups   xmm0,[7FFF431C9A30]
+       vmovups   xmm0,[7FF7FD4D9A30]
        xor       edx,edx
 M00_L00:
        mov       r8,rax
@@ -159,14 +159,14 @@ M00_L01:
 ; Total bytes of code 79
 ```
 
-## .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
 
 ```assembly
 ; System.Numerics.Bench.StressQuaternion.Inverse()
        sub       rsp,28
        mov       rax,[rcx+10]
-       vmovups   xmm0,[7FFF43199AF0]
-       vbroadcastss xmm1,dword ptr [7FFF43199B00]
+       vmovups   xmm0,[7FF7FD4C9AF0]
+       vbroadcastss xmm1,dword ptr [7FF7FD4C9B00]
        xor       edx,edx
 M00_L00:
        mov       r8,rax

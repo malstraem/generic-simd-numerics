@@ -1,4 +1,4 @@
-## .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
 
 ```assembly
 ; System.Numerics.Bench.StressQuaternion`1[[System.Single, System.Private.CoreLib]].Multiply()
@@ -74,13 +74,13 @@ M00_L01:
 ; Total bytes of code 327
 ```
 
-## .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
 
 ```assembly
 ; System.Numerics.Bench.StressQuaternion`1[[System.Single, System.Private.CoreLib]].Divide()
        sub       rsp,28
-       vmovss    xmm0,dword ptr [7FFF431CA900]
-       vmovss    xmm1,dword ptr [7FFF431CA904]
+       vmovss    xmm0,dword ptr [7FF7FD4EA900]
+       vmovss    xmm1,dword ptr [7FF7FD4EA904]
        xor       eax,eax
 M00_L00:
        mov       rdx,[rcx+10]
@@ -167,12 +167,12 @@ M00_L01:
 ; Total bytes of code 445
 ```
 
-## .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
 
 ```assembly
 ; System.Numerics.Bench.StressQuaternion`1[[System.Single, System.Private.CoreLib]].Conjugate()
        sub       rsp,28
-       vmovss    xmm0,dword ptr [7FFF431A9B60]
+       vmovss    xmm0,dword ptr [7FF7FD4C9B60]
        xor       eax,eax
 M00_L00:
        mov       rdx,[rcx+10]
@@ -207,13 +207,13 @@ M00_L01:
 ; Total bytes of code 124
 ```
 
-## .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
 
 ```assembly
 ; System.Numerics.Bench.StressQuaternion`1[[System.Single, System.Private.CoreLib]].Inverse()
        sub       rsp,28
-       vmovss    xmm0,dword ptr [7FFF431C9EF8]
-       vmovss    xmm1,dword ptr [7FFF431C9EFC]
+       vmovss    xmm0,dword ptr [7FF7FD4E9EF8]
+       vmovss    xmm1,dword ptr [7FF7FD4E9EFC]
        xor       eax,eax
 M00_L00:
        mov       rdx,[rcx+10]

@@ -1,4 +1,4 @@
-.NET 10.0.626.17701, X64 RyuJIT x86-64-v4, Windows 11 26200.8246, AMD Ryzen 9 7900X 4.70GHz
+.NET 10.0.826.23019, X64 RyuJIT x86-64-v4, Windows 11 (10.0.26200.8457/25H2/2025Update/HudsonValley2), AMD Ryzen 9 7900X 4.70GHz
 
 # Asm differences for load/store showed with cycle `Add` calling
 

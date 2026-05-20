@@ -6,7 +6,7 @@ namespace System.Numerics.Bench;
 
 [GenericTypeArguments(typeof(float))]
 [GenericTypeArguments(typeof(double))]
-public class StressMatrix4X4WithQuaternion<T> : StressMatrix4X4<T>
+public class StressMatrix4X4WithQuaternion<T> : StressBaseMatrix4X4<T>
     where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {
     private readonly Vector3D<T>[] scales = new Vector3D<T>[Count],
@@ -50,13 +50,16 @@ public class StressMatrix4X4WithQuaternion<T> : StressMatrix4X4<T>
 [GenericTypeArguments(typeof(short))]
 [GenericTypeArguments(typeof(int))]
 [GenericTypeArguments(typeof(long))]
-public class StressMatrix4X4<T> : BaseBench<T>
+public class StressMatrix4X4<T> : StressBaseMatrix4X4<T>
+    where T : unmanaged, INumber<T>;
+
+public abstract class StressBaseMatrix4X4<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
     protected readonly Matrix4X4<T>[] mats = new Matrix4X4<T>[Count],
                                       @out = new Matrix4X4<T>[Count];
 
-    public StressMatrix4X4()
+    public StressBaseMatrix4X4()
     {
         for (int i = 0; i < Count; i++)
             mats[i] = Mat44<T>.Gen(T.One).Silk();

@@ -6,19 +6,19 @@ using BenchmarkDotNet.Running;
 // todo: post process results to prettified reports
 
 var bench = BenchmarkSwitcher.FromTypes([
-    //typeof(StressVector2),
-    //typeof(StressVec2<>),
-    //typeof(StressVector2D<>),
+    typeof(StressVector2),
+    typeof(StressVec2<>),
+    typeof(StressVector2D<>),
 
-    //typeof(StressVec2I<>),
-    //typeof(StressVector2DI<>),
+    typeof(StressVec2I<>),
+    typeof(StressVector2DI<>),
 
-    //typeof(StressVector3),
-    //typeof(StressVec3<>),
-    //typeof(StressVector3D<>),
+    typeof(StressVector3),
+    typeof(StressVec3<>),
+    typeof(StressVector3D<>),
 
-    //typeof(StressVec3I<>),
-    //typeof(StressVector3DI<>),
+    typeof(StressVec3I<>),
+    typeof(StressVector3DI<>),
 
     typeof(StressVector4),
     typeof(StressVec4<>),
@@ -38,7 +38,8 @@ var bench = BenchmarkSwitcher.FromTypes([
     typeof(StressQuat<>),
     typeof(StressQuaternion<>),
 
-    typeof(StressRect<>)
+    typeof(StressRect<>),
+    typeof(StressRectangle<>)
 ]);
 
 var summaries = bench.RunAll();
