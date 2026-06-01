@@ -72,7 +72,7 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
 
     public readonly bool Equals(Quat<T> other) => this == other;
 
-    public override readonly bool Equals(object? obj) => (obj is Quat<T> other) && Equals(other);
+    public override readonly bool Equals(object? obj) => (obj is Quat<T> other) && this == other;
 
     public override readonly int GetHashCode() => this.Vec4().GetHashCode();
 

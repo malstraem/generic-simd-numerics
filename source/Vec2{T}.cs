@@ -89,9 +89,9 @@ public partial struct Vec2<T>(T x, T y) :
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec2<T> v) => Vec2.DistanceSquared(this, v);
 
-    public readonly bool Equals(Vec2<T> other) => Vec2.Equal(this, other);
+    public readonly bool Equals(Vec2<T> other) => this == other;
 
-    public override readonly bool Equals(object? obj) => (obj is Vec2<T> other) && Vec2.Equal(this, other);
+    public override readonly bool Equals(object? obj) => (obj is Vec2<T> other) && this == other;
 
     public override readonly int GetHashCode() => HashCode.Combine(X, Y);
 

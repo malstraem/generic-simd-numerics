@@ -1,3 +1,5 @@
+using System.Runtime.Intrinsics.X86;
+
 namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
@@ -97,9 +99,29 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec4<T> v) => Vec4.DistanceSquared(this, v);
 
-    public readonly bool Equals(Vec4<T> other) => Vec4.Equal(this, other);
+    public readonly Vec4<TOther> As<TOther>()
+        where TOther : unmanaged, INumber<TOther>
+    {
+        if (Avx.IsSupported)
+        {
+            if (typeof(T) == typeof(int))
+            {
+                if (typeof(TOther) == typeof(float))
+                    return Avx.ConvertToVector128Single(this.As128().AsInt32()).As<float, TOther>().Vec4();
+            }
+        }
 
-    public override readonly bool Equals(object? obj) => (obj is Vec4<T> other) && Vec4.Equal(this, other);
+        return new Vec4<TOther>(
+            TOther.CreateTruncating(X),
+            TOther.CreateTruncating(Y),
+            TOther.CreateTruncating(Z),
+            TOther.CreateTruncating(W)
+        );
+    }
+
+    public readonly bool Equals(Vec4<T> other) => this == other;
+
+    public override readonly bool Equals(object? obj) => (obj is Vec4<T> other) && this == other;
 
     public override readonly int GetHashCode() => HashCode.Combine(X, Y, Z, W);
 

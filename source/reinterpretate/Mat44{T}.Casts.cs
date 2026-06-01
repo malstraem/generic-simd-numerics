@@ -1,7 +1,7 @@
 namespace System.Numerics;
 
 // calls in right cases
-// reversed bitcasts are pessimized by JIT compilation, so the Store is now used
+// reversed bitcasts are pessimized by JIT compilation, so the Store is used currently
 internal static class ReinterpretateMat44
 {
     extension<T>(Mat44<T> m)

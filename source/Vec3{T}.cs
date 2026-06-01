@@ -96,9 +96,9 @@ public struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec3<T> Cross(Vec3<T> v) => Vec3.Cross(this, v);
 
-    public readonly bool Equals(Vec3<T> other) => Vec3.Equal(this, other);
+    public readonly bool Equals(Vec3<T> other) => this == other;
 
-    public override readonly bool Equals(object? obj) => (obj is Vec3<T> other) && Vec3.Equal(this, other);
+    public override readonly bool Equals(object? obj) => (obj is Vec3<T> other) && this == other;
 
     public override readonly int GetHashCode() => HashCode.Combine(X, Y, Z);
 
