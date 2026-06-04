@@ -85,6 +85,38 @@ public abstract class Vec4Root<T> : Vec4Base<T>
     }
 }
 
+[GenerateGenericTest(
+    typeof(int), typeof(float),
+    typeof(int), typeof(double),
+
+    typeof(float), typeof(int),
+    typeof(float), typeof(double),
+
+    typeof(double), typeof(int),
+    typeof(double), typeof(float))]
+public abstract class Vec4Conversion<T1, T2>
+    where T1 : unmanaged, INumber<T1>
+    where T2 : unmanaged, INumber<T2>
+{
+    protected static readonly Vec4<T1> v = Vec4<T1>.Gen(T1.One + T1.One);
+
+    [Test, DisplayName("convert")]
+    public async Task Convert()
+    {
+        var converted = v.As<T2>();
+
+        var expected = v.Silk().As<T2>().Vec4();
+
+        await Assert.That(converted).IsEqualTo(expected);
+
+        var reverse = converted.As<T1>();
+
+        var reverseExpected = converted.Silk().As<T1>().Vec4();
+
+        await Assert.That(reverse).IsEqualTo(reverseExpected);
+    }
+}
+
 [InheritsTests]
 public abstract class Vec4Signed<T> : Vec4Base<T>
     where T : unmanaged, INumber<T>, ISignedNumber<T>

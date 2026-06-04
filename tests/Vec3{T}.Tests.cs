@@ -1,5 +1,3 @@
-using System.Numerics.Vec4Tests;
-
 using Silk.NET.Maths;
 
 namespace System.Numerics.Vec3Tests;

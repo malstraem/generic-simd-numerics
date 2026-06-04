@@ -1,6 +1,3 @@
-using System.Numerics.Vec3Tests;
-using System.Numerics.Vec4Tests;
-
 using Silk.NET.Maths;
 
 namespace System.Numerics.Vec2Tests;
@@ -10,34 +7,34 @@ namespace System.Numerics.Vec2Tests;
     2) provide more edge cases with better way */
 
 [InheritsTests]
-public class Vec2f32 : Vec3Root<float>;
+public class Vec2f32 : Vec2Root<float>;
 
 [InheritsTests]
-public class Vec3f64 : Vec3Root<float>;
+public class Vec3f64 : Vec2Root<float>;
 
 [InheritsTests]
-public class Vec3i8 : Vec3Signed<sbyte>;
+public class Vec3i8 : Vec2Signed<sbyte>;
 
 [InheritsTests]
-public class Vec3ui8 : Vec3Base<byte>;
+public class Vec3ui8 : Vec2Base<byte>;
 
 [InheritsTests]
-public class Vec3i16 : Vec3Signed<short>;
+public class Vec3i16 : Vec2Signed<short>;
 
 [InheritsTests]
-public class Vec3ui16 : Vec3Base<ushort>;
+public class Vec3ui16 : Vec2Base<ushort>;
 
 [InheritsTests]
-public class Vec3i32 : Vec3Signed<int>;
+public class Vec3i32 : Vec2Signed<int>;
 
 [InheritsTests]
-public class Vec3ui32 : Vec3Base<uint>;
+public class Vec3ui32 : Vec2Base<uint>;
 
 [InheritsTests]
-public class Vec3i64 : Vec3Signed<long>;
+public class Vec3i64 : Vec2Signed<long>;
 
 [InheritsTests]
-public class Vec3ui64 : Vec3Base<ulong>;
+public class Vec3ui64 : Vec2Base<ulong>;
 
 [InheritsTests]
 public abstract class Vec2Signed<T> : Vec2Base<T>
