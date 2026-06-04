@@ -108,6 +108,27 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
             {
                 if (typeof(TOther) == typeof(float))
                     return Avx.ConvertToVector128Single(this.As128().AsInt32()).As<float, TOther>().Vec4();
+
+                if (typeof(TOther) == typeof(double))
+                    return Avx.ConvertToVector256Double(this.As128().AsInt32()).As<double, TOther>().Vec4();
+            }
+
+            if (typeof(T) == typeof(float))
+            {
+                if (typeof(TOther) == typeof(int))
+                    return Avx.ConvertToVector128Int32(this.As128().AsSingle()).As<int, TOther>().Vec4();
+
+                if (typeof(TOther) == typeof(double))
+                    return Avx.ConvertToVector256Double(this.As128().AsSingle()).As<double, TOther>().Vec4();
+            }
+
+            if (typeof(T) == typeof(double))
+            {
+                if (typeof(TOther) == typeof(int))
+                    return Avx.ConvertToVector128Int32(this.As256().AsDouble()).As<int, TOther>().Vec4();
+
+                if (typeof(TOther) == typeof(float))
+                    return Avx.ConvertToVector128Single(this.As256().AsDouble()).As<float, TOther>().Vec4();
             }
         }
 
