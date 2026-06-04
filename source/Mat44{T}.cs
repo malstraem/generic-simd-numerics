@@ -51,9 +51,9 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Mat44<T> Transpose() => Mat44.Transpose(this);
 
-    public readonly bool Equals(Mat44<T> other) => Mat44.Equal(this, other);
+    public readonly bool Equals(Mat44<T> other) => this == other;
 
-    public override readonly bool Equals(object? obj) => (obj is Mat44<T> other) && Mat44.Equal(this, other);
+    public override readonly bool Equals(object? obj) => (obj is Mat44<T> other) && this == other;
 
     public override readonly int GetHashCode() => HashCode.Combine(X, Y, Z, W);
 

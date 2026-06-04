@@ -32,7 +32,7 @@ public partial struct Rect<T>(Vec2<T> origin, Vec2<T> max) :
 
     public readonly bool Equals(Rect<T> other) => this == other;
 
-    public override readonly bool Equals(object? obj) => obj is Rect<T> other && Equals(other);
+    public override readonly bool Equals(object? obj) => obj is Rect<T> other && this == other;
 
     public override readonly int GetHashCode() => HashCode.Combine(Origin, Max);
 }
