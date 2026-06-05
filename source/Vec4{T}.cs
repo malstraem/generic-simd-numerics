@@ -1,5 +1,3 @@
-using System.Runtime.Intrinsics.X86;
-
 namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
@@ -101,44 +99,7 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
 
     public readonly Vec4<TOther> As<TOther>()
         where TOther : unmanaged, INumber<TOther>
-    {
-        if (Avx.IsSupported)
-        {
-            if (typeof(T) == typeof(int))
-            {
-                if (typeof(TOther) == typeof(float))
-                    return Avx.ConvertToVector128Single(this.As128().AsInt32()).As<float, TOther>().Vec4();
-
-                if (typeof(TOther) == typeof(double))
-                    return Avx.ConvertToVector256Double(this.As128().AsInt32()).As<double, TOther>().Vec4();
-            }
-
-            if (typeof(T) == typeof(float))
-            {
-                if (typeof(TOther) == typeof(int))
-                    return Avx.ConvertToVector128Int32(this.As128().AsSingle()).As<int, TOther>().Vec4();
-
-                if (typeof(TOther) == typeof(double))
-                    return Avx.ConvertToVector256Double(this.As128().AsSingle()).As<double, TOther>().Vec4();
-            }
-
-            if (typeof(T) == typeof(double))
-            {
-                if (typeof(TOther) == typeof(int))
-                    return Avx.ConvertToVector128Int32(this.As256().AsDouble()).As<int, TOther>().Vec4();
-
-                if (typeof(TOther) == typeof(float))
-                    return Avx.ConvertToVector128Single(this.As256().AsDouble()).As<float, TOther>().Vec4();
-            }
-        }
-
-        return new Vec4<TOther>(
-            TOther.CreateTruncating(X),
-            TOther.CreateTruncating(Y),
-            TOther.CreateTruncating(Z),
-            TOther.CreateTruncating(W)
-        );
-    }
+            => Vec4.As<T, TOther>(this);
 
     public readonly bool Equals(Vec4<T> other) => this == other;
 

@@ -10,31 +10,31 @@ namespace System.Numerics.Vec2Tests;
 public class Vec2f32 : Vec2Root<float>;
 
 [InheritsTests]
-public class Vec3f64 : Vec2Root<float>;
+public class Vec2f64 : Vec2Root<double>;
 
 [InheritsTests]
-public class Vec3i8 : Vec2Signed<sbyte>;
+public class Vec2i8 : Vec2Signed<sbyte>;
 
 [InheritsTests]
-public class Vec3ui8 : Vec2Base<byte>;
+public class Vec2ui8 : Vec2Base<byte>;
 
 [InheritsTests]
-public class Vec3i16 : Vec2Signed<short>;
+public class Vec2i16 : Vec2Signed<short>;
 
 [InheritsTests]
-public class Vec3ui16 : Vec2Base<ushort>;
+public class Vec2ui16 : Vec2Base<ushort>;
 
 [InheritsTests]
-public class Vec3i32 : Vec2Signed<int>;
+public class Vec2i32 : Vec2Signed<int>;
 
 [InheritsTests]
-public class Vec3ui32 : Vec2Base<uint>;
+public class Vec2ui32 : Vec2Base<uint>;
 
 [InheritsTests]
-public class Vec3i64 : Vec2Signed<long>;
+public class Vec2i64 : Vec2Signed<long>;
 
 [InheritsTests]
-public class Vec3ui64 : Vec2Base<ulong>;
+public class Vec2ui64 : Vec2Base<ulong>;
 
 [InheritsTests]
 public abstract class Vec2Signed<T> : Vec2Base<T>

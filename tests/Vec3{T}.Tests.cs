@@ -10,7 +10,7 @@ namespace System.Numerics.Vec3Tests;
 public class Vec3f32 : Vec3Root<float>;
 
 [InheritsTests]
-public class Vec3f64 : Vec3Root<float>;
+public class Vec3f64 : Vec3Root<double>;
 
 [InheritsTests]
 public class Vec3i8 : Vec3Signed<sbyte>;
