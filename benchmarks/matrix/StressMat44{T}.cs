@@ -2,6 +2,36 @@ using BenchmarkDotNet.Attributes;
 
 namespace System.Numerics.Bench;
 
+[GenericTypeArguments(typeof(int), typeof(float))]
+[GenericTypeArguments(typeof(int), typeof(double))]
+
+[GenericTypeArguments(typeof(float), typeof(int))]
+[GenericTypeArguments(typeof(float), typeof(double))]
+
+[GenericTypeArguments(typeof(double), typeof(int))]
+[GenericTypeArguments(typeof(double), typeof(float))]
+public class StressConversionMat44<T1, T2> : BaseBench<T1>
+    where T1 : unmanaged, INumber<T1>
+    where T2 : unmanaged, INumber<T2>
+{
+    private readonly Mat44<T1>[] vecs = new Mat44<T1>[Count];
+
+    private readonly Mat44<T2>[] converted = new Mat44<T2>[Count];
+
+    public StressConversionMat44()
+    {
+        for (int i = 0; i < Count; i++)
+            vecs[i] = Mat44<T1>.Gen(T1.One);
+    }
+
+    [Benchmark]
+    public void Convert()
+    {
+        for (int i = 0; i < Count; i++)
+            converted[i] = vecs[i].As<T2>();
+    }
+}
+
 [GenericTypeArguments(typeof(float))]
 [GenericTypeArguments(typeof(double))]
 public class StressMat44WithQuat<T> : StressBaseMat44<T>
