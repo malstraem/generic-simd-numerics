@@ -28,7 +28,7 @@ public partial struct Rect<T>(Vec2<T> origin, Vec2<T> max) :
     public readonly bool Contains(Rect<T> rect) => Rect.Contains(this, rect);
 
     [MethodImpl(AggressiveInlining)]
-    public readonly bool Intersects(Rect<T> rect) => Rect.Intersect(this, rect);
+    public readonly bool Intersects(Rect<T> rect) => Rect.Intersects(this, rect);
 
     public readonly bool Equals(Rect<T> other) => this == other;
 

@@ -61,7 +61,7 @@ public static class Rect
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static bool Intersect<T>(Rect<T> a, Rect<T> b)
+    public static bool Intersects<T>(Rect<T> a, Rect<T> b)
         where T : unmanaged, INumber<T>
     {
         if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
@@ -85,7 +85,7 @@ public static class Rect
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static bool IsIntersectExclusive<T>(Rect<T> a, Rect<T> b)
+    public static bool IntersectsExclusive<T>(Rect<T> a, Rect<T> b)
         where T : unmanaged, INumber<T>
     {
         if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
