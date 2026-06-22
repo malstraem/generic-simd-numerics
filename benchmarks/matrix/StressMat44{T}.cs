@@ -14,21 +14,21 @@ public class StressConversionMat44<T1, T2> : BaseBench<T1>
     where T1 : unmanaged, INumber<T1>
     where T2 : unmanaged, INumber<T2>
 {
-    private readonly Mat44<T1>[] vecs = new Mat44<T1>[Count];
+    private readonly Mat44<T1>[] mats = new Mat44<T1>[Count];
 
     private readonly Mat44<T2>[] converted = new Mat44<T2>[Count];
 
     public StressConversionMat44()
     {
         for (int i = 0; i < Count; i++)
-            vecs[i] = Mat44<T1>.Gen(T1.One);
+            mats[i] = Mat44<T1>.Gen(T1.One);
     }
 
     [Benchmark]
     public void Convert()
     {
         for (int i = 0; i < Count; i++)
-            converted[i] = vecs[i].As<T2>();
+            converted[i] = mats[i].As<T2>();
     }
 }
 

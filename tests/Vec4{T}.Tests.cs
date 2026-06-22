@@ -108,6 +108,7 @@ public abstract class Vec4Conversion<T1, T2>
         var expected = v.Silk().As<T2>().Vec4();
 
         await Assert.That(converted).IsEqualTo(expected);
+        await Assert.That(converted).IsEqualTo(Vec4.As<T1, T2>(v));
 
         var reverse = converted.As<T1>();
 

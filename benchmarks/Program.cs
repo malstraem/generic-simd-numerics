@@ -41,7 +41,8 @@ var bench = BenchmarkSwitcher.FromTypes([
     //typeof(StressRect<>),
     //typeof(StressRectangle<>)
 
-    typeof(StressConversionVec4<,>)
+    typeof(StressConversionVec4<,>),
+    typeof(StressConversionMat44<,>)
 ]);
 
 var summaries = bench.RunAll();
