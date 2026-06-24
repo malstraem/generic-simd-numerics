@@ -70,6 +70,10 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Quat<T> Lerp(Quat<T> q, T am) => Quat.Lerp(this, q, am);
 
+    public readonly Quat<TOther> As<TOther>()
+        where TOther : unmanaged, INumber<TOther>, IRootFunctions<TOther>, ITrigonometricFunctions<TOther>
+            => Quat.As<T, TOther>(this);
+
     public readonly bool Equals(Quat<T> other) => this == other;
 
     public override readonly bool Equals(object? obj) => (obj is Quat<T> other) && this == other;

@@ -335,4 +335,18 @@ public static partial class Vec4
 
         return new(T.Abs(v.X), T.Abs(v.Y), T.Abs(v.Z), T.Abs(v.W));
     }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec4<T2> As<T, T2>(Vec4<T> v)
+        where T : unmanaged, INumber<T>
+        where T2 : unmanaged, INumber<T2>
+    {
+        if (SizeOf<T>() == 4)
+            return Vec4<T>.Convert32<T2>(v);
+
+        if (SizeOf<T>() == 8)
+            return Vec4<T>.Convert64<T2>(v);
+
+        return Vec4<T>.ScalarConvert<T2>(v);
+    }
 }

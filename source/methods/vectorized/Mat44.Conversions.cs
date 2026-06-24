@@ -4,11 +4,10 @@ namespace System.Numerics;
 
 // dummy
 
-public static partial class Mat44
+public partial struct Mat44<T>
 {
     [MethodImpl(AggressiveInlining)]
-    private static Mat44<T2> ByRows<T, T2>(Mat44<T> m)
-        where T : unmanaged, INumber<T>
+    internal static Mat44<T2> ByRows<T2>(Mat44<T> m)
         where T2 : unmanaged, INumber<T2>
     {
         Mat44<T2> c;
@@ -22,8 +21,7 @@ public static partial class Mat44
     }
 
     [MethodImpl(AggressiveInlining)]
-    private static Mat44<T2> Convert64<T, T2>(Mat44<T> m)
-        where T : unmanaged, INumber<T>
+    internal static Mat44<T2> Convert64<T2>(Mat44<T> m)
         where T2 : unmanaged, INumber<T2>
     {
         if (SizeOf<T2>() == 8 && Vector512<T>.IsSupported && Vector512<T2>.IsSupported && Vector512.IsHardwareAccelerated)
@@ -66,17 +64,6 @@ public static partial class Mat44
             }
             // another type cases
         }
-        return ByRows<T, T2>(m);
-    }
-
-    [MethodImpl(AggressiveInlining)]
-    public static Mat44<T2> As<T, T2>(Mat44<T> m)
-        where T : unmanaged, INumber<T>
-        where T2 : unmanaged, INumber<T2>
-    {
-        if (SizeOf<T>() == 8)
-            return Convert64<T, T2>(m);
-
-        return ByRows<T, T2>(m);
+        return ByRows<T2>(m);
     }
 }

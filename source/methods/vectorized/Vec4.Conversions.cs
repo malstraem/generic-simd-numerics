@@ -4,11 +4,10 @@ namespace System.Numerics;
 
 // dummy
 
-public static partial class Vec4
+public partial struct Vec4<T>
 {
     [MethodImpl(AggressiveInlining)]
-    private static Vec4<T2> Scalar<T, T2>(Vec4<T> v)
-        where T : unmanaged, INumber<T>
+    internal static Vec4<T2> ScalarConvert<T2>(Vec4<T> v)
         where T2 : unmanaged, INumber<T2> => new(
             T2.CreateTruncating(v.X),
             T2.CreateTruncating(v.Y),
@@ -16,8 +15,7 @@ public static partial class Vec4
             T2.CreateTruncating(v.W));
 
     [MethodImpl(AggressiveInlining)]
-    private static Vec4<T2> Convert32<T, T2>(Vec4<T> v)
-        where T : unmanaged, INumber<T>
+    internal static Vec4<T2> Convert32<T2>(Vec4<T> v)
         where T2 : unmanaged, INumber<T2>
     {
         if (SizeOf<T2>() == 4 && Vector128<T>.IsSupported && Vector128<T2>.IsSupported && Vector128.IsHardwareAccelerated)
@@ -51,12 +49,11 @@ public static partial class Vec4
             // ...
             // another type cases
         }
-        return Scalar<T, T2>(v);
+        return ScalarConvert<T2>(v);
     }
 
     [MethodImpl(AggressiveInlining)]
-    private static Vec4<T2> Convert64<T, T2>(Vec4<T> v)
-        where T : unmanaged, INumber<T>
+    internal static Vec4<T2> Convert64<T2>(Vec4<T> v)
         where T2 : unmanaged, INumber<T2>
     {
         if (SizeOf<T2>() == 8 && Vector256<T>.IsSupported && Vector256<T2>.IsSupported && Vector256.IsHardwareAccelerated)
@@ -90,25 +87,6 @@ public static partial class Vec4
             // ...
             // another type cases
         }
-        return Scalar<T, T2>(v);
-    }
-
-    [MethodImpl(AggressiveInlining)]
-    public static Vec4<T2> As<T, T2>(Vec4<T> v)
-        where T : unmanaged, INumber<T>
-        where T2 : unmanaged, INumber<T2>
-    {
-        if (SizeOf<T>() == 4)
-            return Convert32<T, T2>(v);
-
-        if (SizeOf<T>() == 8)
-            return Convert64<T, T2>(v);
-
-        return new Vec4<T2>(
-            T2.CreateTruncating(v.X),
-            T2.CreateTruncating(v.Y),
-            T2.CreateTruncating(v.Z),
-            T2.CreateTruncating(v.W)
-        );
+        return ScalarConvert<T2>(v);
     }
 }

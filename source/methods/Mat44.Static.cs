@@ -304,4 +304,15 @@ public static partial class Mat44
         T.Zero, T.One,  T.Zero, T.Zero,
         T.Zero, T.Zero, T.One,  T.Zero,
         t.X,    t.Y,    t.Z,    T.One);
+
+    [MethodImpl(AggressiveInlining)]
+    public static Mat44<T2> As<T, T2>(Mat44<T> m)
+        where T : unmanaged, INumber<T>
+        where T2 : unmanaged, INumber<T2>
+    {
+        if (SizeOf<T>() == 8)
+            return Mat44<T>.Convert64<T2>(m);
+
+        return Mat44<T>.ByRows<T2>(m);
+    }
 }

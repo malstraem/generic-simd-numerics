@@ -193,4 +193,10 @@ public static class Quat
                    (cy * cp * sr) - (sy * sp * cr),
                    (cy * cp * cr) + (sy * sp * sr));
     }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Quat<T2> As<T, T2>(Quat<T> quat)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T2 : unmanaged, INumber<T2>, IRootFunctions<T2>, ITrigonometricFunctions<T2>
+            => quat.Vec4().As<T2>().Quat();
 }

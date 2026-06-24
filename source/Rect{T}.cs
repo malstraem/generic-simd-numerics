@@ -30,6 +30,10 @@ public partial struct Rect<T>(Vec2<T> origin, Vec2<T> max) :
     [MethodImpl(AggressiveInlining)]
     public readonly bool Intersects(Rect<T> rect) => Rect.Intersects(this, rect);
 
+    public readonly Rect<TOther> As<TOther>()
+        where TOther : unmanaged, INumber<TOther>
+            => Rect.As<T, TOther>(this);
+
     public readonly bool Equals(Rect<T> other) => this == other;
 
     public override readonly bool Equals(object? obj) => obj is Rect<T> other && this == other;
