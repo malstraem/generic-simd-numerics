@@ -35,6 +35,9 @@ public partial struct Vec4<T>
     [MethodImpl(AggressiveInlining)]
     internal Vec4<T> WWWW() => Permute(3, 3, 3, 3);
 
+    [MethodImpl(AggressiveInlining)]
+    internal Vec4<T> YYWW() => Permute(1, 1, 3, 3);
+
     #region X---
     [MethodImpl(AggressiveInlining)]
     internal Vec4<T> XYWZ() => Permute(0, 1, 3, 2);

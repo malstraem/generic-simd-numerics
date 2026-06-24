@@ -1,13 +1,13 @@
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 10.0.9 (10.0.9, 10.0.926.27113), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
 
 ```assembly
-; System.Numerics.Bench.StressRect`1[[System.Single, System.Private.CoreLib]].IsIntersect()
+; System.Numerics.Bench.StressRect`1[[System.Single, System.Private.CoreLib]].Intersects()
        xor       eax,eax
-       mov       rcx,1E0C6C00358
+       mov       rcx,24C13800358
        mov       rcx,[rcx]
-       mov       rdx,1E0C6C00360
+       mov       rdx,24C13800360
        mov       rdx,[rdx]
-       mov       r8,1E0A42D8E18
+       mov       r8,25BCAA68E18
        vmovups   xmm0,[r8]
 M00_L00:
        mov       r8d,eax
@@ -33,16 +33,16 @@ M00_L00:
 ; Total bytes of code 124
 ```
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 10.0.9 (10.0.9, 10.0.926.27113), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
 
 ```assembly
 ; System.Numerics.Bench.StressRect`1[[System.Single, System.Private.CoreLib]].Contains()
        xor       eax,eax
-       mov       rcx,16103800358
+       mov       rcx,1BC2B800358
        mov       rcx,[rcx]
-       mov       rdx,16103800360
+       mov       rdx,1BC2B800360
        mov       rdx,[rdx]
-       mov       r8,170BA858E18
+       mov       r8,1BC243A8E18
        vmovups   xmm0,[r8]
 M00_L00:
        mov       r8d,eax
@@ -67,13 +67,13 @@ M00_L00:
 ; Total bytes of code 118
 ```
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 10.0.9 (10.0.9, 10.0.926.27113), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
 
 ```assembly
 ; System.Numerics.Bench.StressRect`1[[System.Single, System.Private.CoreLib]].Area()
-       mov       rax,18D8E400358
+       mov       rax,1B04E000358
        mov       rax,[rax]
-       mov       rcx,18D8E400368
+       mov       rcx,1B04E000368
        mov       rcx,[rcx]
        xor       edx,edx
        mov       r8d,1869F
@@ -81,7 +81,7 @@ M00_L00:
        vmovups   xmm0,[rax+rdx*4+10]
        vpermilps xmm1,xmm0,4E
        vsubps    xmm0,xmm1,xmm0
-       vpermilps xmm1,xmm0,0B1
+       vpermilps xmm1,xmm0,0F5
        vmulps    xmm0,xmm1,xmm0
        vmovss    dword ptr [rcx+rdx+10],xmm0
        add       rdx,4

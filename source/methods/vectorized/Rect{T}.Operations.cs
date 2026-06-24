@@ -5,11 +5,11 @@ public partial struct Rect<T>
     private static Vec4<T> inverse = new(-T.One, -T.One, T.One, T.One);
 
     [MethodImpl(AggressiveInlining)]
-    internal static T Area(Vec4<T> r)
+    internal static T Area(Vec4<T> rect)
     {
-        var size = r.ZWXY() - r;
+        var size = rect.ZWXY() - rect;
 
-        size *= size.YXWZ();
+        size *= size.YYWW();
 
         return SizeOf<T>() == 4 ? size.As128()[0] : size.As256()[0];
     }

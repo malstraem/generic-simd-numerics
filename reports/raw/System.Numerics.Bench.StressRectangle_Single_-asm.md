@@ -1,11 +1,11 @@
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 10.0.9 (10.0.9, 10.0.926.27113), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
 
 ```assembly
 ; System.Numerics.Bench.StressRectangle`1[[System.Single, System.Private.CoreLib]].Contains()
        xor       eax,eax
-       mov       rcx,277AE400358
+       mov       rcx,2BF5E400358
        mov       rcx,[rcx]
-       mov       rdx,277AE400360
+       mov       rdx,2BF5E400360
        mov       rdx,[rdx]
 M00_L00:
        mov       r8d,eax
@@ -50,13 +50,13 @@ M00_L02:
 ; Total bytes of code 192
 ```
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 10.0.9 (10.0.9, 10.0.926.27113), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
 
 ```assembly
 ; System.Numerics.Bench.StressRectangle`1[[System.Single, System.Private.CoreLib]].Area()
-       mov       rax,1DDA4000358
+       mov       rax,19EE3000358
        mov       rax,[rax]
-       mov       rcx,1DDA4000368
+       mov       rcx,19EE3000368
        mov       rcx,[rcx]
        xor       edx,edx
        mov       r8d,1869F

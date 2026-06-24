@@ -9,8 +9,6 @@ AMD Ryzen 9 7900X 4.70GHz, 1 CPU, 24 logical and 12 physical cores
 Job=.NET 10.0  Runtime=.NET 10.0  
 
 ```
-| Method     | Mean     | Error    | StdDev   | Code Size |
-|----------- |---------:|---------:|---------:|----------:|
-| Intersects | 66.42 μs | 0.249 μs | 0.208 μs |     124 B |
-| Contains   | 67.48 μs | 0.203 μs | 0.180 μs |     118 B |
-| Area       | 28.23 μs | 0.332 μs | 0.277 μs |      76 B |
+| Method  | Mean     | Error    | StdDev   | Code Size |
+|-------- |---------:|---------:|---------:|----------:|
+| Convert | 54.10 μs | 0.782 μs | 0.732 μs |      86 B |

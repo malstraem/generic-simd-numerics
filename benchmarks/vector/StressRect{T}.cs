@@ -19,7 +19,7 @@ public class StressRect<T> : BaseBench<T>
     }
 
     [Benchmark]
-    public void IsIntersect()
+    public void Intersects()
     {
         for (int i = 0; i < Count - 1; i++)
             bools[i] = rects[i].Intersects(rects[i + 1]);
