@@ -240,4 +240,14 @@ public static class Vec2
 
         return new(T.Abs(v.X), T.Abs(v.Y));
     }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec2<T2> As<T, T2>(Vec2<T> v)
+        where T : unmanaged, INumber<T>
+        where T2 : unmanaged, INumber<T2>
+    {
+        return new Vec2<T2>(
+            T2.CreateTruncating(v.X),
+            T2.CreateTruncating(v.Y));
+    }
 }

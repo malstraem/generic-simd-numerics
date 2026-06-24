@@ -14,6 +14,16 @@ internal static class ReinterpretateMat44
         internal Vector512<T> As512() => BitCast<Mat44<T>, Vector512<T>>(m);
 
         [MethodImpl(AggressiveInlining)]
+        internal void As256(out Vector256<T> xy, out Vector256<T> zw)
+        {
+            unsafe
+            {
+                xy = Vector256.Load(&m.X.X);
+                zw = Vector256.Load(&m.Z.X);
+            }
+        }
+
+        [MethodImpl(AggressiveInlining)]
         internal void As512(out Vector512<T> xy, out Vector512<T> zw)
         {
             unsafe
@@ -32,6 +42,20 @@ internal static class ReinterpretateMat44
         {
             Mat44<T> m;
             unsafe { ymm.Store((T*)&m); }
+            return m;
+        }
+
+        [MethodImpl(AggressiveInlining)]
+        internal Mat44<T> Mat44(Vector256<T> zw)
+        {
+            Mat44<T> m;
+            unsafe
+            {
+                var p = (T*)&m;
+
+                ymm.Store(p);
+                zw.Store(p + 8);
+            }
             return m;
         }
     }

@@ -38,9 +38,6 @@ public static partial class Mat44
     public static Mat44<T> Add<T>(Mat44<T> a, Mat44<T> b)
         where T : unmanaged, INumber<T>
     {
-        if (SizeOf<T>() == 2 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return (a.As256() + b.As256()).Mat44();
-
         if (Vector512<T>.IsSupported && Vector512.IsHardwareAccelerated)
         {
             if (SizeOf<T>() == 4)
@@ -55,6 +52,21 @@ public static partial class Mat44
                 return axy.Mat44(azw);
             }
         }
+
+        if (Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+        {
+            if (SizeOf<T>() == 2)
+                return (a.As256() + b.As256()).Mat44();
+
+            if (SizeOf<T>() == 4)
+            {
+                a.As256(out var axy, out var azw);
+                b.As256(out var bxy, out var bzw);
+                axy += bxy;
+                azw += bzw;
+                return axy.Mat44(azw);
+            }
+        }
         return new(a.X + b.X, a.Y + b.Y, a.Z + b.Z, a.W + b.W);
     }
 
@@ -62,9 +74,6 @@ public static partial class Mat44
     public static Mat44<T> Subtract<T>(Mat44<T> a, Mat44<T> b)
         where T : unmanaged, INumber<T>
     {
-        if (SizeOf<T>() == 2 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return (a.As256() - b.As256()).Mat44();
-
         if (Vector512<T>.IsSupported && Vector512.IsHardwareAccelerated)
         {
             if (SizeOf<T>() == 4)
@@ -79,6 +88,21 @@ public static partial class Mat44
                 return axy.Mat44(azw);
             }
         }
+
+        if (Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+        {
+            if (SizeOf<T>() == 2)
+                return (a.As256() - b.As256()).Mat44();
+
+            if (SizeOf<T>() == 4)
+            {
+                a.As256(out var axy, out var azw);
+                b.As256(out var bxy, out var bzw);
+                axy -= bxy;
+                azw -= bzw;
+                return axy.Mat44(azw);
+            }
+        }
         return new(a.X - b.X, a.Y - b.Y, a.Z - b.Z, a.W - b.W);
     }
 
@@ -86,9 +110,6 @@ public static partial class Mat44
     public static Mat44<T> Multiply<T>(Mat44<T> m, T n)
         where T : unmanaged, INumber<T>
     {
-        if (SizeOf<T>() == 2 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return (m.As256() * n).Mat44();
-
         if (Vector512<T>.IsSupported && Vector512.IsHardwareAccelerated)
         {
             if (SizeOf<T>() == 4)
@@ -97,6 +118,20 @@ public static partial class Mat44
             if (SizeOf<T>() == 8)
             {
                 m.As512(out var xy, out var zw);
+                xy *= n;
+                zw *= n;
+                return xy.Mat44(zw);
+            }
+        }
+
+        if (Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+        {
+            if (SizeOf<T>() == 2)
+                return (m.As256() * n).Mat44();
+
+            if (SizeOf<T>() == 4)
+            {
+                m.As256(out var xy, out var zw);
                 xy *= n;
                 zw *= n;
                 return xy.Mat44(zw);
@@ -269,4 +304,15 @@ public static partial class Mat44
         T.Zero, T.One,  T.Zero, T.Zero,
         T.Zero, T.Zero, T.One,  T.Zero,
         t.X,    t.Y,    t.Z,    T.One);
+
+    [MethodImpl(AggressiveInlining)]
+    public static Mat44<T2> As<T, T2>(Mat44<T> m)
+        where T : unmanaged, INumber<T>
+        where T2 : unmanaged, INumber<T2>
+    {
+        if (SizeOf<T>() == 8)
+            return Mat44<T>.Convert64<T2>(m);
+
+        return Mat44<T>.ByRows<T2>(m);
+    }
 }

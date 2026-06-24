@@ -184,6 +184,39 @@ public class Mat44i64 : Mat44Base<long>;
 [InheritsTests]
 public class Mat44ui64 : Mat44Base<ulong>;
 
+[GenerateGenericTest(
+    typeof(int), typeof(float),
+    typeof(int), typeof(double),
+
+    typeof(float), typeof(int),
+    typeof(float), typeof(double),
+
+    typeof(double), typeof(int),
+    typeof(double), typeof(float))]
+public abstract class Mat44Conversion<T1, T2>
+    where T1 : unmanaged, INumber<T1>
+    where T2 : unmanaged, INumber<T2>
+{
+    protected static readonly Mat44<T1> m = Mat44<T1>.Gen(T1.One + T1.One);
+
+    [Test, DisplayName("convert")]
+    public async Task Convert()
+    {
+        var converted = m.As<T2>();
+
+        var expected = m.Silk().As<T2>().Mat44();
+
+        await Assert.That(converted).IsEqualTo(expected);
+        await Assert.That(converted).IsEqualTo(Mat44.As<T1, T2>(m));
+
+        var reverse = converted.As<T1>();
+
+        var reverseExpected = converted.Silk().As<T1>().Mat44();
+
+        await Assert.That(reverse).IsEqualTo(reverseExpected);
+    }
+}
+
 public abstract class Mat44Base<T>
     where T : unmanaged, INumber<T>
 {
