@@ -83,7 +83,6 @@ public struct Vec3<T>(T x, T y, T z) :
     [MethodImpl(AggressiveInlining)]
     public readonly Vec3<T> Clamp(Vec3<T> min, Vec3<T> max) => Vec3.Clamp(this, min, max);
 
-    // VectorNNN.Lerp<T> should exist, isn't?
     [MethodImpl(AggressiveInlining)]
     public readonly Vec3<T> Lerp(Vec3<T> v, T am) => Vec3.Lerp(this, v, am);
 
