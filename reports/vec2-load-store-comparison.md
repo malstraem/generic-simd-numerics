@@ -1,6 +1,6 @@
 .NET 10.0.826.23019, X64 RyuJIT x86-64-v4, Windows 11 (10.0.26200.8457/25H2/2025Update/HudsonValley2), AMD Ryzen 9 7900X 4.70GHz
 
-# Asm differences for load/store showed with cycle `Add` calling
+# Asm differences for load/store showed with `Add` cycle
 
 `Vec2<T>` and `Vec3<T>` have dumb vectorized ways that slower than naive currently
 
@@ -29,7 +29,7 @@ M00_L00:
 
 ## Achieved by [this](../source/reinterpretate/Vec2{T}.DISGUSTING_CARGO_CULT.cs)
 
-### `Vec2<float>`
+`Vec2<float>`
 
 ```assembly
        sub       rsp,18
@@ -46,7 +46,7 @@ M00_L00:
        mov       r10d,eax
        mov       r10,[rcx+r10*8+10]
        mov       [rsp+8],r10
-       vmovsd    xmm0,qword ptr [rsp+10] // vmovsd as expected, but regs used a lot for addresses :(
+       vmovsd    xmm0,qword ptr [rsp+10] // vmovsd as expected, but regs used a lot for ptr
        vmovsd    xmm1,qword ptr [rsp+8]
        vaddps    xmm0,xmm1,xmm0          // float addition
        vmovsd    qword ptr [rsp+10],xmm0
@@ -59,7 +59,7 @@ M00_L00:
 ; Total bytes of code 104
 ```
 
-### `Vec2<int>`
+`Vec2<int>`
 
 ```assembly
        sub       rsp,18
@@ -76,7 +76,7 @@ M00_L00:
        mov       r10d,eax
        mov       r10,[rcx+r10*8+10]
        mov       [rsp+8],r10
-       vmovsd    xmm0,qword ptr [rsp+10] // vmovsd as expected, but regs used a lot for addresses :(
+       vmovsd    xmm0,qword ptr [rsp+10] // vmovsd as expected, but regs used a lot for ptr
        vmovsd    xmm1,qword ptr [rsp+8]
        vpaddd    xmm0,xmm1,xmm0          // integer addition
        vmovsd    qword ptr [rsp+10],xmm0
@@ -89,11 +89,9 @@ M00_L00:
 ; Total bytes of code 104
 ```
 
-## `Vector128.WithElement` produce simple scalar moves/insertions, achieved by [this](../source/reinterpretate/Vec2{T}.Casts.cs) :(
+## `Vector128.WithElement` produce simple scalar moves/insertions, achieved by [this](../source/reinterpretate/Vec2.Reinterpretate.cs)
 
-For `Vec3<T>` the problem is the same, cause casts [looks like](../source/reinterpretate/Vec3{T}.Casts.cs)
-
-### `Vec2<float>`
+`Vec2<float>`
 
 ```assembly
        xor       eax,eax
@@ -128,7 +126,7 @@ M00_L00:
 ; Total bytes of code 136
 ```
 
-### `Vec2<int>`
+`Vec2<int>`
 
 ```assembly
        push      rbx
@@ -164,3 +162,5 @@ M00_L00:
        ret
 ; Total bytes of code 129
 ```
+
+For `Vec3<T>` the problem is the same, cause casts [looks like](../source/reinterpretate/Vec3.Reinterpretate.cs).

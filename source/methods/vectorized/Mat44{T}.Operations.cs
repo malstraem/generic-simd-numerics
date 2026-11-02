@@ -3,22 +3,22 @@ namespace System.Numerics;
 #pragma warning disable IDE0055, IDE0007, IDE0047
 
 // calls in right cases
-// this version combines 128 and 256 ways into one
+// 128 and 256 ways are combined into one
 public static partial class Mat44
 {
     /// <inheritdoc cref="Affine{T}(Quat{T}, Vec3{T}, Vec3{T})"/>
     [MethodImpl(AggressiveInlining)]
-    private static unsafe Mat44<T> Affine<T>(Vec4<T> r, in Vec3<T> s, Vec3<T> t)
+    private static unsafe Mat44<T> Affine<T>(Vec4<T> r, Vec3<T> s, Vec3<T> t)
         where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         var m = Rotation(r);
 
-        fixed (Vec3<T>* p = &s)
-        {
-            m.X *= *(T*)p;
-            m.Y *= *((T*)p + 1);
-            m.Z *= *((T*)p + 2);
-        }
+        T* p = (T*)&s;
+
+        m.X *= *p;
+        m.Y *= *(p + 1);
+        m.Z *= *(p + 2);
+
         m.W = SizeOf<T>() == 4 ? t.As128One().Vec4() : t.As256One().Vec4();
 
         return m;

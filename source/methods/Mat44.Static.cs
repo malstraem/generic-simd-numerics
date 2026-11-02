@@ -179,7 +179,7 @@ public static partial class Mat44
         if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
          || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
         {
-            return Affine(rotation.Vec4(), in scale, translation);
+            return Affine(rotation.Vec4(), scale, translation);
         }
 
         var q = rotation; var s = scale; var t = translation;

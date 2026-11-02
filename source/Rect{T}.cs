@@ -1,16 +1,16 @@
 namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
-public partial struct Rect<T>(Vec2<T> origin, Vec2<T> max) :
+public partial struct Rect<T>(Vec2<T> min, Vec2<T> max) :
     IEqualityOperators<Rect<T>, Rect<T>, bool>
         where T : unmanaged, INumber<T>
 {
-    public Vec2<T> Origin = origin, Max = max;
+    public Vec2<T> Min = min, Max = max;
 
     public Rect(T ox, T oy, T mx, T my) : this(new(ox, oy), new(mx, my)) { }
 
     [Obsolete("vectorize")]
-    public readonly Vec2<T> Size => Max - Origin;
+    public readonly Vec2<T> Size => Max - Min;
 
     [MethodImpl(AggressiveInlining)]
     public static bool operator ==(Rect<T> a, Rect<T> b) => a.Vec4() == b.Vec4();
@@ -38,5 +38,5 @@ public partial struct Rect<T>(Vec2<T> origin, Vec2<T> max) :
 
     public override readonly bool Equals(object? obj) => obj is Rect<T> other && this == other;
 
-    public override readonly int GetHashCode() => HashCode.Combine(Origin, Max);
+    public override readonly int GetHashCode() => HashCode.Combine(Min, Max);
 }

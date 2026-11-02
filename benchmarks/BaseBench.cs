@@ -5,7 +5,7 @@ namespace System.Numerics.Bench;
 
 [DisassemblyDiagnoser]
 
-[SimpleJob(RuntimeMoniker.Net10_0)]
+[SimpleJob(RuntimeMoniker.Net11_0)]
 public abstract class BaseBench<T>
 {
     protected const int Count = 100_000;

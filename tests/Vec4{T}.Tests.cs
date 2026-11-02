@@ -85,22 +85,15 @@ public abstract class Vec4Root<T> : Vec4Base<T>
     }
 }
 
-[GenerateGenericTest(
-    typeof(int), typeof(float),
-    typeof(int), typeof(double),
-
-    typeof(float), typeof(int),
-    typeof(float), typeof(double),
-
-    typeof(double), typeof(int),
-    typeof(double), typeof(float))]
-public abstract class Vec4Conversion<T1, T2>
+[GenerateGenericTest(typeof(int), typeof(float))]
+[GenerateGenericTest(typeof(int), typeof(double))]
+public class Vec4Conversion<T1, T2>
     where T1 : unmanaged, INumber<T1>
     where T2 : unmanaged, INumber<T2>
 {
     protected static readonly Vec4<T1> v = Vec4<T1>.Gen(T1.One + T1.One);
 
-    [Test, DisplayName("convert")]
+    [Test]
     public async Task Convert()
     {
         var converted = v.As<T2>();

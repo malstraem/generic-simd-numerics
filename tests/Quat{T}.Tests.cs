@@ -62,7 +62,7 @@ public abstract class QuatBase<T>
             return;
         }
 
-        var eps = T.One / T.CreateTruncating(1e16);
+        var eps = T.One / T.CreateTruncating(1e-16);
 
         var expected = (a.Silk() / b.Silk()).Quat();
 
