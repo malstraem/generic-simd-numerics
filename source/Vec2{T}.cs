@@ -1,7 +1,5 @@
 namespace System.Numerics;
 
-#pragma warning disable IDE0022, IDE0024
-
 [StructLayout(LayoutKind.Sequential)]
 public partial struct Vec2<T>(T x, T y) :
     IVector<Vec2<T>, T>,

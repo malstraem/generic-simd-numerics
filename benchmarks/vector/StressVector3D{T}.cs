@@ -6,7 +6,7 @@ namespace System.Numerics.Bench;
 
 [GenericTypeArguments(typeof(float))]
 [GenericTypeArguments(typeof(double))]
-public class StressVector3D<T> : StressBaseVector3DI<T>
+public class StressVector3D<T> : BaseStressVector3D<T>
     where T : unmanaged, INumber<T>
 {
     [Benchmark]
@@ -35,16 +35,16 @@ public class StressVector3D<T> : StressBaseVector3DI<T>
 [GenericTypeArguments(typeof(short))]
 [GenericTypeArguments(typeof(int))]
 [GenericTypeArguments(typeof(long))]
-public class StressVector3DI<T> : StressBaseVector3DI<T>
+public class StressVector3DI<T> : BaseStressVector3D<T>
     where T : unmanaged, INumber<T>;
 
-public abstract class StressBaseVector3DI<T> : BaseBench<T>
+public abstract class BaseStressVector3D<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
     protected static readonly Vector3D<T>[] vecs = new Vector3D<T>[Count],
                                             @out = new Vector3D<T>[Count];
 
-    public StressBaseVector3DI()
+    public BaseStressVector3D()
     {
         for (int i = 0; i < Count; i++)
             vecs[i] = Vec3<T>.Gen(T.One).Silk();

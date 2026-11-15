@@ -1,7 +1,7 @@
 namespace System.Numerics;
 
 // calls in right cases
-// this version combines 128 and 256 ways into one
+// 128 and 256 ways are combined into one
 public partial struct Quat<T>
 {
     private static readonly Vec4<T>

@@ -34,7 +34,7 @@ public class StressConversionMat44<T1, T2> : BaseBench<T1>
 
 [GenericTypeArguments(typeof(float))]
 [GenericTypeArguments(typeof(double))]
-public class StressMat44WithQuat<T> : StressBaseMat44<T>
+public class StressMat44WithQuat<T> : BaseStressMat44<T>
     where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {
     private readonly Quat<T>[] quats = new Quat<T>[Count];
@@ -78,16 +78,16 @@ public class StressMat44WithQuat<T> : StressBaseMat44<T>
 [GenericTypeArguments(typeof(short))]
 [GenericTypeArguments(typeof(int))]
 [GenericTypeArguments(typeof(long))]
-public class StressMat44<T> : StressBaseMat44<T>
+public class StressMat44<T> : BaseStressMat44<T>
     where T : unmanaged, INumber<T>;
 
-public abstract class StressBaseMat44<T> : BaseBench<T>
+public abstract class BaseStressMat44<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
     protected readonly Mat44<T>[] mats = new Mat44<T>[Count],
                                   @out = new Mat44<T>[Count];
 
-    public StressBaseMat44()
+    public BaseStressMat44()
     {
         for (int i = 0; i < Count; i++)
             mats[i] = Mat44<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
