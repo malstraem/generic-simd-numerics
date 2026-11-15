@@ -1,7 +1,7 @@
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
-; System.Numerics.Bench.StressMatrix4X4`1[[System.Int64, System.Private.CoreLib]].Add()
+; System.Numerics.Bench.BaseStressMatrix4X4`1[[System.Int64, System.Private.CoreLib]].Add()
        push      r15
        push      r14
        push      r13
@@ -18,7 +18,7 @@ M00_L00:
        mov       r8,[rcx+8]
        mov       r10,r8
        cmp       eax,[r10+8]
-       jae       near ptr M00_L01
+       jae       near ptr 00000000000032BD
        mov       r9,rax
        shl       r9,7
        mov       [rsp+28],r9
@@ -54,7 +54,7 @@ M00_L00:
        lea       r10d,[rax+1]
        mov       [rsp+24],r10d
        cmp       r10d,[r8+8]
-       jae       near ptr M00_L01
+       jae       near ptr 00000000000032BD
        mov       r12d,r10d
        shl       r12,7
        lea       r8,[r8+r12+10]
@@ -118,7 +118,7 @@ M00_L00:
        mov       r10,[rsp+90]
        add       r10,[rsp+30]
        cmp       eax,[rdx+8]
-       jae       near ptr M00_L01
+       jae       near ptr 00000000000032BD
        mov       rax,[rsp+28]
        lea       rax,[rdx+rax+10]
        mov       [rax],r11
@@ -143,7 +143,7 @@ M00_L00:
        mov       eax,[rsp+24]
        cmp       eax,1869F
        mov       rcx,[rsp+150]
-       jl        near ptr M00_L00
+       jl        near ptr 0000000000002FF5
        add       rsp,108
        pop       rbx
        pop       rbp
@@ -155,15 +155,17 @@ M00_L00:
        pop       r15
        ret
 M00_L01:
-       call      CORINFO_HELP_RNGCHKFAIL
+       call      0000000000001620
        int       3
 ; Total bytes of code 739
 ```
+**Method was not JITted yet.**
+Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
-; System.Numerics.Bench.StressMatrix4X4`1[[System.Int64, System.Private.CoreLib]].Subtract()
+; System.Numerics.Bench.BaseStressMatrix4X4`1[[System.Int64, System.Private.CoreLib]].Subtract()
        push      r15
        push      r14
        push      r13
@@ -180,7 +182,7 @@ M00_L00:
        mov       r8,[rcx+8]
        mov       r10,r8
        cmp       eax,[r10+8]
-       jae       near ptr M00_L01
+       jae       near ptr 000000000000335D
        mov       r9,rax
        shl       r9,7
        mov       [rsp+28],r9
@@ -216,7 +218,7 @@ M00_L00:
        lea       r10d,[rax+1]
        mov       [rsp+24],r10d
        cmp       r10d,[r8+8]
-       jae       near ptr M00_L01
+       jae       near ptr 000000000000335D
        mov       r12d,r10d
        shl       r12,7
        lea       r8,[r8+r12+10]
@@ -280,7 +282,7 @@ M00_L00:
        mov       r10,[rsp+90]
        sub       r10,[rsp+30]
        cmp       eax,[rdx+8]
-       jae       near ptr M00_L01
+       jae       near ptr 000000000000335D
        mov       rax,[rsp+28]
        lea       rax,[rdx+rax+10]
        mov       [rax],r11
@@ -305,7 +307,7 @@ M00_L00:
        mov       eax,[rsp+24]
        cmp       eax,1869F
        mov       rcx,[rsp+150]
-       jl        near ptr M00_L00
+       jl        near ptr 0000000000003095
        add       rsp,108
        pop       rbx
        pop       rbp
@@ -317,15 +319,17 @@ M00_L00:
        pop       r15
        ret
 M00_L01:
-       call      CORINFO_HELP_RNGCHKFAIL
+       call      0000000000001620
        int       3
 ; Total bytes of code 739
 ```
+**Method was not JITted yet.**
+Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
-; System.Numerics.Bench.StressMatrix4X4`1[[System.Int64, System.Private.CoreLib]].Multiply()
+; System.Numerics.Bench.BaseStressMatrix4X4`1[[System.Int64, System.Private.CoreLib]].Multiply()
        push      r15
        push      r14
        push      r13
@@ -342,7 +346,7 @@ M00_L00:
        mov       rcx,[rbx+8]
        mov       rdx,rcx
        cmp       esi,[rdx+8]
-       jae       near ptr M00_L01
+       jae       near ptr 0000000000005389
        mov       r8,rsi
        shl       r8,7
        vmovdqu32 zmm0,[rdx+r8+10]
@@ -351,7 +355,7 @@ M00_L00:
        vmovdqu32 [rsp+4A8],zmm0
        lea       edx,[rsi+1]
        cmp       edx,[rcx+8]
-       jae       near ptr M00_L01
+       jae       near ptr 0000000000005389
        lea       edx,[rsi+1]
        shl       rdx,7
        vmovdqu32 zmm0,[rcx+rdx+10]
@@ -406,7 +410,7 @@ M00_L00:
        vmovdqu   ymmword ptr [rsp+0A8],ymm0
        mov       [rsp+20],rcx
        lea       rcx,[rsp+0A8]
-       call      qword ptr [7FF7FD8A49A8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]]..ctor(Int64, Int64, Int64, Int64)
+       call      qword ptr [7A68]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]]..ctor(Int64, Int64, Int64, Int64)
        mov       rdx,[rsp+0A8]
        mov       r8,[rsp+0B0]
        mov       r9,[rsp+0B8]
@@ -419,7 +423,7 @@ M00_L00:
        vmovdqu   ymmword ptr [rsp+88],ymm0
        mov       [rsp+20],rcx
        lea       rcx,[rsp+88]
-       call      qword ptr [7FF7FD8A49A8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]]..ctor(Int64, Int64, Int64, Int64)
+       call      qword ptr [7A68]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]]..ctor(Int64, Int64, Int64, Int64)
        vmovdqu   ymm0,ymmword ptr [rsp+88]
        vmovdqu   ymmword ptr [rsp+3C8],ymm0
        mov       rcx,[rsp+488]
@@ -435,7 +439,7 @@ M00_L00:
        vmovdqu   ymmword ptr [rsp+68],ymm0
        mov       [rsp+20],rcx
        lea       rcx,[rsp+68]
-       call      qword ptr [7FF7FD8A49A8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]]..ctor(Int64, Int64, Int64, Int64)
+       call      qword ptr [7A68]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]]..ctor(Int64, Int64, Int64, Int64)
        vmovdqu   ymm0,ymmword ptr [rsp+68]
        vmovdqu   ymmword ptr [rsp+3A8],ymm0
        mov       rbp,[rsp+490]
@@ -444,155 +448,155 @@ M00_L00:
        mov       r15,[rsp+418]
        mov       r13,[rsp+420]
        mov       rdx,rbp
-       call      qword ptr [7FF7FD8A4618]; Silk.NET.Maths.Scalar.<Multiply>g__SByte|24_3[[System.Int64, System.Private.CoreLib]](Int64, Int64)
+       call      qword ptr [46F0]; Silk.NET.Maths.Scalar.<Multiply>g__SByte|24_3[[System.Int64, System.Private.CoreLib]](Int64, Int64)
        mov       r12,rax
        mov       rcx,r14
        mov       rdx,rbp
-       call      qword ptr [7FF7FD8A4558]; Silk.NET.Maths.Scalar.Multiply[[System.Int64, System.Private.CoreLib]](Int64, Int64)
+       call      qword ptr [4630]; Silk.NET.Maths.Scalar.Multiply[[System.Int64, System.Private.CoreLib]](Int64, Int64)
        mov       r14,rax
        mov       rcx,r15
        mov       rdx,rbp
-       call      qword ptr [7FF7FD8A4558]; Silk.NET.Maths.Scalar.Multiply[[System.Int64, System.Private.CoreLib]](Int64, Int64)
+       call      qword ptr [4630]; Silk.NET.Maths.Scalar.Multiply[[System.Int64, System.Private.CoreLib]](Int64, Int64)
        mov       r15,rax
        vxorps    ymm0,ymm0,ymm0
        vmovdqu   ymmword ptr [rsp+48],ymm0
        mov       rcx,r13
        mov       rdx,rbp
-       call      qword ptr [7FF7FD8A4558]; Silk.NET.Maths.Scalar.Multiply[[System.Int64, System.Private.CoreLib]](Int64, Int64)
+       call      qword ptr [4630]; Silk.NET.Maths.Scalar.Multiply[[System.Int64, System.Private.CoreLib]](Int64, Int64)
        mov       [rsp+20],rax
        lea       rcx,[rsp+48]
        mov       rdx,r12
        mov       r8,r14
        mov       r9,r15
-       call      qword ptr [7FF7FD8A49A8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]]..ctor(Int64, Int64, Int64, Int64)
+       call      qword ptr [7A68]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]]..ctor(Int64, Int64, Int64, Int64)
        vmovdqu   ymm0,ymmword ptr [rsp+48]
        vmovdqu   ymmword ptr [rsp+28],ymm0
        lea       r8,[rsp+28]
        lea       rdx,[rsp+3A8]
        lea       rcx,[rsp+388]
-       call      qword ptr [7FF7FD8A43D8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Addition(Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>)
+       call      qword ptr [44B0]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Addition(Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>)
        lea       rcx,[rsp+468]
-       call      qword ptr [7FF7FD8A4450]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]].get_M23()
+       call      qword ptr [4528]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]].get_M23()
        mov       rdx,rax
        vmovdqu   ymm0,ymmword ptr [rsp+428]
        vmovdqu   ymmword ptr [rsp+28],ymm0
        lea       r8,[rsp+28]
        lea       rcx,[rsp+368]
-       call      qword ptr [7FF7FD8A43A8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Multiply(Int64, Silk.NET.Maths.Vector4D`1<Int64>)
+       call      qword ptr [4480]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Multiply(Int64, Silk.NET.Maths.Vector4D`1<Int64>)
        lea       rcx,[rsp+348]
        lea       rdx,[rsp+388]
        lea       r8,[rsp+368]
-       call      qword ptr [7FF7FD8A43D8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Addition(Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>)
+       call      qword ptr [44B0]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Addition(Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>)
        lea       rcx,[rsp+468]
-       call      qword ptr [7FF7FD8A4468]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]].get_M24()
+       call      qword ptr [4540]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]].get_M24()
        mov       rdx,rax
        vmovdqu   ymm0,ymmword ptr [rsp+448]
        vmovdqu   ymmword ptr [rsp+28],ymm0
        lea       r8,[rsp+28]
        lea       rcx,[rsp+328]
-       call      qword ptr [7FF7FD8A43A8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Multiply(Int64, Silk.NET.Maths.Vector4D`1<Int64>)
+       call      qword ptr [4480]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Multiply(Int64, Silk.NET.Maths.Vector4D`1<Int64>)
        lea       rcx,[rsp+308]
        lea       rdx,[rsp+348]
        lea       r8,[rsp+328]
-       call      qword ptr [7FF7FD8A43D8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Addition(Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>)
+       call      qword ptr [44B0]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Addition(Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>)
        lea       rcx,[rsp+468]
-       call      qword ptr [7FF7FD8A4480]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]].get_M31()
+       call      qword ptr [4558]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]].get_M31()
        mov       rdx,rax
        vmovdqu   ymm0,ymmword ptr [rsp+3E8]
        vmovdqu   ymmword ptr [rsp+28],ymm0
        lea       r8,[rsp+28]
        lea       rcx,[rsp+2E8]
-       call      qword ptr [7FF7FD8A43A8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Multiply(Int64, Silk.NET.Maths.Vector4D`1<Int64>)
+       call      qword ptr [4480]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Multiply(Int64, Silk.NET.Maths.Vector4D`1<Int64>)
        lea       rcx,[rsp+468]
-       call      qword ptr [7FF7FD8A4498]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]].get_M32()
+       call      qword ptr [4570]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]].get_M32()
        mov       rdx,rax
        vmovdqu   ymm0,ymmword ptr [rsp+408]
        vmovdqu   ymmword ptr [rsp+28],ymm0
        lea       r8,[rsp+28]
        lea       rcx,[rsp+2C8]
-       call      qword ptr [7FF7FD8A43A8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Multiply(Int64, Silk.NET.Maths.Vector4D`1<Int64>)
+       call      qword ptr [4480]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Multiply(Int64, Silk.NET.Maths.Vector4D`1<Int64>)
        lea       rcx,[rsp+2A8]
        lea       rdx,[rsp+2E8]
        lea       r8,[rsp+2C8]
-       call      qword ptr [7FF7FD8A43D8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Addition(Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>)
+       call      qword ptr [44B0]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Addition(Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>)
        lea       rcx,[rsp+468]
-       call      qword ptr [7FF7FD8A44B0]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]].get_M33()
+       call      qword ptr [4588]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]].get_M33()
        mov       rdx,rax
        vmovdqu   ymm0,ymmword ptr [rsp+428]
        vmovdqu   ymmword ptr [rsp+28],ymm0
        lea       r8,[rsp+28]
        lea       rcx,[rsp+288]
-       call      qword ptr [7FF7FD8A43A8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Multiply(Int64, Silk.NET.Maths.Vector4D`1<Int64>)
+       call      qword ptr [4480]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Multiply(Int64, Silk.NET.Maths.Vector4D`1<Int64>)
        lea       rcx,[rsp+268]
        lea       rdx,[rsp+2A8]
        lea       r8,[rsp+288]
-       call      qword ptr [7FF7FD8A43D8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Addition(Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>)
+       call      qword ptr [44B0]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Addition(Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>)
        lea       rcx,[rsp+468]
-       call      qword ptr [7FF7FD8A44C8]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]].get_M34()
+       call      qword ptr [45A0]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]].get_M34()
        mov       rdx,rax
        vmovdqu   ymm0,ymmword ptr [rsp+448]
        vmovdqu   ymmword ptr [rsp+28],ymm0
        lea       r8,[rsp+28]
        lea       rcx,[rsp+248]
-       call      qword ptr [7FF7FD8A43A8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Multiply(Int64, Silk.NET.Maths.Vector4D`1<Int64>)
+       call      qword ptr [4480]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Multiply(Int64, Silk.NET.Maths.Vector4D`1<Int64>)
        lea       rcx,[rsp+228]
        lea       rdx,[rsp+268]
        lea       r8,[rsp+248]
-       call      qword ptr [7FF7FD8A43D8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Addition(Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>)
+       call      qword ptr [44B0]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Addition(Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>)
        lea       rcx,[rsp+468]
-       call      qword ptr [7FF7FD8A44E0]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]].get_M41()
+       call      qword ptr [45B8]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]].get_M41()
        mov       rdx,rax
        vmovdqu   ymm0,ymmword ptr [rsp+3E8]
        vmovdqu   ymmword ptr [rsp+28],ymm0
        lea       r8,[rsp+28]
        lea       rcx,[rsp+208]
-       call      qword ptr [7FF7FD8A43A8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Multiply(Int64, Silk.NET.Maths.Vector4D`1<Int64>)
+       call      qword ptr [4480]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Multiply(Int64, Silk.NET.Maths.Vector4D`1<Int64>)
        lea       rcx,[rsp+468]
-       call      qword ptr [7FF7FD8A44F8]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]].get_M42()
+       call      qword ptr [45D0]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]].get_M42()
        mov       rdx,rax
        vmovdqu   ymm0,ymmword ptr [rsp+408]
        vmovdqu   ymmword ptr [rsp+28],ymm0
        lea       r8,[rsp+28]
        lea       rcx,[rsp+1E8]
-       call      qword ptr [7FF7FD8A43A8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Multiply(Int64, Silk.NET.Maths.Vector4D`1<Int64>)
+       call      qword ptr [4480]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Multiply(Int64, Silk.NET.Maths.Vector4D`1<Int64>)
        lea       rcx,[rsp+1C8]
        lea       rdx,[rsp+208]
        lea       r8,[rsp+1E8]
-       call      qword ptr [7FF7FD8A43D8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Addition(Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>)
+       call      qword ptr [44B0]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Addition(Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>)
        lea       rcx,[rsp+468]
-       call      qword ptr [7FF7FD8A4510]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]].get_M43()
+       call      qword ptr [45E8]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]].get_M43()
        mov       rdx,rax
        vmovdqu   ymm0,ymmword ptr [rsp+428]
        vmovdqu   ymmword ptr [rsp+28],ymm0
        lea       r8,[rsp+28]
        lea       rcx,[rsp+1A8]
-       call      qword ptr [7FF7FD8A43A8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Multiply(Int64, Silk.NET.Maths.Vector4D`1<Int64>)
+       call      qword ptr [4480]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Multiply(Int64, Silk.NET.Maths.Vector4D`1<Int64>)
        lea       rcx,[rsp+188]
        lea       rdx,[rsp+1C8]
        lea       r8,[rsp+1A8]
-       call      qword ptr [7FF7FD8A43D8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Addition(Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>)
+       call      qword ptr [44B0]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Addition(Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>)
        lea       rcx,[rsp+468]
-       call      qword ptr [7FF7FD8A4528]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]].get_M44()
+       call      qword ptr [4600]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]].get_M44()
        mov       rdx,rax
        lea       rcx,[rsp+168]
        lea       r8,[rsp+448]
-       call      qword ptr [7FF7FD8A43A8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Multiply(Int64, Silk.NET.Maths.Vector4D`1<Int64>)
+       call      qword ptr [4480]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Multiply(Int64, Silk.NET.Maths.Vector4D`1<Int64>)
        vxorps    ymm0,ymm0,ymm0
        vmovdqu32 [rsp+0E8],zmm0
        vmovdqu32 [rsp+128],zmm0
        lea       rcx,[rsp+0C8]
        lea       rdx,[rsp+188]
        lea       r8,[rsp+168]
-       call      qword ptr [7FF7FD8A43D8]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Addition(Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>)
+       call      qword ptr [44B0]; Silk.NET.Maths.Vector4D`1[[System.Int64, System.Private.CoreLib]].op_Addition(Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>)
        lea       rcx,[rsp+0C8]
        mov       [rsp+20],rcx
        lea       rcx,[rsp+0E8]
        lea       rdx,[rsp+3C8]
        lea       r8,[rsp+308]
        lea       r9,[rsp+228]
-       call      qword ptr [7FF7FD8A4540]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]]..ctor(Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>)
+       call      qword ptr [4618]; Silk.NET.Maths.Matrix4X4`1[[System.Int64, System.Private.CoreLib]]..ctor(Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>, Silk.NET.Maths.Vector4D`1<Int64>)
        cmp       esi,[rdi+8]
-       jae       short M00_L01
+       jae       short 0000000000005389
        mov       rax,rsi
        shl       rax,7
        vmovdqu32 zmm0,[rsp+0E8]
@@ -601,7 +605,7 @@ M00_L00:
        vmovdqu32 [rdi+rax+50],zmm0
        inc       esi
        cmp       esi,1869F
-       jl        near ptr M00_L00
+       jl        near ptr 0000000000004CF8
        vzeroupper
        add       rsp,4E8
        pop       rbx
@@ -614,7 +618,7 @@ M00_L00:
        pop       r15
        ret
 M00_L01:
-       call      CORINFO_HELP_RNGCHKFAIL
+       call      0000000000001620
        int       3
 ; Total bytes of code 1711
 ```
@@ -752,4 +756,6 @@ M00_L01:
        ret
 ; Total bytes of code 46
 ```
+**Method was not JITted yet.**
+Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
 

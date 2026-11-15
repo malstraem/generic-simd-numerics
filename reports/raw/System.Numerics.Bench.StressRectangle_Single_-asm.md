@@ -1,11 +1,11 @@
-## .NET 10.0.9 (10.0.9, 10.0.926.27113), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressRectangle`1[[System.Single, System.Private.CoreLib]].Contains()
        xor       eax,eax
-       mov       rcx,2BF5E400358
+       mov       rcx,1FC2FC01560
        mov       rcx,[rcx]
-       mov       rdx,2BF5E400360
+       mov       rdx,1FC2FC01568
        mov       rdx,[rdx]
 M00_L00:
        mov       r8d,eax
@@ -26,37 +26,37 @@ M00_L00:
        vmovaps   xmm17,xmm16
        vmovss    xmm18,dword ptr [r10+8]
        vmovss    xmm19,dword ptr [r10+0C]
-       vaddss    xmm5,xmm5,xmm18
+       vaddss    xmm5,xmm18,xmm5
        vaddss    xmm17,xmm17,xmm19
        vaddss    xmm2,xmm0,xmm2
        vaddss    xmm3,xmm1,xmm3
        vucomiss  xmm0,xmm4
-       jb        short M00_L02
+       jb        short 000000000000233B
        vucomiss  xmm1,xmm16
-       jb        short M00_L02
+       jb        short 000000000000233B
        vucomiss  xmm5,xmm2
-       jb        short M00_L02
+       jb        short 000000000000233B
        vucomiss  xmm17,xmm3
        setae     r10b
        movzx     r10d,r10b
 M00_L01:
        mov       [rdx+r8+10],r10b
        cmp       eax,1869F
-       jl        near ptr M00_L00
+       jl        near ptr 000000000000229C
        ret
 M00_L02:
        xor       r10d,r10d
-       jmp       short M00_L01
+       jmp       short 000000000000232A
 ; Total bytes of code 192
 ```
 
-## .NET 10.0.9 (10.0.9, 10.0.926.27113), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressRectangle`1[[System.Single, System.Private.CoreLib]].Area()
-       mov       rax,19EE3000358
+       mov       rax,25BC5401560
        mov       rax,[rax]
-       mov       rcx,19EE3000368
+       mov       rcx,25BC5401570
        mov       rcx,[rcx]
        xor       edx,edx
        mov       r8d,1869F
@@ -68,7 +68,7 @@ M00_L00:
        vmovss    dword ptr [rcx+rdx+10],xmm0
        add       rdx,4
        dec       r8d
-       jne       short M00_L00
+       jne       short 0000000000002762
        ret
 ; Total bytes of code 71
 ```

@@ -1,25 +1,26 @@
 ```
 
-BenchmarkDotNet v0.15.8, Windows 11 (10.0.26200.8457/25H2/2025Update/HudsonValley2)
-AMD Ryzen 9 7900X 4.70GHz, 1 CPU, 24 logical and 12 physical cores
-.NET SDK 11.0.100-preview.4.26230.115
-  [Host]    : .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4
-  .NET 10.0 : .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4
+BenchmarkDotNet v0.16.0-preview.2, Windows 11 (10.0.26300.9974)
+AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
+Memory: 31.15 GB Total, 22.76 GB Available
+.NET SDK 11.0.100
+  [Host]     : .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4
+  Job-IHFIKV : .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4
 
-Job=.NET 10.0  Runtime=.NET 10.0  
+Runtime=.NET 11.0  
 
 ```
 | Method          | Mean      | Error    | StdDev   | Code Size |
 |---------------- |----------:|---------:|---------:|----------:|
-| Length          | 164.68 μs | 0.122 μs | 0.108 μs |     131 B |
-| Distance        | 166.91 μs | 0.134 μs | 0.126 μs |     176 B |
-| Normalize       | 520.10 μs | 0.649 μs | 0.576 μs |     149 B |
-| Add             | 133.17 μs | 1.011 μs | 0.896 μs |     163 B |
-| Subtract        | 121.85 μs | 0.292 μs | 0.259 μs |     163 B |
-| Multiply        | 114.04 μs | 0.190 μs | 0.178 μs |     163 B |
-| Divide          | 352.00 μs | 0.558 μs | 0.522 μs |     163 B |
-| Abs             | 146.97 μs | 0.314 μs | 0.293 μs |     163 B |
-| Dot             |  94.77 μs | 0.105 μs | 0.094 μs |     152 B |
-| LengthSquared   |  65.00 μs | 0.056 μs | 0.047 μs |     127 B |
-| DistanceSquared | 116.04 μs | 0.067 μs | 0.063 μs |     172 B |
-| Transform       | 184.09 μs | 0.214 μs | 0.190 μs |     296 B |
+| Length          | 164.66 μs | 0.114 μs | 0.107 μs |     131 B |
+| Distance        | 169.78 μs | 0.838 μs | 0.784 μs |     176 B |
+| Normalize       | 519.78 μs | 0.416 μs | 0.325 μs |     149 B |
+| Add             | 114.48 μs | 0.125 μs | 0.117 μs |     163 B |
+| Subtract        | 114.41 μs | 0.213 μs | 0.189 μs |     163 B |
+| Multiply        | 114.51 μs | 0.176 μs | 0.156 μs |     163 B |
+| Divide          | 349.32 μs | 1.631 μs | 1.525 μs |     163 B |
+| Abs             | 151.66 μs | 0.346 μs | 0.307 μs |     163 B |
+| Dot             |  95.25 μs | 0.102 μs | 0.085 μs |     152 B |
+| LengthSquared   |  65.44 μs | 0.236 μs | 0.209 μs |     127 B |
+| DistanceSquared | 113.61 μs | 0.262 μs | 0.232 μs |     172 B |
+| Transform       | 186.29 μs | 0.537 μs | 0.476 μs |     296 B |

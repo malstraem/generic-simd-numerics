@@ -1,4 +1,4 @@
-## .NET 10.0.9 (10.0.9, 10.0.926.27113), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressConversionMatrix4X4`2[[System.Double, System.Private.CoreLib],[System.Single, System.Private.CoreLib]].Convert()
@@ -8,7 +8,7 @@ M00_L00:
        mov       rdx,[rcx+10]
        mov       r8,[rcx+8]
        cmp       eax,[r8+8]
-       jae       near ptr M00_L01
+       jae       near ptr 00000000000032A0
        mov       r10,rax
        shl       r10,7
        lea       r8,[r8+r10+10]
@@ -32,7 +32,7 @@ M00_L00:
        vcvtsd2ss xmm24,xmm24,qword ptr [r8+10]
        vcvtsd2ss xmm25,xmm25,qword ptr [r8+18]
        cmp       eax,[rdx+8]
-       jae       near ptr M00_L01
+       jae       near ptr 00000000000032A0
        mov       r8,rax
        shl       r8,6
        lea       rdx,[rdx+r8+10]
@@ -54,12 +54,14 @@ M00_L00:
        vmovss    dword ptr [rdx+3C],xmm25
        inc       eax
        cmp       eax,186A0
-       jl        near ptr M00_L00
+       jl        near ptr 0000000000003186
        add       rsp,28
        ret
 M00_L01:
-       call      CORINFO_HELP_RNGCHKFAIL
+       call      0000000000001620
        int       3
 ; Total bytes of code 294
 ```
+**Method was not JITted yet.**
+Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
 

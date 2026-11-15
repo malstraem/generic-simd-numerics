@@ -1,10 +1,10 @@
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressVector4.Add()
-       mov       rax,23882000360
+       mov       rax,1309CC015A8
        mov       rax,[rax]
-       mov       rcx,23882000368
+       mov       rcx,1309CC015B0
        mov       rcx,[rcx]
        xor       edx,edx
        nop       dword ptr [rax]
@@ -18,18 +18,18 @@ M00_L00:
        vaddps    xmm0,xmm0,[rax+r10+10]
        vmovups   [rcx+r8+10],xmm0
        cmp       edx,1869F
-       jl        short M00_L00
+       jl        short 0000000000007B60
        ret
 ; Total bytes of code 78
 ```
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressVector4.Subtract()
-       mov       rax,224ECC00360
+       mov       rax,18A33C01568
        mov       rax,[rax]
-       mov       rcx,224ECC00368
+       mov       rcx,18A33C01570
        mov       rcx,[rcx]
        xor       edx,edx
        nop       dword ptr [rax]
@@ -43,18 +43,18 @@ M00_L00:
        vsubps    xmm0,xmm0,[rax+r10+10]
        vmovups   [rcx+r8+10],xmm0
        cmp       edx,1869F
-       jl        short M00_L00
+       jl        short 0000000000002B80
        ret
 ; Total bytes of code 78
 ```
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressVector4.Multiply()
-       mov       rax,1B457800360
+       mov       rax,1F27A401568
        mov       rax,[rax]
-       mov       rcx,1B457800368
+       mov       rcx,1F27A401570
        mov       rcx,[rcx]
        xor       edx,edx
        nop       dword ptr [rax]
@@ -68,18 +68,18 @@ M00_L00:
        vmulps    xmm0,xmm0,[rax+r10+10]
        vmovups   [rcx+r8+10],xmm0
        cmp       edx,1869F
-       jl        short M00_L00
+       jl        short 0000000000003340
        ret
 ; Total bytes of code 78
 ```
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressVector4.Divide()
-       mov       rax,2D0C3C00360
+       mov       rax,258F4C01568
        mov       rax,[rax]
-       mov       rcx,2D0C3C00368
+       mov       rcx,258F4C01570
        mov       rcx,[rcx]
        xor       edx,edx
        nop       dword ptr [rax]
@@ -93,19 +93,19 @@ M00_L00:
        vdivps    xmm0,xmm0,[rax+r10+10]
        vmovups   [rcx+r8+10],xmm0
        cmp       edx,1869F
-       jl        short M00_L00
+       jl        short 0000000000002BE0
        ret
 ; Total bytes of code 78
 ```
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressVector4.Abs()
-       mov       rax,16899400360
+       mov       rax,2136C401568
        mov       rax,[rax]
-       vbroadcastss xmm0,dword ptr [7FF7FD4D9D28]
-       mov       rcx,16899400368
+       vbroadcastss xmm0,dword ptr [2FE4]
+       mov       rcx,2136C401570
        mov       rcx,[rcx]
        mov       edx,10
        mov       r8d,186A0
@@ -115,18 +115,18 @@ M00_L00:
        vmovups   [rcx+rdx],xmm1
        add       rdx,10
        dec       r8d
-       jne       short M00_L00
+       jne       short 0000000000002FD0
        ret
 ; Total bytes of code 68
 ```
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressVector4.Sum()
-       mov       rax,25A84400360
+       mov       rax,1C657C01568
        mov       rax,[rax]
-       mov       rcx,25A84400370
+       mov       rcx,1C657C01578
        mov       rcx,[rcx]
        xor       edx,edx
        mov       r8d,186A0
@@ -139,21 +139,20 @@ M00_L00:
        vmovss    dword ptr [rcx+rdx+10],xmm0
        add       rdx,4
        dec       r8d
-       jne       short M00_L00
+       jne       short 0000000000003182
        ret
 ; Total bytes of code 76
 ```
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressVector4.Dot()
        xor       eax,eax
-       mov       rcx,25F3A400360
+       mov       rcx,1F17A801568
        mov       rcx,[rcx]
-       mov       rdx,25F3A400370
+       mov       rdx,1F17A801578
        mov       rdx,[rdx]
-       nop       dword ptr [rax]
 M00_L00:
        mov       r8d,eax
        mov       r10,r8
@@ -162,48 +161,52 @@ M00_L00:
        inc       eax
        mov       r10d,eax
        shl       r10,4
-       vdpps     xmm0,xmm0,[rcx+r10+10],0FF
+       vmulps    xmm0,xmm0,[rcx+r10+10]
+       vpermilps xmm1,xmm0,0B1
+       vaddps    xmm0,xmm1,xmm0
+       vpermilps xmm1,xmm0,4E
+       vaddps    xmm0,xmm1,xmm0
        vmovss    dword ptr [rdx+r8*4+10],xmm0
        cmp       eax,1869F
-       jl        short M00_L00
+       jl        short 0000000000002D3C
        ret
-; Total bytes of code 81
+; Total bytes of code 96
 ```
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressVector4.LengthSquared()
-       mov       rax,149FB000360
+       mov       rax,1D2E1C01568
        mov       rax,[rax]
-       mov       rcx,149FB000370
+       mov       rcx,1D2E1C01578
        mov       rcx,[rcx]
        xor       edx,edx
        mov       r8d,186A0
-       nop       dword ptr [rax]
-       nop       dword ptr [rax]
 M00_L00:
-       lea       r10,[rax+rdx*4+10]
-       vmovups   xmm0,[r10]
-       vdpps     xmm0,xmm0,xmm0,0FF
+       vmovups   xmm0,[rax+rdx*4+10]
+       vmulps    xmm0,xmm0,xmm0
+       vpermilps xmm1,xmm0,0B1
+       vaddps    xmm0,xmm1,xmm0
+       vpermilps xmm1,xmm0,4E
+       vaddps    xmm0,xmm1,xmm0
        vmovss    dword ptr [rcx+rdx+10],xmm0
        add       rdx,4
        dec       r8d
-       jne       short M00_L00
+       jne       short 0000000000002562
        ret
 ; Total bytes of code 80
 ```
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressVector4.DistanceSquared()
        xor       eax,eax
-       mov       rcx,16799800360
+       mov       rcx,2144C001568
        mov       rcx,[rcx]
-       mov       rdx,16799800370
+       mov       rdx,2144C001578
        mov       rdx,[rdx]
-       nop       dword ptr [rax]
 M00_L00:
        mov       r8d,eax
        mov       r10,r8
@@ -213,47 +216,53 @@ M00_L00:
        mov       r10d,eax
        shl       r10,4
        vsubps    xmm0,xmm0,[rcx+r10+10]
-       vdpps     xmm0,xmm0,xmm0,0FF
+       vmulps    xmm0,xmm0,xmm0
+       vpermilps xmm1,xmm0,0B1
+       vaddps    xmm0,xmm1,xmm0
+       vpermilps xmm1,xmm0,4E
+       vaddps    xmm0,xmm1,xmm0
        vmovss    dword ptr [rdx+r8*4+10],xmm0
        cmp       eax,1869F
-       jl        short M00_L00
+       jl        short 0000000000002F1C
        ret
-; Total bytes of code 86
+; Total bytes of code 100
 ```
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressVector4.Length()
-       mov       rax,1A603000360
+       mov       rax,1CADEC01568
        mov       rax,[rax]
-       mov       rcx,1A603000370
+       mov       rcx,1CADEC01578
        mov       rcx,[rcx]
        xor       edx,edx
        mov       r8d,186A0
 M00_L00:
-       lea       r10,[rax+rdx*4+10]
-       vmovups   xmm0,[r10]
-       vdpps     xmm0,xmm0,xmm0,0FF
+       vmovups   xmm0,[rax+rdx*4+10]
+       vmulps    xmm0,xmm0,xmm0
+       vpermilps xmm1,xmm0,0B1
+       vaddps    xmm0,xmm1,xmm0
+       vpermilps xmm1,xmm0,4E
+       vaddps    xmm0,xmm1,xmm0
        vsqrtss   xmm0,xmm0,xmm0
        vmovss    dword ptr [rcx+rdx+10],xmm0
        add       rdx,4
        dec       r8d
-       jne       short M00_L00
+       jne       short 0000000000003422
        ret
-; Total bytes of code 70
+; Total bytes of code 84
 ```
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressVector4.Distance()
        xor       eax,eax
-       mov       rcx,29B42800360
+       mov       rcx,1E1D7001568
        mov       rcx,[rcx]
-       mov       rdx,29B42800370
+       mov       rdx,1E1D7001588
        mov       rdx,[rdx]
-       nop       dword ptr [rax]
 M00_L00:
        mov       r8d,eax
        mov       r10,r8
@@ -263,45 +272,53 @@ M00_L00:
        mov       r10d,eax
        shl       r10,4
        vsubps    xmm0,xmm0,[rcx+r10+10]
-       vdpps     xmm0,xmm0,xmm0,0FF
+       vmulps    xmm0,xmm0,xmm0
+       vpermilps xmm1,xmm0,0B1
+       vaddps    xmm0,xmm1,xmm0
+       vpermilps xmm1,xmm0,4E
+       vaddps    xmm0,xmm1,xmm0
        vsqrtss   xmm0,xmm0,xmm0
        vmovss    dword ptr [rdx+r8*4+10],xmm0
        cmp       eax,1869F
-       jl        short M00_L00
+       jl        short 00000000000048BC
        ret
-; Total bytes of code 90
+; Total bytes of code 104
 ```
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressVector4.Normalize()
-       mov       rax,20BBF000360
+       mov       rax,1CFB3401568
        mov       rax,[rax]
-       mov       rcx,20BBF000368
+       mov       rcx,1CFB3401570
        mov       rcx,[rcx]
        mov       edx,10
        mov       r8d,186A0
 M00_L00:
        vmovups   xmm0,[rax+rdx]
-       vdpps     xmm1,xmm0,xmm0,0FF
+       vmulps    xmm1,xmm0,xmm0
+       vpermilps xmm2,xmm1,0B1
+       vaddps    xmm1,xmm2,xmm1
+       vpermilps xmm2,xmm1,4E
+       vaddps    xmm1,xmm2,xmm1
        vsqrtps   xmm1,xmm1
        vdivps    xmm0,xmm0,xmm1
        vmovups   [rcx+rdx],xmm0
        add       rdx,10
        dec       r8d
-       jne       short M00_L00
+       jne       short 00000000000032C5
        ret
-; Total bytes of code 71
+; Total bytes of code 89
 ```
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressVector4.Transform()
-       mov       rax,21236400360
+       mov       rax,236CD001568
        mov       rax,[rax]
-       mov       rcx,21236400368
+       mov       rcx,236CD001570
        mov       rcx,[rcx]
        mov       edx,10
        mov       r8d,186A0
@@ -313,16 +330,16 @@ M00_L00:
        vbroadcastss xmm2,xmm2
        vmovaps   xmm3,xmm0
        vbroadcastss xmm3,xmm3
-       vmulps    xmm3,xmm3,[7FF7FD4B9F90]
-       vfmadd231ps xmm3,xmm2,[7FF7FD4B9FA0]
-       vfmadd231ps xmm3,xmm1,[7FF7FD4B9FB0]
+       vmulps    xmm3,xmm3,[2F10]
+       vfmadd132ps xmm2,xmm3,[2F20]
+       vfmadd132ps xmm1,xmm2,[2F30]
        vshufps   xmm0,xmm0,xmm0,0FF
        vbroadcastss xmm0,xmm0
-       vfmadd231ps xmm3,xmm0,[7FF7FD4B9FC0]
-       vmovups   [rcx+rdx],xmm3
+       vfmadd132ps xmm0,xmm1,[2F40]
+       vmovups   [rcx+rdx],xmm0
        add       rdx,10
        dec       r8d
-       jne       short M00_L00
+       jne       short 0000000000002EA5
        ret
 ; Total bytes of code 129
 ```

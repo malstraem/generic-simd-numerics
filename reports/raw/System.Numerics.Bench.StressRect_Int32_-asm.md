@@ -1,13 +1,13 @@
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
-; System.Numerics.Bench.StressRect`1[[System.Int32, System.Private.CoreLib]].IsIntersect()
+; System.Numerics.Bench.StressRect`1[[System.Int32, System.Private.CoreLib]].Intersects()
        xor       eax,eax
-       mov       rcx,18392000358
+       mov       rcx,1F453001560
        mov       rcx,[rcx]
-       mov       rdx,18392000360
+       mov       rdx,1F453001568
        mov       rdx,[rdx]
-       mov       r8,19349168E18
+       mov       r8,1F4243E3308
        vmovups   xmm0,[r8]
 M00_L00:
        mov       r8d,eax
@@ -27,21 +27,21 @@ M00_L00:
        sete      r10b
        mov       [rdx+r8+10],r10b
        cmp       eax,1869F
-       jl        short M00_L00
+       jl        short 000000000000338B
        ret
 ; Total bytes of code 122
 ```
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressRect`1[[System.Int32, System.Private.CoreLib]].Contains()
        xor       eax,eax
-       mov       rcx,1D708000358
+       mov       rcx,19DA7801560
        mov       rcx,[rcx]
-       mov       rdx,1D708000360
+       mov       rdx,19DA7801568
        mov       rdx,[rdx]
-       mov       r8,1E6BF178E18
+       mov       r8,19DA42E31A0
        vmovups   xmm0,[r8]
 M00_L00:
        mov       r8d,eax
@@ -60,18 +60,18 @@ M00_L00:
        sete      r10b
        mov       [rdx+r8+10],r10b
        cmp       eax,1869F
-       jl        short M00_L00
+       jl        short 000000000000364B
        ret
 ; Total bytes of code 116
 ```
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressRect`1[[System.Int32, System.Private.CoreLib]].Area()
-       mov       rax,1D706000358
+       mov       rax,1CD08401560
        mov       rax,[rax]
-       mov       rcx,1D706000368
+       mov       rcx,1CD08401570
        mov       rcx,[rcx]
        xor       edx,edx
        mov       r8d,1869F
@@ -79,12 +79,12 @@ M00_L00:
        vmovups   xmm0,[rax+rdx*4+10]
        vpermilps xmm1,xmm0,4E
        vpsubd    xmm0,xmm1,xmm0
-       vpermilps xmm1,xmm0,0B1
+       vpermilps xmm1,xmm0,0F5
        vpmulld   xmm0,xmm1,xmm0
        vmovd     dword ptr [rcx+rdx+10],xmm0
        add       rdx,4
        dec       r8d
-       jne       short M00_L00
+       jne       short 00000000000032E2
        ret
 ; Total bytes of code 77
 ```

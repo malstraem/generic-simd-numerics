@@ -1,15 +1,16 @@
 ```
 
-BenchmarkDotNet v0.15.8, Windows 11 (10.0.26200.8457/25H2/2025Update/HudsonValley2)
-AMD Ryzen 9 7900X 4.70GHz, 1 CPU, 24 logical and 12 physical cores
-.NET SDK 11.0.100-preview.4.26230.115
-  [Host]    : .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4
-  .NET 10.0 : .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4
+BenchmarkDotNet v0.16.0-preview.2, Windows 11 (10.0.26300.9974)
+AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
+Memory: 31.15 GB Total, 22.76 GB Available
+.NET SDK 11.0.100
+  [Host]     : .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4
+  Job-IHFIKV : .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4
 
-Job=.NET 10.0  Runtime=.NET 10.0  
+Runtime=.NET 11.0  
 
 ```
 | Method   | Mean      | Error    | StdDev   | Code Size |
 |--------- |----------:|---------:|---------:|----------:|
-| Contains | 112.41 μs | 0.083 μs | 0.073 μs |     167 B |
-| Area     |  51.99 μs | 0.055 μs | 0.052 μs |      80 B |
+| Contains | 112.90 μs | 0.171 μs | 0.152 μs |     167 B |
+| Area     |  52.10 μs | 0.042 μs | 0.035 μs |      80 B |

@@ -1,7 +1,7 @@
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
-; System.Numerics.Bench.StressMat44`1[[System.Int64, System.Private.CoreLib]].Add()
+; System.Numerics.Bench.BaseStressMat44`1[[System.Int64, System.Private.CoreLib]].Add()
        sub       rsp,28
        xor       eax,eax
 M00_L00:
@@ -10,7 +10,7 @@ M00_L00:
        mov       r10,r8
        mov       r9d,[r10+8]
        cmp       eax,r9d
-       jae       short M00_L01
+       jae       short 000000000000350A
        mov       r11,rax
        shl       r11,7
        lea       r10,[r10+r11+10]
@@ -18,14 +18,14 @@ M00_L00:
        vmovups   zmm1,[r10+40]
        lea       r10d,[rax+1]
        cmp       r10d,r9d
-       jae       short M00_L01
+       jae       short 000000000000350A
        mov       r9d,r10d
        shl       r9,7
        lea       r8,[r8+r9+10]
        vmovups   zmm2,[r8]
        vmovups   zmm3,[r8+40]
        cmp       eax,[rdx+8]
-       jae       short M00_L01
+       jae       short 000000000000350A
        lea       rax,[rdx+r11+10]
        vpaddq    zmm0,zmm0,zmm2
        vmovups   [rax],zmm0
@@ -33,20 +33,22 @@ M00_L00:
        vmovups   [rax+40],zmm0
        mov       eax,r10d
        cmp       eax,1869F
-       jl        short M00_L00
+       jl        short 0000000000003486
        vzeroupper
        add       rsp,28
        ret
 M00_L01:
-       call      CORINFO_HELP_RNGCHKFAIL
+       call      0000000000001620
        int       3
 ; Total bytes of code 144
 ```
+**Method was not JITted yet.**
+Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
-; System.Numerics.Bench.StressMat44`1[[System.Int64, System.Private.CoreLib]].Subtract()
+; System.Numerics.Bench.BaseStressMat44`1[[System.Int64, System.Private.CoreLib]].Subtract()
        sub       rsp,28
        xor       eax,eax
 M00_L00:
@@ -55,7 +57,7 @@ M00_L00:
        mov       r10,r8
        mov       r9d,[r10+8]
        cmp       eax,r9d
-       jae       short M00_L01
+       jae       short 000000000000358A
        mov       r11,rax
        shl       r11,7
        lea       r10,[r10+r11+10]
@@ -63,14 +65,14 @@ M00_L00:
        vmovups   zmm1,[r10+40]
        lea       r10d,[rax+1]
        cmp       r10d,r9d
-       jae       short M00_L01
+       jae       short 000000000000358A
        mov       r9d,r10d
        shl       r9,7
        lea       r8,[r8+r9+10]
        vmovups   zmm2,[r8]
        vmovups   zmm3,[r8+40]
        cmp       eax,[rdx+8]
-       jae       short M00_L01
+       jae       short 000000000000358A
        lea       rax,[rdx+r11+10]
        vpsubq    zmm0,zmm0,zmm2
        vmovups   [rax],zmm0
@@ -78,20 +80,22 @@ M00_L00:
        vmovups   [rax+40],zmm0
        mov       eax,r10d
        cmp       eax,1869F
-       jl        short M00_L00
+       jl        short 0000000000003506
        vzeroupper
        add       rsp,28
        ret
 M00_L01:
-       call      CORINFO_HELP_RNGCHKFAIL
+       call      0000000000001620
        int       3
 ; Total bytes of code 144
 ```
+**Method was not JITted yet.**
+Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
-; System.Numerics.Bench.StressMat44`1[[System.Int64, System.Private.CoreLib]].Multiply()
+; System.Numerics.Bench.BaseStressMat44`1[[System.Int64, System.Private.CoreLib]].Multiply()
        sub       rsp,28
        xor       eax,eax
 M00_L00:
@@ -100,7 +104,7 @@ M00_L00:
        mov       r10,r8
        mov       r9d,[r10+8]
        cmp       eax,r9d
-       jae       near ptr M00_L01
+       jae       near ptr 0000000000005224
        mov       r11,rax
        shl       r11,7
        lea       r10,[r10+r11+10]
@@ -110,7 +114,7 @@ M00_L00:
        vmovups   ymm3,[r10+60]
        lea       r10d,[rax+1]
        cmp       r10d,r9d
-       jae       near ptr M00_L01
+       jae       near ptr 0000000000005224
        mov       r9d,r10d
        shl       r9,7
        lea       r8,[r8+r9+10]
@@ -118,7 +122,7 @@ M00_L00:
        vmovups   ymm5,[r8+20]
        vmovups   ymm16,[r8+40]
        vmovups   ymm17,[r8+60]
-       vmovaps   ymm18,ymm0
+       vmovaps   xmm18,xmm0
        vmovq     r8,xmm18
        vpbroadcastq ymm19,r8
        vpermilpd xmm18,xmm18,1
@@ -137,7 +141,7 @@ M00_L00:
        vpbroadcastq ymm0,r8
        vpmullq   ymm0,ymm0,ymm17
        vpaddq    ymm0,ymm18,ymm0
-       vmovaps   ymm18,ymm1
+       vmovaps   xmm18,xmm1
        vmovq     r8,xmm18
        vpbroadcastq ymm19,r8
        vpermilpd xmm18,xmm18,1
@@ -156,7 +160,7 @@ M00_L00:
        vpbroadcastq ymm1,r8
        vpmullq   ymm1,ymm1,ymm17
        vpaddq    ymm1,ymm18,ymm1
-       vmovaps   ymm18,ymm2
+       vmovaps   xmm18,xmm2
        vmovq     r8,xmm18
        vpbroadcastq ymm19,r8
        vpermilpd xmm18,xmm18,1
@@ -175,7 +179,7 @@ M00_L00:
        vpbroadcastq ymm2,r8
        vpmullq   ymm2,ymm2,ymm17
        vpaddq    ymm2,ymm18,ymm2
-       vmovaps   ymm18,ymm3
+       vmovaps   xmm18,xmm3
        vmovq     r8,xmm18
        vpbroadcastq ymm19,r8
        vpermilpd xmm18,xmm18,1
@@ -195,7 +199,7 @@ M00_L00:
        vpmullq   ymm3,ymm3,ymm17
        vpaddq    ymm3,ymm4,ymm3
        cmp       eax,[rdx+8]
-       jae       short M00_L01
+       jae       short 0000000000005224
        lea       rax,[rdx+r11+10]
        vmovups   [rax],ymm0
        vmovups   [rax+20],ymm1
@@ -203,13 +207,15 @@ M00_L00:
        vmovups   [rax+60],ymm3
        mov       eax,r10d
        cmp       eax,1869F
-       jl        near ptr M00_L00
+       jl        near ptr 0000000000004FC6
        vzeroupper
        add       rsp,28
        ret
 M00_L01:
-       call      CORINFO_HELP_RNGCHKFAIL
+       call      0000000000001620
        int       3
 ; Total bytes of code 618
 ```
+**Method was not JITted yet.**
+Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
 

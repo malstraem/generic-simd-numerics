@@ -1,4 +1,4 @@
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressRectangle`1[[System.Int32, System.Private.CoreLib]].Contains()
@@ -10,9 +10,9 @@
        push      rbp
        push      rbx
        xor       eax,eax
-       mov       rcx,2673EC00358
+       mov       rcx,2C4FDC01560
        mov       rcx,[rcx]
-       mov       rdx,2673EC00360
+       mov       rdx,2C4FDC01568
        mov       rdx,[rdx]
 M00_L00:
        mov       r8d,eax
@@ -38,18 +38,18 @@ M00_L00:
        add       esi,r11d
        add       r9d,ebx
        cmp       r11d,edi
-       jl        short M00_L02
+       jl        short 0000000000002282
        cmp       ebx,r14d
-       jl        short M00_L02
+       jl        short 0000000000002282
        cmp       esi,ebp
-       jg        short M00_L02
+       jg        short 0000000000002282
        cmp       r9d,r10d
        setle     r10b
        movzx     r10d,r10b
 M00_L01:
        mov       [rdx+r8+10],r10b
        cmp       eax,1869F
-       jl        short M00_L00
+       jl        short 0000000000002206
        pop       rbx
        pop       rbp
        pop       rsi
@@ -60,17 +60,17 @@ M00_L01:
        ret
 M00_L02:
        xor       r10d,r10d
-       jmp       short M00_L01
+       jmp       short 000000000000226B
 ; Total bytes of code 167
 ```
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressRectangle`1[[System.Int32, System.Private.CoreLib]].Area()
-       mov       rax,1E362800358
+       mov       rax,23585C01560
        mov       rax,[rax]
-       mov       rcx,1E362800368
+       mov       rcx,23585C01570
        mov       rcx,[rcx]
        xor       edx,edx
        mov       r8d,1869F
@@ -84,7 +84,7 @@ M00_L00:
        mov       [rcx+rdx+10],r10d
        add       rdx,4
        dec       r8d
-       jne       short M00_L00
+       jne       short 0000000000001D30
        ret
 ; Total bytes of code 80
 ```

@@ -1,17 +1,18 @@
 ```
 
-BenchmarkDotNet v0.15.8, Windows 11 (10.0.26200.8457/25H2/2025Update/HudsonValley2)
-AMD Ryzen 9 7900X 4.70GHz, 1 CPU, 24 logical and 12 physical cores
-.NET SDK 11.0.100-preview.4.26230.115
-  [Host]    : .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4
-  .NET 10.0 : .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4
+BenchmarkDotNet v0.16.0-preview.2, Windows 11 (10.0.26300.9974)
+AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
+Memory: 31.15 GB Total, 22.76 GB Available
+.NET SDK 11.0.100
+  [Host]     : .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4
+  Job-IHFIKV : .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4
 
-Job=.NET 10.0  Runtime=.NET 10.0  
+Runtime=.NET 11.0  
 
 ```
 | Method    | Mean      | Error    | StdDev   | Code Size |
 |---------- |----------:|---------:|---------:|----------:|
-| Multiply  | 128.88 μs | 0.237 μs | 0.221 μs |     224 B |
-| Divide    | 242.84 μs | 0.786 μs | 0.735 μs |     281 B |
-| Conjugate |  62.76 μs | 0.171 μs | 0.152 μs |      88 B |
-| Inverse   |  98.27 μs | 0.092 μs | 0.081 μs |     121 B |
+| Multiply  | 130.24 μs | 0.625 μs | 0.554 μs |     224 B |
+| Divide    | 243.62 μs | 0.658 μs | 0.583 μs |     287 B |
+| Conjugate |  76.15 μs | 0.389 μs | 0.345 μs |      88 B |
+| Inverse   |  92.70 μs | 0.292 μs | 0.259 μs |     127 B |

@@ -1,4 +1,4 @@
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressQuat`1[[System.Single, System.Private.CoreLib]].Multiply()
@@ -12,13 +12,13 @@ M00_L00:
        mov       r9,r10
        mov       r11d,[r9+8]
        cmp       edx,r11d
-       jae       near ptr M00_L01
+       jae       near ptr 00000000000045D4
        mov       rbx,rdx
        shl       rbx,4
        vmovups   xmm0,[r9+rbx+10]
        lea       r9d,[rdx+1]
        cmp       r9d,r11d
-       jae       near ptr M00_L01
+       jae       near ptr 00000000000045D4
        mov       r11d,r9d
        shl       r11,4
        vmovups   xmm1,[r10+r11+10]
@@ -38,32 +38,34 @@ M00_L00:
        vpermilpd xmm3,xmm3,1
        vbroadcastss xmm3,xmm3
        vmulps    xmm1,xmm3,xmm1
-       vfmadd231ps xmm1,xmm2,[7FF7FD4FC040]
-       vfmadd231ps xmm1,xmm4,[7FF7FD4FC050]
-       vfmadd231ps xmm1,xmm0,[7FF7FD4FC060]
+       vfmadd231ps xmm1,xmm2,[45E0]
+       vfmadd231ps xmm1,xmm4,[45F0]
+       vfmadd132ps xmm0,xmm1,[4600]
        cmp       edx,[r8+8]
-       jae       short M00_L01
-       vmovups   [r8+rbx+10],xmm1
+       jae       short 00000000000045D4
+       vmovups   [r8+rbx+10],xmm0
        mov       edx,r9d
        cmp       edx,1869F
-       jl        near ptr M00_L00
+       jl        near ptr 000000000000450B
        add       rsp,20
        pop       rbx
        ret
 M00_L01:
-       call      CORINFO_HELP_RNGCHKFAIL
+       call      0000000000001620
        int       3
 ; Total bytes of code 218
 ```
+**Method was not JITted yet.**
+Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressQuat`1[[System.Single, System.Private.CoreLib]].Divide()
        push      rbx
        sub       rsp,20
        mov       rax,[rcx+10]
-       vbroadcastss xmm0,dword ptr [7FF7FD4BCBB0]
+       vbroadcastss xmm0,dword ptr [4758]
        xor       edx,edx
 M00_L00:
        mov       r8,rax
@@ -71,18 +73,22 @@ M00_L00:
        mov       r9,r10
        mov       r11d,[r9+8]
        cmp       edx,r11d
-       jae       near ptr M00_L01
+       jae       near ptr 0000000000004750
        mov       rbx,rdx
        shl       rbx,4
        vmovups   xmm1,[r9+rbx+10]
        lea       r9d,[rdx+1]
        cmp       r9d,r11d
-       jae       near ptr M00_L01
+       jae       near ptr 0000000000004750
        mov       r11d,r9d
        shl       r11,4
        vmovups   xmm2,[r10+r11+10]
-       vdpps     xmm3,xmm2,xmm2,0FF
-       vmulps    xmm2,xmm2,[7FF7FD4BCBC0]
+       vmulps    xmm3,xmm2,xmm2
+       vpermilps xmm4,xmm3,0B1
+       vaddps    xmm3,xmm4,xmm3
+       vpermilps xmm4,xmm3,4E
+       vaddps    xmm3,xmm4,xmm3
+       vmulps    xmm2,xmm2,[4760]
        vdivps    xmm2,xmm2,xmm3
        vcmpnleps xmm3,xmm3,xmm0
        vandps    xmm2,xmm3,xmm2
@@ -102,25 +108,27 @@ M00_L00:
        vpermilpd xmm4,xmm4,1
        vbroadcastss xmm4,xmm4
        vmulps    xmm2,xmm4,xmm2
-       vfmadd231ps xmm2,xmm3,[7FF7FD4BCBD0]
-       vfmadd231ps xmm2,xmm5,[7FF7FD4BCBE0]
-       vfmadd231ps xmm2,xmm1,[7FF7FD4BCBF0]
+       vfmadd231ps xmm2,xmm3,[4770]
+       vfmadd231ps xmm2,xmm5,[4780]
+       vfmadd132ps xmm1,xmm2,[4790]
        cmp       edx,[r8+8]
-       jae       short M00_L01
-       vmovups   [r8+rbx+10],xmm2
+       jae       short 0000000000004750
+       vmovups   [r8+rbx+10],xmm1
        mov       edx,r9d
        cmp       edx,1869F
-       jl        near ptr M00_L00
+       jl        near ptr 0000000000004654
        add       rsp,20
        pop       rbx
        ret
 M00_L01:
-       call      CORINFO_HELP_RNGCHKFAIL
+       call      0000000000001620
        int       3
-; Total bytes of code 260
+; Total bytes of code 278
 ```
+**Method was not JITted yet.**
+Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressQuat`1[[System.Single, System.Private.CoreLib]].Conjugate()
@@ -132,57 +140,65 @@ M00_L00:
        mov       r8,rax
        mov       r10,[rcx+8]
        cmp       edx,[r10+8]
-       jae       short M00_L01
+       jae       short 000000000000326F
        mov       r9,rdx
        shl       r9,4
        vmovups   xmm0,[r10+r9+10]
-       vmulps    xmm0,xmm0,[7FF7FD4FA660]
+       vmulps    xmm0,xmm0,[3280]
        cmp       edx,[r8+8]
-       jae       short M00_L01
+       jae       short 000000000000326F
        vmovups   [r8+r9+10],xmm0
        inc       edx
        cmp       edx,186A0
-       jl        short M00_L00
+       jl        short 0000000000003230
        add       rsp,28
        ret
 M00_L01:
-       call      CORINFO_HELP_RNGCHKFAIL
+       call      0000000000001620
        int       3
 ; Total bytes of code 85
 ```
+**Method was not JITted yet.**
+Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
 
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.StressQuat`1[[System.Single, System.Private.CoreLib]].Inverse()
        sub       rsp,28
        mov       rax,[rcx+10]
-       vbroadcastss xmm0,dword ptr [7FF7FD4DAD10]
+       vbroadcastss xmm0,dword ptr [38C0]
        xor       edx,edx
 M00_L00:
        mov       r8,rax
        mov       r10,[rcx+8]
        cmp       edx,[r10+8]
-       jae       short M00_L01
+       jae       short 00000000000038B7
        mov       r9,rdx
        shl       r9,4
        vmovups   xmm1,[r10+r9+10]
-       vdpps     xmm2,xmm1,xmm1,0FF
+       vmulps    xmm2,xmm1,xmm1
+       vpermilps xmm3,xmm2,0B1
+       vaddps    xmm2,xmm3,xmm2
+       vpermilps xmm3,xmm2,4E
+       vaddps    xmm2,xmm3,xmm2
        cmp       edx,[r8+8]
-       jae       short M00_L01
-       vmulps    xmm1,xmm1,[7FF7FD4DAD20]
+       jae       short 00000000000038B7
+       vmulps    xmm1,xmm1,[38D0]
        vdivps    xmm1,xmm1,xmm2
        vcmpnleps xmm2,xmm2,xmm0
        vandps    xmm1,xmm2,xmm1
        vmovups   [r8+r9+10],xmm1
        inc       edx
        cmp       edx,186A0
-       jl        short M00_L00
+       jl        short 0000000000003853
        add       rsp,28
        ret
 M00_L01:
-       call      CORINFO_HELP_RNGCHKFAIL
+       call      0000000000001620
        int       3
-; Total bytes of code 107
+; Total bytes of code 125
 ```
+**Method was not JITted yet.**
+Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
 
