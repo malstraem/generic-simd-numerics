@@ -115,4 +115,11 @@ public abstract class BaseStressMatrix4X4<T> : BaseBench<T>
         for (int i = 0; i < Count - 1; i++)
             @out[i] = mats[i] * mats[i + 1];
     }
+
+    [Benchmark]
+    public void Transpose()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Matrix4X4.Transpose(mats[i]);
+    }
 }

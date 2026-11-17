@@ -14,7 +14,6 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
 {
     public T X = x, Y = y, Z = z, W = w;
 
-    [Obsolete("vectorize")]
     public Quat(Vec3<T> v, T w) : this(v.X, v.Y, v.Z, w) { }
 
     public static Quat<T> Identity { get; } = new(Vec3<T>.Zero, T.One);

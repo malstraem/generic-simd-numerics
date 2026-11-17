@@ -24,6 +24,24 @@ public partial struct Vec4<T>
     }
 
     [MethodImpl(AggressiveInlining)]
+    internal Vec4<T> ZipLower(Vec4<T> v)
+    {
+        if (SizeOf<T>() == 4)
+            return Vector128.ZipLower(this.As128(), v.As128()).Vec4();
+
+        return Vector256.ZipLower(this.As256(), v.As256()).Vec4();
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    internal Vec4<T> ZipUpper(Vec4<T> v)
+    {
+        if (SizeOf<T>() == 4)
+            return Vector128.ZipUpper(this.As128(), v.As128()).Vec4();
+
+        return Vector256.ZipUpper(this.As256(), v.As256()).Vec4();
+    }
+
+    [MethodImpl(AggressiveInlining)]
     internal Vec4<T> XXXX() => Permute(0, 0, 0, 0);
 
     [MethodImpl(AggressiveInlining)]

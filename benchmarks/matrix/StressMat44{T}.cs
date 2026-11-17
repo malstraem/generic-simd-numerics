@@ -59,12 +59,12 @@ public class StressMat44WithQuat<T> : BaseStressMat44<T>
             @out[i] = Mat44.Rotation(quats[i]);
     }
 
-    [Benchmark]
-    public void Transform()
-    {
-        for (int i = 0; i < Count; i++)
-            @out[i] = Mat44.Rotate(mats[i], quats[i]);
-    }
+    //[Benchmark]
+    //public void Transform()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        @out[i] = Mat44.Rotate(mats[i], quats[i]);
+    //}
 
     [Benchmark]
     public void Affine()
@@ -93,24 +93,31 @@ public abstract class BaseStressMat44<T> : BaseBench<T>
             mats[i] = Mat44<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
     }
 
-    [Benchmark]
-    public void Add()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            @out[i] = mats[i] + mats[i + 1];
-    }
+    //[Benchmark]
+    //public void Add()
+    //{
+    //    for (int i = 0; i < Count - 1; i++)
+    //        @out[i] = mats[i] + mats[i + 1];
+    //}
 
-    [Benchmark]
-    public void Subtract()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            @out[i] = mats[i] - mats[i + 1];
-    }
+    //[Benchmark]
+    //public void Subtract()
+    //{
+    //    for (int i = 0; i < Count - 1; i++)
+    //        @out[i] = mats[i] - mats[i + 1];
+    //}
 
-    [Benchmark]
-    public void Multiply()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            @out[i] = mats[i] * mats[i + 1];
-    }
+    //[Benchmark]
+    //public void Multiply()
+    //{
+    //    for (int i = 0; i < Count - 1; i++)
+    //        @out[i] = mats[i] * mats[i + 1];
+    //}
+
+    //[Benchmark]
+    //public void Transpose()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        @out[i] = mats[i].Transpose();
+    //}
 }

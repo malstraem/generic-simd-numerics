@@ -154,16 +154,22 @@ public static partial class Mat44
         return m;
     }
 
-    [Obsolete("vectorize")]
     [MethodImpl(AggressiveInlining)]
     public static Mat44<T> Transpose<T>(Mat44<T> m)
-        where T : unmanaged, INumber<T> => new
-    (
-        m.X.X, m.Y.X, m.Z.X, m.W.X,
-        m.X.Y, m.Y.Y, m.Z.Y, m.W.Y,
-        m.X.Z, m.Y.Z, m.Z.Z, m.W.Z,
-        m.X.W, m.Y.W, m.Z.W, m.W.W
-    );
+        where T : unmanaged, INumber<T>
+    {
+        if (SizeOf<T>() == 4)
+            return Transpose32(m);
+
+        if (SizeOf<T>() == 8)
+            return Transpose64(m);
+
+        return new(
+            m.X.X, m.Y.X, m.Z.X, m.W.X,
+            m.X.Y, m.Y.Y, m.Z.Y, m.W.Y,
+            m.X.Z, m.Y.Z, m.Z.Z, m.W.Z,
+            m.X.W, m.Y.W, m.Z.W, m.W.W);
+    }
 
     /**<summary>
     Creates a matrix with the rotation, scale and translation components.

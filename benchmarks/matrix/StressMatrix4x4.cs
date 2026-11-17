@@ -45,6 +45,13 @@ public class StressMatrix4x4 : BaseBench<float>
     }
 
     [Benchmark]
+    public void Transpose()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Matrix4x4.Transpose(mats[i]);
+    }
+
+    [Benchmark]
     public void Rotation()
     {
         for (int i = 0; i < Count; i++)

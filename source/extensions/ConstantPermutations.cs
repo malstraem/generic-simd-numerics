@@ -23,5 +23,28 @@ internal static class ConstantPermutations
         internal Vector256<T> Permute64(
             [ConstantExpected] byte e0, [ConstantExpected] byte e1, [ConstantExpected] byte e2, [ConstantExpected] byte e3)
                 => Vector256.Shuffle(v.AsInt64(), Vector256.Create(e0, e1, e2, e3)).As<long, T>();
+
+        [MethodImpl(AggressiveInlining)]
+        internal Vector256<T> Permute32(
+            [ConstantExpected] byte e0, [ConstantExpected] byte e1, [ConstantExpected] byte e2, [ConstantExpected] byte e3,
+            [ConstantExpected] byte e4, [ConstantExpected] byte e5, [ConstantExpected] byte e6, [ConstantExpected] byte e7)
+                => Vector256.Shuffle(v.AsInt32(), Vector256.Create(e0, e1, e2, e3, e4, e5, e6, e7)).As<int, T>();
+    }
+
+    extension<T>(Vector512<T> v)
+    {
+        [MethodImpl(AggressiveInlining)]
+        internal Vector512<T> Permute64(
+            [ConstantExpected] byte e0, [ConstantExpected] byte e1, [ConstantExpected] byte e2, [ConstantExpected] byte e3,
+            [ConstantExpected] byte e4, [ConstantExpected] byte e5, [ConstantExpected] byte e6, [ConstantExpected] byte e7)
+                => Vector512.Shuffle(v.AsInt64(), Vector512.Create(e0, e1, e2, e3, e4, e5, e6, e7)).As<long, T>();
+
+        [MethodImpl(AggressiveInlining)]
+        internal Vector512<T> Permute32(
+            [ConstantExpected] byte e0, [ConstantExpected] byte e1, [ConstantExpected] byte e2, [ConstantExpected] byte e3,
+            [ConstantExpected] byte e4, [ConstantExpected] byte e5, [ConstantExpected] byte e6, [ConstantExpected] byte e7,
+            [ConstantExpected] byte e8, [ConstantExpected] byte e9, [ConstantExpected] byte e10, [ConstantExpected] byte e11,
+            [ConstantExpected] byte e12, [ConstantExpected] byte e13, [ConstantExpected] byte e14, [ConstantExpected] byte e15)
+                => Vector512.Shuffle(v.AsSingle(), Vector512.Create(e0, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15)).As<float, T>();
     }
 }
