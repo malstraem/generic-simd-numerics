@@ -1,6 +1,6 @@
-.NET 10.0.826.23019, X64 RyuJIT x86-64-v4, Windows 11 (10.0.26200.8457/25H2/2025Update/HudsonValley2), AMD Ryzen 9 7900X 4.70GHz
-
 # Asm differences for load/store showed with `Add` cycle
+
+.NET 10.0.826.23019, X64 RyuJIT x86-64-v4, Windows 11 (10.0.26200.8457/25H2/2025Update/HudsonValley2), AMD Ryzen 9 7900X 4.70GHz
 
 `Vec2<T>` and `Vec3<T>` have dumb vectorized ways that slower than naive currently
 

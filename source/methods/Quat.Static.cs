@@ -98,11 +98,11 @@ public static class Quat
 
         if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
         {
-            var lsv = Vector128.Create(ls);
+            var v = Vector128.Create(ls);
 
-            var compare = Vector128.LessThanOrEqual(lsv, Vector128.Create(T.CreateChecked(1.192092896e-7f)));
+            var compare = Vector128.LessThanOrEqual(v, Vector128.Create(T.CreateChecked(1.192092896e-7f)));
 
-            return Vector128.AndNot(Quat<T>.Conjugate(q).As128() / lsv, compare).Quat();
+            return Vector128.AndNot(Quat<T>.Conjugate(q).As128() / v, compare).Quat();
         }
 
         // todo 256 way with epsilon

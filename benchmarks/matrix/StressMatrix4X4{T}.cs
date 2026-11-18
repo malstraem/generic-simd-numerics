@@ -6,12 +6,7 @@ namespace System.Numerics.Bench;
 
 [GenericTypeArguments(typeof(int), typeof(float))]
 [GenericTypeArguments(typeof(int), typeof(double))]
-
-[GenericTypeArguments(typeof(float), typeof(int))]
 [GenericTypeArguments(typeof(float), typeof(double))]
-
-[GenericTypeArguments(typeof(double), typeof(int))]
-[GenericTypeArguments(typeof(double), typeof(float))]
 public class StressConversionMatrix4X4<T1, T2> : BaseBench<T1>
     where T1 : unmanaged, INumber<T1>
     where T2 : unmanaged, INumber<T2>
@@ -23,7 +18,10 @@ public class StressConversionMatrix4X4<T1, T2> : BaseBench<T1>
     public StressConversionMatrix4X4()
     {
         for (int i = 0; i < Count; i++)
+        {
             mats[i] = Mat44<T1>.Gen(T1.One).Silk();
+            converted[i] = mats[i].As<T2>();
+        }
     }
 
     [Benchmark]
@@ -31,6 +29,13 @@ public class StressConversionMatrix4X4<T1, T2> : BaseBench<T1>
     {
         for (int i = 0; i < Count; i++)
             converted[i] = mats[i].As<T2>();
+    }
+
+    [Benchmark]
+    public void Back()
+    {
+        for (int i = 0; i < Count; i++)
+            mats[i] = converted[i].As<T1>();
     }
 }
 

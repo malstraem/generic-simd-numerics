@@ -4,6 +4,7 @@ namespace System.Numerics;
 
 public partial struct Vec4<T>
 {
+    #region Helpers for 4 and 8 byte sizes
     [MethodImpl(AggressiveInlining)]
     internal Vec4<T> Insert([ConstantExpected] int to, [ConstantExpected] int from, Vec4<T> other)
     {
@@ -131,5 +132,6 @@ public partial struct Vec4<T>
 
     [MethodImpl(AggressiveInlining)]
     internal Vec4<T> WZYX() => Permute(3, 2, 1, 0);
+    #endregion
     #endregion
 }

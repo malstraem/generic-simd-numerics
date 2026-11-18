@@ -67,6 +67,10 @@ public static partial class Mat44
                 return axy.Mat44(azw);
             }
         }
+
+        if (SizeOf<T>() == 1 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return (a.As128() + b.As128()).Mat44();
+
         return new(a.X + b.X, a.Y + b.Y, a.Z + b.Z, a.W + b.W);
     }
 
@@ -103,6 +107,10 @@ public static partial class Mat44
                 return axy.Mat44(azw);
             }
         }
+
+        if (SizeOf<T>() == 1 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return (a.As128() - b.As128()).Mat44();
+
         return new(a.X - b.X, a.Y - b.Y, a.Z - b.Z, a.W - b.W);
     }
 
@@ -137,6 +145,10 @@ public static partial class Mat44
                 return xy.Mat44(zw);
             }
         }
+
+        if (SizeOf<T>() == 1 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return (m.As128() * n).Mat44();
+
         return new(m.X * n, m.Y * n, m.Z * n, m.W * n);
     }
 
@@ -158,6 +170,12 @@ public static partial class Mat44
     public static Mat44<T> Transpose<T>(Mat44<T> m)
         where T : unmanaged, INumber<T>
     {
+        if (SizeOf<T>() == 1)
+            return Transpose8(m);
+
+        if (SizeOf<T>() == 2)
+            return Transpose16(m);
+
         if (SizeOf<T>() == 4)
             return Transpose32(m);
 
