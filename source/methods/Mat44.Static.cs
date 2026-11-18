@@ -198,7 +198,7 @@ public static partial class Mat44
     <returns>Affine matrix (also known as a model matrix).</returns>*/
     [MethodImpl(AggressiveInlining)]
     public static Mat44<T> Affine<T>(Quat<T> rotation, Vec3<T> scale, Vec3<T> translation)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, INumber<T>, ISignedNumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
          || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
@@ -231,7 +231,7 @@ public static partial class Mat44
     <returns>Rotation matrix.</returns>*/
     [MethodImpl(AggressiveInlining)]
     public static Mat44<T> Rotation<T>(Quat<T> rotation)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, INumber<T>, ISignedNumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
          || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
@@ -259,7 +259,7 @@ public static partial class Mat44
 
     [MethodImpl(AggressiveInlining)]
     public static Mat44<T> Rotate<T>(Mat44<T> m, Quat<T> rotation)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, INumber<T>, ISignedNumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
          || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))

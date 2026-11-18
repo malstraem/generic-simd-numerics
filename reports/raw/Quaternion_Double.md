@@ -7,10 +7,12 @@ AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
 
 | Method    | Mean     | Error   | StdDev  | Code Size |
 |---------- |---------:|--------:|--------:|----------:|
-| Multiply  | 206.5 μs | 0.48 μs | 0.40 μs |     327 B |
-| Divide    | 469.6 μs | 0.85 μs | 0.71 μs |     438 B |
-| Conjugate | 115.3 μs | 0.23 μs | 0.19 μs |     128 B |
-| Inverse   | 149.8 μs | 0.48 μs | 0.45 μs |     204 B |
+| Multiply  | 212.1 μs | 1.48 μs | 1.38 μs |     327 B |
+| Divide    | 483.3 μs | 1.07 μs | 0.89 μs |     438 B |
+| Conjugate | 118.9 μs | 0.45 μs | 0.42 μs |     128 B |
+| Inverse   | 153.6 μs | 0.57 μs | 0.51 μs |     204 B |
+| Lerp      | 339.3 μs | 1.24 μs | 1.10 μs |     405 B |
+| Slerp     | 213.0 μs | 0.74 μs | 0.65 μs |     610 B |
 
 ```assembly
 ; System.Numerics.Bench.StressQuaternion`1[[System.Double, System.Private.CoreLib]].Multiply()
@@ -89,7 +91,7 @@ M00_L01:
 ```assembly
 ; System.Numerics.Bench.StressQuaternion`1[[System.Double, System.Private.CoreLib]].Divide()
        sub       rsp,28
-       vmovsd    xmm0,qword ptr [7FFEC1485F38]
+       vmovsd    xmm0,qword ptr [7FF915F739F8]
        xor       eax,eax
 M00_L00:
        mov       rdx,[rcx+10]
@@ -124,11 +126,11 @@ M00_L00:
        vaddsd    xmm19,xmm20,xmm19
        vdivsd    xmm19,xmm0,xmm19
        vmulsd    xmm5,xmm19,xmm5
-       vxorps    xmm5,xmm5,[7FFEC1485F40]
+       vxorps    xmm5,xmm5,[7FF915F73A00]
        vmulsd    xmm16,xmm16,xmm19
-       vxorps    xmm16,xmm16,[7FFEC1485F50]
+       vxorps    xmm16,xmm16,[7FF915F73A10]
        vmulsd    xmm17,xmm17,xmm19
-       vxorps    xmm17,xmm17,[7FFEC1485F60]
+       vxorps    xmm17,xmm17,[7FF915F73A20]
        vmulsd    xmm18,xmm18,xmm19
        vmulsd    xmm19,xmm17,xmm2
        vmulsd    xmm20,xmm16,xmm3
@@ -192,9 +194,9 @@ M00_L00:
        vmovsd    xmm1,qword ptr [r8+8]
        vmovsd    xmm2,qword ptr [r8+10]
        vmovsd    xmm3,qword ptr [r8+18]
-       vxorps    xmm0,xmm0,[7FFEC14A5460]
-       vxorps    xmm1,xmm1,[7FFEC14A5460]
-       vxorps    xmm2,xmm2,[7FFEC14A5460]
+       vxorps    xmm0,xmm0,[7FF915F62C60]
+       vxorps    xmm1,xmm1,[7FF915F62C60]
+       vxorps    xmm2,xmm2,[7FF915F62C60]
        cmp       eax,[rdx+8]
        jae       short M00_L01
        lea       rdx,[rdx+r10+10]
@@ -216,7 +218,7 @@ M00_L01:
 ```assembly
 ; System.Numerics.Bench.StressQuaternion`1[[System.Double, System.Private.CoreLib]].Inverse()
        sub       rsp,28
-       vmovsd    xmm0,qword ptr [7FFEC14D5530]
+       vmovsd    xmm0,qword ptr [7FF915F830B0]
        xor       eax,eax
 M00_L00:
        mov       rdx,[rcx+10]
@@ -239,11 +241,11 @@ M00_L00:
        vaddsd    xmm5,xmm16,xmm5
        vdivsd    xmm5,xmm0,xmm5
        vmulsd    xmm1,xmm1,xmm5
-       vxorps    xmm1,xmm1,[7FFEC14D5540]
+       vxorps    xmm1,xmm1,[7FF915F830C0]
        vmulsd    xmm2,xmm2,xmm5
-       vxorps    xmm2,xmm2,[7FFEC14D5550]
+       vxorps    xmm2,xmm2,[7FF915F830D0]
        vmulsd    xmm3,xmm3,xmm5
-       vxorps    xmm3,xmm3,[7FFEC14D5560]
+       vxorps    xmm3,xmm3,[7FF915F830E0]
        vmulsd    xmm4,xmm4,xmm5
        cmp       eax,[rdx+8]
        jae       short M00_L01
@@ -261,4 +263,238 @@ M00_L01:
        call      Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
        int       3
 ; Total bytes of code 204
+```
+
+```assembly
+; System.Numerics.Bench.StressQuaternion`1[[System.Double, System.Private.CoreLib]].Lerp()
+       sub       rsp,28
+       vmovsd    xmm0,qword ptr [7FF915F93318]
+       xor       eax,eax
+M00_L00:
+       mov       rdx,[rcx+10]
+       mov       r8,[rcx+8]
+       mov       r10,r8
+       mov       r9d,[r10+8]
+       cmp       eax,r9d
+       jae       near ptr M00_L03
+       mov       r11,rax
+       shl       r11,5
+       lea       r10,[r10+r11+10]
+       vmovsd    xmm1,qword ptr [r10]
+       vmovsd    xmm2,qword ptr [r10+8]
+       vmovsd    xmm3,qword ptr [r10+10]
+       vmovsd    xmm4,qword ptr [r10+18]
+       lea       r10d,[rax+1]
+       cmp       r10d,r9d
+       jae       near ptr M00_L03
+       mov       r9d,r10d
+       shl       r9,5
+       lea       r8,[r8+r9+10]
+       vmovsd    xmm5,qword ptr [r8]
+       vmovsd    xmm16,qword ptr [r8+8]
+       vmovsd    xmm17,qword ptr [r8+10]
+       vmovsd    xmm18,qword ptr [r8+18]
+       vmulsd    xmm19,xmm1,xmm5
+       vmulsd    xmm20,xmm16,xmm2
+       vaddsd    xmm19,xmm20,xmm19
+       vmulsd    xmm20,xmm17,xmm3
+       vaddsd    xmm19,xmm20,xmm19
+       vmulsd    xmm20,xmm18,xmm4
+       vaddsd    xmm19,xmm20,xmm19
+       vxorps    xmm20,xmm20,xmm20
+       vucomisd  xmm19,xmm20
+       jb        near ptr M00_L02
+       vxorps    xmm19,xmm19,xmm19
+       vmulsd    xmm1,xmm19,xmm1
+       vaddsd    xmm1,xmm1,xmm5
+       vmulsd    xmm5,xmm19,xmm2
+       vaddsd    xmm5,xmm16,xmm5
+       vmulsd    xmm2,xmm19,xmm3
+       vaddsd    xmm2,xmm17,xmm2
+       vmulsd    xmm16,xmm19,xmm4
+       vaddsd    xmm16,xmm16,xmm18
+M00_L01:
+       vmulsd    xmm3,xmm1,xmm1
+       vmulsd    xmm4,xmm5,xmm5
+       vaddsd    xmm3,xmm4,xmm3
+       vmulsd    xmm4,xmm2,xmm2
+       vaddsd    xmm3,xmm4,xmm3
+       vmulsd    xmm4,xmm16,xmm16
+       vaddsd    xmm3,xmm4,xmm3
+       vsqrtsd   xmm3,xmm3,xmm3
+       vdivsd    xmm3,xmm0,xmm3
+       vmulsd    xmm1,xmm1,xmm3
+       vmulsd    xmm5,xmm5,xmm3
+       vmulsd    xmm2,xmm2,xmm3
+       vmulsd    xmm16,xmm16,xmm3
+       cmp       eax,[rdx+8]
+       jae       short M00_L03
+       lea       rax,[rdx+r11+10]
+       vmovsd    qword ptr [rax],xmm1
+       vmovsd    qword ptr [rax+8],xmm5
+       vmovsd    qword ptr [rax+10],xmm2
+       vmovsd    qword ptr [rax+18],xmm16
+       mov       eax,r10d
+       cmp       eax,1869F
+       jl        near ptr M00_L00
+       add       rsp,28
+       ret
+M00_L02:
+       vxorps    xmm19,xmm19,xmm19
+       vmulsd    xmm1,xmm19,xmm1
+       vsubsd    xmm1,xmm1,xmm5
+       vmulsd    xmm2,xmm19,xmm2
+       vsubsd    xmm5,xmm2,xmm16
+       vmulsd    xmm2,xmm19,xmm3
+       vsubsd    xmm2,xmm2,xmm17
+       vmulsd    xmm3,xmm19,xmm4
+       vsubsd    xmm16,xmm3,xmm18
+       jmp       near ptr M00_L01
+M00_L03:
+       call      Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
+       int       3
+; Total bytes of code 405
+```
+
+```assembly
+; System.Numerics.Bench.StressQuaternion`1[[System.Double, System.Private.CoreLib]].Slerp()
+       push      r15
+       push      r14
+       push      rdi
+       push      rsi
+       push      rbp
+       push      rbx
+       sub       rsp,0D8
+       vzeroupper
+       vmovaps   [rsp+0C0],xmm6
+       vmovaps   [rsp+0B0],xmm7
+       vmovaps   [rsp+0A0],xmm8
+       vmovaps   [rsp+90],xmm9
+       vmovaps   [rsp+80],xmm10
+       vmovaps   [rsp+70],xmm11
+       vmovaps   [rsp+60],xmm12
+       vmovaps   [rsp+50],xmm13
+       vmovaps   [rsp+40],xmm14
+       vmovaps   [rsp+30],xmm15
+       mov       rbx,rcx
+       vmovsd    xmm6,qword ptr [7FF915F63F08]
+       xor       esi,esi
+M00_L00:
+       mov       rdi,[rbx+10]
+       mov       rax,[rbx+8]
+       mov       rcx,rax
+       mov       edx,[rcx+8]
+       cmp       esi,edx
+       jae       near ptr M00_L08
+       mov       rbp,rsi
+       shl       rbp,5
+       lea       rcx,[rcx+rbp+10]
+       vmovsd    xmm7,qword ptr [rcx]
+       vmovsd    xmm8,qword ptr [rcx+8]
+       vmovsd    xmm9,qword ptr [rcx+10]
+       vmovsd    xmm10,qword ptr [rcx+18]
+       lea       r14d,[rsi+1]
+       cmp       r14d,edx
+       jae       near ptr M00_L08
+       mov       ecx,r14d
+       shl       rcx,5
+       lea       rax,[rax+rcx+10]
+       vmovsd    xmm11,qword ptr [rax]
+       vmovsd    xmm12,qword ptr [rax+8]
+       vmovsd    xmm13,qword ptr [rax+10]
+       vmovsd    xmm14,qword ptr [rax+18]
+       vmulsd    xmm0,xmm11,xmm7
+       vmulsd    xmm1,xmm8,xmm12
+       vaddsd    xmm0,xmm1,xmm0
+       vmulsd    xmm1,xmm9,xmm13
+       vaddsd    xmm0,xmm1,xmm0
+       vmulsd    xmm1,xmm10,xmm14
+       vaddsd    xmm0,xmm1,xmm0
+       xor       r15d,r15d
+       vxorps    xmm1,xmm1,xmm1
+       vucomisd  xmm0,xmm1
+       jb        near ptr M00_L03
+M00_L01:
+       vucomisd  xmm0,xmm6
+       jbe       near ptr M00_L05
+       vxorps    xmm15,xmm15,xmm15
+       test      r15d,r15d
+       jne       near ptr M00_L04
+       vmovsd    xmm0,qword ptr [7FF915F63F10]
+M00_L02:
+       vmulsd    xmm1,xmm15,xmm7
+       vmulsd    xmm2,xmm11,xmm0
+       vaddsd    xmm1,xmm2,xmm1
+       vmulsd    xmm2,xmm15,xmm8
+       vmulsd    xmm3,xmm12,xmm0
+       vaddsd    xmm2,xmm3,xmm2
+       vmulsd    xmm3,xmm15,xmm9
+       vmulsd    xmm4,xmm13,xmm0
+       vaddsd    xmm3,xmm4,xmm3
+       vmulsd    xmm4,xmm15,xmm10
+       vmulsd    xmm0,xmm14,xmm0
+       vaddsd    xmm0,xmm0,xmm4
+       cmp       esi,[rdi+8]
+       jae       near ptr M00_L08
+       lea       rax,[rdi+rbp+10]
+       vmovsd    qword ptr [rax],xmm1
+       vmovsd    qword ptr [rax+8],xmm2
+       vmovsd    qword ptr [rax+10],xmm3
+       vmovsd    qword ptr [rax+18],xmm0
+       mov       esi,r14d
+       cmp       esi,1869F
+       jl        near ptr M00_L00
+       vmovaps   xmm6,[rsp+0C0]
+       vmovaps   xmm7,[rsp+0B0]
+       vmovaps   xmm8,[rsp+0A0]
+       vmovaps   xmm9,[rsp+90]
+       vmovaps   xmm10,[rsp+80]
+       vmovaps   xmm11,[rsp+70]
+       vmovaps   xmm12,[rsp+60]
+       vmovaps   xmm13,[rsp+50]
+       vmovaps   xmm14,[rsp+40]
+       vmovaps   xmm15,[rsp+30]
+       add       rsp,0D8
+       pop       rbx
+       pop       rbp
+       pop       rsi
+       pop       rdi
+       pop       r14
+       pop       r15
+       ret
+M00_L03:
+       mov       r15d,1
+       vxorps    xmm0,xmm0,[7FF915F63F20]
+       jmp       near ptr M00_L01
+M00_L04:
+       vmovsd    xmm0,qword ptr [7FF915F63F30]
+       jmp       near ptr M00_L02
+M00_L05:
+       call      00007FF9753D42D0
+       vmovsd    qword ptr [rsp+28],xmm0
+       call      00007FF9753D43E0
+       vmovsd    xmm1,qword ptr [7FF915F63F10]
+       vdivsd    xmm0,xmm1,xmm0
+       vmovsd    qword ptr [rsp+20],xmm0
+       vxorps    xmm1,xmm1,xmm1
+       vmulsd    xmm0,xmm1,qword ptr [rsp+28]
+       call      00007FF9753D43E0
+       vmulsd    xmm15,xmm0,qword ptr [rsp+20]
+       test      r15d,r15d
+       jne       short M00_L06
+       vmovsd    xmm0,qword ptr [rsp+28]
+       call      00007FF9753D43E0
+       vmulsd    xmm0,xmm0,qword ptr [rsp+20]
+       jmp       short M00_L07
+M00_L06:
+       vmovsd    xmm0,qword ptr [rsp+28]
+       call      00007FF9753D43E0
+       vmulsd    xmm0,xmm0,qword ptr [rsp+20]
+       vxorps    xmm0,xmm0,[7FF915F63F20]
+M00_L07:
+       jmp       near ptr M00_L02
+M00_L08:
+       call      Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
+       int       3
+; Total bytes of code 610
 ```

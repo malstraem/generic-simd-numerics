@@ -14,7 +14,7 @@ public class Mat44f64 : Mat44WithQuaternion<double>;
 
 [InheritsTests]
 public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
-    where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+    where T : unmanaged, ITrigonometricFunctions<T>, ISignedNumber<T>, IRootFunctions<T>, INumber<T>
 {
     private static readonly bool system = typeof(T) == typeof(float);
 

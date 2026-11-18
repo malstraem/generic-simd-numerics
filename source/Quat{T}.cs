@@ -10,11 +10,13 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     ISubtractionOperators<Quat<T>, Quat<T>, Quat<T>>,
 
     IEqualityOperators<Quat<T>, Quat<T>, bool>
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, INumber<T>, ISignedNumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {
     public T X = x, Y = y, Z = z, W = w;
 
     public Quat(Vec3<T> v, T w) : this(v.X, v.Y, v.Z, w) { }
+
+    public static Quat<T> Zero { get; } = new(Vec3<T>.Zero, T.Zero);
 
     public static Quat<T> Identity { get; } = new(Vec3<T>.Zero, T.One);
 
@@ -23,6 +25,7 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     static Quat<T> IMultiplicativeIdentity<Quat<T>, Quat<T>>.MultiplicativeIdentity => Identity;
 
     #region Operators
+
     [MethodImpl(AggressiveInlining)]
     public static bool operator ==(Quat<T> a, Quat<T> b) => a.Vec4() == b.Vec4();
 
@@ -30,16 +33,19 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     public static bool operator !=(Quat<T> a, Quat<T> b) => a.Vec4() != b.Vec4();
 
     [MethodImpl(AggressiveInlining)]
-    public static Quat<T> operator *(Quat<T> q, T n) => Quat.Multiply(q, n);
-
-    [MethodImpl(AggressiveInlining)]
-    public static Quat<T> operator /(Quat<T> q, T n) => Quat.Divide(q, n);
+    public static Quat<T> operator -(Quat<T> q) => (-q.Vec4()).Quat();
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> operator +(Quat<T> a, Quat<T> b) => Quat.Add(a, b);
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> operator -(Quat<T> a, Quat<T> b) => Quat.Subtract(a, b);
+
+    [MethodImpl(AggressiveInlining)]
+    public static Quat<T> operator *(Quat<T> q, T n) => Quat.Multiply(q, n);
+
+    [MethodImpl(AggressiveInlining)]
+    public static Quat<T> operator /(Quat<T> q, T n) => Quat.Divide(q, n);
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> operator *(Quat<T> a, Quat<T> b) => Quat.Multiply(a, b);
@@ -69,8 +75,11 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Quat<T> Lerp(Quat<T> q, T am) => Quat.Lerp(this, q, am);
 
+    [MethodImpl(AggressiveInlining)]
+    public readonly Quat<T> Slerp(Quat<T> q, T am) => Quat.Slerp(this, q, am);
+
     public readonly Quat<TOther> As<TOther>()
-        where TOther : unmanaged, INumber<TOther>, IRootFunctions<TOther>, ITrigonometricFunctions<TOther>
+        where TOther : unmanaged, INumber<TOther>, ISignedNumber<TOther>, IRootFunctions<TOther>, ITrigonometricFunctions<TOther>
             => Quat.As<T, TOther>(this);
 
     public readonly bool Equals(Quat<T> other) => this == other;

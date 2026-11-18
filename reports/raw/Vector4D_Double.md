@@ -1,10 +1,30 @@
 ## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
+```
+BenchmarkDotNet v0.16.0-nightly.20261117.686, Windows 11 (10.0.26300.9974)
+AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
+```
+
+| Method          | Mean      | Error    | StdDev   | Code Size |
+|---------------- |----------:|---------:|---------:|----------:|
+| Length          | 164.64 μs | 0.084 μs | 0.066 μs |     131 B |
+| Distance        | 167.46 μs | 0.375 μs | 0.351 μs |     176 B |
+| Normalize       | 519.88 μs | 0.537 μs | 0.502 μs |     149 B |
+| Add             | 114.26 μs | 0.090 μs | 0.084 μs |     163 B |
+| Subtract        |  99.58 μs | 0.104 μs | 0.097 μs |     163 B |
+| Multiply        |  99.65 μs | 0.103 μs | 0.097 μs |     163 B |
+| Divide          | 351.08 μs | 0.747 μs | 0.698 μs |     163 B |
+| Abs             | 145.19 μs | 0.328 μs | 0.307 μs |     163 B |
+| Dot             |  95.16 μs | 0.180 μs | 0.168 μs |     152 B |
+| LengthSquared   |  65.28 μs | 0.178 μs | 0.166 μs |     127 B |
+| DistanceSquared | 113.56 μs | 0.163 μs | 0.152 μs |     172 B |
+| Transform       | 186.48 μs | 0.244 μs | 0.229 μs |     296 B |
+
 ```assembly
 ; System.Numerics.Bench.StressVector4D`1[[System.Double, System.Private.CoreLib]].Length()
-       mov       rax,218AB001568
+       mov       rax,1E042001568
        mov       rax,[rax]
-       mov       rcx,218AB001578
+       mov       rcx,1E042001578
        mov       rcx,[rcx]
        xor       edx,edx
        mov       r8d,186A0
@@ -29,19 +49,17 @@ M00_L00:
        vmovsd    qword ptr [rcx+rdx+10],xmm0
        add       rdx,8
        dec       r8d
-       jne       short 0000000000002AC2
+       jne       short M00_L00
        ret
 ; Total bytes of code 131
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.StressVector4D`1[[System.Double, System.Private.CoreLib]].Distance()
        xor       eax,eax
-       mov       rcx,261B9401578
+       mov       rcx,1F33C401568
        mov       rcx,[rcx]
-       mov       rdx,261B9401588
+       mov       rdx,1F33C401578
        mov       rdx,[rdx]
 M00_L00:
        mov       r8d,eax
@@ -74,18 +92,16 @@ M00_L00:
        vsqrtsd   xmm0,xmm0,xmm0
        vmovsd    qword ptr [rdx+r8*8+10],xmm0
        cmp       eax,1869F
-       jl        near ptr 0000000000002F5C
+       jl        near ptr M00_L00
        ret
 ; Total bytes of code 176
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.StressVector4D`1[[System.Double, System.Private.CoreLib]].Normalize()
-       mov       rax,2412AC01568
+       mov       rax,19164001568
        mov       rax,[rax]
-       mov       rcx,2412AC01570
+       mov       rcx,19164001570
        mov       rcx,[rcx]
        mov       edx,10
        mov       r8d,186A0
@@ -114,18 +130,16 @@ M00_L00:
        vmovsd    qword ptr [r10+18],xmm3
        add       rdx,20
        dec       r8d
-       jne       short 00000000000032E5
+       jne       short M00_L00
        ret
 ; Total bytes of code 149
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVector4D`1[[System.Double, System.Private.CoreLib]].Add()
-       mov       rax,143CFC01568
+       mov       rax,25CB1C01568
        mov       rax,[rax]
-       mov       rcx,143CFC01570
+       mov       rcx,25CB1C01570
        mov       rcx,[rcx]
        xor       edx,edx
 M00_L00:
@@ -154,18 +168,16 @@ M00_L00:
        vmovsd    qword ptr [r8+10],xmm2
        vmovsd    qword ptr [r8+18],xmm3
        cmp       edx,1869F
-       jl        near ptr 0000000000002F7C
+       jl        near ptr M00_L00
        ret
 ; Total bytes of code 163
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVector4D`1[[System.Double, System.Private.CoreLib]].Subtract()
-       mov       rax,2A9DC801568
+       mov       rax,15E5BC01568
        mov       rax,[rax]
-       mov       rcx,2A9DC801570
+       mov       rcx,15E5BC01570
        mov       rcx,[rcx]
        xor       edx,edx
 M00_L00:
@@ -194,18 +206,16 @@ M00_L00:
        vmovsd    qword ptr [r8+10],xmm2
        vmovsd    qword ptr [r8+18],xmm3
        cmp       edx,1869F
-       jl        near ptr 0000000000002ABC
+       jl        near ptr M00_L00
        ret
 ; Total bytes of code 163
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVector4D`1[[System.Double, System.Private.CoreLib]].Multiply()
-       mov       rax,158F8C01568
+       mov       rax,1AC1AC01568
        mov       rax,[rax]
-       mov       rcx,158F8C01570
+       mov       rcx,1AC1AC01570
        mov       rcx,[rcx]
        xor       edx,edx
 M00_L00:
@@ -234,18 +244,16 @@ M00_L00:
        vmovsd    qword ptr [r8+10],xmm2
        vmovsd    qword ptr [r8+18],xmm3
        cmp       edx,1869F
-       jl        near ptr 0000000000002BBC
+       jl        near ptr M00_L00
        ret
 ; Total bytes of code 163
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVector4D`1[[System.Double, System.Private.CoreLib]].Divide()
-       mov       rax,25541C01568
+       mov       rax,13866401568
        mov       rax,[rax]
-       mov       rcx,25541C01570
+       mov       rcx,13866401570
        mov       rcx,[rcx]
        xor       edx,edx
 M00_L00:
@@ -274,18 +282,16 @@ M00_L00:
        vmovsd    qword ptr [r8+10],xmm2
        vmovsd    qword ptr [r8+18],xmm3
        cmp       edx,1869F
-       jl        near ptr 0000000000002A7C
+       jl        near ptr M00_L00
        ret
 ; Total bytes of code 163
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVector4D`1[[System.Double, System.Private.CoreLib]].Abs()
-       mov       rax,1DA4B401568
+       mov       rax,1FE52C01568
        mov       rax,[rax]
-       mov       rcx,1DA4B401570
+       mov       rcx,1FE52C01570
        mov       rcx,[rcx]
        mov       edx,10
        mov       r8d,186A0
@@ -296,7 +302,7 @@ M00_L00:
        vmovsd    xmm2,qword ptr [r10+10]
        vmovsd    xmm3,qword ptr [r10+18]
        vmovq     r10,xmm0
-       mov       r9,0FFFFFFFFFFFF
+       mov       r9,7FFFFFFFFFFFFFFF
        and       r10,r9
        vmovq     xmm0,r10
        vmovq     r10,xmm1
@@ -315,19 +321,17 @@ M00_L00:
        vmovsd    qword ptr [r10+18],xmm3
        add       rdx,20
        dec       r8d
-       jne       short 00000000000028E5
+       jne       short M00_L00
        ret
 ; Total bytes of code 163
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVector4D`1[[System.Double, System.Private.CoreLib]].Dot()
        xor       eax,eax
-       mov       rcx,1AFBD001568
+       mov       rcx,2620DC01568
        mov       rcx,[rcx]
-       mov       rdx,1AFBD001578
+       mov       rdx,2620DC01578
        mov       rdx,[rdx]
 M00_L00:
        mov       r8d,eax
@@ -355,18 +359,16 @@ M00_L00:
        vaddsd    xmm0,xmm1,xmm0
        vmovsd    qword ptr [rdx+r8*8+10],xmm0
        cmp       eax,1869F
-       jl        short 000000000000295C
+       jl        short M00_L00
        ret
 ; Total bytes of code 152
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVector4D`1[[System.Double, System.Private.CoreLib]].LengthSquared()
-       mov       rax,26F60801568
+       mov       rax,13F1B001568
        mov       rax,[rax]
-       mov       rcx,26F60801578
+       mov       rcx,13F1B001578
        mov       rcx,[rcx]
        xor       edx,edx
        mov       r8d,186A0
@@ -390,19 +392,17 @@ M00_L00:
        vmovsd    qword ptr [rcx+rdx+10],xmm0
        add       rdx,8
        dec       r8d
-       jne       short 0000000000002FC2
+       jne       short M00_L00
        ret
 ; Total bytes of code 127
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVector4D`1[[System.Double, System.Private.CoreLib]].DistanceSquared()
        xor       eax,eax
-       mov       rcx,211E0C01568
+       mov       rcx,1DE3AC01568
        mov       rcx,[rcx]
-       mov       rdx,211E0C01578
+       mov       rdx,1DE3AC01578
        mov       rdx,[rdx]
 M00_L00:
        mov       r8d,eax
@@ -434,18 +434,16 @@ M00_L00:
        vaddsd    xmm0,xmm1,xmm0
        vmovsd    qword ptr [rdx+r8*8+10],xmm0
        cmp       eax,1869F
-       jl        near ptr 0000000000002EFC
+       jl        near ptr M00_L00
        ret
 ; Total bytes of code 172
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVector4D`1[[System.Double, System.Private.CoreLib]].Transform()
-       mov       rax,17B31C01578
+       mov       rax,1B5BAC01568
        mov       rax,[rax]
-       mov       rcx,17B31C01580
+       mov       rcx,1B5BAC01570
        mov       rcx,[rcx]
        mov       edx,10
        mov       r8d,186A0
@@ -455,32 +453,32 @@ M00_L00:
        vmovsd    xmm1,qword ptr [r10+8]
        vmovsd    xmm2,qword ptr [r10+10]
        vmovsd    xmm3,qword ptr [r10+18]
-       vmulsd    xmm4,xmm1,qword ptr [2FE8]
+       vmulsd    xmm4,xmm1,qword ptr [7FF9C99A29E8]
        vaddsd    xmm4,xmm4,xmm0
-       vmulsd    xmm5,xmm2,qword ptr [2FF0]
+       vmulsd    xmm5,xmm2,qword ptr [7FF9C99A29F0]
        vaddsd    xmm4,xmm5,xmm4
-       vmulsd    xmm5,xmm3,qword ptr [2FF8]
+       vmulsd    xmm5,xmm3,qword ptr [7FF9C99A29F8]
        vaddsd    xmm4,xmm5,xmm4
        vaddsd    xmm5,xmm0,xmm0
-       vmulsd    xmm16,xmm1,qword ptr [3000]
+       vmulsd    xmm16,xmm1,qword ptr [7FF9C99A2A00]
        vaddsd    xmm5,xmm16,xmm5
-       vmulsd    xmm16,xmm2,qword ptr [3008]
+       vmulsd    xmm16,xmm2,qword ptr [7FF9C99A2A08]
        vaddsd    xmm5,xmm16,xmm5
-       vmulsd    xmm16,xmm3,qword ptr [3010]
+       vmulsd    xmm16,xmm3,qword ptr [7FF9C99A2A10]
        vaddsd    xmm5,xmm16,xmm5
-       vmulsd    xmm16,xmm0,qword ptr [3018]
-       vmulsd    xmm17,xmm1,qword ptr [3020]
+       vmulsd    xmm16,xmm0,qword ptr [7FF9C99A2A18]
+       vmulsd    xmm17,xmm1,qword ptr [7FF9C99A2A20]
        vaddsd    xmm16,xmm17,xmm16
-       vmulsd    xmm17,xmm2,qword ptr [3028]
+       vmulsd    xmm17,xmm2,qword ptr [7FF9C99A2A28]
        vaddsd    xmm16,xmm17,xmm16
-       vmulsd    xmm17,xmm3,qword ptr [3030]
+       vmulsd    xmm17,xmm3,qword ptr [7FF9C99A2A30]
        vaddsd    xmm16,xmm17,xmm16
-       vmulsd    xmm0,xmm0,qword ptr [3038]
-       vmulsd    xmm1,xmm1,qword ptr [3040]
+       vmulsd    xmm0,xmm0,qword ptr [7FF9C99A2A38]
+       vmulsd    xmm1,xmm1,qword ptr [7FF9C99A2A40]
        vaddsd    xmm0,xmm1,xmm0
-       vmulsd    xmm1,xmm2,qword ptr [3048]
+       vmulsd    xmm1,xmm2,qword ptr [7FF9C99A2A48]
        vaddsd    xmm0,xmm1,xmm0
-       vmulsd    xmm1,xmm3,qword ptr [3050]
+       vmulsd    xmm1,xmm3,qword ptr [7FF9C99A2A50]
        vaddsd    xmm0,xmm1,xmm0
        lea       r10,[rcx+rdx]
        vmovsd    qword ptr [r10],xmm4
@@ -489,8 +487,7 @@ M00_L00:
        vmovsd    qword ptr [r10+18],xmm0
        add       rdx,20
        dec       r8d
-       jne       near ptr 0000000000002EE5
+       jne       near ptr M00_L00
        ret
 ; Total bytes of code 296
 ```
-

@@ -1,10 +1,26 @@
 ## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
+```
+BenchmarkDotNet v0.16.0-nightly.20261117.686, Windows 11 (10.0.26300.9974)
+AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
+```
+| Method          | Mean      | Error    | StdDev   | Code Size |
+|---------------- |----------:|---------:|---------:|----------:|
+| Add             |  54.97 μs | 0.085 μs | 0.079 μs |      81 B |
+| Subtract        |  54.92 μs | 0.076 μs | 0.071 μs |      81 B |
+| Multiply        |  80.37 μs | 0.115 μs | 0.102 μs |      85 B |
+| Divide          | 989.35 μs | 2.328 μs | 2.178 μs |     415 B |
+| Sum             |  36.42 μs | 0.037 μs | 0.034 μs |      82 B |
+| Dot             |  57.63 μs | 0.052 μs | 0.047 μs |     105 B |
+| LengthSquared   |  49.09 μs | 0.698 μs | 0.545 μs |      88 B |
+| DistanceSquared |  65.79 μs | 0.269 μs | 0.239 μs |     114 B |
+| Transform       | 127.45 μs | 0.299 μs | 0.280 μs |     186 B |
+
 ```assembly
 ; System.Numerics.Bench.BaseStressVec4`1[[System.Int64, System.Private.CoreLib]].Add()
-       mov       rax,1DA66C01568
+       mov       rax,1D7CCC01568
        mov       rax,[rax]
-       mov       rcx,1DA66C01570
+       mov       rcx,1D7CCC01570
        mov       rcx,[rcx]
        xor       edx,edx
        nop       dword ptr [rax]
@@ -18,19 +34,17 @@ M00_L00:
        vpaddq    ymm0,ymm0,[rax+r10+10]
        vmovups   [rcx+r8+10],ymm0
        cmp       edx,1869F
-       jl        short 0000000000003260
+       jl        short M00_L00
        vzeroupper
        ret
 ; Total bytes of code 81
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVec4`1[[System.Int64, System.Private.CoreLib]].Subtract()
-       mov       rax,1A0A0401568
+       mov       rax,20E45801568
        mov       rax,[rax]
-       mov       rcx,1A0A0401570
+       mov       rcx,20E45801570
        mov       rcx,[rcx]
        xor       edx,edx
        nop       dword ptr [rax]
@@ -44,19 +58,17 @@ M00_L00:
        vpsubq    ymm0,ymm0,[rax+r10+10]
        vmovups   [rcx+r8+10],ymm0
        cmp       edx,1869F
-       jl        short 00000000000029A0
+       jl        short M00_L00
        vzeroupper
        ret
 ; Total bytes of code 81
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVec4`1[[System.Int64, System.Private.CoreLib]].Multiply()
-       mov       rax,1860DC01568
+       mov       rax,28FA7401568
        mov       rax,[rax]
-       mov       rcx,1860DC01570
+       mov       rcx,28FA7401570
        mov       rcx,[rcx]
        xor       edx,edx
        nop       dword ptr [rax]
@@ -70,13 +82,11 @@ M00_L00:
        vpmullq   ymm0,ymm0,[rax+r10+10]
        vmovups   [rcx+r8+10],ymm0
        cmp       edx,1869F
-       jl        short 0000000000002BA0
+       jl        short M00_L00
        vzeroupper
        ret
 ; Total bytes of code 85
 ```
-
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.BaseStressVec4`1[[System.Int64, System.Private.CoreLib]].Divide()
@@ -85,7 +95,7 @@ M00_L00:
        vmovdqu32 [rsp],zmm4
        vmovdqu32 [rsp+40],zmm4
        vmovdqu32 [rsp+80],ymm4
-       mov       rax,16C83C01568
+       mov       rax,26D13401568
        mov       rcx,[rax]
        xor       r8d,r8d
 M00_L00:
@@ -145,27 +155,25 @@ M00_L00:
        mov       rax,[rsp+20]
        mov       [rsp],r9
        mov       [rsp+8],rax
-       mov       rax,16C83C01570
+       mov       rax,26D13401570
        mov       rax,[rax]
        shl       r8,5
        vinserti128 ymm0,ymm2,xmmword ptr [rsp],1
        vmovups   [rax+r8+10],ymm0
        mov       r8d,r10d
        cmp       r8d,1869F
-       jl        near ptr 0000000000002ED2
+       jl        near ptr M00_L00
        vzeroupper
        add       rsp,0C8
        ret
 ; Total bytes of code 415
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVec4`1[[System.Int64, System.Private.CoreLib]].Sum()
-       mov       rax,127DF001568
+       mov       rax,25722801568
        mov       rax,[rax]
-       mov       rcx,127DF001578
+       mov       rcx,25722801578
        mov       rcx,[rcx]
        xor       edx,edx
        mov       r8d,186A0
@@ -179,20 +187,18 @@ M00_L00:
        mov       [rcx+rdx+10],r10
        add       rdx,8
        dec       r8d
-       jne       short 0000000000002D62
+       jne       short M00_L00
        vzeroupper
        ret
 ; Total bytes of code 82
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVec4`1[[System.Int64, System.Private.CoreLib]].Dot()
        xor       eax,eax
-       mov       rcx,2167FC01568
+       mov       rcx,1D5AC801568
        mov       rcx,[rcx]
-       mov       rdx,2167FC01578
+       mov       rdx,1D5AC801578
        mov       rdx,[rdx]
 M00_L00:
        mov       r8d,eax
@@ -211,19 +217,17 @@ M00_L00:
        vmovq     r10,xmm0
        mov       [rdx+r8*8+10],r10
        cmp       eax,1869F
-       jl        short 000000000000293C
+       jl        short M00_L00
        vzeroupper
        ret
 ; Total bytes of code 105
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVec4`1[[System.Int64, System.Private.CoreLib]].LengthSquared()
-       mov       rax,22956801568
+       mov       rax,1851B401568
        mov       rax,[rax]
-       mov       rcx,22956801578
+       mov       rcx,1851B401578
        mov       rcx,[rcx]
        xor       edx,edx
        mov       r8d,186A0
@@ -238,20 +242,18 @@ M00_L00:
        mov       [rcx+rdx+10],r10
        add       rdx,8
        dec       r8d
-       jne       short 0000000000002A62
+       jne       short M00_L00
        vzeroupper
        ret
 ; Total bytes of code 88
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVec4`1[[System.Int64, System.Private.CoreLib]].DistanceSquared()
        xor       eax,eax
-       mov       rcx,22C83C01568
+       mov       rcx,271FD801568
        mov       rcx,[rcx]
-       mov       rdx,22C83C01578
+       mov       rdx,271FD801578
        mov       rdx,[rdx]
 M00_L00:
        mov       r8d,eax
@@ -272,19 +274,17 @@ M00_L00:
        vmovq     r10,xmm0
        mov       [rdx+r8*8+10],r10
        cmp       eax,1869F
-       jl        short 00000000000033DC
+       jl        short M00_L00
        vzeroupper
        ret
 ; Total bytes of code 114
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVec4`1[[System.Int64, System.Private.CoreLib]].Transform()
-       mov       rax,2ABEEC01568
+       mov       rax,1361F401568
        mov       rax,[rax]
-       mov       rcx,2ABEEC01570
+       mov       rcx,1361F401570
        mov       rcx,[rcx]
        mov       edx,10
        mov       r8d,186A0
@@ -298,24 +298,23 @@ M00_L00:
        vperm2f128 ymm0,ymm0,ymm0,1
        vmovq     r10,xmm1
        vpbroadcastq ymm1,r10
-       vpmullq   ymm1,ymm1,[4140]
-       vpmullq   ymm2,ymm2,[4160]
+       vpmullq   ymm1,ymm1,[7FF9C99B4560]
+       vpmullq   ymm2,ymm2,[7FF9C99B4580]
        vpaddq    ymm1,ymm2,ymm1
        vmovq     r10,xmm0
        vpbroadcastq ymm2,r10
-       vpmullq   ymm2,ymm2,[4180]
+       vpmullq   ymm2,ymm2,[7FF9C99B45A0]
        vpaddq    ymm1,ymm1,ymm2
        vpermilpd xmm0,xmm0,1
        vmovq     r10,xmm0
        vpbroadcastq ymm0,r10
-       vpmullq   ymm0,ymm0,[41A0]
+       vpmullq   ymm0,ymm0,[7FF9C99B45C0]
        vpaddq    ymm0,ymm1,ymm0
        vmovups   [rcx+rdx],ymm0
        add       rdx,20
        dec       r8d
-       jne       near ptr 00000000000040A5
+       jne       near ptr M00_L00
        vzeroupper
        ret
 ; Total bytes of code 186
 ```
-

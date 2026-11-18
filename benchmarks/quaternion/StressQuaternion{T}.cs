@@ -7,7 +7,7 @@ namespace System.Numerics.Bench;
 [GenericTypeArguments(typeof(float))]
 [GenericTypeArguments(typeof(double))]
 public class StressQuaternion<T> : BaseBench<T>
-    where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+    where T : unmanaged, INumber<T>, ISignedNumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {
     private readonly Quaternion<T>[] quats = new Quaternion<T>[Count],
                                      @out = new Quaternion<T>[Count];
@@ -44,5 +44,19 @@ public class StressQuaternion<T> : BaseBench<T>
     {
         for (int i = 0; i < Count; i++)
             @out[i] = Quaternion<T>.Inverse(quats[i]);
+    }
+
+    [Benchmark]
+    public void Lerp()
+    {
+        for (int i = 0; i < Count - 1; i++)
+            @out[i] = Quaternion<T>.Lerp(quats[i], quats[i + 1], T.One);
+    }
+
+    [Benchmark]
+    public void Slerp()
+    {
+        for (int i = 0; i < Count - 1; i++)
+            @out[i] = Quaternion<T>.Slerp(quats[i], quats[i + 1], T.One);
     }
 }

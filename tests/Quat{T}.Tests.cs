@@ -13,7 +13,7 @@ public class Quatf32 : QuatBase<float>;
 public class Quatf64 : QuatBase<double>;
 
 public abstract class QuatBase<T>
-    where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+    where T : unmanaged, ITrigonometricFunctions<T>, ISignedNumber<T>, IRootFunctions<T>, INumber<T>
 {
     private static readonly bool system = typeof(T) == typeof(float);
 
@@ -21,10 +21,10 @@ public abstract class QuatBase<T>
                               num2 = T.CreateTruncating(0.555555555),
                               num3 = T.CreateTruncating(0.333333333);
 
+    private static readonly Vec3<T> axis = new(num3, num3, num3);
+
     private static readonly Quat<T> a = new(num1, num1, num1, num1),
                                     b = new(num2, num2, num2, num2);
-
-    private static readonly Vec3<T> axis = new(num3, num3, num3);
 
     [Test, DisplayName("a × b")]
     public async Task Multiply()
@@ -62,14 +62,13 @@ public abstract class QuatBase<T>
             return;
         }
 
-        var eps = T.One / T.CreateTruncating(1e-16);
-
         var expected = (a.Silk() / b.Silk()).Quat();
 
-        await Assert.That(eps).IsGreaterThanOrEqualTo(T.Abs(div.X - expected.X))
-                          .And.IsGreaterThanOrEqualTo(T.Abs(div.Y - expected.Y))
-                          .And.IsGreaterThanOrEqualTo(T.Abs(div.Z - expected.Z))
-                          .And.IsGreaterThanOrEqualTo(T.Abs(div.W - expected.W));
+        await Assert.That(T.CreateTruncating(1e-16)) // 1e-17 will fail on W
+                    .IsGreaterThanOrEqualTo(T.Abs(div.X - expected.X))
+                .And.IsGreaterThanOrEqualTo(T.Abs(div.Y - expected.Y))
+                .And.IsGreaterThanOrEqualTo(T.Abs(div.Z - expected.Z))
+                .And.IsGreaterThanOrEqualTo(T.Abs(div.W - expected.W));
     }
 
     [Test, DisplayName("dot")]
@@ -124,10 +123,13 @@ public abstract class QuatBase<T>
         await Assert.That(norm).IsEqualTo(expected);
     }
 
-    [Test, DisplayName("lerp")]
-    public async Task Lerp()
+    [Test]
+    [Arguments(0f)]
+    [Arguments(0.5f)]
+    [Arguments(1f)]
+    public async Task Lerp(float amount)
     {
-        var am = T.One + T.One + T.One;
+        var am = T.CreateChecked(amount);
 
         var lerp = a.Lerp(b, am);
 
@@ -135,6 +137,30 @@ public abstract class QuatBase<T>
 
         var expected = system ? Quaternion.Lerp(a.System(), b.System(), (float)(object)am).Quat<T>()
                            : Quaternion<T>.Lerp(a.Silk(), b.Silk(), am).Quat();
+
+        await Assert.That(lerp).IsEqualTo(expected);
+
+        var quat = new Quat<T>(-a.X, -a.Y, -a.Z, -a.W); // checks second way in Lerp branching
+
+        lerp = quat.Lerp(b, am);
+
+        expected = system ? Quaternion.Lerp(quat.System(), b.System(), (float)(object)am).Quat<T>()
+                           : Quaternion<T>.Lerp(quat.Silk(), b.Silk(), am).Quat();
+
+        await Assert.That(lerp).IsEqualTo(expected);
+    }
+
+    [Test, DisplayName("slerp")]
+    public async Task Slerp()
+    {
+        var am = T.One + T.One;
+
+        var lerp = a.Slerp(b, am);
+
+        await Assert.That(Quat.Slerp(a, b, am)).IsEqualTo(lerp);
+
+        var expected = system ? Quaternion.Slerp(a.System(), b.System(), (float)(object)am).Quat<T>()
+                           : Quaternion<T>.Slerp(a.Silk(), b.Silk(), am).Quat();
 
         await Assert.That(lerp).IsEqualTo(expected);
     }
@@ -153,9 +179,15 @@ public abstract class QuatBase<T>
     [Test, DisplayName("inv")]
     public async Task Inverse()
     {
-        var quat = Quat<T>.Rand();
+        var quat = Quat<T>.Zero;
 
         var inv = quat.Inverse();
+
+        await Assert.That(inv).IsEqualTo(quat);
+
+        quat = Quat<T>.Rand();
+
+        inv = quat.Inverse();
 
         await Assert.That(Quat.Inverse(quat)).IsEqualTo(inv);
 

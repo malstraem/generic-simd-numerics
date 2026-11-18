@@ -1,5 +1,22 @@
 ## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
+```
+BenchmarkDotNet v0.16.0-nightly.20261117.686, Windows 11 (10.0.26300.9974)
+AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
+```
+
+| Method          | Mean     | Error   | StdDev  | Code Size |
+|---------------- |---------:|--------:|--------:|----------:|
+| Add             | 107.7 μs | 0.09 μs | 0.09 μs |     136 B |
+| Subtract        | 103.0 μs | 0.12 μs | 0.12 μs |     136 B |
+| Multiply        | 129.2 μs | 1.36 μs | 1.28 μs |     140 B |
+| Divide          | 504.7 μs | 0.76 μs | 0.71 μs |     173 B |
+| Abs             | 110.5 μs | 0.11 μs | 0.10 μs |     141 B |
+| Dot             | 107.8 μs | 1.27 μs | 1.12 μs |     136 B |
+| LengthSquared   | 126.7 μs | 0.46 μs | 0.43 μs |     118 B |
+| DistanceSquared | 162.3 μs | 0.29 μs | 0.24 μs |     148 B |
+| Transform       | 202.7 μs | 0.32 μs | 0.28 μs |     210 B |
+
 ```assembly
 ; System.Numerics.Bench.BaseStressVector4D`1[[System.Int64, System.Private.CoreLib]].Add()
        push      r14
@@ -7,9 +24,9 @@
        push      rsi
        push      rbp
        push      rbx
-       mov       rax,24A95001568
+       mov       rax,2BF51C01568
        mov       rax,[rax]
-       mov       rcx,24A95001570
+       mov       rcx,2BF51C01570
        mov       rcx,[rcx]
        xor       edx,edx
 M00_L00:
@@ -38,7 +55,7 @@ M00_L00:
        mov       [r8+10],rbx
        mov       [r8+18],r10
        cmp       edx,1869F
-       jl        short 0000000000002BA2
+       jl        short M00_L00
        pop       rbx
        pop       rbp
        pop       rsi
@@ -48,8 +65,6 @@ M00_L00:
 ; Total bytes of code 136
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVector4D`1[[System.Int64, System.Private.CoreLib]].Subtract()
        push      r14
@@ -57,9 +72,9 @@ M00_L00:
        push      rsi
        push      rbp
        push      rbx
-       mov       rax,2B27D801578
+       mov       rax,221C3801568
        mov       rax,[rax]
-       mov       rcx,2B27D801580
+       mov       rcx,221C3801570
        mov       rcx,[rcx]
        xor       edx,edx
 M00_L00:
@@ -88,7 +103,7 @@ M00_L00:
        mov       [r8+10],rbx
        mov       [r8+18],r10
        cmp       edx,1869F
-       jl        short 0000000000002E82
+       jl        short M00_L00
        pop       rbx
        pop       rbp
        pop       rsi
@@ -98,8 +113,6 @@ M00_L00:
 ; Total bytes of code 136
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVector4D`1[[System.Int64, System.Private.CoreLib]].Multiply()
        push      r14
@@ -107,9 +120,9 @@ M00_L00:
        push      rsi
        push      rbp
        push      rbx
-       mov       rax,234FD801578
+       mov       rax,142FBC01568
        mov       rax,[rax]
-       mov       rcx,234FD801580
+       mov       rcx,142FBC01570
        mov       rcx,[rcx]
        xor       edx,edx
 M00_L00:
@@ -138,7 +151,7 @@ M00_L00:
        mov       [r8+10],rbx
        mov       [r8+18],r10
        cmp       edx,1869F
-       jl        short 0000000000002842
+       jl        short M00_L00
        pop       rbx
        pop       rbp
        pop       rsi
@@ -148,8 +161,6 @@ M00_L00:
 ; Total bytes of code 140
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVector4D`1[[System.Int64, System.Private.CoreLib]].Divide()
        push      r15
@@ -158,9 +169,9 @@ M00_L00:
        push      rsi
        push      rbp
        push      rbx
-       mov       rax,17F7DC01568
+       mov       rax,16173401568
        mov       rcx,[rax]
-       mov       rax,17F7DC01570
+       mov       rax,16173401570
        mov       r8,[rax]
        xor       r10d,r10d
 M00_L00:
@@ -200,7 +211,7 @@ M00_L00:
        mov       [rdx+10],rbx
        mov       [rdx+18],rax
        cmp       r10d,1869F
-       jl        short 00000000000027A5
+       jl        short M00_L00
        pop       rbx
        pop       rbp
        pop       rsi
@@ -211,15 +222,13 @@ M00_L00:
 ; Total bytes of code 173
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVector4D`1[[System.Int64, System.Private.CoreLib]].Abs()
        push      rsi
        push      rbx
-       mov       rax,14D8C801568
+       mov       rax,22FAD801568
        mov       rax,[rax]
-       mov       rcx,14D8C801570
+       mov       rcx,22FAD801570
        mov       rcx,[rcx]
        mov       edx,10
        mov       r8d,186A0
@@ -252,14 +261,12 @@ M00_L00:
        mov       [rsi+18],r10
        add       rdx,20
        dec       r8d
-       jne       short 0000000000002687
+       jne       short M00_L00
        pop       rbx
        pop       rsi
        ret
 ; Total bytes of code 141
 ```
-
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```assembly
 ; System.Numerics.Bench.BaseStressVector4D`1[[System.Int64, System.Private.CoreLib]].Dot()
@@ -269,9 +276,9 @@ M00_L00:
        push      rbp
        push      rbx
        xor       eax,eax
-       mov       rcx,1F30D001568
+       mov       rcx,2149BC01568
        mov       rcx,[rcx]
-       mov       rdx,1F30D001578
+       mov       rdx,2149BC01578
        mov       rdx,[rdx]
 M00_L00:
        mov       r8d,eax
@@ -299,7 +306,7 @@ M00_L00:
        add       r10,r9
        mov       [rdx+r8*8+10],r10
        cmp       eax,1869F
-       jl        short 0000000000002862
+       jl        short M00_L00
        pop       rbx
        pop       rbp
        pop       rsi
@@ -309,8 +316,6 @@ M00_L00:
 ; Total bytes of code 136
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVector4D`1[[System.Int64, System.Private.CoreLib]].LengthSquared()
        push      r14
@@ -318,9 +323,9 @@ M00_L00:
        push      rsi
        push      rbp
        push      rbx
-       mov       rax,2089DC01568
+       mov       rax,1F672401568
        mov       rax,[rax]
-       mov       rcx,2089DC01578
+       mov       rcx,1F672401578
        mov       rcx,[rcx]
        xor       edx,edx
        mov       r8d,186A0
@@ -344,7 +349,7 @@ M00_L00:
        mov       [rcx+rdx+10],r10
        add       rdx,8
        dec       r8d
-       jne       short 00000000000027C8
+       jne       short M00_L00
        pop       rbx
        pop       rbp
        pop       rsi
@@ -354,8 +359,6 @@ M00_L00:
 ; Total bytes of code 118
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVector4D`1[[System.Int64, System.Private.CoreLib]].DistanceSquared()
        push      r14
@@ -364,9 +367,9 @@ M00_L00:
        push      rbp
        push      rbx
        xor       eax,eax
-       mov       rcx,194B5401568
+       mov       rcx,19C70401568
        mov       rcx,[rcx]
-       mov       rdx,194B5401578
+       mov       rdx,19C70401578
        mov       rdx,[rdx]
 M00_L00:
        mov       r8d,eax
@@ -398,7 +401,7 @@ M00_L00:
        add       r10,r9
        mov       [rdx+r8*8+10],r10
        cmp       eax,1869F
-       jl        short 0000000000002D82
+       jl        short M00_L00
        pop       rbx
        pop       rbp
        pop       rsi
@@ -408,8 +411,6 @@ M00_L00:
 ; Total bytes of code 148
 ```
 
-## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
-
 ```assembly
 ; System.Numerics.Bench.BaseStressVector4D`1[[System.Int64, System.Private.CoreLib]].Transform()
        push      r14
@@ -417,9 +418,9 @@ M00_L00:
        push      rsi
        push      rbp
        push      rbx
-       mov       rax,21ED6001568
+       mov       rax,1FAE7001568
        mov       rax,[rax]
-       mov       rcx,21ED6001570
+       mov       rcx,1FAE7001570
        mov       rcx,[rcx]
        mov       edx,10
        mov       r8d,186A0
@@ -465,7 +466,7 @@ M00_L00:
        mov       [r9+18],r10
        add       rdx,20
        dec       r8d
-       jne       near ptr 000000000000294B
+       jne       near ptr M00_L00
        pop       rbx
        pop       rbp
        pop       rsi
@@ -474,4 +475,3 @@ M00_L00:
        ret
 ; Total bytes of code 210
 ```
-

@@ -40,7 +40,7 @@ public class StressConversionMat44<T1, T2> : BaseBench<T1>
 [GenericTypeArguments(typeof(float))]
 [GenericTypeArguments(typeof(double))]
 public class StressMat44WithQuat<T> : BaseStressMat44<T>
-    where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+    where T : unmanaged, INumber<T>, ISignedNumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {
     private readonly Quat<T>[] quats = new Quat<T>[Count];
 

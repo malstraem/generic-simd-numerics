@@ -42,7 +42,7 @@ public class StressConversionMatrix4X4<T1, T2> : BaseBench<T1>
 [GenericTypeArguments(typeof(float))]
 [GenericTypeArguments(typeof(double))]
 public class StressMatrix4X4WithQuaternion<T> : BaseStressMatrix4X4<T>
-    where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+    where T : unmanaged, INumber<T>, ISignedNumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {
     private readonly Vector3D<T>[] scales = new Vector3D<T>[Count],
                                    positions = new Vector3D<T>[Count];
