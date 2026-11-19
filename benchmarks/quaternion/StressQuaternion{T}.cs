@@ -7,7 +7,7 @@ namespace System.Numerics.Bench;
 [GenericTypeArguments(typeof(float))]
 [GenericTypeArguments(typeof(double))]
 public class StressQuaternion<T> : BaseBench<T>
-    where T : unmanaged, INumber<T>, ISignedNumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+    where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {
     private readonly Quaternion<T>[] quats = new Quaternion<T>[Count],
                                      @out = new Quaternion<T>[Count];

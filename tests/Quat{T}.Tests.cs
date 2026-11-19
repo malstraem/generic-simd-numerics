@@ -13,7 +13,7 @@ public class Quatf32 : QuatBase<float>;
 public class Quatf64 : QuatBase<double>;
 
 public abstract class QuatBase<T>
-    where T : unmanaged, ITrigonometricFunctions<T>, ISignedNumber<T>, IRootFunctions<T>, INumber<T>
+    where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {
     private static readonly bool system = typeof(T) == typeof(float);
 
@@ -124,10 +124,10 @@ public abstract class QuatBase<T>
     }
 
     [Test]
-    [Arguments(0f)]
-    [Arguments(0.5f)]
-    [Arguments(1f)]
-    public async Task Lerp(float amount)
+    [Arguments(0)]
+    [Arguments(0.5)]
+    [Arguments(1)]
+    public async Task Lerp(T amount)
     {
         var am = T.CreateChecked(amount);
 

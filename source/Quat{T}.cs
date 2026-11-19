@@ -10,7 +10,7 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     ISubtractionOperators<Quat<T>, Quat<T>, Quat<T>>,
 
     IEqualityOperators<Quat<T>, Quat<T>, bool>
-        where T : unmanaged, INumber<T>, ISignedNumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {
     public T X = x, Y = y, Z = z, W = w;
 
@@ -79,7 +79,7 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     public readonly Quat<T> Slerp(Quat<T> q, T am) => Quat.Slerp(this, q, am);
 
     public readonly Quat<TOther> As<TOther>()
-        where TOther : unmanaged, INumber<TOther>, ISignedNumber<TOther>, IRootFunctions<TOther>, ITrigonometricFunctions<TOther>
+        where TOther : unmanaged, IFloatingPoint<TOther>, IRootFunctions<TOther>, ITrigonometricFunctions<TOther>
             => Quat.As<T, TOther>(this);
 
     public readonly bool Equals(Quat<T> other) => this == other;

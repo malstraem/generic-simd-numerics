@@ -8,7 +8,7 @@ namespace System.Numerics;
 internal static class QuatExtensions
 {
     extension<T>(Quat<T> q)
-        where T : unmanaged, INumber<T>, ISignedNumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         internal static Quat<T> Rand() => new(
             T.CreateTruncating(Random.Shared.NextDouble()),
@@ -22,7 +22,7 @@ internal static class QuatExtensions
     }
 
     extension<T>(Quaternion<T> q)
-        where T : unmanaged, INumber<T>, ISignedNumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         internal Quat<T> Quat() => new(q.X, q.Y, q.Z, q.W);
     }
@@ -33,7 +33,7 @@ internal static class QuatExtensions
     }
 
     extension<T>(Quaternion q)
-        where T : unmanaged, INumber<T>, ISignedNumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         internal Quat<T> Quat() => new((T)(object)q.X, (T)(object)q.Y, (T)(object)q.Z, (T)(object)q.W);
     }
