@@ -140,12 +140,10 @@ public static partial class Mat44
     }
 
     [MethodImpl(AggressiveInlining)]
-    private static bool Invert32<T>(Mat44<T> m, out Mat44<T> inv)
+    private static bool Invert<T>(Mat44<T> m, T eps, out Mat44<T> inv)
         where T : unmanaged, IFloatingPoint<T>
     {
         SkipInit(out inv);
-
-        //m = Transpose(m);
 
         Vec4<T>
         xzb = m.X.ZipLower(m.Z),
@@ -244,8 +242,6 @@ public static partial class Mat44
         c6 = Permute(c6, c7, 0, 2, 1, 3).XZYW();
 
         T det = Vec4.Dot(c0, x);
-
-        T eps = typeof(T) == typeof(float) ? T.CreateTruncating(float.Epsilon) : T.CreateTruncating(double.Epsilon);
 
         if (T.Abs(det) <= eps)
             return false;

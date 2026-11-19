@@ -195,10 +195,14 @@ public static partial class Mat44
     public static bool TryInvert<T>(Mat44<T> m, out Mat44<T> inv)
         where T : unmanaged, IFloatingPoint<T>
     {
-        if ((Sse.IsSupported && SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated) // uses SSE specific shuffle for float
-         || (Avx.IsSupported && SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)) // uses AVX specific shuffle for double
+        T eps = typeof(T) == typeof(float)
+            ? T.CreateTruncating(float.Epsilon)
+            : T.CreateTruncating(double.Epsilon);
+
+        if (Sse.IsSupported && SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated) // uses SSE specific shuffle for float
+         //|| (Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)) // slower than scalar way currently
         {
-            return Invert32(m, out inv);
+            return Invert(m, eps, out inv);
         }
         SkipInit(out inv);
 
@@ -221,8 +225,6 @@ public static partial class Mat44
         inv.W.X = -((yx * c2) - (yy * c4) + (yz * c5));
 
         T det = (xx * inv.X.X) + (xy * inv.Y.X) + (xz * inv.Z.X) + (xw * inv.W.X);
-
-        T eps = typeof(T) == typeof(float) ? T.CreateTruncating(float.Epsilon) : T.CreateTruncating(double.Epsilon);
 
         if (T.Abs(det) <= eps)
             return false;

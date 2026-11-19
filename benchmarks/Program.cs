@@ -29,7 +29,7 @@ var bench = BenchmarkSwitcher.FromTypes([
     //typeof(StressMat44<>),
     //typeof(StressMatrix4X4<>),
 
-    typeof(StressMatrix4x4),
+    //typeof(StressMatrix4x4),
     typeof(StressMat44WithQuat<>),
     //typeof(StressMatrix4X4WithQuaternion<>),
 
