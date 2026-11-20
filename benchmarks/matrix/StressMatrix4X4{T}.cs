@@ -6,12 +6,7 @@ namespace System.Numerics.Bench;
 
 [GenericTypeArguments(typeof(int), typeof(float))]
 [GenericTypeArguments(typeof(int), typeof(double))]
-
-[GenericTypeArguments(typeof(float), typeof(int))]
 [GenericTypeArguments(typeof(float), typeof(double))]
-
-[GenericTypeArguments(typeof(double), typeof(int))]
-[GenericTypeArguments(typeof(double), typeof(float))]
 public class StressConversionMatrix4X4<T1, T2> : BaseBench<T1>
     where T1 : unmanaged, INumber<T1>
     where T2 : unmanaged, INumber<T2>
@@ -23,7 +18,10 @@ public class StressConversionMatrix4X4<T1, T2> : BaseBench<T1>
     public StressConversionMatrix4X4()
     {
         for (int i = 0; i < Count; i++)
+        {
             mats[i] = Mat44<T1>.Gen(T1.One).Silk();
+            converted[i] = mats[i].As<T2>();
+        }
     }
 
     [Benchmark]
@@ -32,26 +30,53 @@ public class StressConversionMatrix4X4<T1, T2> : BaseBench<T1>
         for (int i = 0; i < Count; i++)
             converted[i] = mats[i].As<T2>();
     }
+
+    [Benchmark]
+    public void Back()
+    {
+        for (int i = 0; i < Count; i++)
+            mats[i] = converted[i].As<T1>();
+    }
 }
 
 [GenericTypeArguments(typeof(float))]
 [GenericTypeArguments(typeof(double))]
-public class StressMatrix4X4WithQuaternion<T> : StressBaseMatrix4X4<T>
-    where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+public class StressMatrix4X4WithQuaternion<T> : BaseStressMatrix4X4<T>
+    where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {
     private readonly Vector3D<T>[] scales = new Vector3D<T>[Count],
                                    positions = new Vector3D<T>[Count];
 
     private readonly Quaternion<T>[] quats = new Quaternion<T>[Count];
 
+    private readonly Matrix4X4<T>[] inverts = new Matrix4X4<T>[Count];
+
     public StressMatrix4X4WithQuaternion()
     {
+        var q = Quat<T>.Rand().Silk();
+        var v = Vec3<T>.Gen(T.One).Silk();
+#pragma warning disable format
+        // determinant > eps
+        var invert = new Mat44<T>(
+            T.CreateTruncating(0.5),  T.CreateTruncating(-0.1), T.CreateTruncating(0.6),  T.Zero,
+            T.CreateTruncating(0.4),  T.CreateTruncating(0.8),  T.CreateTruncating(-0.2), T.Zero,
+            T.CreateTruncating(-0.5), T.CreateTruncating(0.4),  T.CreateTruncating(0.3),  T.Zero,
+            T.Zero,                   T.Zero,                   T.Zero,                   T.CreateTruncating(0.7)).Silk();
+#pragma warning restore format
         for (int i = 0; i < Count; i++)
         {
-            quats[i] = Quat<T>.Rand().Silk();
-            scales[i] = Vec3<T>.Gen(T.One).Silk();
-            positions[i] = Vec3<T>.Gen(T.One).Silk();
+            quats[i] = q;
+            scales[i] = v;
+            positions[i] = v;
+            inverts[i] = invert;
         }
+    }
+
+    [Benchmark]
+    public void Invert()
+    {
+        for (int i = 0; i < Count; i++)
+            _ = Matrix4X4.Invert(mats[i], out @out[i]);
     }
 
     [Benchmark]
@@ -73,6 +98,8 @@ public class StressMatrix4X4WithQuaternion<T> : StressBaseMatrix4X4<T>
     {
         for (int i = 0; i < Count; i++)
             @out[i] = Matrix4X4.Transform(Matrix4X4.CreateScale(scales[i]), quats[i]) * Matrix4X4.CreateTranslation(positions[i]);
+
+        // Matrix4X4.CreateFromQuaternion * Matrix4X4.CreateScale * Matrix4X4.CreateTranslation more slower, so this is a tiny trick
     }
 }
 
@@ -80,19 +107,21 @@ public class StressMatrix4X4WithQuaternion<T> : StressBaseMatrix4X4<T>
 [GenericTypeArguments(typeof(short))]
 [GenericTypeArguments(typeof(int))]
 [GenericTypeArguments(typeof(long))]
-public class StressMatrix4X4<T> : StressBaseMatrix4X4<T>
+public class StressMatrix4X4<T> : BaseStressMatrix4X4<T>
     where T : unmanaged, INumber<T>;
 
-public abstract class StressBaseMatrix4X4<T> : BaseBench<T>
+public abstract class BaseStressMatrix4X4<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
     protected readonly Matrix4X4<T>[] mats = new Matrix4X4<T>[Count],
                                       @out = new Matrix4X4<T>[Count];
 
-    public StressBaseMatrix4X4()
+    public BaseStressMatrix4X4()
     {
+        var m = Mat44<T>.Gen(T.One).Silk();
+
         for (int i = 0; i < Count; i++)
-            mats[i] = Mat44<T>.Gen(T.One).Silk();
+            mats[i] = m;
     }
 
     [Benchmark]
@@ -114,5 +143,12 @@ public abstract class StressBaseMatrix4X4<T> : BaseBench<T>
     {
         for (int i = 0; i < Count - 1; i++)
             @out[i] = mats[i] * mats[i + 1];
+    }
+
+    [Benchmark]
+    public void Transpose()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Matrix4X4.Transpose(mats[i]);
     }
 }

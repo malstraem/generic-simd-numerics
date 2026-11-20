@@ -1,12 +1,15 @@
 namespace System.Numerics;
 
 // calls in right cases
-// reversed bitcasts are pessimized by JIT compilation, so the Store is used currently
+// reversed bitcasts are pessimized by JIT compilation, Store is used currently
 internal static class ReinterpretateMat44
 {
     extension<T>(Mat44<T> m)
         where T : unmanaged, INumber<T>
     {
+        [MethodImpl(AggressiveInlining)]
+        internal Vector128<T> As128() => BitCast<Mat44<T>, Vector128<T>>(m);
+
         [MethodImpl(AggressiveInlining)]
         internal Vector256<T> As256() => BitCast<Mat44<T>, Vector256<T>>(m);
 
@@ -31,6 +34,18 @@ internal static class ReinterpretateMat44
                 xy = Vector512.Load(&m.X.X);
                 zw = Vector512.Load(&m.Z.X);
             }
+        }
+    }
+
+    extension<T>(Vector128<T> xmm)
+       where T : unmanaged, INumber<T>
+    {
+        [MethodImpl(AggressiveInlining)]
+        internal Mat44<T> Mat44()
+        {
+            Mat44<T> m;
+            unsafe { xmm.Store((T*)&m); }
+            return m;
         }
     }
 

@@ -4,37 +4,37 @@ public static class Quat
 {
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Add<T>(Quat<T> a, T n)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => Vec4.Add(a.Vec4(), n).Quat();
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Subtract<T>(Quat<T> a, T n)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => Vec4.Subtract(a.Vec4(), n).Quat();
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Add<T>(Quat<T> a, Quat<T> b)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => Vec4.Add(a.Vec4(), b.Vec4()).Quat();
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Subtract<T>(Quat<T> a, Quat<T> b)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => Vec4.Subtract(a.Vec4(), b.Vec4()).Quat();
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Multiply<T>(Quat<T> q, T n)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => Vec4.Multiply(q.Vec4(), n).Quat();
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Divide<T>(Quat<T> q, T n)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => Vec4.Divide(q.Vec4(), n).Quat();
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Multiply<T>(Quat<T> a, Quat<T> b)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
          || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
@@ -54,32 +54,32 @@ public static class Quat
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Divide<T>(Quat<T> a, Quat<T> b)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => Multiply(a, Inverse(b));
 
     [MethodImpl(AggressiveInlining)]
     public static T Dot<T>(Quat<T> a, Quat<T> b)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => Vec4.Dot(a.Vec4(), b.Vec4());
 
     [MethodImpl(AggressiveInlining)]
     public static T Length<T>(Quat<T> q)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => Vec4.Length(q.Vec4());
 
     [MethodImpl(AggressiveInlining)]
     public static T LengthSquared<T>(Quat<T> q)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => Vec4.LengthSquared(q.Vec4());
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Normalize<T>(Quat<T> q)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => Vec4.Normalize(q.Vec4()).Quat();
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Conjugate<T>(Quat<T> q)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
          || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector128.IsHardwareAccelerated))
@@ -89,43 +89,75 @@ public static class Quat
         return new(-q.X, -q.Y, -q.Z, q.W);
     }
 
-    [Obsolete("use reciprocal?")]
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Inverse<T>(Quat<T> q)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
-        var ls = LengthSquared(q);
+        var conjugate = Conjugate(q);
+        var lengthSquared = LengthSquared(q);
 
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+        if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+         || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector128.IsHardwareAccelerated))
         {
-            var lsv = Vector128.Create(ls);
-
-            var compare = Vector128.LessThanOrEqual(lsv, Vector128.Create(T.CreateChecked(1.192092896e-7f)));
-
-            return Vector128.AndNot(Quat<T>.Conjugate(q).As128() / lsv, compare).Quat();
+            return Quat<T>.Inverse(conjugate.Vec4(), lengthSquared);
         }
+        var c = T.One / lengthSquared;
 
-        // todo 256 way with epsilon
+        if (T.IsInfinity(c))
+            return Quat<T>.Zero;
 
-        return Conjugate(q) * (T.One / ls);
+        return conjugate * c;
     }
 
-    [Obsolete("not sure")]
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Lerp<T>(Quat<T> a, Quat<T> b, T am)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         var (av, bv) = (a.Vec4(), b.Vec4());
 
-        var v = Vec4.Dot(av, bv) >= T.Zero ? Vec4.Lerp(av, bv, am) : ((av * (T.One - am)) - (bv * am));
+        if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+         || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector128.IsHardwareAccelerated))
+        {
+            return Quat<T>.Lerp(av, bv, am);
+        }
+
+        var v = Vec4.Dot(av, bv) >= T.Zero
+            ? Vec4.Lerp(av, bv, am)
+            : Vec4.Lerp(av, -bv, am);
 
         return Vec4.Normalize(v).Quat();
     }
 
-    [Obsolete("vectorize")]
+    [MethodImpl(AggressiveInlining)]
+    public static Quat<T> Slerp<T>(Quat<T> a, Quat<T> b, T amount)
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+    {
+        T cosω = a.Dot(b), sign = T.One, sa, sb;
+
+        if (T.IsNegative(cosω))
+        {
+            cosω = -cosω;
+            sign = -sign;
+        }
+
+        if (cosω > (T.One - Quat<T>.slepEpsilon))
+        {
+            sa = T.One - amount;
+            sb = amount * sign;
+        }
+        else
+        {
+            T ω = T.Acos(cosω), inv = T.One / T.Sin(ω);
+
+            sa = T.Sin((T.One - amount) * ω) * inv;
+            sb = T.Sin(amount * ω) * inv * sign;
+        }
+        return (a * sa) + (b * sb);
+    }
+
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> AxisAngle<T>(Vec3<T> axis, T angle)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         var (s, c) = T.SinCos(angle * T.CreateChecked(0.5)); // T.Half should exist
         return new(axis * s, c);
@@ -134,7 +166,7 @@ public static class Quat
     [Obsolete("any way to vectorize?")]
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> Rotation<T>(Mat44<T> m)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         T root, c, h = T.CreateChecked(0.5),
 
@@ -180,7 +212,7 @@ public static class Quat
     [Obsolete("any way to vectorize?")]
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> YawPitchRoll<T>(T yaw, T pitch, T roll)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         var h = T.CreateChecked(0.5);
 
@@ -196,7 +228,7 @@ public static class Quat
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T2> As<T, T2>(Quat<T> quat)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
-        where T2 : unmanaged, INumber<T2>, IRootFunctions<T2>, ITrigonometricFunctions<T2>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T2 : unmanaged, IFloatingPoint<T2>, IRootFunctions<T2>, ITrigonometricFunctions<T2>
             => quat.Vec4().As<T2>().Quat();
 }

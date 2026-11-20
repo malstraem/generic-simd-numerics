@@ -4,7 +4,7 @@ namespace System.Numerics;
 public partial struct Vec4<T>(T x, T y, T z, T w) :
     IVector<Vec4<T>, T>,
     IVectorScalarOperators<Vec4<T>, T>
-        where T : unmanaged, INumber<T> // real number behavior is exposed only where needed
+        where T : unmanaged, INumber<T>
 {
     public T X = x, Y = y, Z = z, W = w;
 

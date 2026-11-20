@@ -4,12 +4,7 @@ namespace System.Numerics.Bench;
 
 [GenericTypeArguments(typeof(int), typeof(float))]
 [GenericTypeArguments(typeof(int), typeof(double))]
-
-[GenericTypeArguments(typeof(float), typeof(int))]
 [GenericTypeArguments(typeof(float), typeof(double))]
-
-[GenericTypeArguments(typeof(double), typeof(int))]
-[GenericTypeArguments(typeof(double), typeof(float))]
 public class StressConversionMat44<T1, T2> : BaseBench<T1>
     where T1 : unmanaged, INumber<T1>
     where T2 : unmanaged, INumber<T2>
@@ -20,8 +15,14 @@ public class StressConversionMat44<T1, T2> : BaseBench<T1>
 
     public StressConversionMat44()
     {
+        var t1 = Mat44<T1>.Gen(T1.One);
+        var t2 = t1.As<T2>();
+
         for (int i = 0; i < Count; i++)
-            mats[i] = Mat44<T1>.Gen(T1.One);
+        {
+            mats[i] = t1;
+            converted[i] = t2;
+        }
     }
 
     [Benchmark]
@@ -30,26 +31,53 @@ public class StressConversionMat44<T1, T2> : BaseBench<T1>
         for (int i = 0; i < Count; i++)
             converted[i] = mats[i].As<T2>();
     }
+
+    [Benchmark]
+    public void Back()
+    {
+        for (int i = 0; i < Count; i++)
+            mats[i] = converted[i].As<T1>();
+    }
 }
 
 [GenericTypeArguments(typeof(float))]
 [GenericTypeArguments(typeof(double))]
-public class StressMat44WithQuat<T> : StressBaseMat44<T>
-    where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+public class StressMat44WithQuat<T> : BaseStressMat44<T>
+    where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {
     private readonly Quat<T>[] quats = new Quat<T>[Count];
 
     private readonly Vec3<T>[] scales = new Vec3<T>[Count],
                                positions = new Vec3<T>[Count];
 
+    private readonly Mat44<T>[] inverts = new Mat44<T>[Count];
+
     public StressMat44WithQuat()
     {
+        var q = Quat<T>.Rand();
+        var v = Vec3<T>.Gen(T.One);
+#pragma warning disable format
+        // determinant > eps
+        Mat44<T> invert = new(
+            T.CreateTruncating(0.5),  T.CreateTruncating(-0.1), T.CreateTruncating(0.6),  T.Zero,
+            T.CreateTruncating(0.4),  T.CreateTruncating(0.8),  T.CreateTruncating(-0.2), T.Zero,
+            T.CreateTruncating(-0.5), T.CreateTruncating(0.4),  T.CreateTruncating(0.3),  T.Zero,
+            T.Zero,                   T.Zero,                   T.Zero,                   T.CreateTruncating(0.7));
+#pragma warning restore format
         for (int i = 0; i < Count; i++)
         {
-            quats[i] = Quat<T>.Rand();
-            scales[i] = Vec3<T>.Gen(T.One);
-            positions[i] = Vec3<T>.Gen(T.One);
+            quats[i] = q;
+            scales[i] = v;
+            positions[i] = v;
+            inverts[i] = invert;
         }
+    }
+
+    [Benchmark]
+    public void Invert()
+    {
+        for (int i = 0; i < Count; i++)
+            _ = Mat44.TryInvert(mats[i], out @out[i]);
     }
 
     [Benchmark]
@@ -78,19 +106,21 @@ public class StressMat44WithQuat<T> : StressBaseMat44<T>
 [GenericTypeArguments(typeof(short))]
 [GenericTypeArguments(typeof(int))]
 [GenericTypeArguments(typeof(long))]
-public class StressMat44<T> : StressBaseMat44<T>
+public class StressMat44<T> : BaseStressMat44<T>
     where T : unmanaged, INumber<T>;
 
-public abstract class StressBaseMat44<T> : BaseBench<T>
+public abstract class BaseStressMat44<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
     protected readonly Mat44<T>[] mats = new Mat44<T>[Count],
                                   @out = new Mat44<T>[Count];
 
-    public StressBaseMat44()
+    public BaseStressMat44()
     {
+        var m = Mat44<T>.Gen(T.One);
+
         for (int i = 0; i < Count; i++)
-            mats[i] = Mat44<T>.Gen(T.CreateTruncating(Random.Shared.Next(1, 10)));
+            mats[i] = m;
     }
 
     [Benchmark]
@@ -112,5 +142,12 @@ public abstract class StressBaseMat44<T> : BaseBench<T>
     {
         for (int i = 0; i < Count - 1; i++)
             @out[i] = mats[i] * mats[i + 1];
+    }
+
+    [Benchmark]
+    public void Transpose()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = mats[i].Transpose();
     }
 }

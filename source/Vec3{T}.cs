@@ -4,7 +4,7 @@ namespace System.Numerics;
 public struct Vec3<T>(T x, T y, T z) :
     IVector<Vec3<T>, T>,
     IVectorScalarOperators<Vec3<T>, T>
-        where T : unmanaged, INumber<T> // real number behavior is exposed only where needed
+        where T : unmanaged, INumber<T>
 {
     public T X = x, Y = y, Z = z;
 

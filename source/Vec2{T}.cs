@@ -1,12 +1,10 @@
 namespace System.Numerics;
 
-#pragma warning disable IDE0022, IDE0024
-
 [StructLayout(LayoutKind.Sequential)]
 public partial struct Vec2<T>(T x, T y) :
     IVector<Vec2<T>, T>,
     IVectorScalarOperators<Vec2<T>, T>
-        where T : unmanaged, INumber<T> // real number behavior is exposed only where needed
+        where T : unmanaged, INumber<T>
 {
     public T X = x, Y = y;
 

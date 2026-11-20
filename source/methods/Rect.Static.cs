@@ -19,7 +19,7 @@ public static class Rect
     [MethodImpl(AggressiveInlining)]
     public static bool Contains<T>(Rect<T> rect, Vec2<T> point)
         where T : unmanaged, INumber<T>
-            => point >= rect.Origin && point <= rect.Max;
+            => point >= rect.Min && point <= rect.Max;
 
     [MethodImpl(AggressiveInlining)]
     public static bool Contains<T>(Rect<T> a, Rect<T> b)
@@ -30,7 +30,7 @@ public static class Rect
         {
             return Rect<T>.Contains(a.Vec4(), b.Vec4());
         }
-        return b.Origin >= a.Origin && b.Max <= a.Max;
+        return b.Min >= a.Min && b.Max <= a.Max;
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -42,7 +42,7 @@ public static class Rect
         {
             return Rect<T>.Intersects(a.Vec4(), b.Vec4());
         }
-        return a.Origin <= b.Max && b.Origin <= a.Max;
+        return a.Min <= b.Max && b.Min <= a.Max;
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -54,7 +54,7 @@ public static class Rect
         {
             return Rect<T>.ContainsExclusive(a.Vec4(), b.Vec4());
         }
-        return b.Origin > a.Origin && b.Max < a.Max;
+        return b.Min > a.Min && b.Max < a.Max;
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -66,7 +66,7 @@ public static class Rect
         {
             return Rect<T>.IntersectsExclusive(a.Vec4(), b.Vec4());
         }
-        return a.Origin < b.Max && b.Origin < a.Max;
+        return a.Min < b.Max && b.Min < a.Max;
     }
 
     [MethodImpl(AggressiveInlining)]

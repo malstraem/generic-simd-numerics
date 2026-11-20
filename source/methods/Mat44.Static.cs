@@ -1,3 +1,5 @@
+using System.Runtime.Intrinsics.X86;
+
 namespace System.Numerics;
 
 #pragma warning disable IDE0055, IDE0007
@@ -67,6 +69,10 @@ public static partial class Mat44
                 return axy.Mat44(azw);
             }
         }
+
+        if (SizeOf<T>() == 1 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return (a.As128() + b.As128()).Mat44();
+
         return new(a.X + b.X, a.Y + b.Y, a.Z + b.Z, a.W + b.W);
     }
 
@@ -103,6 +109,10 @@ public static partial class Mat44
                 return axy.Mat44(azw);
             }
         }
+
+        if (SizeOf<T>() == 1 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return (a.As128() - b.As128()).Mat44();
+
         return new(a.X - b.X, a.Y - b.Y, a.Z - b.Z, a.W - b.W);
     }
 
@@ -137,6 +147,10 @@ public static partial class Mat44
                 return xy.Mat44(zw);
             }
         }
+
+        if (SizeOf<T>() == 1 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return (m.As128() * n).Mat44();
+
         return new(m.X * n, m.Y * n, m.Z * n, m.W * n);
     }
 
@@ -154,16 +168,100 @@ public static partial class Mat44
         return m;
     }
 
-    [Obsolete("vectorize")]
     [MethodImpl(AggressiveInlining)]
     public static Mat44<T> Transpose<T>(Mat44<T> m)
-        where T : unmanaged, INumber<T> => new
-    (
-        m.X.X, m.Y.X, m.Z.X, m.W.X,
-        m.X.Y, m.Y.Y, m.Z.Y, m.W.Y,
-        m.X.Z, m.Y.Z, m.Z.Z, m.W.Z,
-        m.X.W, m.Y.W, m.Z.W, m.W.W
-    );
+        where T : unmanaged, INumber<T>
+    {
+        if (SizeOf<T>() == 1)
+            return Transpose8(m);
+
+        if (SizeOf<T>() == 2)
+            return Transpose16(m);
+
+        if (SizeOf<T>() == 4)
+            return Transpose32(m);
+
+        if (SizeOf<T>() == 8)
+            return Transpose64(m);
+
+        return new(
+            m.X.X, m.Y.X, m.Z.X, m.W.X,
+            m.X.Y, m.Y.Y, m.Z.Y, m.W.Y,
+            m.X.Z, m.Y.Z, m.Z.Z, m.W.Z,
+            m.X.W, m.Y.W, m.Z.W, m.W.W);
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool TryInvert<T>(Mat44<T> m, out Mat44<T> inv)
+        where T : unmanaged, IFloatingPoint<T>
+    {
+        T eps = typeof(T) == typeof(float)
+            ? T.CreateTruncating(float.Epsilon)
+            : T.CreateTruncating(double.Epsilon);
+
+        if (Sse.IsSupported && SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated) // uses SSE specific shuffle for float
+         //|| (Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)) // slower than scalar way currently
+        {
+            return Invert(m, eps, out inv);
+        }
+        SkipInit(out inv);
+
+        T
+        xx = m.X.X, xy = m.X.Y, xz = m.X.Z, xw = m.X.W,
+        yx = m.Y.X, yy = m.Y.Y, yz = m.Y.Z, yw = m.Y.W,
+        zx = m.Z.X, zy = m.Z.Y, zz = m.Z.Z, zw = m.Z.W,
+        wx = m.W.X, wy = m.W.Y, wz = m.W.Z, ww = m.W.W,
+        
+        c0 = (zz * ww) - (zw * wz),
+        c1 = (zy * ww) - (zw * wy),
+        c2 = (zy * wz) - (zz * wy),
+        c3 = (zx * ww) - (zw * wx),
+        c4 = (zx * wz) - (zz * wx),
+        c5 = (zx * wy) - (zy * wx);
+
+        inv.X.X =   (yy * c0) - (yz * c1) + (yw * c2);
+        inv.Y.X = -((yx * c0) - (yz * c3) + (yw * c4));
+        inv.Z.X =   (yx * c1) - (yy * c3) + (yw * c5);
+        inv.W.X = -((yx * c2) - (yy * c4) + (yz * c5));
+
+        T det = (xx * inv.X.X) + (xy * inv.Y.X) + (xz * inv.Z.X) + (xw * inv.W.X);
+
+        if (T.Abs(det) <= eps)
+            return false;
+
+        inv.X.Y = -((xy * c0) - (xz * c1) + (xw * c2));
+        inv.Y.Y =   (xx * c0) - (xz * c3) + (xw * c4);
+        inv.Z.Y = -((xx * c1) - (xy * c3) + (xw * c5));
+        inv.W.Y =   (xx * c2) - (xy * c4) + (xz * c5);
+
+        c0 = (yz * ww) - (yw * wz);
+        c1 = (yy * ww) - (yw * wy);
+        c2 = (yy * wz) - (yz * wy);
+        c3 = (yx * ww) - (yw * wx);
+        c4 = (yx * wz) - (yz * wx);
+        c5 = (yx * wy) - (yy * wx);
+
+        inv.X.Z =   (xy * c0) - (xz * c1) + (xw * c2);
+        inv.Y.Z = -((xx * c0) - (xz * c3) + (xw * c4));
+        inv.Z.Z =   (xx * c1) - (xy * c3) + (xw * c5);
+        inv.W.Z = -((xx * c2) - (xy * c4) + (xz * c5));
+
+        c0 = (yz * zw) - (yw * zz);
+        c1 = (yy * zw) - (yw * zy);
+        c2 = (yy * zz) - (yz * zy);
+        c3 = (yx * zw) - (yw * zx);
+        c4 = (yx * zz) - (yz * zx);
+        c5 = (yx * zy) - (yy * zx);
+
+        inv.X.W = -((xy * c0) - (xz * c1) + (xw * c2));
+        inv.Y.W =   (xx * c0) - (xz * c3) + (xw * c4);
+        inv.Z.W = -((xx * c1) - (xy * c3) + (xw * c5));
+        inv.W.W =   (xx * c2) - (xy * c4) + (xz * c5);
+
+        inv *= T.One / det;
+
+        return true;
+    }
 
     /**<summary>
     Creates a matrix with the rotation, scale and translation components.
@@ -174,14 +272,13 @@ public static partial class Mat44
     <returns>Affine matrix (also known as a model matrix).</returns>*/
     [MethodImpl(AggressiveInlining)]
     public static Mat44<T> Affine<T>(Quat<T> rotation, Vec3<T> scale, Vec3<T> translation)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
          || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
         {
-            return Affine(rotation.Vec4(), in scale, translation);
+            return Affine(rotation.Vec4(), scale, translation);
         }
-
         var q = rotation; var s = scale; var t = translation;
 
         T d = T.One + T.One, xx = q.X * q.X, yy = q.Y * q.Y, zz = q.Z * q.Z,
@@ -207,14 +304,13 @@ public static partial class Mat44
     <returns>Rotation matrix.</returns>*/
     [MethodImpl(AggressiveInlining)]
     public static Mat44<T> Rotation<T>(Quat<T> rotation)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
          || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
         {
             return Rotation(rotation.Vec4());
         }
-
         var q = rotation;
 
         T d = T.One + T.One, xx = q.X * q.X, yy = q.Y * q.Y, zz = q.Z * q.Z,
@@ -235,14 +331,13 @@ public static partial class Mat44
 
     [MethodImpl(AggressiveInlining)]
     public static Mat44<T> Rotate<T>(Mat44<T> m, Quat<T> rotation)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {
         if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
          || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
         {
             return Rotate(m, rotation.Vec4());
         }
-
         var q = rotation;
 
         T

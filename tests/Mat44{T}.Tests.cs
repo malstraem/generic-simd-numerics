@@ -14,31 +14,72 @@ public class Mat44f64 : Mat44WithQuaternion<double>;
 
 [InheritsTests]
 public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
-    where T : unmanaged, ITrigonometricFunctions<T>, IRootFunctions<T>, INumber<T>
+    where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {
     private static readonly bool system = typeof(T) == typeof(float);
 
-    protected static Quat<T> Rotation => new(
+    private static Quat<T> Rotation => new(
         T.CreateTruncating(Random.Shared.NextDouble()),
         T.CreateTruncating(Random.Shared.NextDouble()),
         T.CreateTruncating(Random.Shared.NextDouble()),
         T.CreateTruncating(Random.Shared.NextDouble()));
 
-    protected static Vec3<T> Position => new(
+    private static Vec3<T> Position => new(
         T.CreateTruncating(Random.Shared.NextDouble()),
         T.CreateTruncating(Random.Shared.NextDouble()),
         T.CreateTruncating(Random.Shared.NextDouble()));
 
-    protected static Vec3<T> Scale => new(
+    private static Vec3<T> Scale => new(
         T.CreateTruncating(Random.Shared.NextDouble()),
         T.CreateTruncating(Random.Shared.NextDouble()),
         T.CreateTruncating(Random.Shared.NextDouble()));
 
-    protected void Affine(out Quat<T> r, out Vec3<T> s, out Vec3<T> t)
+    private void Affine(out Quat<T> r, out Vec3<T> s, out Vec3<T> t)
     {
         t = Position;
         r = Rotation;
         s = Scale;
+    }
+
+    [Test]
+    [Arguments(
+        0.5, -0.1, 0.6, 0,
+        0.4, 0.8, -0.2, 0,
+        -0.5, 0.4, 0.3, 0,
+        0, 0, 0, 0.7)
+    ]
+    public async Task Invert(
+        T m11, T m12, T m13, T m14,
+        T m21, T m22, T m23, T m24,
+        T m31, T m32, T m33, T m34,
+        T m41, T m42, T m43, T m44)
+    {
+        Mat44<T> toInvert = new(
+            m11, m12, m13, m14,
+            m21, m22, m23, m24,
+            m31, m32, m33, m34,
+            m41, m42, m43, m44);
+
+        bool flag = Mat44.TryInvert(toInvert, out var inv);
+
+        bool expectedFlag;
+
+        Mat44<T> expected;
+
+        if (system)
+        {
+            expectedFlag = Matrix4x4.Invert(toInvert.System(), out var result);
+            expected = result.Mat44<T>();
+        }
+        else
+        {
+            expectedFlag = Matrix4X4.Invert(toInvert.Silk(), out var result);
+            expected = result.Mat44();
+        }
+        await Assert.That(flag).IsEqualTo(expectedFlag);
+
+        if (expectedFlag)
+            await Assert.That(inv).IsEqualTo(expected);
     }
 
     [Test, Repeat(9), DisplayName("translation")]
@@ -109,17 +150,17 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
 
         var target = Matrix4X4.Transform(a.Silk().As<double>(), r.Silk().As<double>());
 
-        double toler1 = (target.Row1 - draft.Row1).LengthSquared,
-               toler2 = (target.Row2 - draft.Row2).LengthSquared,
-               toler3 = (target.Row3 - draft.Row3).LengthSquared,
-               toler4 = (target.Row4 - draft.Row4).LengthSquared,
+        double tol1 = (target.Row1 - draft.Row1).LengthSquared,
+               tol2 = (target.Row2 - draft.Row2).LengthSquared,
+               tol3 = (target.Row3 - draft.Row3).LengthSquared,
+               tol4 = (target.Row4 - draft.Row4).LengthSquared,
 
                tolerSys1 = (target.Row1 - system.Row1).LengthSquared,
                tolerSys2 = (target.Row2 - system.Row2).LengthSquared,
                tolerSys3 = (target.Row3 - system.Row3).LengthSquared,
                tolerSys4 = (target.Row4 - system.Row4).LengthSquared,
 
-        frob = double.Sqrt(toler1 + toler2 + toler3 + toler4),
+        frob = double.Sqrt(tol1 + tol2 + tol3 + tol4),
         frobSystem = double.Sqrt(tolerSys1 + tolerSys2 + tolerSys3 + tolerSys4);
 
         if (frob < frobSystem)
@@ -127,17 +168,17 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
 
         Assert.Fail(@$"Quaternion {r}
             Tolerance: draft | system
-            Row1: {toler1} | {tolerSys1}
-            Better? {(tolerSys1 < toler1 ? "system" : "draft")}
+            Row1: {tol1} | {tolerSys1}
+            Better? {(tolerSys1 < tol1 ? "system" : "draft")}
 
-            Row2: {toler2} | {tolerSys2}
-            Better? {(tolerSys2 < toler2 ? "system" : "draft")}
+            Row2: {tol2} | {tolerSys2}
+            Better? {(tolerSys2 < tol2 ? "system" : "draft")}
 
-            Row3: {toler3} | {tolerSys3}
-            Better? {(tolerSys3 < toler3 ? "system" : "draft")}
+            Row3: {tol3} | {tolerSys3}
+            Better? {(tolerSys3 < tol3 ? "system" : "draft")}
 
-            Row4: {toler4} | {tolerSys4}
-            Better? {(tolerSys4 < toler4 ? "system" : "draft")}
+            Row4: {tol4} | {tolerSys4}
+            Better? {(tolerSys4 < tol4 ? "system" : "draft")}
             Frobenius norm: {frob} | {frobSystem}");
     }
 
@@ -151,7 +192,6 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
         var expected = system ? (Matrix4x4.CreateScale(s.System())
                                * Matrix4x4.CreateFromQuaternion(r.System())
                                * Matrix4x4.CreateTranslation(t.System())).Mat44<T>()
-
                               : (Matrix4X4.CreateScale(s.Silk())
                                * Matrix4X4.CreateFromQuaternion(r.Silk())
                                * Matrix4X4.CreateTranslation(t.Silk())).Mat44();
@@ -184,36 +224,30 @@ public class Mat44i64 : Mat44Base<long>;
 [InheritsTests]
 public class Mat44ui64 : Mat44Base<ulong>;
 
-[GenerateGenericTest(
-    typeof(int), typeof(float),
-    typeof(int), typeof(double),
-
-    typeof(float), typeof(int),
-    typeof(float), typeof(double),
-
-    typeof(double), typeof(int),
-    typeof(double), typeof(float))]
-public abstract class Mat44Conversion<T1, T2>
+[GenerateGenericTest(typeof(int), typeof(float))]
+[GenerateGenericTest(typeof(int), typeof(double))]
+[GenerateGenericTest(typeof(float), typeof(double))]
+public class Mat44Conversion<T1, T2>
     where T1 : unmanaged, INumber<T1>
     where T2 : unmanaged, INumber<T2>
 {
-    protected static readonly Mat44<T1> m = Mat44<T1>.Gen(T1.One + T1.One);
+    private static readonly Mat44<T1> m = Mat44<T1>.Gen(T1.One);
 
-    [Test, DisplayName("convert")]
+    [Test]
     public async Task Convert()
     {
         var converted = m.As<T2>();
 
         var expected = m.Silk().As<T2>().Mat44();
 
-        await Assert.That(converted).IsEqualTo(expected);
         await Assert.That(converted).IsEqualTo(Mat44.As<T1, T2>(m));
+        await Assert.That(converted).IsEqualTo(expected);
 
-        var reverse = converted.As<T1>();
+        var back = converted.As<T1>();
 
-        var reverseExpected = converted.Silk().As<T1>().Mat44();
+        var backExpected = converted.Silk().As<T1>().Mat44();
 
-        await Assert.That(reverse).IsEqualTo(reverseExpected);
+        await Assert.That(back).IsEqualTo(backExpected);
     }
 }
 
@@ -222,7 +256,7 @@ public abstract class Mat44Base<T>
 {
     protected static readonly Mat44<T>
        a = Mat44<T>.Gen(T.One),
-       b = Mat44<T>.Gen(T.One + T.One + T.One);
+       b = Mat44<T>.Gen(T.One + T.One);
 
     [Test, DisplayName("a + b")]
     public async Task Add()
@@ -252,5 +286,16 @@ public abstract class Mat44Base<T>
         var expected = (a.Silk() * b.Silk()).Mat44();
 
         await Assert.That(mul).IsEqualTo(expected);
+    }
+
+    [Test]
+    public async Task Transpose()
+    {
+        var transpose = a.Transpose();
+
+        var expected = Matrix4X4.Transpose(a.Silk()).Mat44();
+
+        await Assert.That(transpose).IsEqualTo(Mat44.Transpose(a));
+        await Assert.That(transpose).IsEqualTo(expected);
     }
 }

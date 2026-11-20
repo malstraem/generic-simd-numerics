@@ -14,8 +14,10 @@ public class StressRect<T> : BaseBench<T>
 
     public StressRect()
     {
+        var r = Vec4<T>.Gen(T.One).Rect();
+
         for (int i = 0; i < Count; i++)
-            rects[i] = Vec4<T>.Gen(T.One).Rect();
+            rects[i] = r;
     }
 
     [Benchmark]
@@ -35,7 +37,7 @@ public class StressRect<T> : BaseBench<T>
     [Benchmark]
     public void Area()
     {
-        for (int i = 0; i < Count - 1; i++)
+        for (int i = 0; i < Count; i++)
             nums[i] = rects[i].Area();
     }
 }

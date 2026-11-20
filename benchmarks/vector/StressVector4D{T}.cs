@@ -6,12 +6,7 @@ namespace System.Numerics.Bench;
 
 [GenericTypeArguments(typeof(int), typeof(float))]
 [GenericTypeArguments(typeof(int), typeof(double))]
-
-[GenericTypeArguments(typeof(float), typeof(int))]
 [GenericTypeArguments(typeof(float), typeof(double))]
-
-[GenericTypeArguments(typeof(double), typeof(int))]
-[GenericTypeArguments(typeof(double), typeof(float))]
 public class StressConversionVector4D<T1, T2> : BaseBench<T1>
     where T1 : unmanaged, INumber<T1>
     where T2 : unmanaged, INumber<T2>
@@ -22,8 +17,14 @@ public class StressConversionVector4D<T1, T2> : BaseBench<T1>
 
     public StressConversionVector4D()
     {
+        var t1 = Vec4<T1>.Gen(T1.One).Silk();
+        var t2 = t1.As<T2>();
+
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vec4<T1>.Gen(T1.One).Silk();
+        {
+            vecs[i] = t1;
+            converted[i] = t2;
+        }
     }
 
     [Benchmark]
@@ -32,11 +33,18 @@ public class StressConversionVector4D<T1, T2> : BaseBench<T1>
         for (int i = 0; i < Count; i++)
             converted[i] = vecs[i].As<T2>();
     }
+
+    [Benchmark]
+    public void Back()
+    {
+        for (int i = 0; i < Count; i++)
+            vecs[i] = converted[i].As<T1>();
+    }
 }
 
 [GenericTypeArguments(typeof(float))]
 [GenericTypeArguments(typeof(double))]
-public class StressVector4D<T> : StressBaseVector4DI<T>
+public class StressVector4D<T> : BaseStressVector4D<T>
     where T : unmanaged, INumber<T>
 {
     [Benchmark]
@@ -65,10 +73,10 @@ public class StressVector4D<T> : StressBaseVector4DI<T>
 [GenericTypeArguments(typeof(short))]
 [GenericTypeArguments(typeof(int))]
 [GenericTypeArguments(typeof(long))]
-public class StressVector4DI<T> : StressBaseVector4DI<T>
+public class StressVector4DI<T> : BaseStressVector4D<T>
     where T : unmanaged, INumber<T>;
 
-public abstract class StressBaseVector4DI<T> : BaseBench<T>
+public abstract class BaseStressVector4D<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
     protected static readonly Vector4D<T>[] vecs = new Vector4D<T>[Count],
@@ -76,10 +84,12 @@ public abstract class StressBaseVector4DI<T> : BaseBench<T>
 
     private static readonly Matrix4X4<T> m = Mat44<T>.Gen(T.One).Silk();
 
-    public StressBaseVector4DI()
+    public BaseStressVector4D()
     {
+        var v = Vec4<T>.Gen(T.One).Silk();
+
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vec4<T>.Gen(T.One).Silk();
+            vecs[i] = v;
     }
 
     [Benchmark]

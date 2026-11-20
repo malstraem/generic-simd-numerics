@@ -16,8 +16,22 @@ public class StressRectangle<T> : BaseBench<T>
 
     public StressRectangle()
     {
+        var r = Rect<T>.Gen(T.One).Silk();
+
         for (int i = 0; i < Count; i++)
-            rects[i] = Rect<T>.Gen(T.One).Silk();
+            rects[i] = r;
+    }
+
+    [Benchmark]
+    public void Intersects()
+    {
+        for (int i = 0; i < Count - 1; i++)
+        {
+            var a = rects[i];
+            var b = rects[i + 1];
+
+            bools[i] = a.Contains(b.Origin) || b.Contains(a.Origin);
+        }
     }
 
     [Benchmark]
@@ -30,7 +44,7 @@ public class StressRectangle<T> : BaseBench<T>
     [Benchmark]
     public void Area()
     {
-        for (int i = 0; i < Count - 1; i++)
+        for (int i = 0; i < Count; i++)
         {
             var rect = rects[i];
             nums[i] = rect.Size.X * rect.Size.Y;

@@ -1,7 +1,7 @@
 namespace System.Numerics;
 
 // calls in right cases
-// this version combines 128 and 256 ways into one
+// 128 and 256 ways are combined into one
 public partial struct Quat<T>
 {
     private static readonly Vec4<T>
@@ -9,7 +9,18 @@ public partial struct Quat<T>
         inv2 = new(+T.One, +T.One, -T.One, -T.One),
         inv3 = new(-T.One, +T.One, +T.One, -T.One),
 
-        conjugate = new(-T.One, -T.One, -T.One, +T.One);
+        conjugate = new(-T.One, -T.One, -T.One, +T.One),
+
+        inverseEpsilon = typeof(T) == typeof(float)
+                            ? new Vec4<T>(T.CreateChecked(MathF.BitIncrement(1f) - 1f))
+                            : new Vec4<T>(T.CreateChecked(Math.BitIncrement(1d) - 1d));
+
+    internal static T slepEpsilon = typeof(T) == typeof(float)
+                                        ? T.CreateChecked(MathF.BitIncrement(1f) - 1f)
+                                        : T.CreateChecked(Math.BitIncrement(1d) - 1d);
+
+    [MethodImpl(AggressiveInlining)]
+    internal static Quat<T> Conjugate(Quat<T> q) => (q.Vec4() * conjugate).Quat();
 
     [MethodImpl(AggressiveInlining)]
     internal static Quat<T> Multiply(Quat<T> a, Quat<T> b)
@@ -24,5 +35,50 @@ public partial struct Quat<T>
     }
 
     [MethodImpl(AggressiveInlining)]
-    internal static Quat<T> Conjugate(Quat<T> q) => (q.Vec4() * conjugate).Quat();
+    public static Quat<T> Inverse(Vec4<T> conjugate, T lengthSquared)
+    {
+        if (SizeOf<T>() == 4)
+        {
+            var v = Vector128.Create(lengthSquared);
+
+            return Vector128.AndNot(
+                conjugate.As128() / v,
+                Vector128.LessThanOrEqual(v, inverseEpsilon.As128())).Quat();
+        }
+        else
+        {
+            var v = Vector256.Create(lengthSquared);
+
+            return Vector256.AndNot(
+                conjugate.As256() / v,
+                Vector256.LessThanOrEqual(v, inverseEpsilon.As256())).Quat();
+        }
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    internal static Quat<T> Lerp(Vec4<T> a, Vec4<T> b, T am)
+    {
+        var dot = a.Dot(b);
+
+        if (SizeOf<T>() == 4)
+        {
+            var v = Vector128.ConditionalSelect(
+                Vector128.IsPositive(Vector128.Create(dot)),
+                b.Abs().As128(),
+                -b.As128()
+            ).Vec4();
+
+            return a.Estimate(Vec4<T>.One - am, v * am).Normalize().Quat();
+        }
+        else
+        {
+            var v = Vector256.ConditionalSelect(
+                Vector256.IsPositive(Vector256.Create(dot)),
+                b.Abs().As256(),
+                -b.As256()
+            ).Vec4();
+
+            return a.Estimate(Vec4<T>.One - am, v * am).Normalize().Quat();
+        }
+    }
 }
