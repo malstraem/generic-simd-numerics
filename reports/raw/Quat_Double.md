@@ -5,14 +5,14 @@ BenchmarkDotNet v0.16.0-nightly.20261117.686, Windows 11 (10.0.26300.9974)
 AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
 ```
 
-| Method    | Mean      | Error    | StdDev   | Code Size |
-|---------- |----------:|---------:|---------:|----------:|
-| Multiply  | 131.46 μs | 0.645 μs | 0.603 μs |     224 B |
-| Divide    | 236.84 μs | 1.195 μs | 1.118 μs |     278 B |
-| Conjugate |  64.32 μs | 0.412 μs | 0.366 μs |      88 B |
-| Inverse   | 103.53 μs | 0.451 μs | 0.422 μs |     128 B |
-| Lerp      | 260.27 μs | 0.585 μs | 0.518 μs |     252 B |
-| Slerp     | 123.76 μs | 0.823 μs | 0.770 μs |     487 B |
+| Method    | Mean        | Error    | StdDev   | Code Size |
+|---------- |------------:|---------:|---------:|----------:|
+| Multiply  |   131.46 μs | 0.645 μs | 0.603 μs |     224 B |
+| Divide    |   236.84 μs | 1.195 μs | 1.118 μs |     278 B |
+| Conjugate |    64.32 μs | 0.412 μs | 0.366 μs |      88 B |
+| Inverse   |   103.53 μs | 0.451 μs | 0.422 μs |     128 B |
+| Lerp      |   260.27 μs | 0.585 μs | 0.518 μs |     252 B |
+| Slerp     | 1,336.00 μs | 2.755 μs | 2.442 μs |     526 B |
 
 ```assembly
 ; System.Numerics.Bench.StressQuat`1[[System.Double, System.Private.CoreLib]].Multiply()
@@ -289,10 +289,11 @@ M00_L01:
        vmovaps   [rsp+50],xmm12
        vmovaps   [rsp+40],xmm13
        vmovaps   [rsp+30],xmm14
+       vmovaps   [rsp+20],xmm15
        mov       rbx,rcx
        mov       rsi,[rbx+10]
-       vmovsd    xmm6,qword ptr [7FF915F84CA8]
-       vsubsd    xmm7,xmm6,qword ptr [7FF9156EB1B0]
+       vmovsd    xmm6,qword ptr [7FF9CE297D10]
+       vsubsd    xmm7,xmm6,qword ptr [7FF9CDA1B198]
        xor       edi,edi
 M00_L00:
        mov       rbp,rsi
@@ -319,15 +320,33 @@ M00_L00:
        vmovaps   xmm10,xmm6
        vmovq     rax,xmm0
        test      rax,rax
-       jl        near ptr M00_L03
+       jl        near ptr M00_L04
 M00_L01:
        vucomisd  xmm0,xmm7
-       jbe       near ptr M00_L04
-       vxorps    xmm11,xmm11,xmm11
+       ja        near ptr M00_L03
+       vextractf128 xmm11,ymm8,1
+       vextractf128 xmm12,ymm9,1
+       vzeroupper
+       call      qword ptr [7FF9CE1AD9E0]; System.Double.Acos(Double)
+       vmovaps   xmm13,xmm0
+       vmovaps   xmm0,xmm13
+       vzeroupper
+       call      qword ptr [7FF9CE1AD9F8]; System.Double.Sin(Double)
+       vmovaps   xmm14,xmm0
+       vdivsd    xmm15,xmm6,xmm14
+       vxorps    xmm0,xmm0,xmm0
+       vmulsd    xmm0,xmm13,xmm0
+       vzeroupper
+       call      qword ptr [7FF9CE1AD9F8]; System.Double.Sin(Double)
+       vmulsd    xmm0,xmm15,xmm0
+       vmulsd    xmm1,xmm14,xmm15
+       vmulsd    xmm10,xmm10,xmm1
+       vinsertf128 ymm8,ymm8,xmm11,1
+       vinsertf128 ymm9,ymm9,xmm12,1
 M00_L02:
        cmp       edi,[rbp+8]
        jae       near ptr M00_L05
-       vbroadcastsd ymm0,xmm11
+       vbroadcastsd ymm0,xmm0
        vmulpd    ymm0,ymm9,ymm0
        vbroadcastsd ymm1,xmm10
        vmulpd    ymm1,ymm8,ymm1
@@ -346,6 +365,7 @@ M00_L02:
        vmovaps   xmm12,[rsp+50]
        vmovaps   xmm13,[rsp+40]
        vmovaps   xmm14,[rsp+30]
+       vmovaps   xmm15,[rsp+20]
        add       rsp,0C8
        pop       rbx
        pop       rbp
@@ -355,33 +375,32 @@ M00_L02:
        pop       r15
        ret
 M00_L03:
-       vxorps    xmm0,xmm0,[7FF915F84CB0]
-       vmovsd    xmm10,qword ptr [7FF915F84CC0]
-       jmp       near ptr M00_L01
-M00_L04:
-       vextractf128 xmm12,ymm8,1
-       vextractf128 xmm13,ymm9,1
-       vzeroupper
-       call      qword ptr [7FF915F14528]; Precode of System.Double.Acos(Double)
-       vmovsd    qword ptr [rsp+28],xmm0
-       vzeroupper
-       call      qword ptr [7FF915F14540]; Precode of System.Double.Sin(Double)
-       vdivsd    xmm14,xmm6,xmm0
        vxorps    xmm0,xmm0,xmm0
-       vmulsd    xmm0,xmm0,qword ptr [rsp+28]
-       vzeroupper
-       call      qword ptr [7FF915F14540]; Precode of System.Double.Sin(Double)
-       vmulsd    xmm11,xmm14,xmm0
-       vmovsd    xmm0,qword ptr [rsp+28]
-       vzeroupper
-       call      qword ptr [7FF915F14540]; Precode of System.Double.Sin(Double)
-       vmulsd    xmm0,xmm14,xmm0
-       vmulsd    xmm10,xmm10,xmm0
-       vinsertf128 ymm8,ymm8,xmm12,1
-       vinsertf128 ymm9,ymm9,xmm13,1
        jmp       near ptr M00_L02
+M00_L04:
+       vxorps    xmm0,xmm0,[7FF9CE297D20]
+       vmovsd    xmm10,qword ptr [7FF9CE297D30]
+       jmp       near ptr M00_L01
 M00_L05:
        call      Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
        int       3
-; Total bytes of code 487
+; Total bytes of code 490
+
+; System.Double.Acos(Double)
+       sub       rsp,28
+       vzeroupper
+       call      00007FFA2D7142D0
+       nop
+       add       rsp,28
+       ret
+; Total bytes of code 18
+
+; System.Double.Sin(Double)
+       sub       rsp,28
+       vzeroupper
+       call      00007FFA2D7143E0
+       nop
+       add       rsp,28
+       ret
+; Total bytes of code 18
 ```

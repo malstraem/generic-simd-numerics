@@ -5,14 +5,14 @@ BenchmarkDotNet v0.16.0-nightly.20261117.686, Windows 11 (10.0.26300.9974)
 AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
 ```
 
-| Method    | Mean      | Error    | StdDev   | Code Size |
-|---------- |----------:|---------:|---------:|----------:|
-| Multiply  | 121.66 μs | 0.350 μs | 0.327 μs |     215 B |
-| Divide    | 205.94 μs | 0.289 μs | 0.241 μs |     269 B |
-| Conjugate |  67.78 μs | 0.430 μs | 0.381 μs |      85 B |
-| Inverse   |  76.18 μs | 0.323 μs | 0.302 μs |     125 B |
-| Lerp      | 174.45 μs | 1.110 μs | 1.038 μs |     230 B |
-| Slerp     | 122.24 μs | 1.003 μs | 0.939 μs |     417 B |
+| Method    | Mean        | Error    | StdDev   | Code Size |
+|---------- |------------:|---------:|---------:|----------:|
+| Multiply  |   121.66 μs | 0.350 μs | 0.327 μs |     215 B |
+| Divide    |   205.94 μs | 0.289 μs | 0.241 μs |     269 B |
+| Conjugate |    67.78 μs | 0.430 μs | 0.381 μs |      85 B |
+| Inverse   |    76.18 μs | 0.323 μs | 0.302 μs |     125 B |
+| Lerp      |   174.45 μs | 1.110 μs | 1.038 μs |     230 B |
+| Slerp     | 1,185.24 μs | 1.809 μs | 1.692 μs |     456 B |
 
 ```assembly
 ; System.Numerics.Bench.StressQuat`1[[System.Single, System.Private.CoreLib]].Multiply()
@@ -279,10 +279,11 @@ M00_L01:
        vmovaps   [rsp+50],xmm10
        vmovaps   [rsp+40],xmm11
        vmovaps   [rsp+30],xmm12
+       vmovaps   [rsp+20],xmm13
        mov       rbx,rcx
        mov       rsi,[rbx+10]
-       vmovss    xmm6,dword ptr [7FF915F84684]
-       vsubss    xmm7,xmm6,dword ptr [7FF9156EB1B0]
+       vmovss    xmm6,dword ptr [7FF9CE286FE4]
+       vsubss    xmm7,xmm6,dword ptr [7FF9CDA1B198]
        xor       edi,edi
 M00_L00:
        mov       rbp,rsi
@@ -309,15 +310,26 @@ M00_L00:
        vmovaps   xmm10,xmm6
        vmovd     eax,xmm0
        test      eax,eax
-       jl        near ptr M00_L03
+       jl        near ptr M00_L04
 M00_L01:
        vucomiss  xmm0,xmm7
-       jbe       near ptr M00_L04
-       vxorps    xmm11,xmm11,xmm11
+       ja        near ptr M00_L03
+       call      qword ptr [7FF9CE1AD800]; System.Single.Acos(Single)
+       vmovaps   xmm11,xmm0
+       vmovaps   xmm0,xmm11
+       call      qword ptr [7FF9CE1AD818]; System.Single.Sin(Single)
+       vmovaps   xmm12,xmm0
+       vdivss    xmm13,xmm6,xmm12
+       vxorps    xmm0,xmm0,xmm0
+       vmulss    xmm0,xmm11,xmm0
+       call      qword ptr [7FF9CE1AD818]; System.Single.Sin(Single)
+       vmulss    xmm0,xmm13,xmm0
+       vmulss    xmm1,xmm12,xmm13
+       vmulss    xmm10,xmm10,xmm1
 M00_L02:
        cmp       edi,[rbp+8]
        jae       near ptr M00_L05
-       vbroadcastss xmm0,xmm11
+       vbroadcastss xmm0,xmm0
        vmulps    xmm0,xmm9,xmm0
        vbroadcastss xmm1,xmm10
        vmulps    xmm1,xmm8,xmm1
@@ -333,6 +345,7 @@ M00_L02:
        vmovaps   xmm10,[rsp+50]
        vmovaps   xmm11,[rsp+40]
        vmovaps   xmm12,[rsp+30]
+       vmovaps   xmm13,[rsp+20]
        add       rsp,0A8
        pop       rbx
        pop       rbp
@@ -342,25 +355,32 @@ M00_L02:
        pop       r15
        ret
 M00_L03:
-       vxorps    xmm0,xmm0,[7FF915F84690]
-       vmovss    xmm10,dword ptr [7FF915F846A0]
-       jmp       near ptr M00_L01
-M00_L04:
-       call      qword ptr [7FF915F145A0]; Precode of System.Single.Acos(Single)
-       vmovss    dword ptr [rsp+2C],xmm0
-       call      qword ptr [7FF915F145B8]; Precode of System.Single.Sin(Single)
-       vdivss    xmm12,xmm6,xmm0
        vxorps    xmm0,xmm0,xmm0
-       vmulss    xmm0,xmm0,dword ptr [rsp+2C]
-       call      qword ptr [7FF915F145B8]; Precode of System.Single.Sin(Single)
-       vmulss    xmm11,xmm12,xmm0
-       vmovss    xmm0,dword ptr [rsp+2C]
-       call      qword ptr [7FF915F145B8]; Precode of System.Single.Sin(Single)
-       vmulss    xmm0,xmm12,xmm0
-       vmulss    xmm10,xmm10,xmm0
-       jmp       near ptr M00_L02
+       jmp       short M00_L02
+M00_L04:
+       vxorps    xmm0,xmm0,[7FF9CE286FF0]
+       vmovss    xmm10,dword ptr [7FF9CE287000]
+       jmp       near ptr M00_L01
 M00_L05:
        call      Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
        int       3
-; Total bytes of code 417
+; Total bytes of code 420
+
+; System.Single.Acos(Single)
+       sub       rsp,28
+       vzeroupper
+       call      00007FFA2D714470
+       nop
+       add       rsp,28
+       ret
+; Total bytes of code 18
+
+; System.Single.Sin(Single)
+       sub       rsp,28
+       vzeroupper
+       call      00007FFA2D714570
+       nop
+       add       rsp,28
+       ret
+; Total bytes of code 18
 ```
