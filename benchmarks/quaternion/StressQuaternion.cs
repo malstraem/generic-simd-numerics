@@ -9,8 +9,16 @@ public class StressQuaternion : BaseBench<float>
 
     public StressQuaternion()
     {
-        for (int i = 0; i < Count; i++)
-            quats[i] = Quat<float>.Rand().System();
+        // for spherical slerp way
+        float s1 = 0.1f, s2 = 0.5f;
+        var q1 = new Quaternion(s1, s1, s1, s1);
+        var q2 = new Quaternion(s2, s2, s2, s2);
+
+        for (int i = 0; i < Count - 1; i += 2)
+        {
+            quats[i] = q1;
+            quats[i + 1] = q2;
+        }
     }
 
     [Benchmark]

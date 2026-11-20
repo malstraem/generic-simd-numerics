@@ -17,10 +17,13 @@ public class StressConversionVector4D<T1, T2> : BaseBench<T1>
 
     public StressConversionVector4D()
     {
+        var t1 = Vec4<T1>.Gen(T1.One).Silk();
+        var t2 = t1.As<T2>();
+
         for (int i = 0; i < Count; i++)
         {
-            vecs[i] = Vec4<T1>.Gen(T1.One).Silk();
-            converted[i] = vecs[i].As<T2>();
+            vecs[i] = t1;
+            converted[i] = t2;
         }
     }
 
@@ -83,8 +86,10 @@ public abstract class BaseStressVector4D<T> : BaseBench<T>
 
     public BaseStressVector4D()
     {
+        var v = Vec4<T>.Gen(T.One).Silk();
+
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vec4<T>.Gen(T.One).Silk();
+            vecs[i] = v;
     }
 
     [Benchmark]

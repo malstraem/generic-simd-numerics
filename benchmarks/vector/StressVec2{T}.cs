@@ -44,8 +44,10 @@ public abstract class BaseStressVec2<T> : BaseBench<T>
 
     public BaseStressVec2()
     {
+        var v = Vec2<T>.Gen(T.One);
+
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vec2<T>.Gen(T.One);
+            vecs[i] = v;
     }
 
     [Benchmark]

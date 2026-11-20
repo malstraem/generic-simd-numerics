@@ -279,7 +279,6 @@ public static partial class Mat44
         {
             return Affine(rotation.Vec4(), scale, translation);
         }
-
         var q = rotation; var s = scale; var t = translation;
 
         T d = T.One + T.One, xx = q.X * q.X, yy = q.Y * q.Y, zz = q.Z * q.Z,
@@ -312,7 +311,6 @@ public static partial class Mat44
         {
             return Rotation(rotation.Vec4());
         }
-
         var q = rotation;
 
         T d = T.One + T.One, xx = q.X * q.X, yy = q.Y * q.Y, zz = q.Z * q.Z,
@@ -340,7 +338,6 @@ public static partial class Mat44
         {
             return Rotate(m, rotation.Vec4());
         }
-
         var q = rotation;
 
         T

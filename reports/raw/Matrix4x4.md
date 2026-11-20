@@ -11,6 +11,7 @@ AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
 | Subtract  | 185.2 μs | 0.36 μs | 0.32 μs |     185 B |
 | Multiply  | 297.9 μs | 1.20 μs | 1.00 μs |     449 B |
 | Transpose | 128.7 μs | 0.92 μs | 0.77 μs |     136 B |
+| Invert    | 737.0 μs | 0.72 μs | 0.67 μs |     865 B |
 | Rotation  | 235.6 μs | 0.68 μs | 0.64 μs |     352 B |
 | Transform | 687.8 μs | 2.63 μs | 2.46 μs |     844 B |
 | Affine    | 895.5 μs | 2.06 μs | 1.93 μs |   1,078 B |
@@ -249,6 +250,172 @@ M00_L01:
        call      0000000000001620
        int       3
 ; Total bytes of code 136
+```
+
+```assembly
+; System.Numerics.Bench.StressMatrix4x4.Invert()
+       push      rsi
+       push      rbx
+       sub       rsp,68
+       mov       rbx,rcx
+       xor       esi,esi
+M00_L00:
+       mov       rcx,[rbx+8]
+       cmp       esi,[rcx+8]
+       jae       short M00_L01
+       mov       rdx,rsi
+       shl       rdx,6
+       vmovdqu32 zmm0,[rcx+rdx+10]
+       vmovdqu32 [rsp+28],zmm0
+       mov       rcx,[rbx+10]
+       cmp       esi,[rcx+8]
+       jae       short M00_L01
+       lea       rdx,[rcx+rdx+10]
+       lea       rcx,[rsp+28]
+       call      qword ptr [7FFEA6DAE688]; System.Numerics.Matrix4x4.Invert(Impl ByRef, Impl ByRef)
+       inc       esi
+       cmp       esi,186A0
+       jl        short M00_L00
+       vzeroupper
+       add       rsp,68
+       pop       rbx
+       pop       rsi
+       ret
+M00_L01:
+       call      Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
+       int       3
+; Total bytes of code 100
+
+; System.Numerics.Matrix4x4.Invert(Impl ByRef, Impl ByRef)
+       vmovups   xmm0,[rcx]
+       vmovups   xmm1,[rcx+10]
+       vmovups   xmm2,[rcx+20]
+       vmovups   xmm3,[rcx+30]
+       vmovhlps  xmm4,xmm1,xmm0
+       vmovlhps  xmm5,xmm2,xmm3
+       vmovhlps  xmm3,xmm3,xmm2
+       vmovlhps  xmm1,xmm0,xmm1
+       vshufps   xmm0,xmm1,xmm5,88
+       vshufps   xmm1,xmm1,xmm5,0DD
+       vshufps   xmm2,xmm4,xmm3,88
+       vshufps   xmm3,xmm4,xmm3,0DD
+       vpermilps xmm4,xmm2,50
+       vpermilps xmm5,xmm3,0EE
+       vpermilps xmm16,xmm0,50
+       vpermilps xmm17,xmm1,0EE
+       vshufps   xmm18,xmm2,xmm0,88
+       vshufps   xmm19,xmm3,xmm1,0DD
+       vmulps    xmm5,xmm4,xmm5
+       vmulps    xmm17,xmm17,xmm16
+       vmulps    xmm19,xmm18,xmm19
+       vpermilps xmm4,xmm2,0EE
+       vpermilps xmm16,xmm3,50
+       vpermilps xmm18,xmm0,0EE
+       vpermilps xmm20,xmm1,50
+       vshufps   xmm21,xmm2,xmm0,0DD
+       vshufps   xmm22,xmm3,xmm1,88
+       vbroadcastss xmm23,dword ptr [7FFEA6E63660]
+       vxorps    xmm4,xmm23,xmm4
+       vfmadd231ps xmm5,xmm16,xmm4
+       vxorps    xmm16,xmm23,xmm18
+       vfmadd231ps xmm17,xmm20,xmm16
+       vxorps    xmm20,xmm23,xmm21
+       vfmadd231ps xmm19,xmm22,xmm20
+       vshufps   xmm20,xmm5,xmm19,5D
+       vpermilps xmm4,xmm1,49
+       vshufps   xmm16,xmm20,xmm5,32
+       vpermilps xmm18,xmm0,12
+       vshufps   xmm20,xmm20,xmm5,99
+       vshufps   xmm24,xmm17,xmm19,0FD
+       vpermilps xmm21,xmm3,49
+       vshufps   xmm22,xmm24,xmm17,32
+       vpermilps xmm25,xmm2,12
+       vshufps   xmm24,xmm24,xmm17,99
+       vmulps    xmm26,xmm16,xmm4
+       vmulps    xmm27,xmm20,xmm18
+       vmulps    xmm28,xmm21,xmm22
+       vmulps    xmm24,xmm24,xmm25
+       vshufps   xmm20,xmm5,xmm19,4
+       vpermilps xmm4,xmm1,9E
+       vshufps   xmm16,xmm5,xmm20,93
+       vpermilps xmm18,xmm0,7B
+       vshufps   xmm20,xmm5,xmm20,26
+       vshufps   xmm21,xmm17,xmm19,0A4
+       vpermilps xmm22,xmm3,9E
+       vshufps   xmm25,xmm17,xmm21,93
+       vpermilps xmm29,xmm2,7B
+       vshufps   xmm21,xmm17,xmm21,26
+       vxorps    xmm4,xmm23,xmm4
+       vfmadd231ps xmm26,xmm16,xmm4
+       vxorps    xmm16,xmm23,xmm18
+       vfmadd231ps xmm27,xmm20,xmm16
+       vxorps    xmm18,xmm23,xmm22
+       vfmadd231ps xmm28,xmm25,xmm18
+       vxorps    xmm20,xmm23,xmm29
+       vfmadd231ps xmm24,xmm21,xmm20
+       vpermilps xmm4,xmm1,33
+       vshufps   xmm22,xmm5,xmm19,4A
+       vpermilps xmm16,xmm22,2C
+       vpermilps xmm18,xmm0,8D
+       vshufps   xmm25,xmm5,xmm19,4C
+       vpermilps xmm20,xmm25,93
+       vpermilps xmm22,xmm3,33
+       vshufps   xmm29,xmm17,xmm19,0EA
+       vpermilps xmm25,xmm29,2C
+       vpermilps xmm29,xmm2,8D
+       vshufps   xmm21,xmm17,xmm19,0EC
+       vpermilps xmm21,xmm21,93
+       vmulps    xmm4,xmm16,xmm4
+       vmulps    xmm18,xmm20,xmm18
+       vmulps    xmm22,xmm22,xmm25
+       vmulps    xmm29,xmm21,xmm29
+       vsubps    xmm1,xmm26,xmm4
+       vaddps    xmm26,xmm26,xmm4
+       vaddps    xmm2,xmm18,xmm27
+       vsubps    xmm27,xmm27,xmm18
+       vsubps    xmm3,xmm28,xmm22
+       vaddps    xmm28,xmm22,xmm28
+       vaddps    xmm4,xmm24,xmm29
+       vsubps    xmm24,xmm24,xmm29
+       vshufps   xmm26,xmm26,xmm1,0D8
+       vshufps   xmm27,xmm27,xmm2,0D8
+       vshufps   xmm28,xmm28,xmm3,0D8
+       vshufps   xmm24,xmm24,xmm4,0D8
+       vpermilps xmm26,xmm26,0D8
+       vpermilps xmm27,xmm27,0D8
+       vpermilps xmm28,xmm28,0D8
+       vpermilps xmm24,xmm24,0D8
+       vmulps    xmm0,xmm26,xmm0
+       vpermilps xmm1,xmm0,0B1
+       vaddps    xmm0,xmm1,xmm0
+       vpermilps xmm1,xmm0,4E
+       vaddps    xmm0,xmm1,xmm0
+       vandps    xmm1,xmm0,[7FFEA6E63670]
+       vmovss    xmm2,dword ptr [7FFEA6E63680]
+       vucomiss  xmm2,xmm1
+       jbe       short M01_L00
+       vbroadcastss xmm0,dword ptr [7FFEA6E63684]
+       vmovups   [rdx],xmm0
+       vmovups   [rdx+10],xmm0
+       vmovups   [rdx+20],xmm0
+       vmovups   [rdx+30],xmm0
+       xor       eax,eax
+       ret
+M01_L00:
+       vbroadcastss xmm0,xmm0
+       vbroadcastss xmm1,dword ptr [7FFEA6E63688]
+       vdivps    xmm0,xmm1,xmm0
+       vmulps    xmm1,xmm26,xmm0
+       vmovups   [rdx],xmm1
+       vmulps    xmm1,xmm27,xmm0
+       vmovups   [rdx+10],xmm1
+       vmulps    xmm1,xmm28,xmm0
+       vmovups   [rdx+20],xmm1
+       vmulps    xmm0,xmm24,xmm0
+       vmovups   [rdx+30],xmm0
+       mov       eax,1
+       ret
+; Total bytes of code 765
 ```
 
 ```assembly

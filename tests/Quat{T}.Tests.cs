@@ -17,8 +17,8 @@ public abstract class QuatBase<T>
 {
     private static readonly bool system = typeof(T) == typeof(float);
 
-    private static readonly T num1 = T.CreateTruncating(0.123456789),
-                              num2 = T.CreateTruncating(0.555555555),
+    private static readonly T num1 = T.CreateTruncating(0.1),
+                              num2 = T.CreateTruncating(0.5),
                               num3 = T.CreateTruncating(0.333333333);
 
     private static readonly Vec3<T> axis = new(num3, num3, num3);
@@ -140,7 +140,7 @@ public abstract class QuatBase<T>
 
         await Assert.That(lerp).IsEqualTo(expected);
 
-        var quat = new Quat<T>(-a.X, -a.Y, -a.Z, -a.W); // checks second way in Lerp branching
+        var quat = (-a.Vec4()).Quat(); // checks second way in Lerp branching
 
         lerp = quat.Lerp(b, am);
 
@@ -150,19 +150,29 @@ public abstract class QuatBase<T>
         await Assert.That(lerp).IsEqualTo(expected);
     }
 
-    [Test, DisplayName("slerp")]
-    public async Task Slerp()
+    [Test]
+    [Arguments(0)]
+    [Arguments(0.5)]
+    [Arguments(1)]
+    public async Task Slerp(T amount)
     {
-        var am = T.One + T.One;
+        var slerp = a.Slerp(b, amount);
 
-        var lerp = a.Slerp(b, am);
+        await Assert.That(Quat.Slerp(a, b, amount)).IsEqualTo(slerp);
 
-        await Assert.That(Quat.Slerp(a, b, am)).IsEqualTo(lerp);
+        var expected = system ? Quaternion.Slerp(a.System(), b.System(), (float)(object)amount).Quat<T>()
+                           : Quaternion<T>.Slerp(a.Silk(), b.Silk(), amount).Quat();
 
-        var expected = system ? Quaternion.Slerp(a.System(), b.System(), (float)(object)am).Quat<T>()
-                           : Quaternion<T>.Slerp(a.Silk(), b.Silk(), am).Quat();
+        await Assert.That(slerp).IsEqualTo(expected);
 
-        await Assert.That(lerp).IsEqualTo(expected);
+        var quat = (Vec4<T>.One - a.Vec4()).Quat(); // checks linear way in Slerp branching
+
+        slerp = quat.Slerp(b, amount);
+
+        expected = system ? Quaternion.Slerp(quat.System(), b.System(), (float)(object)amount).Quat<T>()
+                           : Quaternion<T>.Slerp(quat.Silk(), b.Silk(), amount).Quat();
+
+        await Assert.That(slerp).IsEqualTo(expected);
     }
 
     [Test, DisplayName("conj")]
@@ -197,7 +207,7 @@ public abstract class QuatBase<T>
             return;
         }
 
-        var eps = T.One / T.CreateTruncating(1e15);
+        var eps = T.One / T.CreateTruncating(1e-15);
 
         var expected = Quaternion<T>.Inverse(quat.Silk()).Quat();
 

@@ -1,11 +1,17 @@
 ## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
+```
+BenchmarkDotNet v0.16.0-preview.2, Windows 11 (10.0.26300.9974)
+AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
+```
+
 | Method    | Mean     | Error   | StdDev  | Code Size |
 |---------- |---------:|--------:|--------:|----------:|
 | Add       | 104.7 μs | 0.42 μs | 0.40 μs |     118 B |
 | Subtract  | 104.6 μs | 0.40 μs | 0.37 μs |     118 B |
 | Multiply  | 293.7 μs | 1.19 μs | 1.00 μs |     451 B |
 | Transpose | 104.3 μs | 0.41 μs | 0.38 μs |      92 B |
+| Invert    | 664.0 μs | 1.35 μs | 1.26 μs |     918 B |
 | Rotation  | 188.0 μs | 0.68 μs | 0.63 μs |     282 B |
 | Transform | 324.6 μs | 0.86 μs | 0.80 μs |     407 B |
 | Affine    | 252.3 μs | 0.84 μs | 0.78 μs |     404 B |
@@ -207,6 +213,188 @@ M00_L01:
        call      Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
        int       3
 ; Total bytes of code 92
+```
+
+```assembly
+; System.Numerics.Bench.StressMat44WithQuat`1[[System.Single, System.Private.CoreLib]].Invert()
+       push      rdi
+       push      rsi
+       push      rbx
+       sub       rsp,90
+       vmovaps   [rsp+80],xmm6
+       vmovaps   [rsp+70],xmm7
+       vmovaps   [rsp+60],xmm8
+       vmovaps   [rsp+50],xmm9
+       vmovaps   [rsp+40],xmm10
+       vmovaps   [rsp+30],xmm11
+       vmovaps   [rsp+20],xmm12
+       mov       rbx,rcx
+       vbroadcastss xmm6,dword ptr [7FFEA6E6DCA0]
+       vmovss    xmm7,dword ptr [7FFEA6E6DCA4]
+       xor       esi,esi
+M00_L00:
+       mov       rcx,[rbx+8]
+       cmp       esi,[rcx+8]
+       jae       near ptr M00_L03
+       mov       rax,rsi
+       shl       rax,6
+       lea       rcx,[rcx+rax+10]
+       vmovups   xmm0,[rcx]
+       vmovups   xmm1,[rcx+10]
+       vmovups   xmm2,[rcx+20]
+       vmovups   xmm3,[rcx+30]
+       mov       rcx,[rbx+10]
+       cmp       esi,[rcx+8]
+       jae       near ptr M00_L03
+       lea       rdi,[rcx+rax+10]
+       vunpcklps xmm4,xmm0,xmm2
+       vunpcklps xmm5,xmm1,xmm3
+       vunpckhps xmm0,xmm0,xmm2
+       vunpckhps xmm1,xmm1,xmm3
+       vunpcklps xmm2,xmm4,xmm5
+       vunpckhps xmm3,xmm4,xmm5
+       vunpcklps xmm4,xmm0,xmm1
+       vunpckhps xmm0,xmm0,xmm1
+       vpshufd   xmm1,xmm4,50
+       vpshufd   xmm5,xmm0,0EE
+       vpshufd   xmm16,xmm2,50
+       vpshufd   xmm17,xmm3,0EE
+       vshufps   xmm18,xmm4,xmm2,88
+       vshufps   xmm19,xmm0,xmm3,0DD
+       vmulps    xmm1,xmm1,xmm5
+       vmulps    xmm16,xmm17,xmm16
+       vmulps    xmm18,xmm18,xmm19
+       vpshufd   xmm5,xmm4,0EE
+       vpshufd   xmm17,xmm0,50
+       vpshufd   xmm19,xmm2,0EE
+       vpshufd   xmm20,xmm3,50
+       vshufps   xmm21,xmm4,xmm2,0DD
+       vshufps   xmm22,xmm0,xmm3,88
+       vxorps    xmm17,xmm17,xmm6
+       vfmadd231ps xmm1,xmm17,xmm5
+       vxorps    xmm20,xmm20,xmm6
+       vfmadd231ps xmm16,xmm20,xmm19
+       vxorps    xmm22,xmm22,xmm6
+       vfmadd231ps xmm18,xmm22,xmm21
+       vshufps   xmm20,xmm1,xmm18,5D
+       vshufps   xmm17,xmm16,xmm18,0FD
+       vshufps   xmm5,xmm20,xmm1,32
+       vshufps   xmm20,xmm20,xmm1,99
+       vshufps   xmm22,xmm17,xmm16,32
+       vshufps   xmm17,xmm17,xmm16,99
+       vpshufd   xmm19,xmm3,49
+       vpshufd   xmm21,xmm2,12
+       vpshufd   xmm23,xmm0,49
+       vpshufd   xmm8,xmm4,12
+       vmulps    xmm9,xmm19,xmm5
+       vmulps    xmm10,xmm20,xmm21
+       vmulps    xmm11,xmm23,xmm22
+       vmulps    xmm8,xmm17,xmm8
+       vshufps   xmm20,xmm1,xmm18,4
+       vshufps   xmm17,xmm16,xmm18,0A4
+       vshufps   xmm5,xmm1,xmm20,93
+       vshufps   xmm20,xmm1,xmm20,26
+       vshufps   xmm22,xmm16,xmm17,93
+       vshufps   xmm17,xmm16,xmm17,26
+       vpshufd   xmm19,xmm3,9E
+       vpshufd   xmm21,xmm2,7B
+       vpshufd   xmm23,xmm0,9E
+       vpshufd   xmm24,xmm4,7B
+       vxorps    xmm5,xmm6,xmm5
+       vfmadd231ps xmm9,xmm5,xmm19
+       vxorps    xmm20,xmm20,xmm6
+       vfmadd231ps xmm10,xmm20,xmm21
+       vxorps    xmm22,xmm22,xmm6
+       vfmadd231ps xmm11,xmm22,xmm23
+       vxorps    xmm17,xmm17,xmm6
+       vfmadd231ps xmm8,xmm17,xmm24
+       vshufps   xmm19,xmm1,xmm18,4A
+       vpshufd   xmm5,xmm19,2C
+       vshufps   xmm21,xmm1,xmm18,4C
+       vpshufd   xmm20,xmm21,93
+       vshufps   xmm23,xmm16,xmm18,0EA
+       vpshufd   xmm22,xmm23,2C
+       vshufps   xmm24,xmm16,xmm18,0EC
+       vpshufd   xmm17,xmm24,93
+       vpshufd   xmm19,xmm3,33
+       vpshufd   xmm21,xmm2,8D
+       vpshufd   xmm23,xmm0,33
+       vpshufd   xmm24,xmm4,8D
+       vmulps    xmm19,xmm19,xmm5
+       vmulps    xmm21,xmm20,xmm21
+       vmulps    xmm23,xmm23,xmm22
+       vmulps    xmm24,xmm17,xmm24
+       vsubps    xmm0,xmm9,xmm19
+       vaddps    xmm9,xmm19,xmm9
+       vaddps    xmm1,xmm21,xmm10
+       vsubps    xmm10,xmm10,xmm21
+       vsubps    xmm3,xmm11,xmm23
+       vaddps    xmm11,xmm23,xmm11
+       vaddps    xmm4,xmm24,xmm8
+       vsubps    xmm8,xmm8,xmm24
+       vshufps   xmm0,xmm9,xmm0,0D8
+       vpshufd   xmm9,xmm0,0D8
+       vshufps   xmm0,xmm10,xmm1,0D8
+       vpshufd   xmm10,xmm0,0D8
+       vshufps   xmm0,xmm11,xmm3,0D8
+       vpshufd   xmm11,xmm0,0D8
+       vshufps   xmm0,xmm8,xmm4,0D8
+       vpshufd   xmm8,xmm0,0D8
+       vmulps    xmm0,xmm9,xmm2
+       vpermilps xmm1,xmm0,0B1
+       vaddps    xmm0,xmm1,xmm0
+       vpermilps xmm1,xmm0,4E
+       vaddps    xmm12,xmm1,xmm0
+       vandps    xmm0,xmm12,[7FFEA6E6DCB0]
+       vucomiss  xmm7,xmm0
+       jb        short M00_L02
+M00_L01:
+       inc       esi
+       cmp       esi,186A0
+       jl        near ptr M00_L00
+       vmovaps   xmm6,[rsp+80]
+       vmovaps   xmm7,[rsp+70]
+       vmovaps   xmm8,[rsp+60]
+       vmovaps   xmm9,[rsp+50]
+       vmovaps   xmm10,[rsp+40]
+       vmovaps   xmm11,[rsp+30]
+       vmovaps   xmm12,[rsp+20]
+       add       rsp,90
+       pop       rbx
+       pop       rsi
+       pop       rdi
+       ret
+M00_L02:
+       mov       rcx,offset MT_System.Numerics.Vec4<System.Single>
+       call      System.Runtime.CompilerServices.StaticsHelpers.GetGCStaticBase(System.Runtime.CompilerServices.MethodTable*)
+       mov       rax,29E243C84B0
+       vmovups   xmm0,[rax]
+       vbroadcastss xmm1,xmm12
+       vdivps    xmm0,xmm0,xmm1
+       vmulps    xmm1,xmm9,xmm0
+       vmovups   [rdi],xmm1
+       vmulps    xmm1,xmm10,xmm0
+       vmovups   [rdi+10],xmm1
+       vmulps    xmm1,xmm11,xmm0
+       vmovups   [rdi+20],xmm1
+       vmulps    xmm0,xmm8,xmm0
+       vmovups   [rdi+30],xmm0
+       jmp       near ptr M00_L01
+M00_L03:
+       call      Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
+       int       3
+; Total bytes of code 895
+
+; System.Runtime.CompilerServices.StaticsHelpers.GetGCStaticBase(System.Runtime.CompilerServices.MethodTable*)
+       mov       rax,[rcx+20]
+       mov       rax,[rax-18]
+       mov       rdx,rax
+       test      dl,1
+       jne       short M01_L00
+       ret
+M01_L00:
+       jmp       qword ptr [7FFEA66A5B48]; System.Runtime.CompilerServices.StaticsHelpers.GetGCStaticBaseSlow(System.Runtime.CompilerServices.MethodTable*)
+; Total bytes of code 23
 ```
 
 ```assembly

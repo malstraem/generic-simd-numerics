@@ -15,10 +15,13 @@ public class StressConversionVec4<T1, T2> : BaseBench<T1>
 
     public StressConversionVec4()
     {
+        var t1 = Vec4<T1>.Gen(T1.One);
+        var t2 = t1.As<T2>();
+
         for (int i = 0; i < Count; i++)
         {
-            vecs[i] = Vec4<T1>.Gen(T1.One);
-            converted[i] = vecs[i].As<T2>();
+            vecs[i] = t1;
+            converted[i] = t2;
         }
     }
 
@@ -81,8 +84,10 @@ public abstract class BaseStressVec4<T> : BaseBench<T>
 
     public BaseStressVec4()
     {
+        var v = Vec4<T>.Gen(T.One);
+
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vec4<T>.Gen(T.One);
+            vecs[i] = v;
     }
 
     [Benchmark]

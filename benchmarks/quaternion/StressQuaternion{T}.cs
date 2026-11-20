@@ -14,8 +14,17 @@ public class StressQuaternion<T> : BaseBench<T>
 
     public StressQuaternion()
     {
-        for (int i = 0; i < Count; i++)
-            quats[i] = Quat<T>.Rand().Silk();
+        // for spherical slerp way
+        var s1 = T.CreateTruncating(0.1);
+        var s2 = T.CreateTruncating(0.5);
+        var q1 = new Quat<T>(s1, s1, s1, s1).Silk();
+        var q2 = new Quat<T>(s2, s2, s2, s2).Silk();
+
+        for (int i = 0; i < Count - 1; i += 2)
+        {
+            quats[i] = q1;
+            quats[i + 1] = q2;
+        }
     }
 
     [Benchmark]

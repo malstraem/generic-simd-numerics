@@ -5,7 +5,11 @@ public partial struct Rect<T>(Vec2<T> min, Vec2<T> max) :
     IEqualityOperators<Rect<T>, Rect<T>, bool>
         where T : unmanaged, INumber<T>
 {
-    public Vec2<T> Min = min, Max = max;
+    /// <summary>Origin point.</summary>
+    public Vec2<T> Min = min;
+
+    /// <summary>Max point.</summary>
+    public Vec2<T> Max = max;
 
     public Rect(T ox, T oy, T mx, T my) : this(new(ox, oy), new(mx, my)) { }
 

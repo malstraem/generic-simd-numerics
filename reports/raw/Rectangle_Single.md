@@ -5,10 +5,81 @@ BenchmarkDotNet v0.16.0-nightly.20261117.686, Windows 11 (10.0.26300.9974)
 AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
 ```
 
-| Method   | Mean      | Error    | StdDev   | Code Size |
-|--------- |----------:|---------:|---------:|----------:|
-| Contains | 134.54 μs | 0.353 μs | 0.313 μs |     192 B |
-| Area     |  25.93 μs | 0.171 μs | 0.160 μs |      71 B |
+| Method     | Mean      | Error    | StdDev   | Code Size |
+|----------- |----------:|---------:|---------:|----------:|
+| Intersects | 130.70 μs | 0.767 μs | 0.680 μs |     237 B |
+| Contains   | 134.25 μs | 0.222 μs | 0.197 μs |     192 B |
+| Area       |  26.10 μs | 0.220 μs | 0.195 μs |      71 B |
+
+```assembly
+; System.Numerics.Bench.StressRectangle`1[[System.Single, System.Private.CoreLib]].Intersects()
+       xor       eax,eax
+       mov       rcx,240BC400BB8
+       mov       rcx,[rcx]
+       mov       rdx,240BC400BC0
+       mov       rdx,[rdx]
+       jmp       short M00_L02
+M00_L00:
+       mov       r10d,1
+M00_L01:
+       mov       [r9+r8+10],r10b
+       cmp       eax,1869F
+       jge       near ptr M00_L05
+M00_L02:
+       mov       r8d,eax
+       mov       r10,r8
+       shl       r10,4
+       lea       r10,[rcx+r10+10]
+       vmovss    xmm0,dword ptr [r10]
+       vmovss    xmm1,dword ptr [r10+4]
+       vmovss    xmm2,dword ptr [r10+8]
+       vmovss    xmm3,dword ptr [r10+0C]
+       inc       eax
+       mov       r10d,eax
+       shl       r10,4
+       lea       r10,[rcx+r10+10]
+       vmovss    xmm4,dword ptr [r10]
+       vmovss    xmm5,dword ptr [r10+4]
+       vmovss    xmm16,dword ptr [r10+8]
+       vmovss    xmm17,dword ptr [r10+0C]
+       vaddss    xmm2,xmm0,xmm2
+       vaddss    xmm3,xmm1,xmm3
+       vucomiss  xmm4,xmm0
+       jb        short M00_L06
+       vucomiss  xmm5,xmm1
+       jb        short M00_L06
+       vucomiss  xmm2,xmm4
+       jb        short M00_L06
+       vucomiss  xmm3,xmm5
+       setae     r10b
+       movzx     r10d,r10b
+M00_L03:
+       mov       r9,rdx
+       test      r10d,r10d
+       jne       near ptr M00_L00
+       vaddss    xmm2,xmm16,xmm4
+       vaddss    xmm3,xmm17,xmm5
+       vucomiss  xmm0,xmm4
+       jb        short M00_L07
+       vucomiss  xmm1,xmm5
+       jb        short M00_L07
+       vucomiss  xmm2,xmm0
+       jb        short M00_L07
+       vucomiss  xmm3,xmm1
+       setae     r10b
+       movzx     r10d,r10b
+M00_L04:
+       jmp       near ptr M00_L01
+M00_L05:
+       ret
+M00_L06:
+       xor       r10d,r10d
+       jmp       short M00_L03
+M00_L07:
+       xor       r10d,r10d
+       jmp       short M00_L04
+; Total bytes of code 237
+```
 
 ```assembly
 ; System.Numerics.Bench.StressRectangle`1[[System.Single, System.Private.CoreLib]].Contains()

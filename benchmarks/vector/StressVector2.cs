@@ -9,8 +9,10 @@ public class StressVector2 : BaseBench<float>
 
     public StressVector2()
     {
+        var v = Vec2<float>.Gen(1f).System();
+
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vec2<float>.Gen(1f).System();
+            vecs[i] = v;
     }
 
     [Benchmark]

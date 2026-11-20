@@ -192,7 +192,6 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
         var expected = system ? (Matrix4x4.CreateScale(s.System())
                                * Matrix4x4.CreateFromQuaternion(r.System())
                                * Matrix4x4.CreateTranslation(t.System())).Mat44<T>()
-
                               : (Matrix4X4.CreateScale(s.Silk())
                                * Matrix4X4.CreateFromQuaternion(r.Silk())
                                * Matrix4X4.CreateTranslation(t.Silk())).Mat44();

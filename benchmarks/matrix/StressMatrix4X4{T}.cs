@@ -55,13 +55,14 @@ public class StressMatrix4X4WithQuaternion<T> : BaseStressMatrix4X4<T>
     {
         var q = Quat<T>.Rand().Silk();
         var v = Vec3<T>.Gen(T.One).Silk();
-
+#pragma warning disable format
+        // determinant > eps
         var invert = new Mat44<T>(
-            T.CreateTruncating(0.74999994), T.CreateTruncating(-0.216506317), T.CreateTruncating(0.62499994), T.Zero,
-            T.CreateTruncating(0.433012635), T.CreateTruncating(0.87499994), T.CreateTruncating(-0.216506317), T.Zero,
-            T.CreateTruncating(-0.49999997), T.CreateTruncating(0.433012635), T.CreateTruncating(0.74999994), T.Zero,
-            T.Zero, T.Zero, T.Zero, T.CreateTruncating(0.99999994)).Silk();
-
+            T.CreateTruncating(0.5),  T.CreateTruncating(-0.1), T.CreateTruncating(0.6),  T.Zero,
+            T.CreateTruncating(0.4),  T.CreateTruncating(0.8),  T.CreateTruncating(-0.2), T.Zero,
+            T.CreateTruncating(-0.5), T.CreateTruncating(0.4),  T.CreateTruncating(0.3),  T.Zero,
+            T.Zero,                   T.Zero,                   T.Zero,                   T.CreateTruncating(0.7)).Silk();
+#pragma warning restore format
         for (int i = 0; i < Count; i++)
         {
             quats[i] = q;
@@ -71,12 +72,12 @@ public class StressMatrix4X4WithQuaternion<T> : BaseStressMatrix4X4<T>
         }
     }
 
-    [Benchmark]
-    public void Invert()
-    {
-        for (int i = 0; i < Count; i++)
-            _ = Matrix4X4.Invert(mats[i], out @out[i]);
-    }
+    //[Benchmark]
+    //public void Invert()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        _ = Matrix4X4.Invert(mats[i], out @out[i]);
+    //}
 
     //[Benchmark]
     //public void Rotation()
@@ -92,12 +93,14 @@ public class StressMatrix4X4WithQuaternion<T> : BaseStressMatrix4X4<T>
     //        @out[i] = Matrix4X4.Transform(mats[i], quats[i]);
     //}
 
-    //[Benchmark]
-    //public void Affine()
-    //{
-    //    for (int i = 0; i < Count; i++)
-    //        @out[i] = Matrix4X4.Transform(Matrix4X4.CreateScale(scales[i]), quats[i]) * Matrix4X4.CreateTranslation(positions[i]);
-    //}
+    [Benchmark]
+    public void Affine()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Matrix4X4.Transform(Matrix4X4.CreateScale(scales[i]), quats[i]) * Matrix4X4.CreateTranslation(positions[i]);
+
+        // Matrix4X4.CreateFromQuaternion * Matrix4X4.CreateScale * Matrix4X4.CreateTranslation for slower, so this is a tiny trick
+    }
 }
 
 [GenericTypeArguments(typeof(byte))]
@@ -115,8 +118,10 @@ public abstract class BaseStressMatrix4X4<T> : BaseBench<T>
 
     public BaseStressMatrix4X4()
     {
+        var m = Mat44<T>.Gen(T.One).Silk();
+
         for (int i = 0; i < Count; i++)
-            mats[i] = Mat44<T>.Gen(T.One).Silk();
+            mats[i] = m;
     }
 
     //[Benchmark]

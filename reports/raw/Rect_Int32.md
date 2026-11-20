@@ -7,18 +7,18 @@ AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
 
 | Method     | Mean     | Error    | StdDev   | Code Size |
 |----------- |---------:|---------:|---------:|----------:|
-| Intersects | 65.93 μs | 0.598 μs | 0.560 μs |     122 B |
-| Contains   | 61.33 μs | 0.400 μs | 0.374 μs |     116 B |
-| Area       | 25.51 μs | 0.168 μs | 0.157 μs |      77 B |
+| Intersects | 66.33 μs | 0.282 μs | 0.264 μs |     121 B |
+| Contains   | 61.26 μs | 0.247 μs | 0.219 μs |     116 B |
+| Area       | 25.96 μs | 0.095 μs | 0.080 μs |      75 B |
 
 ```assembly
 ; System.Numerics.Bench.StressRect`1[[System.Int32, System.Private.CoreLib]].Intersects()
        xor       eax,eax
-       mov       rcx,207C3000BB8
+       mov       rcx,1845EC00BB8
        mov       rcx,[rcx]
-       mov       rdx,207C3000BC0
+       mov       rdx,1845EC00BC0
        mov       rdx,[rdx]
-       mov       r8,207A42D3080
+       mov       r8,184242D30A8
        vmovups   xmm0,[r8]
 M00_L00:
        mov       r8d,eax
@@ -30,7 +30,7 @@ M00_L00:
        shl       r9,4
        vmovups   xmm1,[rcx+r9+10]
        vmovups   xmm2,[r10]
-       vpermilps xmm2,xmm2,4E
+       vpshufd   xmm2,xmm2,4E
        vpmulld   xmm2,xmm2,xmm0
        vpmulld   xmm1,xmm0,xmm1
        vpcmpgtd  k1,xmm2,xmm1
@@ -40,17 +40,17 @@ M00_L00:
        cmp       eax,1869F
        jl        short M00_L00
        ret
-; Total bytes of code 122
+; Total bytes of code 121
 ```
 
 ```assembly
 ; System.Numerics.Bench.StressRect`1[[System.Int32, System.Private.CoreLib]].Contains()
        xor       eax,eax
-       mov       rcx,28BDE800BB8
+       mov       rcx,13AC0000BB8
        mov       rcx,[rcx]
-       mov       rdx,28BDE800BC0
+       mov       rdx,13AC0000BC0
        mov       rdx,[rdx]
-       mov       r8,28BA42D2F60
+       mov       r8,13AA42D3070
        vmovups   xmm0,[r8]
 M00_L00:
        mov       r8d,eax
@@ -76,22 +76,22 @@ M00_L00:
 
 ```assembly
 ; System.Numerics.Bench.StressRect`1[[System.Int32, System.Private.CoreLib]].Area()
-       mov       rax,202A4400BB8
+       mov       rax,25762800BB8
        mov       rax,[rax]
-       mov       rcx,202A4400BD8
+       mov       rcx,25762800BD8
        mov       rcx,[rcx]
        xor       edx,edx
-       mov       r8d,1869F
+       mov       r8d,186A0
 M00_L00:
        vmovups   xmm0,[rax+rdx*4+10]
-       vpermilps xmm1,xmm0,4E
+       vpshufd   xmm1,xmm0,4E
        vpsubd    xmm0,xmm1,xmm0
-       vpermilps xmm1,xmm0,0F5
+       vpshufd   xmm1,xmm0,0F5
        vpmulld   xmm0,xmm1,xmm0
        vmovd     dword ptr [rcx+rdx+10],xmm0
        add       rdx,4
        dec       r8d
        jne       short M00_L00
        ret
-; Total bytes of code 77
+; Total bytes of code 75
 ```

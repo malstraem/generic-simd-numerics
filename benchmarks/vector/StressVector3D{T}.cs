@@ -46,8 +46,10 @@ public abstract class BaseStressVector3D<T> : BaseBench<T>
 
     public BaseStressVector3D()
     {
+        var v = Vec3<T>.Gen(T.One).Silk();
+
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vec3<T>.Gen(T.One).Silk();
+            vecs[i] = v;
     }
 
     [Benchmark]

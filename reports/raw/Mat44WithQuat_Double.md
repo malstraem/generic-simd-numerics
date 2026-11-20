@@ -11,6 +11,7 @@ AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
 | Subtract  | 212.7 μs | 3.70 μs | 3.46 μs |     144 B |
 | Multiply  | 334.9 μs | 0.57 μs | 0.47 μs |     490 B |
 | Transpose | 233.3 μs | 1.04 μs | 0.97 μs |     173 B |
+| Invert    | 436.3 μs | 1.53 μs | 1.43 μs |   1,317 B |
 | Rotation  | 275.9 μs | 1.27 μs | 1.18 μs |     381 B |
 | Transform | 494.3 μs | 4.54 μs | 4.24 μs |     479 B |
 | Affine    | 348.4 μs | 2.11 μs | 1.97 μs |     495 B |
@@ -240,6 +241,243 @@ M00_L01:
        call      Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
        int       3
 ; Total bytes of code 173
+```
+
+```assembly
+; System.Numerics.Bench.StressMat44WithQuat`1[[System.Double, System.Private.CoreLib]].Invert()
+       sub       rsp,88
+       vmovaps   [rsp+70],xmm6
+       vmovaps   [rsp+60],xmm7
+       vmovaps   [rsp+50],xmm8
+       vmovaps   [rsp+40],xmm9
+       vmovaps   [rsp+30],xmm10
+       vmovaps   [rsp+20],xmm11
+       vmovsd    xmm0,qword ptr [7FFEA6E58FC8]
+       xor       eax,eax
+M00_L00:
+       mov       rdx,[rcx+8]
+       cmp       eax,[rdx+8]
+       jae       near ptr M00_L03
+       mov       r8,rax
+       shl       r8,7
+       lea       rdx,[rdx+r8+10]
+       vmovsd    xmm1,qword ptr [rdx]
+       vmovsd    xmm2,qword ptr [rdx+8]
+       vmovsd    xmm3,qword ptr [rdx+10]
+       vmovsd    xmm4,qword ptr [rdx+18]
+       vmovsd    xmm5,qword ptr [rdx+20]
+       vmovsd    xmm16,qword ptr [rdx+28]
+       vmovsd    xmm17,qword ptr [rdx+30]
+       vmovsd    xmm18,qword ptr [rdx+38]
+       vmovsd    xmm19,qword ptr [rdx+40]
+       vmovsd    xmm20,qword ptr [rdx+48]
+       vmovsd    xmm21,qword ptr [rdx+50]
+       vmovsd    xmm22,qword ptr [rdx+58]
+       vmovsd    xmm23,qword ptr [rdx+60]
+       vmovsd    xmm24,qword ptr [rdx+68]
+       vmovsd    xmm25,qword ptr [rdx+70]
+       vmovsd    xmm26,qword ptr [rdx+78]
+       mov       rdx,[rcx+10]
+       cmp       eax,[rdx+8]
+       jae       near ptr M00_L03
+       lea       rdx,[rdx+r8+10]
+       vmulsd    xmm27,xmm21,xmm26
+       vmulsd    xmm28,xmm22,xmm25
+       vsubsd    xmm27,xmm27,xmm28
+       vmulsd    xmm28,xmm20,xmm26
+       vmulsd    xmm29,xmm22,xmm24
+       vsubsd    xmm28,xmm28,xmm29
+       vmulsd    xmm29,xmm20,xmm25
+       vmulsd    xmm30,xmm21,xmm24
+       vsubsd    xmm29,xmm29,xmm30
+       vmulsd    xmm30,xmm19,xmm26
+       vmulsd    xmm31,xmm22,xmm23
+       vsubsd    xmm30,xmm30,xmm31
+       vmulsd    xmm31,xmm19,xmm25
+       vmulsd    xmm6,xmm21,xmm23
+       vsubsd    xmm31,xmm31,xmm6
+       vmulsd    xmm6,xmm19,xmm24
+       vmulsd    xmm7,xmm20,xmm23
+       vsubsd    xmm6,xmm6,xmm7
+       vmulsd    xmm7,xmm16,xmm27
+       vmulsd    xmm8,xmm17,xmm28
+       vsubsd    xmm7,xmm7,xmm8
+       vmulsd    xmm8,xmm18,xmm29
+       vaddsd    xmm7,xmm8,xmm7
+       vmovsd    qword ptr [rdx],xmm7
+       vmulsd    xmm8,xmm27,xmm5
+       vmulsd    xmm9,xmm17,xmm30
+       vsubsd    xmm8,xmm8,xmm9
+       vmulsd    xmm9,xmm18,xmm31
+       vaddsd    xmm8,xmm8,xmm9
+       vxorps    xmm8,xmm8,[7FFEA6E58FD0]
+       vmovsd    qword ptr [rdx+20],xmm8
+       vmulsd    xmm9,xmm28,xmm5
+       vmulsd    xmm10,xmm16,xmm30
+       vsubsd    xmm9,xmm9,xmm10
+       vmulsd    xmm10,xmm18,xmm6
+       vaddsd    xmm9,xmm9,xmm10
+       vmovsd    qword ptr [rdx+40],xmm9
+       vmulsd    xmm10,xmm29,xmm5
+       vmulsd    xmm11,xmm16,xmm31
+       vsubsd    xmm10,xmm10,xmm11
+       vmulsd    xmm11,xmm17,xmm6
+       vaddsd    xmm10,xmm10,xmm11
+       vxorps    xmm10,xmm10,[7FFEA6E58FE0]
+       vmovsd    qword ptr [rdx+60],xmm10
+       vmulsd    xmm7,xmm1,xmm7
+       vmulsd    xmm8,xmm8,xmm2
+       vaddsd    xmm7,xmm8,xmm7
+       vmulsd    xmm8,xmm9,xmm3
+       vaddsd    xmm7,xmm8,xmm7
+       vmulsd    xmm8,xmm10,xmm4
+       vaddsd    xmm7,xmm8,xmm7
+       vandps    xmm8,xmm7,[7FFEA6E58FF0]
+       vucomisd  xmm0,xmm8
+       jb        short M00_L02
+M00_L01:
+       inc       eax
+       cmp       eax,186A0
+       jl        near ptr M00_L00
+       vzeroupper
+       vmovaps   xmm6,[rsp+70]
+       vmovaps   xmm7,[rsp+60]
+       vmovaps   xmm8,[rsp+50]
+       vmovaps   xmm9,[rsp+40]
+       vmovaps   xmm10,[rsp+30]
+       vmovaps   xmm11,[rsp+20]
+       add       rsp,88
+       ret
+M00_L02:
+       vmulsd    xmm8,xmm27,xmm2
+       vmulsd    xmm9,xmm28,xmm3
+       vsubsd    xmm8,xmm8,xmm9
+       vmulsd    xmm9,xmm29,xmm4
+       vaddsd    xmm8,xmm8,xmm9
+       vxorps    xmm8,xmm8,[7FFEA6E59000]
+       vmovsd    qword ptr [rdx+8],xmm8
+       vmulsd    xmm27,xmm27,xmm1
+       vmulsd    xmm8,xmm30,xmm3
+       vsubsd    xmm27,xmm27,xmm8
+       vmulsd    xmm8,xmm31,xmm4
+       vaddsd    xmm27,xmm27,xmm8
+       vmovsd    qword ptr [rdx+28],xmm27
+       vmulsd    xmm28,xmm28,xmm1
+       vmulsd    xmm30,xmm30,xmm2
+       vsubsd    xmm27,xmm28,xmm30
+       vmulsd    xmm28,xmm4,xmm6
+       vaddsd    xmm27,xmm27,xmm28
+       vxorps    xmm27,xmm27,[7FFEA6E59010]
+       vmovsd    qword ptr [rdx+48],xmm27
+       vmulsd    xmm29,xmm29,xmm1
+       vmulsd    xmm31,xmm31,xmm2
+       vsubsd    xmm27,xmm29,xmm31
+       vmulsd    xmm28,xmm3,xmm6
+       vaddsd    xmm27,xmm27,xmm28
+       vmovsd    qword ptr [rdx+68],xmm27
+       vmulsd    xmm27,xmm17,xmm26
+       vmulsd    xmm28,xmm18,xmm25
+       vsubsd    xmm27,xmm27,xmm28
+       vmulsd    xmm28,xmm16,xmm26
+       vmulsd    xmm29,xmm18,xmm24
+       vsubsd    xmm28,xmm28,xmm29
+       vmulsd    xmm29,xmm16,xmm25
+       vmulsd    xmm30,xmm17,xmm24
+       vsubsd    xmm29,xmm29,xmm30
+       vmulsd    xmm26,xmm26,xmm5
+       vmulsd    xmm30,xmm18,xmm23
+       vsubsd    xmm30,xmm26,xmm30
+       vmulsd    xmm25,xmm25,xmm5
+       vmulsd    xmm26,xmm17,xmm23
+       vsubsd    xmm31,xmm25,xmm26
+       vmulsd    xmm24,xmm24,xmm5
+       vmulsd    xmm23,xmm16,xmm23
+       vsubsd    xmm6,xmm24,xmm23
+       vmulsd    xmm23,xmm27,xmm2
+       vmulsd    xmm24,xmm28,xmm3
+       vsubsd    xmm23,xmm23,xmm24
+       vmulsd    xmm24,xmm29,xmm4
+       vaddsd    xmm23,xmm23,xmm24
+       vmovsd    qword ptr [rdx+10],xmm23
+       vmulsd    xmm27,xmm27,xmm1
+       vmulsd    xmm23,xmm30,xmm3
+       vsubsd    xmm23,xmm27,xmm23
+       vmulsd    xmm24,xmm31,xmm4
+       vaddsd    xmm23,xmm23,xmm24
+       vxorps    xmm23,xmm23,[7FFEA6E59020]
+       vmovsd    qword ptr [rdx+30],xmm23
+       vmulsd    xmm28,xmm28,xmm1
+       vmulsd    xmm30,xmm30,xmm2
+       vsubsd    xmm23,xmm28,xmm30
+       vmulsd    xmm24,xmm4,xmm6
+       vaddsd    xmm23,xmm23,xmm24
+       vmovsd    qword ptr [rdx+50],xmm23
+       vmulsd    xmm29,xmm29,xmm1
+       vmulsd    xmm31,xmm31,xmm2
+       vsubsd    xmm23,xmm29,xmm31
+       vmulsd    xmm24,xmm3,xmm6
+       vaddsd    xmm23,xmm23,xmm24
+       vxorps    xmm23,xmm23,[7FFEA6E59030]
+       vmovsd    qword ptr [rdx+70],xmm23
+       vmulsd    xmm23,xmm17,xmm22
+       vmulsd    xmm24,xmm18,xmm21
+       vsubsd    xmm27,xmm23,xmm24
+       vmulsd    xmm23,xmm16,xmm22
+       vmulsd    xmm24,xmm18,xmm20
+       vsubsd    xmm28,xmm23,xmm24
+       vmulsd    xmm23,xmm16,xmm21
+       vmulsd    xmm24,xmm17,xmm20
+       vsubsd    xmm29,xmm23,xmm24
+       vmulsd    xmm22,xmm22,xmm5
+       vmulsd    xmm18,xmm18,xmm19
+       vsubsd    xmm30,xmm22,xmm18
+       vmulsd    xmm18,xmm21,xmm5
+       vmulsd    xmm17,xmm17,xmm19
+       vsubsd    xmm31,xmm18,xmm17
+       vmulsd    xmm5,xmm20,xmm5
+       vmulsd    xmm16,xmm16,xmm19
+       vsubsd    xmm6,xmm5,xmm16
+       vmulsd    xmm5,xmm27,xmm2
+       vmulsd    xmm16,xmm28,xmm3
+       vsubsd    xmm5,xmm5,xmm16
+       vmulsd    xmm16,xmm29,xmm4
+       vaddsd    xmm5,xmm16,xmm5
+       vxorps    xmm5,xmm5,[7FFEA6E59040]
+       vmovsd    qword ptr [rdx+18],xmm5
+       vmulsd    xmm5,xmm27,xmm1
+       vmulsd    xmm16,xmm30,xmm3
+       vsubsd    xmm5,xmm5,xmm16
+       vmulsd    xmm16,xmm31,xmm4
+       vaddsd    xmm5,xmm16,xmm5
+       vmovsd    qword ptr [rdx+38],xmm5
+       vmulsd    xmm5,xmm28,xmm1
+       vmulsd    xmm16,xmm30,xmm2
+       vsubsd    xmm5,xmm5,xmm16
+       vmulsd    xmm4,xmm4,xmm6
+       vaddsd    xmm4,xmm5,xmm4
+       vxorps    xmm4,xmm4,[7FFEA6E59050]
+       vmovsd    qword ptr [rdx+58],xmm4
+       vmulsd    xmm1,xmm29,xmm1
+       vmulsd    xmm2,xmm31,xmm2
+       vsubsd    xmm1,xmm1,xmm2
+       vmulsd    xmm2,xmm3,xmm6
+       vaddsd    xmm1,xmm1,xmm2
+       vmovsd    qword ptr [rdx+78],xmm1
+       vmovups   zmm1,[rdx]
+       vmovups   zmm2,[rdx+40]
+       vmovsd    xmm3,qword ptr [7FFEA6E59060]
+       vdivsd    xmm3,xmm3,xmm7
+       vbroadcastsd zmm4,xmm3
+       vmulpd    zmm1,zmm4,zmm1
+       vmovups   [rdx],zmm1
+       vbroadcastsd zmm1,xmm3
+       vmulpd    zmm1,zmm1,zmm2
+       vmovups   [rdx+40],zmm1
+       jmp       near ptr M00_L01
+M00_L03:
+       call      Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowIndexOutOfRangeException()
+       int       3
+; Total bytes of code 1317
 ```
 
 ```assembly

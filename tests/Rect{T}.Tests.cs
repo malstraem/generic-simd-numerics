@@ -40,15 +40,31 @@ public class RectBase<T>
        a = Rect<T>.Gen(T.One),
        b = Rect<T>.Gen(T.One + T.One);
 
+    [Test, DisplayName("intersects")]
+    public async Task Intersects()
+    {
+        bool contains = a.Intersects(b);
+
+        await Assert.That(contains).IsEqualTo(Rect.Intersects(a, b));
+
+        var sa = a.Silk();
+        var sb = b.Silk();
+
+        bool expected = sa.Contains(sb.Origin) || sa.Contains(sb.Max);
+
+        await Assert.That(contains).IsEqualTo(expected);
+    }
+
     [Test, DisplayName("contains")]
     public async Task Contains()
     {
         bool contains = a.Contains(b);
 
+        await Assert.That(contains).IsEqualTo(Rect.Contains(a, b));
+
         bool expected = a.Silk().Contains(b.Silk());
 
         await Assert.That(contains).IsEqualTo(expected);
-        await Assert.That(contains).IsEqualTo(Rect.Contains(a, b));
     }
 
     [Test, DisplayName("contains (point)")]
@@ -56,9 +72,10 @@ public class RectBase<T>
     {
         bool contains = a.Contains(point);
 
+        await Assert.That(contains).IsEqualTo(Rect.Contains(a, point));
+
         bool expected = a.Silk().Contains(point.Silk());
 
         await Assert.That(contains).IsEqualTo(expected);
-        await Assert.That(contains).IsEqualTo(Rect.Contains(a, point));
     }
 }

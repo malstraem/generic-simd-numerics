@@ -44,8 +44,10 @@ public abstract class BaseStressVec3<T> : BaseBench<T>
 
     public BaseStressVec3()
     {
+        var v = Vec3<T>.Gen(T.One);
+
         for (int i = 0; i < Count; i++)
-            vecs[i] = Vec3<T>.Gen(T.One);
+            vecs[i] = v;
     }
 
     [Benchmark]

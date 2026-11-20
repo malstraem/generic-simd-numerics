@@ -5,10 +5,86 @@ BenchmarkDotNet v0.16.0-nightly.20261117.686, Windows 11 (10.0.26300.9974)
 AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
 ```
 
-| Method   | Mean      | Error    | StdDev   | Code Size |
-|--------- |----------:|---------:|---------:|----------:|
-| Contains | 110.62 μs | 0.374 μs | 0.350 μs |     167 B |
-| Area     |  52.10 μs | 0.101 μs | 0.094 μs |      80 B |
+| Method     | Mean      | Error    | StdDev   | Code Size |
+|----------- |----------:|---------:|---------:|----------:|
+| Intersects | 117.34 μs | 1.279 μs | 1.196 μs |     198 B |
+| Contains   | 112.35 μs | 1.108 μs | 1.036 μs |     167 B |
+| Area       |  53.16 μs | 0.337 μs | 0.315 μs |      80 B |
+
+```assembly
+; System.Numerics.Bench.StressRectangle`1[[System.Int32, System.Private.CoreLib]].Intersects()
+       push      rdi
+       push      rsi
+       push      rbx
+       xor       eax,eax
+       jmp       short M00_L02
+M00_L00:
+       mov       r8d,1
+M00_L01:
+       mov       [r11+rdx+10],r8b
+       cmp       eax,1869F
+       jge       near ptr M00_L05
+M00_L02:
+       mov       rcx,2488B800BB8
+       mov       rcx,[rcx]
+       mov       edx,eax
+       mov       r8,rdx
+       shl       r8,4
+       lea       r8,[rcx+r8+10]
+       mov       r10d,[r8]
+       mov       r9d,[r8+4]
+       mov       r11d,[r8+8]
+       mov       r8d,[r8+0C]
+       inc       eax
+       mov       ebx,eax
+       shl       rbx,4
+       lea       rcx,[rcx+rbx+10]
+       mov       ebx,[rcx]
+       mov       esi,[rcx+4]
+       mov       edi,[rcx+8]
+       mov       ecx,[rcx+0C]
+       add       r11d,r10d
+       add       r8d,r9d
+       cmp       ebx,r10d
+       jl        short M00_L06
+       cmp       esi,r9d
+       jl        short M00_L06
+       cmp       ebx,r11d
+       jg        short M00_L06
+       cmp       esi,r8d
+       setle     r8b
+       movzx     r8d,r8b
+M00_L03:
+       mov       r11,2488B800BC0
+       mov       r11,[r11]
+       test      r8d,r8d
+       jne       near ptr M00_L00
+       add       edi,ebx
+       add       ecx,esi
+       cmp       r10d,ebx
+       jl        short M00_L07
+       cmp       r9d,esi
+       jl        short M00_L07
+       cmp       r10d,edi
+       jg        short M00_L07
+       cmp       r9d,ecx
+       setle     r8b
+       movzx     r8d,r8b
+M00_L04:
+       jmp       near ptr M00_L01
+M00_L05:
+       pop       rbx
+       pop       rsi
+       pop       rdi
+       ret
+M00_L06:
+       xor       r8d,r8d
+       jmp       short M00_L03
+M00_L07:
+       xor       r8d,r8d
+       jmp       short M00_L04
+; Total bytes of code 198
+```
 
 ```assembly
 ; System.Numerics.Bench.StressRectangle`1[[System.Int32, System.Private.CoreLib]].Contains()
