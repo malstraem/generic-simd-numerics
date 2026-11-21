@@ -5,19 +5,19 @@ namespace System.Numerics;
 public partial struct Quat<T>
 {
     private static readonly Vec4<T>
-        inv1 = new(+T.One, -T.One, +T.One, -T.One),
-        inv2 = new(+T.One, +T.One, -T.One, -T.One),
-        inv3 = new(-T.One, +T.One, +T.One, -T.One),
+    inv1 = new(+T.One, -T.One, +T.One, -T.One),
+    inv2 = new(+T.One, +T.One, -T.One, -T.One),
+    inv3 = new(-T.One, +T.One, +T.One, -T.One),
 
-        conjugate = new(-T.One, -T.One, -T.One, +T.One),
+    conjugate = new(-T.One, -T.One, -T.One, +T.One),
 
-        inverseEpsilon = typeof(T) == typeof(float)
-                            ? new Vec4<T>(T.CreateChecked(MathF.BitIncrement(1f) - 1f))
-                            : new Vec4<T>(T.CreateChecked(Math.BitIncrement(1d) - 1d));
+    inverseEpsilon = typeof(T) == typeof(float)
+        ? new Vec4<T>(T.CreateChecked(MathF.BitIncrement(1f) - 1f))
+        : new Vec4<T>(T.CreateChecked(Math.BitIncrement(1d) - 1d));
 
-    internal static T slepEpsilon = typeof(T) == typeof(float)
-                                        ? T.CreateChecked(MathF.BitIncrement(1f) - 1f)
-                                        : T.CreateChecked(Math.BitIncrement(1d) - 1d);
+    internal static readonly T slerpEpsilon = typeof(T) == typeof(float)
+        ? T.CreateChecked(MathF.BitIncrement(1f) - 1f)
+        : T.CreateChecked(Math.BitIncrement(1d) - 1d);
 
     [MethodImpl(AggressiveInlining)]
     internal static Quat<T> Conjugate(Quat<T> q) => (q.Vec4() * conjugate).Quat();
@@ -60,25 +60,25 @@ public partial struct Quat<T>
     {
         var dot = a.Dot(b);
 
+        Vec4<T> cond;
+#pragma warning disable IDE0045
         if (SizeOf<T>() == 4)
         {
-            var v = Vector128.ConditionalSelect(
+            cond = Vector128.ConditionalSelect(
                 Vector128.IsPositive(Vector128.Create(dot)),
-                b.Abs().As128(),
+                +b.As128(),
                 -b.As128()
             ).Vec4();
-
-            return a.Estimate(Vec4<T>.One - am, v * am).Normalize().Quat();
         }
         else
         {
-            var v = Vector256.ConditionalSelect(
+            cond = Vector256.ConditionalSelect(
                 Vector256.IsPositive(Vector256.Create(dot)),
-                b.Abs().As256(),
+                +b.As256(),
                 -b.As256()
             ).Vec4();
-
-            return a.Estimate(Vec4<T>.One - am, v * am).Normalize().Quat();
         }
+#pragma warning restore IDE0045
+        return a.Estimate(Vec4<T>.One - am, cond * am).Normalize().Quat();
     }
 }

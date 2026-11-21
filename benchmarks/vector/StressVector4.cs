@@ -107,4 +107,18 @@ public class StressVector4 : BaseBench<float>
         for (int i = 0; i < Count; i++)
             @out[i] = Vector4.Transform(vecs[i], m);
     }
+
+    [Benchmark]
+    public void Sin()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Vector4.Cos(vecs[i]);
+    }
+
+    [Benchmark]
+    public void Cos()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Vector4.Cos(vecs[i]);
+    }
 }

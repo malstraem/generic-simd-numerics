@@ -57,19 +57,6 @@ public static partial class Vec4
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static bool Greater<T>(Vec4<T> a, Vec4<T> b)
-        where T : unmanaged, INumber<T>
-    {
-        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.GreaterThanAll(a.As128(), b.As128());
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return Vector256.GreaterThanAll(a.As256(), b.As256());
-
-        return a.X > b.X && a.Y > b.Y && a.Z > b.Z && a.W > b.W;
-    }
-
-    [MethodImpl(AggressiveInlining)]
     public static bool Less<T>(Vec4<T> a, Vec4<T> b)
         where T : unmanaged, INumber<T>
     {
@@ -80,6 +67,19 @@ public static partial class Vec4
             return Vector256.LessThanAll(a.As256(), b.As256());
 
         return a.X < b.X && a.Y < b.Y && a.Z < b.Z && a.W < b.W;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool Greater<T>(Vec4<T> a, Vec4<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.GreaterThanAll(a.As128(), b.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return Vector256.GreaterThanAll(a.As256(), b.As256());
+
+        return a.X > b.X && a.Y > b.Y && a.Z > b.Z && a.W > b.W;
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -321,6 +321,44 @@ public static partial class Vec4
             return Vector256.Sqrt(v.As256()).Vec4();
 
         return new(T.Sqrt(v.X), T.Sqrt(v.Y), T.Sqrt(v.Z), T.Sqrt(v.W));
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec4<T> Sin<T>(Vec4<T> v)
+        where T : unmanaged, INumber<T>, ITrigonometricFunctions<T>
+    {
+        /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.Sin(v.As128()).Vec4();
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return Vector256.Sin(v.As256()).Vec4(); it should be like this */
+
+        if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated && typeof(T) == typeof(float))
+            return Vector128.Sin(v.As128().As<T, float>()).As<float, T>().Vec4();
+
+        if (Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated && typeof(T) == typeof(double))
+            return Vector256.Sin(v.As256().As<T, double>()).As<double, T>().Vec4();
+
+        return new(T.Sin(v.X), T.Sin(v.Y), T.Sin(v.Z), T.Sin(v.W));
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec4<T> Cos<T>(Vec4<T> v)
+        where T : unmanaged, INumber<T>, ITrigonometricFunctions<T>
+    {
+        /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.Cos(v.As128()).Vec4();
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return Vector256.Cos(v.As256()).Vec4(); it should be like this */
+
+        if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated && typeof(T) == typeof(float))
+            return Vector128.Cos(v.As128().As<T, float>()).As<float, T>().Vec4();
+
+        if (Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated && typeof(T) == typeof(double))
+            return Vector256.Cos(v.As256().As<T, double>()).As<double, T>().Vec4();
+
+        return new(T.Cos(v.X), T.Cos(v.Y), T.Cos(v.Z), T.Cos(v.W));
     }
 
     [MethodImpl(AggressiveInlining)]

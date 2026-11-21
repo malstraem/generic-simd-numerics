@@ -9,8 +9,8 @@ public static class Vec2
     public static bool Equal<T>(Vec2<T> a, Vec2<T> b)
         where T : unmanaged, INumber<T>
     {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return a.As128() == b.As128();*/
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return a.As128() == b.As128();
 
         return a.X == b.X && a.Y == b.Y;
     }
@@ -20,8 +20,8 @@ public static class Vec2
     public static bool NotEqual<T>(Vec2<T> a, Vec2<T> b)
         where T : unmanaged, INumber<T>
     {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return a.As128() != b.As128();*/
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return a.As128() != b.As128();
 
         return a.X != b.X && a.Y != b.Y;
     }
@@ -30,8 +30,8 @@ public static class Vec2
     public static bool LessOrEqual<T>(Vec2<T> a, Vec2<T> b)
         where T : unmanaged, INumber<T>
     {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.LessThanOrEqualAll(a.As128(), b.As128());*/
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.LessThanOrEqualAll(a.As128(), b.As128());
 
         return a.X <= b.X && a.Y <= b.Y;
     }
@@ -40,38 +40,38 @@ public static class Vec2
     public static bool GreaterOrEqual<T>(Vec2<T> a, Vec2<T> b)
         where T : unmanaged, INumber<T>
     {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.GreaterThanOrEqualAll(a.As128(), b.As128());*/
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.GreaterThanOrEqualAll(a.As128(), b.As128());
 
         return a.X >= b.X && a.Y >= b.Y;
-    }
-
-    [MethodImpl(AggressiveInlining)]
-    public static bool Greater<T>(Vec2<T> a, Vec2<T> b)
-        where T : unmanaged, INumber<T>
-    {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.GreaterThanAll(a.As128(), b.As128());*/
-
-        return a.X > b.X && a.Y > b.Y;
     }
 
     [MethodImpl(AggressiveInlining)]
     public static bool Less<T>(Vec2<T> a, Vec2<T> b)
         where T : unmanaged, INumber<T>
     {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.LessThanAll(a.As128(), b.As128());*/
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.LessThanAll(a.As128(), b.As128());
 
         return a.X < b.X && a.Y < b.Y;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool Greater<T>(Vec2<T> a, Vec2<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.GreaterThanAll(a.As128(), b.As128());
+
+        return a.X > b.X && a.Y > b.Y;
     }
 
     [MethodImpl(AggressiveInlining)]
     public static Vec2<T> Add<T>(Vec2<T> v, T n)
         where T : unmanaged, INumber<T>
     {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (v.As128() + Vector128.Create(n)).Vec2();*/
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return (v.As128() + Vector128.Create(n)).Vec2();
 
         return new(v.X + n, v.Y + n);
     }
@@ -80,8 +80,8 @@ public static class Vec2
     public static Vec2<T> Subtract<T>(Vec2<T> v, T n)
         where T : unmanaged, INumber<T>
     {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (v.As128() - Vector128.Create(n)).Vec2();*/
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return (v.As128() - Vector128.Create(n)).Vec2();
 
         return new(v.X - n, v.Y - n);
     }
@@ -89,14 +89,19 @@ public static class Vec2
     [MethodImpl(AggressiveInlining)]
     public static Vec2<T> Add<T>(Vec2<T> a, Vec2<T> b)
         where T : unmanaged, INumber<T>
-            => a + b;
+    {
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return (a.As128() + b.As128()).Vec2();
+
+        return a + b;
+    }
 
     [MethodImpl(AggressiveInlining)]
     public static Vec2<T> Subtract<T>(Vec2<T> a, Vec2<T> b)
         where T : unmanaged, INumber<T>
     {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (a.As128() - b.As128()).Vec2();*/
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return (a.As128() - b.As128()).Vec2();
 
         return new(a.X - b.X, a.Y - b.Y);
     }
@@ -105,8 +110,8 @@ public static class Vec2
     public static Vec2<T> Multiply<T>(Vec2<T> v, T n)
         where T : unmanaged, INumber<T>
     {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (v.As128() * n).Vec2();*/
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return (v.As128() * n).Vec2();
 
         return new(v.X * n, v.Y * n);
     }
@@ -115,8 +120,8 @@ public static class Vec2
     public static Vec2<T> Divide<T>(Vec2<T> v, T n)
         where T : unmanaged, INumber<T>
     {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (v.As128() / n).Vec2();*/
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return (v.As128() / n).Vec2();
 
         return new(v.X / n, v.Y / n);
     }
@@ -125,8 +130,8 @@ public static class Vec2
     public static Vec2<T> Multiply<T>(Vec2<T> a, Vec2<T> b)
         where T : unmanaged, INumber<T>
     {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (a.As128() * b.As128()).Vec2();*/
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return (a.As128() * b.As128()).Vec2();
 
         return new(a.X * b.X, a.Y * b.Y);
     }
@@ -135,8 +140,8 @@ public static class Vec2
     public static Vec2<T> Divide<T>(Vec2<T> a, Vec2<T> b)
         where T : unmanaged, INumber<T>
     {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return (a.As128() / b.As128()).Vec2();*/
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return (a.As128() / b.As128()).Vec2();
 
         return new(a.X / b.X, a.Y / b.Y);
     }
@@ -145,8 +150,8 @@ public static class Vec2
     public static T Sum<T>(Vec2<T> v)
         where T : unmanaged, INumber<T>
     {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.Sum(v.As128());*/
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.Sum(v.As128());
 
         return v.X + v.Y;
     }
@@ -155,8 +160,8 @@ public static class Vec2
     public static T Dot<T>(Vec2<T> a, Vec2<T> b)
         where T : unmanaged, INumber<T>
     {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.Dot(a.As128(), b.As128());*/
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.Dot(a.As128(), b.As128());
 
         return Sum(a * b);
     }
@@ -165,8 +170,8 @@ public static class Vec2
     public static Vec2<T> Min<T>(Vec2<T> a, Vec2<T> b)
         where T : unmanaged, INumber<T>
     {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.Min(a.As128(), b.As128()).Vec2();*/
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.Min(a.As128(), b.As128()).Vec2();
 
         return new(T.Min(a.X, b.X), T.Min(a.Y, b.Y));
     }
@@ -175,8 +180,8 @@ public static class Vec2
     public static Vec2<T> Max<T>(Vec2<T> a, Vec2<T> b)
         where T : unmanaged, INumber<T>
     {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.Max(a.As128(), b.As128()).Vec2();*/
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.Max(a.As128(), b.As128()).Vec2();
 
         return new(T.Max(a.X, b.X), T.Max(a.Y, b.Y));
     }
@@ -185,8 +190,8 @@ public static class Vec2
     public static Vec2<T> Clamp<T>(Vec2<T> v, Vec2<T> min, Vec2<T> max)
         where T : unmanaged, INumber<T>
     {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.Clamp(v.As128(), min.As128(), max.As128()).Vec2();*/
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.Clamp(v.As128(), min.As128(), max.As128()).Vec2();
 
         return Min(max, Max(v, min));
     }
@@ -225,18 +230,44 @@ public static class Vec2
     public static Vec2<T> SquareRoot<T>(Vec2<T> v)
         where T : unmanaged, INumber<T>, IRootFunctions<T>
     {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.Sqrt(v.As128()).Vec2();*/
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.Sqrt(v.As128()).Vec2();
 
         return new(T.Sqrt(v.X), T.Sqrt(v.Y));
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec2<T> Sin<T>(Vec2<T> v)
+        where T : unmanaged, INumber<T>, ITrigonometricFunctions<T>
+    {
+        //if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+        //    return Vector128.Sin(v.As128()).Vec2(); it should be like this
+
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated && typeof(T) == typeof(float))
+            return Vector128.Sin(v.As128().As<T, float>()).As<float, T>().Vec2();
+
+        return new(T.Sin(v.X), T.Sin(v.Y));
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec2<T> Cos<T>(Vec2<T> v)
+        where T : unmanaged, INumber<T>, ITrigonometricFunctions<T>
+    {
+        //if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+        //    return Vector128.Cos(v.As128()).Vec2(); it should be like this
+
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated && typeof(T) == typeof(float))
+            return Vector128.Cos(v.As128().As<T, float>()).As<float, T>().Vec2();
+
+        return new(T.Cos(v.X), T.Cos(v.Y));
     }
 
     [MethodImpl(AggressiveInlining)]
     public static Vec2<T> Abs<T>(Vec2<T> v)
         where T : unmanaged, INumber<T>, ISignedNumber<T>
     {
-        /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.Abs(v.As128()).Vec2();*/
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.Abs(v.As128()).Vec2();
 
         return new(T.Abs(v.X), T.Abs(v.Y));
     }

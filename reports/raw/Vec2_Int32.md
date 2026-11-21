@@ -1,28 +1,28 @@
-## .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v4 (Job: .NET 10.0(Runtime=.NET 10.0))
+## .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
 ```
-BenchmarkDotNet v0.15.8, Windows 11 (10.0.26200.8457/25H2/2025Update/HudsonValley2)
-AMD Ryzen 9 7900X 4.70GHz, 1 CPU, 24 logical and 12 physical cores
+BenchmarkDotNet v0.16.0-nightly.20261117.686, Windows 11 (10.0.26300.9974)
+AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
 ```
 
 | Method          | Mean      | Error    | StdDev   | Code Size |
 |---------------- |----------:|---------:|---------:|----------:|
-| Add             |  76.03 μs | 0.061 μs | 0.054 μs |     104 B |
-| Subtract        |  56.60 μs | 0.083 μs | 0.077 μs |      91 B |
-| Multiply        |  58.09 μs | 0.058 μs | 0.052 μs |      93 B |
-| Divide          | 215.43 μs | 0.205 μs | 0.182 μs |      94 B |
-| Sum             |  38.77 μs | 0.030 μs | 0.025 μs |      64 B |
-| Dot             |  57.64 μs | 0.049 μs | 0.043 μs |      89 B |
-| LengthSquared   |  42.22 μs | 0.033 μs | 0.030 μs |      72 B |
-| DistanceSquared |  74.35 μs | 0.087 μs | 0.081 μs |      94 B |
+| Add             |  76.78 μs | 0.328 μs | 0.291 μs |     104 B |
+| Subtract        |  57.36 μs | 0.137 μs | 0.114 μs |      91 B |
+| Multiply        |  59.32 μs | 0.337 μs | 0.315 μs |      93 B |
+| Divide          | 217.66 μs | 0.333 μs | 0.278 μs |      94 B |
+| Sum             |  39.26 μs | 0.148 μs | 0.131 μs |      64 B |
+| Dot             |  58.42 μs | 0.303 μs | 0.284 μs |      89 B |
+| LengthSquared   |  42.99 μs | 0.282 μs | 0.264 μs |      72 B |
+| DistanceSquared |  75.15 μs | 0.580 μs | 0.542 μs |      94 B |
 
 ```assembly
-; System.Numerics.Bench.StressBaseVec2I`1[[System.Int32, System.Private.CoreLib]].Add()
+; System.Numerics.Bench.BaseStressVec2`1[[System.Int32, System.Private.CoreLib]].Add()
        sub       rsp,18
        xor       eax,eax
-       mov       rcx,2C45A800358
+       mov       rcx,2B8EE401560
        mov       rcx,[rcx]
-       mov       rdx,2C45A800360
+       mov       rdx,2B8EE401568
        mov       rdx,[rdx]
 M00_L00:
        mov       r8d,eax
@@ -46,12 +46,12 @@ M00_L00:
 ```
 
 ```assembly
-; System.Numerics.Bench.StressBaseVec2I`1[[System.Int32, System.Private.CoreLib]].Subtract()
+; System.Numerics.Bench.BaseStressVec2`1[[System.Int32, System.Private.CoreLib]].Subtract()
        push      rbx
        xor       eax,eax
-       mov       rcx,22C1A800358
+       mov       rcx,224FA001560
        mov       rcx,[rcx]
-       mov       rdx,22C1A800360
+       mov       rdx,224FA001568
        mov       rdx,[rdx]
        nop       dword ptr [rax]
 M00_L00:
@@ -77,12 +77,12 @@ M00_L00:
 ```
 
 ```assembly
-; System.Numerics.Bench.StressBaseVec2I`1[[System.Int32, System.Private.CoreLib]].Multiply()
+; System.Numerics.Bench.BaseStressVec2`1[[System.Int32, System.Private.CoreLib]].Multiply()
        push      rbx
        xor       eax,eax
-       mov       rcx,27FEF800358
+       mov       rcx,239F5001560
        mov       rcx,[rcx]
-       mov       rdx,27FEF800360
+       mov       rdx,239F5001568
        mov       rdx,[rdx]
        nop       dword ptr [rax]
 M00_L00:
@@ -108,13 +108,13 @@ M00_L00:
 ```
 
 ```assembly
-; System.Numerics.Bench.StressBaseVec2I`1[[System.Int32, System.Private.CoreLib]].Divide()
+; System.Numerics.Bench.BaseStressVec2`1[[System.Int32, System.Private.CoreLib]].Divide()
        push      rsi
        push      rbx
        xor       ecx,ecx
-       mov       rax,1C7DE000358
+       mov       rax,1A502401560
        mov       r8,[rax]
-       mov       rax,1C7DE000360
+       mov       rax,1A502401568
        mov       r10,[rax]
        xchg      ax,ax
 M00_L00:
@@ -146,10 +146,10 @@ M00_L00:
 ```
 
 ```assembly
-; System.Numerics.Bench.StressBaseVec2I`1[[System.Int32, System.Private.CoreLib]].Sum()
-       mov       rax,2CB08400358
+; System.Numerics.Bench.BaseStressVec2`1[[System.Int32, System.Private.CoreLib]].Sum()
+       mov       rax,24752001560
        mov       rax,[rax]
-       mov       rcx,2CB08400368
+       mov       rcx,24752001570
        mov       rcx,[rcx]
        xor       edx,edx
        mov       r8d,186A0
@@ -167,12 +167,12 @@ M00_L00:
 ```
 
 ```assembly
-; System.Numerics.Bench.StressBaseVec2I`1[[System.Int32, System.Private.CoreLib]].Dot()
+; System.Numerics.Bench.BaseStressVec2`1[[System.Int32, System.Private.CoreLib]].Dot()
        push      rbx
        xor       eax,eax
-       mov       rcx,29828000358
+       mov       rcx,231B3001560
        mov       rcx,[rcx]
-       mov       rdx,29828000368
+       mov       rdx,231B3001570
        mov       rdx,[rdx]
        nop       dword ptr [rax]
 M00_L00:
@@ -197,10 +197,10 @@ M00_L00:
 ```
 
 ```assembly
-; System.Numerics.Bench.StressBaseVec2I`1[[System.Int32, System.Private.CoreLib]].LengthSquared()
-       mov       rax,2A4EB000358
+; System.Numerics.Bench.BaseStressVec2`1[[System.Int32, System.Private.CoreLib]].LengthSquared()
+       mov       rax,20D47401560
        mov       rax,[rax]
-       mov       rcx,2A4EB000368
+       mov       rcx,20D47401570
        mov       rcx,[rcx]
        xor       edx,edx
        mov       r8d,186A0
@@ -220,12 +220,12 @@ M00_L00:
 ```
 
 ```assembly
-; System.Numerics.Bench.StressBaseVec2I`1[[System.Int32, System.Private.CoreLib]].DistanceSquared()
+; System.Numerics.Bench.BaseStressVec2`1[[System.Int32, System.Private.CoreLib]].DistanceSquared()
        push      rbx
        xor       eax,eax
-       mov       rcx,1BA5FC00358
+       mov       rcx,23775401560
        mov       rcx,[rcx]
-       mov       rdx,1BA5FC00368
+       mov       rdx,23775401570
        mov       rdx,[rdx]
        nop       dword ptr [rax]
 M00_L00:

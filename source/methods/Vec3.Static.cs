@@ -59,19 +59,6 @@ public static class Vec3
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static bool Greater<T>(Vec3<T> a, Vec3<T> b)
-        where T : unmanaged, INumber<T>
-    {
-        /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.GreaterThanAll(a.As128(), b.As128());
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return Vector256.GreaterThanAll(a.As256(), b.As256());*/
-
-        return a.X > b.X && a.Y > b.Y && a.Z > b.Z;
-    }
-
-    [MethodImpl(AggressiveInlining)]
     public static bool Less<T>(Vec3<T> a, Vec3<T> b)
         where T : unmanaged, INumber<T>
     {
@@ -82,6 +69,19 @@ public static class Vec3
             return Vector256.LessThanAll(a.As256(), b.As256());*/
 
         return a.X < b.X && a.Y < b.Y && a.Z < b.Z;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool Greater<T>(Vec3<T> a, Vec3<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.GreaterThanAll(a.As128(), b.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return Vector256.GreaterThanAll(a.As256(), b.As256());*/
+
+        return a.X > b.X && a.Y > b.Y && a.Z > b.Z;
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -301,6 +301,32 @@ public static class Vec3
             return Vector256.Sqrt(v.As256()).Vec3();*/
 
         return new(T.Sqrt(v.X), T.Sqrt(v.Y), T.Sqrt(v.Z));
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec3<T> Sin<T>(Vec3<T> v)
+        where T : unmanaged, INumber<T>, ITrigonometricFunctions<T>
+    {
+        /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.Sin(v.As128()).Vec3();
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return Vector256.Sin(v.As256()).Vec3();*/
+
+        return new(T.Sin(v.X), T.Sin(v.Y), T.Sin(v.Z));
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec3<T> Cos<T>(Vec3<T> v)
+        where T : unmanaged, INumber<T>, ITrigonometricFunctions<T>
+    {
+        /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.Cos(v.As128()).Vec3();
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return Vector256.Cos(v.As256()).Vec3();*/
+
+        return new(T.Cos(v.X), T.Cos(v.Y), T.Cos(v.Z));
     }
 
     [MethodImpl(AggressiveInlining)]

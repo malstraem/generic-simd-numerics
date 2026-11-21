@@ -140,7 +140,7 @@ public static class Quat
             sign = -sign;
         }
 
-        if (cosω > (T.One - Quat<T>.slepEpsilon))
+        if (cosω > (T.One - Quat<T>.slerpEpsilon))
         {
             sa = T.One - amount;
             sb = amount * sign;
@@ -216,9 +216,9 @@ public static class Quat
     {
         var h = T.CreateChecked(0.5);
 
-        var (sr, cr) = T.SinCos(roll * h);
-        var (sp, cp) = T.SinCos(pitch * h);
         var (sy, cy) = T.SinCos(yaw * h);
+        var (sp, cp) = T.SinCos(pitch * h);
+        var (sr, cr) = T.SinCos(roll * h);
 
         return new((cy * sp * cr) + (sy * cp * sr),
                    (sy * cp * cr) - (cy * sp * sr),

@@ -10,8 +10,8 @@ public static class VecNSigned
         [MethodImpl(AggressiveInlining)]
         public static Vec2<T> operator -(Vec2<T> v)
         {
-            /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-                return (-v.As128()).Vec2();*/
+            if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+                return (-v.As128()).Vec2();
 
             return new(-v.X, -v.Y);
         }
@@ -23,8 +23,8 @@ public static class VecNSigned
         [MethodImpl(AggressiveInlining)]
         public Vec2<T> Abs()
         {
-            /*if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-                return Vector128.Abs(v.As128()).Vec2();*/
+            if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+                return Vector128.Abs(v.As128()).Vec2();
 
             return new(T.Abs(v.X), T.Abs(v.Y));
         }

@@ -3,7 +3,7 @@ This is prototype of generic linear algebraic objects using current state of
 
 Once was started as try to outperform [Silk.NET](https://github.com/dotnet/Silk.NET), especially on matrix operations with `double` precision.
 
-This stuff is made primarily for in-house engine, but it's possibly helpful draft for https://github.com/dotnet/runtime/issues/24168
+This stuff is made primarily for in-house engine and backported as demonstration, also it's possibly helpful draft for https://github.com/dotnet/runtime/issues/24168
 
 ### Achieved
 
@@ -19,7 +19,7 @@ to construct affine transformation from quaternion, scale and translation vector
 
 ### Not achieved
 
-- Acceleration for `Vec2<T>` and `Vec3<T>` - there is currently no way to efficiently generate load/store operations for structs that do not match the natural register size ([see](./reports/vec2-load-store-comparison.md))
+- Acceleration for `Vec2<T>` and `Vec3<T>` - there is currently no way to generate efficient load/store operations for structs that do not match the natural register size ([see](./reports/vec2-load-store-comparison.md))
 
 ## Benchmarks
 
@@ -28,9 +28,12 @@ check [benchmark reports](./reports) for more results with generated asm and tim
 tested and benchmarked on AMD Ryzen 9 7900X
 
 All measurements were made using 100k iterations over arrays.
-Comparison uses `Mean` and follows `System.Numerics (if float)` -> `our` -> `Silk.NET.Maths` order, `Error` and `StdDev` are omitted.
 
-### Mat44&lt;float&gt;
+Comparison uses `Mean` and follows `System.Numerics` -> `our` -> `Silk.NET.Maths` order, `Error` and `StdDev` are omitted.
+
+### Mat44&lt;T&gt;
+
+There is `Affine` is `Rotation * Scale * Translation` for both `System.Numerics` and `Silk.NET.Maths`.
 
 |           | Matrix4x4| Code Size | Mat44&lt;float&gt; | Code Size | Matrix4X4&lt;float&gt; | Code Size |
 |---------- |---------:|----------:|---------:|----------:|-----------:|----------:|
@@ -43,8 +46,6 @@ Comparison uses `Mean` and follows `System.Numerics (if float)` -> `our` -> `Sil
 | Transform | 687.8 μs |     844 B | 324.6 μs |     407 B |   927.3 μs |     911 B |
 | Affine    | 895.5 μs |   1,078 B | 252.3 μs |     404 B | 4,994.3 μs |   2,861 B |
 
-### Mat44&lt;double&gt;
-
 |           | Mat44&lt;double&gt; | Code Size | Matrix4X4&lt;double&gt; | Code Size |
 |---------- |---------:|----------:|-----------:|----------:|
 | Add       | 208.8 μs |     144 B |   501.9 μs |     649 B |
@@ -55,3 +56,25 @@ Comparison uses `Mean` and follows `System.Numerics (if float)` -> `our` -> `Sil
 | Rotation  | 275.9 μs |     381 B | 1,189.6 μs |     473 B |
 | Transform | 494.3 μs |     479 B | 4,937.3 μs |   2,294 B |
 | Affine    | 348.4 μs |     495 B | 8,035.9 μs |   4,082 B |
+
+### Quat&lt;T&gt;
+
+Quaternion instances are forces `Slerp` to spherical way.
+
+|           | Quaternion | Code Size | Quat&lt;float&gt; | Code Size | Quaternion&lt;float&gt; | Code Size |
+|---------- |------------:|---------:|---------:|----------:|-----------:|----------:|
+| Multiply  |   119.89 μs |     243 B |   121.66 μs |     215 B |   209.3 μs |     327 B |
+| Divide    |   205.16 μs |     333 B |   205.94 μs |     269 B |   436.3 μs |     438 B |
+| Conjugate |    70.48 μs |      79 B |    67.78 μs |      85 B |   113.8 μs |     128 B |
+| Inverse   |    78.85 μs |     129 B |    76.18 μs |     125 B |   143.1 μs |     204 B |
+| Lerp      |   167.63 μs |     210 B |   174.45 μs |     230 B |   584.6 μs |     497 B |
+| Slerp     | 1,177.16 μs |     454 B | 1,185.24 μs |     456 B | 2,018.6 μs |   3,324 B |
+
+|           | Quat&lt;double&gt; | Code Size | Quaternion&lt;double&gt; | Code Size |
+|---------- |---------:|----------:|-----------:|----------:|
+| Multiply  |   131.46 μs |     224 B |   212.1 μs |     327 B |
+| Divide    |   236.84 μs |     278 B |   483.3 μs |     438 B |
+| Conjugate |    64.32 μs |      88 B |   118.9 μs |     128 B |
+| Inverse   |   103.53 μs |     128 B |   153.6 μs |     204 B |
+| Lerp      |   260.27 μs |     252 B |   339.3 μs |     405 B |
+| Slerp     | 1,336.00 μs |     526 B | 1,458.9 μs |     599 B |

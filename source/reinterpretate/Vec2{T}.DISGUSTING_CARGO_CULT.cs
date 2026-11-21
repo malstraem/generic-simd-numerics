@@ -20,18 +20,17 @@ public partial struct Vec2<T>
     private static S ToScalar<S>(Vector128<T> xmm)
         where S : unmanaged, INumber<S> => Vector128.As<T, S>(xmm).ToScalar();
 
+    [Obsolete("hardcoded for disasm")]
     [MethodImpl(AggressiveInlining)]
     public static Vec2<T> operator +(Vec2<T> a, Vec2<T> b)
     {
-        /* ???
-        check generated asm
+        /*
+        ??? check generated asm
 
         float <-> 32-bit word
         double <-> 64-bit word
-
-        && Vector128<size x2 type>.IsSupported is pointless? */
-
-        if (Vector128<T>.IsSupported)
+        */
+        if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
         {
             //return (a.As128() + b.As128()).Vec2(); // this way use WithElement call
 
