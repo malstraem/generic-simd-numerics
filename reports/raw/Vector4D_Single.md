@@ -7,9 +7,6 @@ AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
 
 | Method          | Mean      | Error    | StdDev   | Code Size |
 |---------------- |----------:|---------:|---------:|----------:|
-| Length          |  96.14 μs | 0.184 μs | 0.172 μs |     131 B |
-| Distance        | 124.79 μs | 0.199 μs | 0.186 μs |     176 B |
-| Normalize       | 319.20 μs | 0.594 μs | 0.555 μs |     149 B |
 | Add             | 113.80 μs | 0.172 μs | 0.161 μs |     163 B |
 | Subtract        | 113.95 μs | 0.198 μs | 0.185 μs |     163 B |
 | Multiply        |  99.03 μs | 0.087 μs | 0.077 μs |     163 B |
@@ -19,121 +16,9 @@ AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
 | LengthSquared   |  66.67 μs | 1.264 μs | 1.405 μs |     127 B |
 | DistanceSquared | 113.27 μs | 0.106 μs | 0.099 μs |     172 B |
 | Transform       | 185.55 μs | 0.252 μs | 0.223 μs |     296 B |
-
-```assembly
-; System.Numerics.Bench.StressVector4D`1[[System.Single, System.Private.CoreLib]].Length()
-       mov       rax,272BE801568
-       mov       rax,[rax]
-       mov       rcx,272BE801578
-       mov       rcx,[rcx]
-       xor       edx,edx
-       mov       r8d,186A0
-M00_L00:
-       lea       r10,[rax+rdx*4+10]
-       vmovss    xmm0,dword ptr [r10]
-       vmovaps   xmm1,xmm0
-       vmovss    xmm2,dword ptr [r10+4]
-       vmovaps   xmm3,xmm2
-       vmovss    xmm4,dword ptr [r10+8]
-       vmovaps   xmm5,xmm4
-       vmovss    xmm16,dword ptr [r10+0C]
-       vmovaps   xmm17,xmm16
-       vmulss    xmm0,xmm1,xmm0
-       vmulss    xmm1,xmm3,xmm2
-       vaddss    xmm0,xmm1,xmm0
-       vmulss    xmm1,xmm5,xmm4
-       vaddss    xmm0,xmm1,xmm0
-       vmulss    xmm1,xmm17,xmm16
-       vaddss    xmm0,xmm1,xmm0
-       vsqrtss   xmm0,xmm0,xmm0
-       vmovss    dword ptr [rcx+rdx+10],xmm0
-       add       rdx,4
-       dec       r8d
-       jne       short M00_L00
-       ret
-; Total bytes of code 131
-```
-
-```assembly
-; System.Numerics.Bench.StressVector4D`1[[System.Single, System.Private.CoreLib]].Distance()
-       xor       eax,eax
-       mov       rcx,2B7BAC01568
-       mov       rcx,[rcx]
-       mov       rdx,2B7BAC01578
-       mov       rdx,[rdx]
-M00_L00:
-       mov       r8d,eax
-       mov       r10,r8
-       shl       r10,4
-       lea       r10,[rcx+r10+10]
-       vmovss    xmm0,dword ptr [r10]
-       vmovss    xmm1,dword ptr [r10+4]
-       vmovss    xmm2,dword ptr [r10+8]
-       vmovss    xmm3,dword ptr [r10+0C]
-       inc       eax
-       mov       r10d,eax
-       shl       r10,4
-       lea       r10,[rcx+r10+10]
-       vmovss    xmm4,dword ptr [r10]
-       vmovss    xmm5,dword ptr [r10+4]
-       vmovss    xmm16,dword ptr [r10+8]
-       vmovss    xmm17,dword ptr [r10+0C]
-       vsubss    xmm0,xmm0,xmm4
-       vsubss    xmm1,xmm1,xmm5
-       vsubss    xmm2,xmm2,xmm16
-       vsubss    xmm3,xmm3,xmm17
-       vmulss    xmm0,xmm0,xmm0
-       vmulss    xmm1,xmm1,xmm1
-       vaddss    xmm0,xmm1,xmm0
-       vmulss    xmm1,xmm2,xmm2
-       vaddss    xmm0,xmm1,xmm0
-       vmulss    xmm1,xmm3,xmm3
-       vaddss    xmm0,xmm1,xmm0
-       vsqrtss   xmm0,xmm0,xmm0
-       vmovss    dword ptr [rdx+r8*4+10],xmm0
-       cmp       eax,1869F
-       jl        near ptr M00_L00
-       ret
-; Total bytes of code 176
-```
-
-```assembly
-; System.Numerics.Bench.StressVector4D`1[[System.Single, System.Private.CoreLib]].Normalize()
-       mov       rax,1ACF2801568
-       mov       rax,[rax]
-       mov       rcx,1ACF2801570
-       mov       rcx,[rcx]
-       mov       edx,10
-       mov       r8d,186A0
-M00_L00:
-       lea       r10,[rax+rdx]
-       vmovss    xmm0,dword ptr [r10]
-       vmovss    xmm1,dword ptr [r10+4]
-       vmovss    xmm2,dword ptr [r10+8]
-       vmovss    xmm3,dword ptr [r10+0C]
-       vmulss    xmm4,xmm0,xmm0
-       vmulss    xmm5,xmm1,xmm1
-       vaddss    xmm4,xmm5,xmm4
-       vmulss    xmm5,xmm2,xmm2
-       vaddss    xmm4,xmm5,xmm4
-       vmulss    xmm5,xmm3,xmm3
-       vaddss    xmm4,xmm5,xmm4
-       vsqrtss   xmm4,xmm4,xmm4
-       vdivss    xmm0,xmm0,xmm4
-       vdivss    xmm1,xmm1,xmm4
-       vdivss    xmm2,xmm2,xmm4
-       vdivss    xmm3,xmm3,xmm4
-       lea       r10,[rcx+rdx]
-       vmovss    dword ptr [r10],xmm0
-       vmovss    dword ptr [r10+4],xmm1
-       vmovss    dword ptr [r10+8],xmm2
-       vmovss    dword ptr [r10+0C],xmm3
-       add       rdx,10
-       dec       r8d
-       jne       short M00_L00
-       ret
-; Total bytes of code 149
-```
+| Length          |  96.14 μs | 0.184 μs | 0.172 μs |     131 B |
+| Distance        | 124.79 μs | 0.199 μs | 0.186 μs |     176 B |
+| Normalize       | 319.20 μs | 0.594 μs | 0.555 μs |     149 B |
 
 ```assembly
 ; System.Numerics.Bench.BaseStressVector4D`1[[System.Single, System.Private.CoreLib]].Add()
@@ -489,4 +374,119 @@ M00_L00:
        jne       near ptr M00_L00
        ret
 ; Total bytes of code 296
+```
+
+```assembly
+; System.Numerics.Bench.StressVector4D`1[[System.Single, System.Private.CoreLib]].Length()
+       mov       rax,272BE801568
+       mov       rax,[rax]
+       mov       rcx,272BE801578
+       mov       rcx,[rcx]
+       xor       edx,edx
+       mov       r8d,186A0
+M00_L00:
+       lea       r10,[rax+rdx*4+10]
+       vmovss    xmm0,dword ptr [r10]
+       vmovaps   xmm1,xmm0
+       vmovss    xmm2,dword ptr [r10+4]
+       vmovaps   xmm3,xmm2
+       vmovss    xmm4,dword ptr [r10+8]
+       vmovaps   xmm5,xmm4
+       vmovss    xmm16,dword ptr [r10+0C]
+       vmovaps   xmm17,xmm16
+       vmulss    xmm0,xmm1,xmm0
+       vmulss    xmm1,xmm3,xmm2
+       vaddss    xmm0,xmm1,xmm0
+       vmulss    xmm1,xmm5,xmm4
+       vaddss    xmm0,xmm1,xmm0
+       vmulss    xmm1,xmm17,xmm16
+       vaddss    xmm0,xmm1,xmm0
+       vsqrtss   xmm0,xmm0,xmm0
+       vmovss    dword ptr [rcx+rdx+10],xmm0
+       add       rdx,4
+       dec       r8d
+       jne       short M00_L00
+       ret
+; Total bytes of code 131
+```
+
+```assembly
+; System.Numerics.Bench.StressVector4D`1[[System.Single, System.Private.CoreLib]].Distance()
+       xor       eax,eax
+       mov       rcx,2B7BAC01568
+       mov       rcx,[rcx]
+       mov       rdx,2B7BAC01578
+       mov       rdx,[rdx]
+M00_L00:
+       mov       r8d,eax
+       mov       r10,r8
+       shl       r10,4
+       lea       r10,[rcx+r10+10]
+       vmovss    xmm0,dword ptr [r10]
+       vmovss    xmm1,dword ptr [r10+4]
+       vmovss    xmm2,dword ptr [r10+8]
+       vmovss    xmm3,dword ptr [r10+0C]
+       inc       eax
+       mov       r10d,eax
+       shl       r10,4
+       lea       r10,[rcx+r10+10]
+       vmovss    xmm4,dword ptr [r10]
+       vmovss    xmm5,dword ptr [r10+4]
+       vmovss    xmm16,dword ptr [r10+8]
+       vmovss    xmm17,dword ptr [r10+0C]
+       vsubss    xmm0,xmm0,xmm4
+       vsubss    xmm1,xmm1,xmm5
+       vsubss    xmm2,xmm2,xmm16
+       vsubss    xmm3,xmm3,xmm17
+       vmulss    xmm0,xmm0,xmm0
+       vmulss    xmm1,xmm1,xmm1
+       vaddss    xmm0,xmm1,xmm0
+       vmulss    xmm1,xmm2,xmm2
+       vaddss    xmm0,xmm1,xmm0
+       vmulss    xmm1,xmm3,xmm3
+       vaddss    xmm0,xmm1,xmm0
+       vsqrtss   xmm0,xmm0,xmm0
+       vmovss    dword ptr [rdx+r8*4+10],xmm0
+       cmp       eax,1869F
+       jl        near ptr M00_L00
+       ret
+; Total bytes of code 176
+```
+
+```assembly
+; System.Numerics.Bench.StressVector4D`1[[System.Single, System.Private.CoreLib]].Normalize()
+       mov       rax,1ACF2801568
+       mov       rax,[rax]
+       mov       rcx,1ACF2801570
+       mov       rcx,[rcx]
+       mov       edx,10
+       mov       r8d,186A0
+M00_L00:
+       lea       r10,[rax+rdx]
+       vmovss    xmm0,dword ptr [r10]
+       vmovss    xmm1,dword ptr [r10+4]
+       vmovss    xmm2,dword ptr [r10+8]
+       vmovss    xmm3,dword ptr [r10+0C]
+       vmulss    xmm4,xmm0,xmm0
+       vmulss    xmm5,xmm1,xmm1
+       vaddss    xmm4,xmm5,xmm4
+       vmulss    xmm5,xmm2,xmm2
+       vaddss    xmm4,xmm5,xmm4
+       vmulss    xmm5,xmm3,xmm3
+       vaddss    xmm4,xmm5,xmm4
+       vsqrtss   xmm4,xmm4,xmm4
+       vdivss    xmm0,xmm0,xmm4
+       vdivss    xmm1,xmm1,xmm4
+       vdivss    xmm2,xmm2,xmm4
+       vdivss    xmm3,xmm3,xmm4
+       lea       r10,[rcx+rdx]
+       vmovss    dword ptr [r10],xmm0
+       vmovss    dword ptr [r10+4],xmm1
+       vmovss    dword ptr [r10+8],xmm2
+       vmovss    dword ptr [r10+0C],xmm3
+       add       rdx,10
+       dec       r8d
+       jne       short M00_L00
+       ret
+; Total bytes of code 149
 ```

@@ -2,8 +2,8 @@ using BenchmarkDotNet.Attributes;
 
 namespace System.Numerics.Bench;
 
-[GenericTypeArguments(typeof(int), typeof(float))]
-[GenericTypeArguments(typeof(int), typeof(double))]
+//[GenericTypeArguments(typeof(int), typeof(float))]
+//[GenericTypeArguments(typeof(int), typeof(double))]
 [GenericTypeArguments(typeof(float), typeof(double))]
 public class StressConversionMat44<T1, T2> : BaseBench<T1>
     where T1 : unmanaged, INumber<T1>

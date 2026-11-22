@@ -12,7 +12,7 @@ public partial struct Quat<T>
     conjugate = new(-T.One, -T.One, -T.One, +T.One),
 
     inverseEpsilon = typeof(T) == typeof(float)
-        ? new Vec4<T>(T.CreateChecked(MathF.BitIncrement(1f) - 1f))
+        ? new Vec4<T>(T.CreateChecked(MathF.BitIncrement(1f) - 1f)) // bit increment should be generalized
         : new Vec4<T>(T.CreateChecked(Math.BitIncrement(1d) - 1d));
 
     internal static readonly T slerpEpsilon = typeof(T) == typeof(float)

@@ -7,11 +7,6 @@ AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
 
 | Method          | Mean      | Error    | StdDev   | Code Size |
 |---------------- |----------:|---------:|---------:|----------:|
-| Length          |  91.92 μs | 0.237 μs | 0.198 μs |      82 B |
-| Distance        |  95.23 μs | 0.119 μs | 0.099 μs |     107 B |
-| Normalize       | 208.59 μs | 1.407 μs | 1.316 μs |     101 B |
-| Sin             | 674.80 μs | 3.368 μs | 3.150 μs |     152 B |
-| Cos             | 656.55 μs | 2.664 μs | 2.492 μs |     152 B |
 | Add             |  77.14 μs | 0.282 μs | 0.264 μs |     104 B |
 | Subtract        |  57.52 μs | 0.180 μs | 0.150 μs |     100 B |
 | Multiply        |  57.42 μs | 0.299 μs | 0.280 μs |     100 B |
@@ -20,190 +15,11 @@ AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
 | Dot             |  57.06 μs | 0.117 μs | 0.104 μs |      95 B |
 | LengthSquared   |  32.98 μs | 0.165 μs | 0.154 μs |      78 B |
 | DistanceSquared |  75.60 μs | 0.207 μs | 0.194 μs |     103 B |
-
-```assembly
-; System.Numerics.Bench.StressVec2`1[[System.Single, System.Private.CoreLib]].Length()
-       mov       rax,2B691C00BB8
-       mov       rax,[rax]
-       mov       rcx,2B691C00C48
-       mov       rcx,[rcx]
-       xor       edx,edx
-       mov       r8d,186A0
-M00_L00:
-       lea       r10,[rax+rdx*2+10]
-       vmovss    xmm0,dword ptr [r10]
-       vmovss    xmm1,dword ptr [r10+4]
-       vmulss    xmm0,xmm0,xmm0
-       vmulss    xmm1,xmm1,xmm1
-       vaddss    xmm0,xmm0,xmm1
-       vsqrtss   xmm0,xmm0,xmm0
-       vmovss    dword ptr [rcx+rdx+10],xmm0
-       add       rdx,4
-       dec       r8d
-       jne       short M00_L00
-       ret
-; Total bytes of code 82
-```
-
-```assembly
-; System.Numerics.Bench.StressVec2`1[[System.Single, System.Private.CoreLib]].Distance()
-       xor       eax,eax
-       mov       rcx,1C606800BC8
-       mov       rcx,[rcx]
-       mov       rdx,1C606800BE8
-       mov       rdx,[rdx]
-M00_L00:
-       mov       r8d,eax
-       lea       r10,[rcx+r8*8+10]
-       vmovss    xmm0,dword ptr [r10]
-       vmovss    xmm1,dword ptr [r10+4]
-       inc       eax
-       mov       r10d,eax
-       lea       r10,[rcx+r10*8+10]
-       vmovss    xmm2,dword ptr [r10]
-       vmovss    xmm3,dword ptr [r10+4]
-       vsubss    xmm0,xmm0,xmm2
-       vsubss    xmm1,xmm1,xmm3
-       vmulss    xmm0,xmm0,xmm0
-       vmulss    xmm1,xmm1,xmm1
-       vaddss    xmm0,xmm0,xmm1
-       vsqrtss   xmm0,xmm0,xmm0
-       vmovss    dword ptr [rdx+r8*4+10],xmm0
-       cmp       eax,1869F
-       jl        short M00_L00
-       ret
-; Total bytes of code 107
-```
-
-```assembly
-; System.Numerics.Bench.StressVec2`1[[System.Single, System.Private.CoreLib]].Normalize()
-       mov       rax,20C9A400BB8
-       mov       rax,[rax]
-       mov       rcx,20C9A400BC0
-       mov       rcx,[rcx]
-       mov       edx,10
-       mov       r8d,186A0
-M00_L00:
-       lea       r10,[rax+rdx]
-       vmovss    xmm0,dword ptr [r10]
-       vmovss    xmm1,dword ptr [r10+4]
-       vmulss    xmm2,xmm0,xmm0
-       vmulss    xmm3,xmm1,xmm1
-       vaddss    xmm2,xmm2,xmm3
-       vsqrtss   xmm2,xmm2,xmm2
-       vdivss    xmm0,xmm0,xmm2
-       vdivss    xmm1,xmm1,xmm2
-       lea       r10,[rcx+rdx]
-       vmovss    dword ptr [r10],xmm0
-       vmovss    dword ptr [r10+4],xmm1
-       add       rdx,8
-       dec       r8d
-       jne       short M00_L00
-       ret
-; Total bytes of code 101
-```
-
-```assembly
-; System.Numerics.Bench.StressVec2`1[[System.Single, System.Private.CoreLib]].Sin()
-       push      rdi
-       push      rsi
-       push      rbp
-       push      rbx
-       sub       rsp,48
-       vzeroupper
-       vmovaps   [rsp+30],xmm6
-       vmovaps   [rsp+20],xmm7
-       mov       rax,23BA5800BC8
-       mov       rbx,[rax]
-       mov       rax,23BA5800BD0
-       mov       rsi,[rax]
-       mov       edi,10
-       mov       ebp,186A0
-M00_L00:
-       lea       rax,[rbx+rdi]
-       vmovss    xmm0,dword ptr [rax]
-       vmovss    xmm6,dword ptr [rax+4]
-       call      qword ptr [7FF8EBC3D7B8]; System.Single.Sin(Single)
-       vmovaps   xmm7,xmm0
-       vmovaps   xmm0,xmm6
-       call      qword ptr [7FF8EBC3D7B8]; System.Single.Sin(Single)
-       lea       rax,[rsi+rdi]
-       vmovss    dword ptr [rax],xmm7
-       vmovss    dword ptr [rax+4],xmm0
-       add       rdi,8
-       dec       ebp
-       jne       short M00_L00
-       vmovaps   xmm6,[rsp+30]
-       vmovaps   xmm7,[rsp+20]
-       add       rsp,48
-       pop       rbx
-       pop       rbp
-       pop       rsi
-       pop       rdi
-       ret
-; Total bytes of code 134
-```
-```assembly
-; System.Single.Sin(Single)
-       sub       rsp,28
-       vzeroupper
-       call      00007FF94B184570
-       nop
-       add       rsp,28
-       ret
-; Total bytes of code 18
-```
-
-```assembly
-; System.Numerics.Bench.StressVec2`1[[System.Single, System.Private.CoreLib]].Cos()
-       push      rdi
-       push      rsi
-       push      rbp
-       push      rbx
-       sub       rsp,48
-       vzeroupper
-       vmovaps   [rsp+30],xmm6
-       vmovaps   [rsp+20],xmm7
-       mov       rax,1E3DC800BC8
-       mov       rbx,[rax]
-       mov       rax,1E3DC800BD0
-       mov       rsi,[rax]
-       mov       edi,10
-       mov       ebp,186A0
-M00_L00:
-       lea       rax,[rbx+rdi]
-       vmovss    xmm0,dword ptr [rax]
-       vmovss    xmm6,dword ptr [rax+4]
-       call      qword ptr [7FF8EBC2D740]; System.Single.Cos(Single)
-       vmovaps   xmm7,xmm0
-       vmovaps   xmm0,xmm6
-       call      qword ptr [7FF8EBC2D740]; System.Single.Cos(Single)
-       lea       rax,[rsi+rdi]
-       vmovss    dword ptr [rax],xmm7
-       vmovss    dword ptr [rax+4],xmm0
-       add       rdi,8
-       dec       ebp
-       jne       short M00_L00
-       vmovaps   xmm6,[rsp+30]
-       vmovaps   xmm7,[rsp+20]
-       add       rsp,48
-       pop       rbx
-       pop       rbp
-       pop       rsi
-       pop       rdi
-       ret
-; Total bytes of code 134
-```
-```assembly
-; System.Single.Cos(Single)
-       sub       rsp,28
-       vzeroupper
-       call      00007FF94B1844C0
-       nop
-       add       rsp,28
-       ret
-; Total bytes of code 18
-```
+| Length          |  91.92 μs | 0.237 μs | 0.198 μs |      82 B |
+| Distance        |  95.23 μs | 0.119 μs | 0.099 μs |     107 B |
+| Normalize       | 208.59 μs | 1.407 μs | 1.316 μs |     101 B |
+| Sin             | 674.80 μs | 3.368 μs | 3.150 μs |     152 B |
+| Cos             | 656.55 μs | 2.664 μs | 2.492 μs |     152 B |
 
 ```assembly
 ; System.Numerics.Bench.BaseStressVec2`1[[System.Single, System.Private.CoreLib]].Add()
@@ -416,4 +232,186 @@ M00_L00:
        jl        short M00_L00
        ret
 ; Total bytes of code 103
+```
+
+```assembly
+; System.Numerics.Bench.StressVec2`1[[System.Single, System.Private.CoreLib]].Length()
+       mov       rax,2B691C00BB8
+       mov       rax,[rax]
+       mov       rcx,2B691C00C48
+       mov       rcx,[rcx]
+       xor       edx,edx
+       mov       r8d,186A0
+M00_L00:
+       lea       r10,[rax+rdx*2+10]
+       vmovss    xmm0,dword ptr [r10]
+       vmovss    xmm1,dword ptr [r10+4]
+       vmulss    xmm0,xmm0,xmm0
+       vmulss    xmm1,xmm1,xmm1
+       vaddss    xmm0,xmm0,xmm1
+       vsqrtss   xmm0,xmm0,xmm0
+       vmovss    dword ptr [rcx+rdx+10],xmm0
+       add       rdx,4
+       dec       r8d
+       jne       short M00_L00
+       ret
+; Total bytes of code 82
+```
+
+```assembly
+; System.Numerics.Bench.StressVec2`1[[System.Single, System.Private.CoreLib]].Distance()
+       xor       eax,eax
+       mov       rcx,1C606800BC8
+       mov       rcx,[rcx]
+       mov       rdx,1C606800BE8
+       mov       rdx,[rdx]
+M00_L00:
+       mov       r8d,eax
+       lea       r10,[rcx+r8*8+10]
+       vmovss    xmm0,dword ptr [r10]
+       vmovss    xmm1,dword ptr [r10+4]
+       inc       eax
+       mov       r10d,eax
+       lea       r10,[rcx+r10*8+10]
+       vmovss    xmm2,dword ptr [r10]
+       vmovss    xmm3,dword ptr [r10+4]
+       vsubss    xmm0,xmm0,xmm2
+       vsubss    xmm1,xmm1,xmm3
+       vmulss    xmm0,xmm0,xmm0
+       vmulss    xmm1,xmm1,xmm1
+       vaddss    xmm0,xmm0,xmm1
+       vsqrtss   xmm0,xmm0,xmm0
+       vmovss    dword ptr [rdx+r8*4+10],xmm0
+       cmp       eax,1869F
+       jl        short M00_L00
+       ret
+; Total bytes of code 107
+```
+
+```assembly
+; System.Numerics.Bench.StressVec2`1[[System.Single, System.Private.CoreLib]].Normalize()
+       mov       rax,20C9A400BB8
+       mov       rax,[rax]
+       mov       rcx,20C9A400BC0
+       mov       rcx,[rcx]
+       mov       edx,10
+       mov       r8d,186A0
+M00_L00:
+       lea       r10,[rax+rdx]
+       vmovss    xmm0,dword ptr [r10]
+       vmovss    xmm1,dword ptr [r10+4]
+       vmulss    xmm2,xmm0,xmm0
+       vmulss    xmm3,xmm1,xmm1
+       vaddss    xmm2,xmm2,xmm3
+       vsqrtss   xmm2,xmm2,xmm2
+       vdivss    xmm0,xmm0,xmm2
+       vdivss    xmm1,xmm1,xmm2
+       lea       r10,[rcx+rdx]
+       vmovss    dword ptr [r10],xmm0
+       vmovss    dword ptr [r10+4],xmm1
+       add       rdx,8
+       dec       r8d
+       jne       short M00_L00
+       ret
+; Total bytes of code 101
+```
+
+```assembly
+; System.Numerics.Bench.StressVec2`1[[System.Single, System.Private.CoreLib]].Sin()
+       push      rdi
+       push      rsi
+       push      rbp
+       push      rbx
+       sub       rsp,48
+       vzeroupper
+       vmovaps   [rsp+30],xmm6
+       vmovaps   [rsp+20],xmm7
+       mov       rax,23BA5800BC8
+       mov       rbx,[rax]
+       mov       rax,23BA5800BD0
+       mov       rsi,[rax]
+       mov       edi,10
+       mov       ebp,186A0
+M00_L00:
+       lea       rax,[rbx+rdi]
+       vmovss    xmm0,dword ptr [rax]
+       vmovss    xmm6,dword ptr [rax+4]
+       call      qword ptr [7FF8EBC3D7B8]; System.Single.Sin(Single)
+       vmovaps   xmm7,xmm0
+       vmovaps   xmm0,xmm6
+       call      qword ptr [7FF8EBC3D7B8]; System.Single.Sin(Single)
+       lea       rax,[rsi+rdi]
+       vmovss    dword ptr [rax],xmm7
+       vmovss    dword ptr [rax+4],xmm0
+       add       rdi,8
+       dec       ebp
+       jne       short M00_L00
+       vmovaps   xmm6,[rsp+30]
+       vmovaps   xmm7,[rsp+20]
+       add       rsp,48
+       pop       rbx
+       pop       rbp
+       pop       rsi
+       pop       rdi
+       ret
+; Total bytes of code 134
+
+; System.Single.Sin(Single)
+       sub       rsp,28
+       vzeroupper
+       call      00007FF94B184570
+       nop
+       add       rsp,28
+       ret
+; Total bytes of code 18
+```
+
+```assembly
+; System.Numerics.Bench.StressVec2`1[[System.Single, System.Private.CoreLib]].Cos()
+       push      rdi
+       push      rsi
+       push      rbp
+       push      rbx
+       sub       rsp,48
+       vzeroupper
+       vmovaps   [rsp+30],xmm6
+       vmovaps   [rsp+20],xmm7
+       mov       rax,1E3DC800BC8
+       mov       rbx,[rax]
+       mov       rax,1E3DC800BD0
+       mov       rsi,[rax]
+       mov       edi,10
+       mov       ebp,186A0
+M00_L00:
+       lea       rax,[rbx+rdi]
+       vmovss    xmm0,dword ptr [rax]
+       vmovss    xmm6,dword ptr [rax+4]
+       call      qword ptr [7FF8EBC2D740]; System.Single.Cos(Single)
+       vmovaps   xmm7,xmm0
+       vmovaps   xmm0,xmm6
+       call      qword ptr [7FF8EBC2D740]; System.Single.Cos(Single)
+       lea       rax,[rsi+rdi]
+       vmovss    dword ptr [rax],xmm7
+       vmovss    dword ptr [rax+4],xmm0
+       add       rdi,8
+       dec       ebp
+       jne       short M00_L00
+       vmovaps   xmm6,[rsp+30]
+       vmovaps   xmm7,[rsp+20]
+       add       rsp,48
+       pop       rbx
+       pop       rbp
+       pop       rsi
+       pop       rdi
+       ret
+; Total bytes of code 134
+
+; System.Single.Cos(Single)
+       sub       rsp,28
+       vzeroupper
+       call      00007FF94B1844C0
+       nop
+       add       rsp,28
+       ret
+; Total bytes of code 18
 ```

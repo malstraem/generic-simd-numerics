@@ -40,7 +40,7 @@ public class StressConversionVec4<T1, T2> : BaseBench<T1>
     }
 }
 
-[GenericTypeArguments(typeof(float))]
+//[GenericTypeArguments(typeof(float))]
 [GenericTypeArguments(typeof(double))]
 public class StressVec4<T> : StressSignedVec4<T>
     where T : unmanaged, INumber<T>, ISignedNumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>

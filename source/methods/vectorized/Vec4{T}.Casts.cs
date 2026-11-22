@@ -25,7 +25,7 @@ public partial struct Vec4<T>
 
             if (typeof(T) == typeof(float) && typeof(T2) == typeof(int))
                 return Vector128.ConvertToInt32(v.As128().AsSingle()).As<int, T2>().Vec4();
-            // ...
+
             // another type cases
         }
 
@@ -35,7 +35,7 @@ public partial struct Vec4<T>
             {
                 if (Avx.IsSupported)
                     return Avx.ConvertToVector256Double(v.As128().AsSingle()).As<double, T2>().Vec4();
-                // ...
+
                 // another ISA
             }
 
@@ -43,10 +43,9 @@ public partial struct Vec4<T>
             {
                 if (Avx.IsSupported)
                     return Avx.ConvertToVector256Double(v.As128().AsInt32()).As<double, T2>().Vec4();
-                // ...
+
                 // another ISA
             }
-            // ...
             // another type cases
         }
         return ScalarConvert<T2>(v);

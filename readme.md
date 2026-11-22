@@ -31,11 +31,56 @@ All measurements were made using 100k iterations over arrays.
 
 Comparison uses `Mean` and follows `System.Numerics` -> `our` -> `Silk.NET.Maths` order, `Error` and `StdDev` are omitted.
 
+### Vec4&lt;T&gt;
+
+|| Vector4| Code Size | Vec4&lt;float&gt; | Code Size | Vector4D&lt;float&gt; | Code Size |
+|---------------- |----------:|----------:|----------:|----------:|-------------:|-------:|
+| Add             |  30.39 μs |      78 B |  29.59 μs |      78 B | 113.80 μs |     163 B |
+| Subtract        |  29.65 μs |      78 B |  29.70 μs |      78 B | 113.95 μs |     163 B |
+| Multiply        |  29.69 μs |      78 B |  32.09 μs |      78 B |  99.03 μs |     163 B |
+| Divide          |  56.71 μs |      78 B |  56.60 μs |      78 B | 220.63 μs |     163 B |
+| Abs             |  26.01 μs |      68 B |  26.05 μs |      68 B | 140.56 μs |     173 B |
+| Sum             |  32.23 μs |      76 B |  32.15 μs |      76 B |         - |         - |
+| Dot             |  45.82 μs |      96 B |  57.02 μs |     103 B |  94.71 μs |     152 B |
+| LengthSquared   |  34.35 μs |      80 B |  37.15 μs |      80 B |  66.67 μs |     127 B |
+| DistanceSquared |  56.87 μs |     100 B |  58.61 μs |     107 B | 113.27 μs |     172 B |
+| Transform       |  65.64 μs |     129 B |  66.14 μs |     134 B | 185.55 μs |     296 B |
+| Length          |  91.50 μs |      84 B |  91.44 μs |      84 B |  96.14 μs |     131 B |
+| Distance        |  94.85 μs |     104 B |  95.26 μs |     104 B | 124.79 μs |     176 B |
+| Normalize       | 151.66 μs |      89 B | 151.69 μs |      89 B | 319.20 μs |     149 B |
+| Sin             | 546.6 μs  |     728 B | 611.50 μs |     699 B |         - |         - |
+| Cos             | 546.8 μs  |     728 B | 553.37 μs |     728 B |         - |         - |
+
+|| Vec4&lt;double&gt;|Code Size|Vector4D&lt;double&gt;| Code Size |
+|---------------- |----------:|----------:|----------:|----------:|
+| Add             |  55.32 μs |      81 B | 114.26 μs |     163 B |
+| Subtract        |  55.16 μs |      81 B |  99.58 μs |     163 B |
+| Multiply        |  55.34 μs |      81 B |  99.65 μs |     163 B |
+| Divide          |  56.60 μs |      78 B | 351.08 μs |     163 B |
+| Abs             |  50.33 μs |      71 B | 145.19 μs |     163 B |
+| Sum             |  33.62 μs |      79 B |         - |         - |
+| Dot             |  57.92 μs |     106 B |  95.16 μs |     152 B |
+| LengthSquared   |  36.10 μs |      83 B |  65.28 μs |     127 B |
+| DistanceSquared |  58.49 μs |     110 B | 113.27 μs |     172 B |
+| Transform       |  88.23 μs |     145 B | 185.55 μs |     296 B |
+| Length          | 166.39 μs |      87 B | 164.64 μs |     131 B |
+| Distance        | 163.64 μs |     107 B | 167.46 μs |     176 B |
+| Normalize       | 249.87 μs |      97 B | 519.88 μs |     149 B |
+| Sin             | 717.35 μs |     858 B |         - |         - |
+| Cos             | 693.64 μs |     872 B |         - |         - |
+
+#### Conversion
+
+|| Vec4&lt;T&gt;|Code Size|Vector4D&lt;T&gt;| Code Size |
+|---------------- |----------:|----------:|----------:|----------:|
+| float -> double |  54.94 μs |      86 B |  98.45 μs |     111 B |
+| double -> float |  55.23 μs |      86 B | 102.36 μs |     111 B |
+
 ### Mat44&lt;T&gt;
 
-There is `Affine` is `Rotation * Scale * Translation` for both `System.Numerics` and `Silk.NET.Maths`.
+`Affine` is `Rotation * Scale * Translation` for both `System.Numerics` and `Silk.NET.Maths`.
 
-|           | Matrix4x4| Code Size | Mat44&lt;float&gt; | Code Size | Matrix4X4&lt;float&gt; | Code Size |
+||Matrix4x4|Code Size|Mat44&lt;float&gt;|Code Size|Matrix4X4&lt;float&gt;|Code Size|
 |---------- |---------:|----------:|---------:|----------:|-----------:|----------:|
 | Add       | 186.9 μs |     185 B | 104.7 μs |     118 B |   481.8 μs |     649 B |
 | Subtract  | 185.2 μs |     185 B | 104.6 μs |     118 B |   481.5 μs |     649 B |
@@ -46,7 +91,7 @@ There is `Affine` is `Rotation * Scale * Translation` for both `System.Numerics`
 | Transform | 687.8 μs |     844 B | 324.6 μs |     407 B |   927.3 μs |     911 B |
 | Affine    | 895.5 μs |   1,078 B | 252.3 μs |     404 B | 4,994.3 μs |   2,861 B |
 
-|           | Mat44&lt;double&gt; | Code Size | Matrix4X4&lt;double&gt; | Code Size |
+||Mat44&lt;double&gt;|Code Size|Matrix4X4&lt;double&gt;|Code Size|
 |---------- |---------:|----------:|-----------:|----------:|
 | Add       | 208.8 μs |     144 B |   501.9 μs |     649 B |
 | Subtract  | 212.7 μs |     144 B |   497.3 μs |     649 B |
@@ -57,12 +102,19 @@ There is `Affine` is `Rotation * Scale * Translation` for both `System.Numerics`
 | Transform | 494.3 μs |     479 B | 4,937.3 μs |   2,294 B |
 | Affine    | 348.4 μs |     495 B | 8,035.9 μs |   4,082 B |
 
+#### Conversion
+
+|    | Mat44&lt;T&gt; |Code Size | Matrix4X4&lt;T&gt; | Code Size |
+|---------------- |----------:|----------:|----------:|----------:|
+| float -> double |  176.6 μs |     108 B |  301.5 μs |     294 B |
+| double -> float |  158.2 μs |     106 B |  301.5 μs |     294 B |
+
 ### Quat&lt;T&gt;
 
-Quaternion instances are forces `Slerp` to spherical way.
+Quaternion instances force `Slerp` to spherical way.
 
-|           | Quaternion | Code Size | Quat&lt;float&gt; | Code Size | Quaternion&lt;float&gt; | Code Size |
-|---------- |------------:|---------:|---------:|----------:|-----------:|----------:|
+||Quaternion|Code Size|Quat&lt;float&gt;| Code Size| Quaternion&lt;float&gt; | Code Size |
+|---------- |------------:|----------:|------------:|----------:|-----------:|----------:|
 | Multiply  |   119.89 μs |     243 B |   121.66 μs |     215 B |   209.3 μs |     327 B |
 | Divide    |   205.16 μs |     333 B |   205.94 μs |     269 B |   436.3 μs |     438 B |
 | Conjugate |    70.48 μs |      79 B |    67.78 μs |      85 B |   113.8 μs |     128 B |
@@ -70,8 +122,8 @@ Quaternion instances are forces `Slerp` to spherical way.
 | Lerp      |   167.63 μs |     210 B |   174.45 μs |     230 B |   584.6 μs |     497 B |
 | Slerp     | 1,177.16 μs |     454 B | 1,185.24 μs |     456 B | 2,018.6 μs |   3,324 B |
 
-|           | Quat&lt;double&gt; | Code Size | Quaternion&lt;double&gt; | Code Size |
-|---------- |---------:|----------:|-----------:|----------:|
+||Quat&lt;double&gt;|Code Size|Quaternion&lt;double&gt;|Code Size|
+|---------- |------------:|----------:|-----------:|----------:|
 | Multiply  |   131.46 μs |     224 B |   212.1 μs |     327 B |
 | Divide    |   236.84 μs |     278 B |   483.3 μs |     438 B |
 | Conjugate |    64.32 μs |      88 B |   118.9 μs |     128 B |
