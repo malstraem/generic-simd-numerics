@@ -227,8 +227,8 @@ public static class Quat
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static Quat<T2> As<T, T2>(Quat<T> quat)
+    public static Quat<T2> As<T, T2>(Quat<T> q)
         where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
         where T2 : unmanaged, IFloatingPoint<T2>, IRootFunctions<T2>, ITrigonometricFunctions<T2>
-            => quat.Vec4().As<T2>().Quat();
+            => Vec4.As<T, T2>(q.Vec4()).Quat();
 }

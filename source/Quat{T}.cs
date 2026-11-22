@@ -9,7 +9,8 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     IAdditionOperators<Quat<T>, Quat<T>, Quat<T>>,
     ISubtractionOperators<Quat<T>, Quat<T>, Quat<T>>,
 
-    IEqualityOperators<Quat<T>, Quat<T>, bool>
+    IEqualityOperators<Quat<T>, Quat<T>, bool>,
+    IEquatable<Quat<T>>
         where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {
     public T X = x, Y = y, Z = z, W = w;
@@ -25,7 +26,6 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
     static Quat<T> IMultiplicativeIdentity<Quat<T>, Quat<T>>.MultiplicativeIdentity => Identity;
 
     #region Operators
-
     [MethodImpl(AggressiveInlining)]
     public static bool operator ==(Quat<T> a, Quat<T> b) => a.Vec4() == b.Vec4();
 

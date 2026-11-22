@@ -202,6 +202,11 @@ public static class Vec2
             => (a * (T.One - am)) + (b * am);
 
     [MethodImpl(AggressiveInlining)]
+    public static T Cross<T>(Vec2<T> a, Vec2<T> b)
+        where T : unmanaged, INumber<T>
+            => (a.X * b.Y) - (a.Y * b.X);
+
+    [MethodImpl(AggressiveInlining)]
     public static T LengthSquared<T>(Vec2<T> v)
         where T : unmanaged, INumber<T>
             => Dot(v, v);

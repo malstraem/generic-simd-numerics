@@ -14,6 +14,20 @@ internal static class ReinterpretateVec4
         internal Vector256<T> As256() => BitCast<Vec4<T>, Vector256<T>>(v);
     }
 
+    extension<T>(Vec4<T> v)
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>
+    {
+        [MethodImpl(AggressiveInlining)]
+        internal Plane<T> Plane() => BitCast<Vec4<T>, Plane<T>>(v);
+    }
+
+    extension<T>(Vec4<T> v)
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+    {
+        [MethodImpl(AggressiveInlining)]
+        internal Quat<T> Quat() => BitCast<Vec4<T>, Quat<T>>(v);
+    }
+
     extension<T>(Vector128<T> xmm)
         where T : unmanaged, INumber<T>
     {

@@ -17,13 +17,6 @@ internal static class ReinterpretateQuat
         internal Vec4<T> Vec4() => BitCast<Quat<T>, Vec4<T>>(q);
     }
 
-    extension<T>(Vec4<T> v)
-        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
-    {
-        [MethodImpl(AggressiveInlining)]
-        internal Quat<T> Quat() => BitCast<Vec4<T>, Quat<T>>(v);
-    }
-
     extension<T>(Vector128<T> xmm)
         where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
     {

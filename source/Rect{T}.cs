@@ -2,7 +2,8 @@ namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
 public partial struct Rect<T>(Vec2<T> min, Vec2<T> max) :
-    IEqualityOperators<Rect<T>, Rect<T>, bool>
+    IEqualityOperators<Rect<T>, Rect<T>, bool>,
+    IEquatable<Rect<T>>
         where T : unmanaged, INumber<T>
 {
     /// <summary>Origin point.</summary>

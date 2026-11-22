@@ -1,8 +1,8 @@
 namespace System.Numerics;
 
 [StructLayout(LayoutKind.Sequential)]
-public partial struct Plane<T>(Vec3<T> normal, T distance)
-    where T : unmanaged, INumber<T>
+public partial struct Plane<T>(Vec3<T> normal, T distance) : IEquatable<Plane<T>>
+    where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>
 {
     public Vec3<T> Normal = normal;
 
@@ -10,11 +10,20 @@ public partial struct Plane<T>(Vec3<T> normal, T distance)
 
     public Plane(T x, T y, T z, T d) : this(new(x, y, z), d) { }
 
-    //public readonly bool Equals(Plane<T> other) => this == other;
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator ==(Plane<T> a, Plane<T> b) => a.Vec4() == b.Vec4();
 
-    //public override readonly bool Equals(object? obj) => (obj is Plane<T> other) && this == other;
+    [MethodImpl(AggressiveInlining)]
+    public static bool operator !=(Plane<T> a, Plane<T> b) => a.Vec4() != b.Vec4();
 
-    //public override readonly int GetHashCode() => HashCode.Combine(X, Y, Z, W);
+    [MethodImpl(AggressiveInlining)]
+    public readonly T Dot(Vec4<T> v) => PlaneMethods.Dot(this, v);
+
+    public readonly bool Equals(Plane<T> other) => this == other;
+
+    public override readonly bool Equals(object? obj) => (obj is Plane<T> other) && this == other;
+
+    public override readonly int GetHashCode() => HashCode.Combine(Normal, Distance);
 
     public override readonly string ToString() => $"(n: {Normal}, d: {Distance})";
 }

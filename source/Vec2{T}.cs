@@ -3,7 +3,8 @@ namespace System.Numerics;
 [StructLayout(LayoutKind.Sequential)]
 public partial struct Vec2<T>(T x, T y) :
     IVector<Vec2<T>, T>,
-    IVectorScalarOperators<Vec2<T>, T>
+    IVectorScalarOperators<Vec2<T>, T>,
+    IEquatable<Vec2<T>>
         where T : unmanaged, INumber<T>
 {
     public T X = x, Y = y;

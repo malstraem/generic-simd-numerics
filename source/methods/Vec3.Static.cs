@@ -260,6 +260,11 @@ public static class Vec3
             => (a * (T.One - am)) + (b * am);
 
     [MethodImpl(AggressiveInlining)]
+    public static Vec3<T> Cross<T>(Vec3<T> a, Vec3<T> b)
+        where T : unmanaged, INumber<T>
+            => new((a.Y * b.Z) - (a.Z * b.Y), (a.Z * b.X) - (a.X * b.Z), (a.X * b.Y) - (a.Y * b.X));
+
+    [MethodImpl(AggressiveInlining)]
     public static T LengthSquared<T>(Vec3<T> v)
         where T : unmanaged, INumber<T>
             => Dot(v, v);
@@ -283,12 +288,6 @@ public static class Vec3
     public static Vec3<T> Normalize<T>(Vec3<T> v)
         where T : unmanaged, INumber<T>, IRootFunctions<T>
             => v / Length(v);
-
-    [Obsolete("vectorize")]
-    [MethodImpl(AggressiveInlining)]
-    public static Vec3<T> Cross<T>(Vec3<T> a, Vec3<T> b)
-        where T : unmanaged, INumber<T>
-            => new((a.Y * b.Z) - (a.Z * b.Y), (a.Z * b.X) - (a.X * b.Z), (a.X * b.Y) - (a.Y * b.X));
 
     [MethodImpl(AggressiveInlining)]
     public static Vec3<T> SquareRoot<T>(Vec3<T> v)

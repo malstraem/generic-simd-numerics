@@ -3,7 +3,8 @@ namespace System.Numerics;
 [StructLayout(LayoutKind.Sequential)]
 public struct Vec3<T>(T x, T y, T z) :
     IVector<Vec3<T>, T>,
-    IVectorScalarOperators<Vec3<T>, T>
+    IVectorScalarOperators<Vec3<T>, T>,
+    IEquatable<Vec3<T>>
         where T : unmanaged, INumber<T>
 {
     public T X = x, Y = y, Z = z;

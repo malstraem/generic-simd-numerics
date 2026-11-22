@@ -258,6 +258,17 @@ public static partial class Vec4
             => (a * (T.One - am)) + (b * am);
 
     [MethodImpl(AggressiveInlining)]
+    public static Vec4<T> Cross<T>(Vec4<T> a, Vec4<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        return new(
+            (a.Y * b.Z) - (a.Z * b.Y),
+            (a.Z * b.X) - (a.X * b.Z),
+            (a.X * b.Y) - (a.Y * b.X),
+            a.W * b.W);
+    }
+
+    [MethodImpl(AggressiveInlining)]
     public static Vec4<T> Transform<T>(Vec4<T> v, Mat44<T> m)
         where T : unmanaged, INumber<T>
     {
