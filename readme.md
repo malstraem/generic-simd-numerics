@@ -25,13 +25,13 @@ to construct affine transformation from quaternion, scale and translation vector
 
 > [!NOTE]
 check [benchmark reports](./reports) for more results with generated asm and timings</br></br>
-tested and benchmarked on AMD Ryzen 9 7900X
+tested and benchmarked on `Ryzen 9 7900X`
 
 All measurements were made using 100k iterations over arrays.
 
 Comparison uses `Mean` and follows `System.Numerics` -> `our` -> `Silk.NET.Maths` order, `Error` and `StdDev` are omitted.
 
-### Vec4&lt;T&gt;
+### `Vec4<T>`
 
 || Vector4| Code Size | Vec4&lt;float&gt; | Code Size | Vector4D&lt;float&gt; | Code Size |
 |---------------- |----------:|----------:|----------:|----------:|-------------:|-------:|
@@ -71,14 +71,14 @@ Comparison uses `Mean` and follows `System.Numerics` -> `our` -> `Silk.NET.Maths
 
 #### Conversion
 
-|| Vec4&lt;T&gt;|Code Size|Vector4D&lt;T&gt;| Code Size |
-|---------------- |----------:|----------:|----------:|----------:|
-| float -> double |  54.94 μs |      86 B |  98.45 μs |     111 B |
-| double -> float |  55.23 μs |      86 B | 102.36 μs |     111 B |
+|| Vec4&lt;T&gt; | Code Size | Vector4D&lt;T&gt; | Code Size |
+|-------------------- |----------:|----------:|----------:|----------:|
+| `float` -> `double` |  54.94 μs |      86 B |  98.45 μs |     111 B |
+| `double` -> `float` |  55.23 μs |      86 B | 102.36 μs |     111 B |
 
-### Mat44&lt;T&gt;
+### `Mat44<T>`
 
-Matrix has a determinant > eps for `Invert`.
+Instances have a determinant > eps; this forces full `Invert`.
 
 `Affine` is `Rotation * Scale * Translation` for both `System.Numerics` and `Silk.NET.Maths`.
 
@@ -106,12 +106,12 @@ Matrix has a determinant > eps for `Invert`.
 
 #### Conversion
 
-|    | Mat44&lt;T&gt; |Code Size | Matrix4X4&lt;T&gt; | Code Size |
-|---------------- |----------:|----------:|----------:|----------:|
-| float -> double |  176.6 μs |     108 B |  301.5 μs |     294 B |
-| double -> float |  158.2 μs |     106 B |  301.5 μs |     294 B |
+|    | Mat44&lt;T&gt; | Code Size | Matrix4X4&lt;T&gt; | Code Size    |
+|-------------------- |----------:|----------:|----------:|----------:|
+| `float` -> `double` |  176.6 μs |     108 B |  301.5 μs |     294 B |
+| `double` -> `float` |  158.2 μs |     106 B |  301.5 μs |     294 B |
 
-### Quat&lt;T&gt;
+### `Quat<T>`
 
 Quaternion instances force `Slerp` to spherical way.
 

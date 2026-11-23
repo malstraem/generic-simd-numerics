@@ -84,33 +84,33 @@ public class StressMat44WithQuat<T> : BaseStressMat44<T>
         return equal;
     }
 
-    //[Benchmark]
-    //public void Invert()
-    //{
-    //    for (int i = 0; i < Count; i++)
-    //        _ = Mat44.TryInvert(mats[i], out @out[i]);
-    //}
+    [Benchmark]
+    public void Invert()
+    {
+        for (int i = 0; i < Count; i++)
+            _ = Mat44.TryInvert(mats[i], out @out[i]);
+    }
 
-    //[Benchmark]
-    //public void Rotation()
-    //{
-    //    for (int i = 0; i < Count; i++)
-    //        @out[i] = Mat44.Rotation(quats[i]);
-    //}
+    [Benchmark]
+    public void Rotation()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Mat44.Rotation(quats[i]);
+    }
 
-    //[Benchmark]
-    //public void Transform()
-    //{
-    //    for (int i = 0; i < Count; i++)
-    //        @out[i] = Mat44.Rotate(mats[i], quats[i]);
-    //}
+    [Benchmark]
+    public void Transform()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Mat44.Rotate(mats[i], quats[i]);
+    }
 
-    //[Benchmark]
-    //public void Affine()
-    //{
-    //    for (int i = 0; i < Count; i++)
-    //        @out[i] = Mat44.Affine(quats[i], scales[i], positions[i]);
-    //}
+    [Benchmark]
+    public void Affine()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Mat44.Affine(quats[i], scales[i], positions[i]);
+    }
 }
 
 [GenericTypeArguments(typeof(byte))]
@@ -134,31 +134,31 @@ public abstract class BaseStressMat44<T> : BaseBench<T>
             mats[i] = m;
     }
 
-    //[Benchmark]
-    //public void Add()
-    //{
-    //    for (int i = 0; i < Count - 1; i++)
-    //        @out[i] = mats[i] + mats[i + 1];
-    //}
+    [Benchmark]
+    public void Add()
+    {
+        for (int i = 0; i < Count - 1; i++)
+            @out[i] = mats[i] + mats[i + 1];
+    }
 
-    //[Benchmark]
-    //public void Subtract()
-    //{
-    //    for (int i = 0; i < Count - 1; i++)
-    //        @out[i] = mats[i] - mats[i + 1];
-    //}
+    [Benchmark]
+    public void Subtract()
+    {
+        for (int i = 0; i < Count - 1; i++)
+            @out[i] = mats[i] - mats[i + 1];
+    }
 
-    //[Benchmark]
-    //public void Multiply()
-    //{
-    //    for (int i = 0; i < Count - 1; i++)
-    //        @out[i] = mats[i] * mats[i + 1];
-    //}
+    [Benchmark]
+    public void Multiply()
+    {
+        for (int i = 0; i < Count - 1; i++)
+            @out[i] = mats[i] * mats[i + 1];
+    }
 
-    //[Benchmark]
-    //public void Transpose()
-    //{
-    //    for (int i = 0; i < Count; i++)
-    //        @out[i] = mats[i].Transpose();
-    //}
+    [Benchmark]
+    public void Transpose()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = mats[i].Transpose();
+    }
 }
