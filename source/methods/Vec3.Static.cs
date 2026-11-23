@@ -4,34 +4,6 @@ namespace System.Numerics;
 
 public static class Vec3
 {
-    [Obsolete("add overload with target eps")]
-    [MethodImpl(AggressiveInlining)]
-    public static bool Equal<T>(Vec3<T> a, Vec3<T> b)
-        where T : unmanaged, INumber<T>
-    {
-        /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return a.As128() == b.As128();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return a.As256() == b.As256();*/
-
-        return a.X == b.X && a.Y == b.Y && a.Z == b.Z;
-    }
-
-    [Obsolete("add overload with target eps")]
-    [MethodImpl(AggressiveInlining)]
-    public static bool NotEqual<T>(Vec3<T> a, Vec3<T> b)
-        where T : unmanaged, INumber<T>
-    {
-        /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return a.As128() != b.As128();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return a.As256() != b.As256();*/
-
-        return a.X != b.X && a.Y != b.Y && a.Z != b.Z;
-    }
-
     [MethodImpl(AggressiveInlining)]
     public static bool LessOrEqual<T>(Vec3<T> a, Vec3<T> b)
         where T : unmanaged, INumber<T>
@@ -59,6 +31,19 @@ public static class Vec3
     }
 
     [MethodImpl(AggressiveInlining)]
+    public static bool Less<T>(Vec3<T> a, Vec3<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.LessThanAll(a.As128(), b.As128());
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return Vector256.LessThanAll(a.As256(), b.As256());*/
+
+        return a.X < b.X && a.Y < b.Y && a.Z < b.Z;
+    }
+
+    [MethodImpl(AggressiveInlining)]
     public static bool Greater<T>(Vec3<T> a, Vec3<T> b)
         where T : unmanaged, INumber<T>
     {
@@ -72,16 +57,36 @@ public static class Vec3
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static bool Less<T>(Vec3<T> a, Vec3<T> b)
+    public static bool Equal<T>(Vec3<T> a, Vec3<T> b)
         where T : unmanaged, INumber<T>
     {
         /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return Vector128.LessThanAll(a.As128(), b.As128());
+            return a.As128() == b.As128();
 
         if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return Vector256.LessThanAll(a.As256(), b.As256());*/
+            return a.As256() == b.As256();*/
 
-        return a.X < b.X && a.Y < b.Y && a.Z < b.Z;
+        return a.X == b.X && a.Y == b.Y && a.Z == b.Z;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool Equal<T>(Vec3<T> a, Vec3<T> b, T eps)
+        where T : unmanaged, IFloatingPoint<T>
+    {
+        return T.Abs(a.X - b.X) <= eps && T.Abs(a.Y - b.Y) <= eps && T.Abs(a.Z - b.Z) <= eps;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool NotEqual<T>(Vec3<T> a, Vec3<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return a.As128() != b.As128();
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return a.As256() != b.As256();*/
+
+        return a.X != b.X && a.Y != b.Y && a.Z != b.Z;
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -260,6 +265,11 @@ public static class Vec3
             => (a * (T.One - am)) + (b * am);
 
     [MethodImpl(AggressiveInlining)]
+    public static Vec3<T> Cross<T>(Vec3<T> a, Vec3<T> b)
+        where T : unmanaged, INumber<T>
+            => new((a.Y * b.Z) - (a.Z * b.Y), (a.Z * b.X) - (a.X * b.Z), (a.X * b.Y) - (a.Y * b.X));
+
+    [MethodImpl(AggressiveInlining)]
     public static T LengthSquared<T>(Vec3<T> v)
         where T : unmanaged, INumber<T>
             => Dot(v, v);
@@ -284,12 +294,6 @@ public static class Vec3
         where T : unmanaged, INumber<T>, IRootFunctions<T>
             => v / Length(v);
 
-    [Obsolete("vectorize")]
-    [MethodImpl(AggressiveInlining)]
-    public static Vec3<T> Cross<T>(Vec3<T> a, Vec3<T> b)
-        where T : unmanaged, INumber<T>
-            => new((a.Y * b.Z) - (a.Z * b.Y), (a.Z * b.X) - (a.X * b.Z), (a.X * b.Y) - (a.Y * b.X));
-
     [MethodImpl(AggressiveInlining)]
     public static Vec3<T> SquareRoot<T>(Vec3<T> v)
         where T : unmanaged, INumber<T>, IRootFunctions<T>
@@ -301,6 +305,32 @@ public static class Vec3
             return Vector256.Sqrt(v.As256()).Vec3();*/
 
         return new(T.Sqrt(v.X), T.Sqrt(v.Y), T.Sqrt(v.Z));
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec3<T> Sin<T>(Vec3<T> v)
+        where T : unmanaged, INumber<T>, ITrigonometricFunctions<T>
+    {
+        /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.Sin(v.As128()).Vec3();
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return Vector256.Sin(v.As256()).Vec3();*/
+
+        return new(T.Sin(v.X), T.Sin(v.Y), T.Sin(v.Z));
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static Vec3<T> Cos<T>(Vec3<T> v)
+        where T : unmanaged, INumber<T>, ITrigonometricFunctions<T>
+    {
+        /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return Vector128.Cos(v.As128()).Vec3();
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return Vector256.Cos(v.As256()).Vec3();*/
+
+        return new(T.Cos(v.X), T.Cos(v.Y), T.Cos(v.Z));
     }
 
     [MethodImpl(AggressiveInlining)]

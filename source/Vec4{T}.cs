@@ -3,7 +3,8 @@ namespace System.Numerics;
 [StructLayout(LayoutKind.Sequential)]
 public partial struct Vec4<T>(T x, T y, T z, T w) :
     IVector<Vec4<T>, T>,
-    IVectorScalarOperators<Vec4<T>, T>
+    IVectorScalarOperators<Vec4<T>, T>,
+    IEquatable<Vec4<T>>
         where T : unmanaged, INumber<T>
 {
     public T X = x, Y = y, Z = z, W = w;
@@ -84,6 +85,9 @@ public partial struct Vec4<T>(T x, T y, T z, T w) :
 
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Clamp(Vec4<T> min, Vec4<T> max) => Vec4.Clamp(this, min, max);
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly Vec4<T> Cross(Vec4<T> v) => Vec4.Cross(this, v);
 
     [MethodImpl(AggressiveInlining)]
     public readonly Vec4<T> Lerp(Vec4<T> v, T am) => Vec4.Lerp(this, v, am);

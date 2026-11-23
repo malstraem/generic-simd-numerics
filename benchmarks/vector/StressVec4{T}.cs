@@ -42,8 +42,8 @@ public class StressConversionVec4<T1, T2> : BaseBench<T1>
 
 [GenericTypeArguments(typeof(float))]
 [GenericTypeArguments(typeof(double))]
-public class StressVec4<T> : BaseStressVec4<T>
-    where T : unmanaged, INumber<T>, IRootFunctions<T>
+public class StressVec4<T> : StressSignedVec4<T>
+    where T : unmanaged, INumber<T>, ISignedNumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {
     [Benchmark]
     public void Length()
@@ -65,6 +65,20 @@ public class StressVec4<T> : BaseStressVec4<T>
         for (int i = 0; i < Count; i++)
             @out[i] = vecs[i].Normalize();
     }
+
+    [Benchmark]
+    public void Sin()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = vecs[i].Sin();
+    }
+
+    [Benchmark]
+    public void Cos()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = vecs[i].Cos();
+    }
 }
 
 [GenericTypeArguments(typeof(byte))]
@@ -73,6 +87,17 @@ public class StressVec4<T> : BaseStressVec4<T>
 [GenericTypeArguments(typeof(long))]
 public class StressVec4I<T> : BaseStressVec4<T>
     where T : unmanaged, INumber<T>;
+
+public abstract class StressSignedVec4<T> : BaseStressVec4<T>
+    where T : unmanaged, INumber<T>, ISignedNumber<T>
+{
+    [Benchmark]
+    public void Abs()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = vecs[i].Abs();
+    }
+}
 
 public abstract class BaseStressVec4<T> : BaseBench<T>
     where T : unmanaged, INumber<T>

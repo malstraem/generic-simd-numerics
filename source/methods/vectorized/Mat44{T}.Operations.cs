@@ -28,55 +28,32 @@ public static partial class Mat44
 
     [MethodImpl(AggressiveInlining)]
     private static Mat44<T> Transpose8<T>(Mat44<T> m)
-        where T : unmanaged, INumber<T>
-    {
-        if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-        {
-            return m.As128().Permute8(0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15).Mat44();
-        }
-        return new(
-            m.X.X, m.Y.X, m.Z.X, m.W.X,
-            m.X.Y, m.Y.Y, m.Z.Y, m.W.Y,
-            m.X.Z, m.Y.Z, m.Z.Z, m.W.Z,
-            m.X.W, m.Y.W, m.Z.W, m.W.W);
-    }
+        where T : unmanaged, INumber<T> => m.As128().Permute8(0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15).Mat44();
 
     [MethodImpl(AggressiveInlining)]
     private static Mat44<T> Transpose16<T>(Mat44<T> m)
-        where T : unmanaged, INumber<T>
-    {
-        if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-        {
-            return m.As256().Permute16(0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15).Mat44();
-        }
-        return new(
-            m.X.X, m.Y.X, m.Z.X, m.W.X,
-            m.X.Y, m.Y.Y, m.Z.Y, m.W.Y,
-            m.X.Z, m.Y.Z, m.Z.Z, m.W.Z,
-            m.X.W, m.Y.W, m.Z.W, m.W.W);
-    }
+        where T : unmanaged, INumber<T> => m.As256().Permute16(0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15).Mat44();
 
     [MethodImpl(AggressiveInlining)]
     private static unsafe Mat44<T> Transpose32<T>(Mat44<T> m)
         where T : unmanaged, INumber<T>
     {
         if (Vector512<T>.IsSupported && Vector512.IsHardwareAccelerated)
-        {
             return m.As512().Permute32(0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15).Mat44();
-        }
+
         if (Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
         {
             var p = (T*)&m;
 
-            Vector256<T>
-            xy = Vector256.Load(p).Permute32(0, 4, 1, 5, 2, 6, 3, 7),
-            zw = Vector256.Load(p + 8).Permute32(0, 4, 1, 5, 2, 6, 3, 7);
+            var xy = Vector256.Load(p    ).Permute32(0, 4, 1, 5, 2, 6, 3, 7);
+            var zw = Vector256.Load(p + 8).Permute32(0, 4, 1, 5, 2, 6, 3, 7);
 
             Vector256.ZipLower(xy, zw).Permute32(0, 2, 1, 3, 4, 6, 5, 7).Store(p);
             Vector256.ZipUpper(xy, zw).Permute32(0, 2, 1, 3, 4, 6, 5, 7).Store(p + 8);
 
             return m;
         }
+
         if (Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
         {
             Vec4<T>
@@ -107,15 +84,15 @@ public static partial class Mat44
         {
             var p = (T*)&m;
 
-            Vector512<T>
-            xy = Vector512.Load(p).Permute64(0, 4, 1, 5, 2, 6, 3, 7),
-            zw = Vector512.Load(p + 8).Permute64(0, 4, 1, 5, 2, 6, 3, 7);
+            var xy = Vector512.Load(p    ).Permute64(0, 4, 1, 5, 2, 6, 3, 7);
+            var zw = Vector512.Load(p + 8).Permute64(0, 4, 1, 5, 2, 6, 3, 7);
 
             Vector512.ZipLower(xy, zw).Permute64(0, 2, 1, 3, 4, 6, 5, 7).Store(p);
             Vector512.ZipUpper(xy, zw).Permute64(0, 2, 1, 3, 4, 6, 5, 7).Store(p + 8);
 
             return m;
         }
+
         if (Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
         {
             Vec4<T>
@@ -177,8 +154,8 @@ public static partial class Mat44
         d1 = v01.Estimate(-v11, d1);
         d2 = v02.Estimate(-v12, d2);
 
-        v11 = Permute(d0, d2, 1, 3, 1, 1);
-        v13 = Permute(d1, d2, 1, 3, 3, 3);
+        v11 = Permute(d0,  d2, 1, 3, 1, 1);
+        v13 = Permute(d1,  d2, 1, 3, 3, 3);
         v10 = Permute(v11, d0, 2, 0, 3, 0);
         v11 = Permute(v11, d0, 1, 2, 1, 2);
         v12 = Permute(v13, d1, 2, 0, 3, 0);
@@ -190,8 +167,8 @@ public static partial class Mat44
         c0 = v00 * v10; c2 = v01 * v11;
         c4 = v02 * v12; c6 = v03 * v13;
 
-        v11 = Permute(d0, d2, 0, 1, 0, 0);
-        v13 = Permute(d1, d2, 0, 1, 2, 2);
+        v11 = Permute(d0,  d2, 0, 1, 0, 0);
+        v13 = Permute(d1,  d2, 0, 1, 2, 2);
         v10 = Permute(d0, v11, 3, 0, 1, 2);
         v11 = Permute(d0, v11, 2, 1, 2, 0);
         v12 = Permute(d1, v13, 3, 0, 1, 2);
@@ -241,6 +218,20 @@ public static partial class Mat44
         return true;
     }
 
+    /// <inheritdoc cref="Rotation{T}(Quat{T})"/>
+    [MethodImpl(AggressiveInlining)]
+    private static Mat44<T> Rotation<T>(Vec4<T> w)
+        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+    {
+        SkipInit(out Mat44<T> m);
+
+        m = Rotation(m, w);
+
+        m.W = Vec4<T>.UnitW; // Vec4<T>.UnitW currently provokes unnecessary asm
+
+        return m;
+    }
+
      /// <inheritdoc cref="Rotation{T}(Quat{T})"/>
     [MethodImpl(AggressiveInlining)]
     private static Mat44<T> Rotation<T>(Mat44<T> m, Vec4<T> w)
@@ -263,20 +254,6 @@ public static partial class Mat44
         m.X = z.Insert(0, 1, w).Insert(1, 0, x); // 1 - 2(yy + zz) | 2(xy + zw)     | 2(xz - yw)     | 0
         m.Y = z.Insert(1, 2, w).Insert(2, 1, x); // 2(xy - zw)     | 1 - 2(zz + xx) | 2(yz + xw)     | 0
         m.Z = z.Insert(0, 2, x).Insert(2, 0, w); // 2(xz + yw)     | 2(yz - xw)     | 1 - 2(xx + yy) | 0
-
-        return m;
-    }
-
-    /// <inheritdoc cref="Rotation{T}(Quat{T})"/>
-    [MethodImpl(AggressiveInlining)]
-    private static Mat44<T> Rotation<T>(Vec4<T> w)
-        where T : unmanaged, INumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
-    {
-        SkipInit(out Mat44<T> m);
-
-        m = Rotation(m, w);
-
-        m.W = Vec4<T>.UnitW; // Vec4<T>.UnitW currently provokes unnecessary asm
 
         return m;
     }

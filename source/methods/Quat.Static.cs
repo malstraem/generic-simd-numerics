@@ -3,6 +3,21 @@ namespace System.Numerics;
 public static class Quat
 {
     [MethodImpl(AggressiveInlining)]
+    public static bool Equal<T>(Quat<T> a, Quat<T> b)
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+            => Vec4.Equal(a.Vec4(), b.Vec4());
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool Equal<T>(Quat<T> a, Quat<T> b, T eps)
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+            => Vec4.Equal(a.Vec4(), b.Vec4(), eps);
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool NotEqual<T>(Quat<T> a, Quat<T> b)
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+            => Vec4.NotEqual(a.Vec4(), b.Vec4());
+
+    [MethodImpl(AggressiveInlining)]
     public static Quat<T> Add<T>(Quat<T> a, T n)
         where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => Vec4.Add(a.Vec4(), n).Quat();
@@ -140,7 +155,7 @@ public static class Quat
             sign = -sign;
         }
 
-        if (cosω > (T.One - Quat<T>.slepEpsilon))
+        if (cosω > (T.One - Quat<T>.slerpEpsilon))
         {
             sa = T.One - amount;
             sb = amount * sign;
@@ -216,9 +231,9 @@ public static class Quat
     {
         var h = T.CreateChecked(0.5);
 
-        var (sr, cr) = T.SinCos(roll * h);
-        var (sp, cp) = T.SinCos(pitch * h);
         var (sy, cy) = T.SinCos(yaw * h);
+        var (sp, cp) = T.SinCos(pitch * h);
+        var (sr, cr) = T.SinCos(roll * h);
 
         return new((cy * sp * cr) + (sy * cp * sr),
                    (sy * cp * cr) - (cy * sp * sr),
@@ -227,8 +242,8 @@ public static class Quat
     }
 
     [MethodImpl(AggressiveInlining)]
-    public static Quat<T2> As<T, T2>(Quat<T> quat)
+    public static Quat<T2> As<T, T2>(Quat<T> q)
         where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
         where T2 : unmanaged, IFloatingPoint<T2>, IRootFunctions<T2>, ITrigonometricFunctions<T2>
-            => quat.Vec4().As<T2>().Quat();
+            => Vec4.As<T, T2>(q.Vec4()).Quat();
 }

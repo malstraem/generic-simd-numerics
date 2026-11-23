@@ -98,4 +98,18 @@ public class StressVector2 : BaseBench<float>
         for (int i = 0; i < Count; i++)
             @out[i] = Vector2.Normalize(vecs[i]);
     }
+
+    [Benchmark]
+    public void Sin()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Vector2.Cos(vecs[i]);
+    }
+
+    [Benchmark]
+    public void Cos()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Vector2.Cos(vecs[i]);
+    }
 }

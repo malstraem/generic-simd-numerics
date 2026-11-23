@@ -3,7 +3,8 @@ namespace System.Numerics;
 [StructLayout(LayoutKind.Sequential)]
 public partial struct Vec2<T>(T x, T y) :
     IVector<Vec2<T>, T>,
-    IVectorScalarOperators<Vec2<T>, T>
+    IVectorScalarOperators<Vec2<T>, T>,
+    IEquatable<Vec2<T>>
         where T : unmanaged, INumber<T>
 {
     public T X = x, Y = y;
@@ -80,6 +81,9 @@ public partial struct Vec2<T>(T x, T y) :
 
     [MethodImpl(AggressiveInlining)]
     public readonly Vec2<T> Lerp(Vec2<T> v, T am) => Vec2.Lerp(this, v, am);
+
+    [MethodImpl(AggressiveInlining)]
+    public readonly T Cross(Vec2<T> v) => Vec2.Cross(this, v);
 
     [MethodImpl(AggressiveInlining)]
     public readonly T LengthSquared() => Vec2.LengthSquared(this);

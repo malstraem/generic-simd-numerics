@@ -1,8 +1,13 @@
 # Asm differences for load/store showed with `Add` cycle
 
-.NET 10.0.826.23019, X64 RyuJIT x86-64-v4, Windows 11 (10.0.26200.8457/25H2/2025Update/HudsonValley2), AMD Ryzen 9 7900X 4.70GHz
+#### .NET 11.0.0 (11.0.0, 11.0.26.53018), X64 RyuJIT x86-64-v4 (Job: Job-IHFIKV(Runtime=.NET 11.0))
 
-`Vec2<T>` and `Vec3<T>` have dumb vectorized ways that slower than naive currently
+```
+BenchmarkDotNet v0.16.0-preview.2, Windows 11 (10.0.26300.9974)
+AMD Ryzen 9 7900X 4.69GHz, 1 CPU, 24 logical and 12 physical cores
+```
+
+`Vec2<T>` and `Vec3<T>` currently implements naive vectorized ways that slower than scalar ones.
 
 ## Reference `System.Numerics.Vector2`
 
@@ -46,7 +51,7 @@ M00_L00:
        mov       r10d,eax
        mov       r10,[rcx+r10*8+10]
        mov       [rsp+8],r10
-       vmovsd    xmm0,qword ptr [rsp+10] // vmovsd as expected, but regs used a lot for ptr
+       vmovsd    xmm0,qword ptr [rsp+10] // vmovsd as expected, but regs used for ptr
        vmovsd    xmm1,qword ptr [rsp+8]
        vaddps    xmm0,xmm1,xmm0          // float addition
        vmovsd    qword ptr [rsp+10],xmm0
@@ -76,7 +81,7 @@ M00_L00:
        mov       r10d,eax
        mov       r10,[rcx+r10*8+10]
        mov       [rsp+8],r10
-       vmovsd    xmm0,qword ptr [rsp+10] // vmovsd as expected, but regs used a lot for ptr
+       vmovsd    xmm0,qword ptr [rsp+10] // vmovsd as expected, but regs used for ptr
        vmovsd    xmm1,qword ptr [rsp+8]
        vpaddd    xmm0,xmm1,xmm0          // integer addition
        vmovsd    qword ptr [rsp+10],xmm0

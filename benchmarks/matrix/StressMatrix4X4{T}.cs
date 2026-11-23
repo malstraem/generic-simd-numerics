@@ -17,10 +17,13 @@ public class StressConversionMatrix4X4<T1, T2> : BaseBench<T1>
 
     public StressConversionMatrix4X4()
     {
+        var t1 = Mat44<T1>.Gen(T1.One).Silk();
+        var t2 = t1.As<T2>();
+
         for (int i = 0; i < Count; i++)
         {
-            mats[i] = Mat44<T1>.Gen(T1.One).Silk();
-            converted[i] = mats[i].As<T2>();
+            mats[i] = t1;
+            converted[i] = t2;
         }
     }
 

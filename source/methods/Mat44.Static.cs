@@ -8,30 +8,118 @@ namespace System.Numerics;
 
 public static partial class Mat44
 {
-    [Obsolete("add overload with target eps")]
     [MethodImpl(AggressiveInlining)]
     public static bool Equal<T>(Mat44<T> a, Mat44<T> b)
         where T : unmanaged, INumber<T>
     {
-        if (SizeOf<T>() == 2 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return a.As256() == b.As256();
+        if (Vector512<T>.IsSupported && Vector512.IsHardwareAccelerated)
+        {
+            if (SizeOf<T>() == 4)
+                return a.As512() == b.As512();
 
-        if (SizeOf<T>() == 4 && Vector512<T>.IsSupported && Vector512.IsHardwareAccelerated)
-            return a.As512() == b.As512();
+            if (SizeOf<T>() == 8)
+            {
+                a.As512(out var axy, out var azw);
+                b.As512(out var bxy, out var bzw);
+
+                return axy == bxy && azw == bzw;
+            }
+        }
+
+        if (Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+        {
+            if (SizeOf<T>() == 2)
+                return a.As256() == b.As256();
+
+            if (SizeOf<T>() == 4)
+            {
+                a.As256(out var axy, out var azw);
+                b.As256(out var bxy, out var bzw);
+
+                return axy == bxy && azw == bzw;
+            }
+        }
+
+        if (SizeOf<T>() == 1 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return a.As128() == b.As128();
 
         return a.X == b.X && a.Y == b.Y && a.Z == b.Z && a.W == b.W;
     }
 
-    [Obsolete("add overload with target eps")]
+    [MethodImpl(AggressiveInlining)]
+    public static bool Equal<T>(Mat44<T> a, Mat44<T> b, T eps)
+        where T : unmanaged, IFloatingPoint<T>
+    {
+        if (Vector512<T>.IsSupported && Vector512.IsHardwareAccelerated)
+        {
+            if (SizeOf<T>() == 4)
+                return Vector512.LessThanOrEqualAll(Vector512.Abs(a.As512() - b.As512()), Vector512.Create(eps));
+
+            if (SizeOf<T>() == 8)
+            {
+                a.As512(out var axy, out var azw);
+                b.As512(out var bxy, out var bzw);
+
+                var veps = Vector512.Create(eps);
+
+                return Vector512.LessThanOrEqualAll(Vector512.Abs(axy - bxy), veps)
+                    && Vector512.LessThanOrEqualAll(Vector512.Abs(azw - bzw), veps);
+            }
+        }
+
+        if (Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+        {
+            if (SizeOf<T>() == 2)
+                return Vector256.LessThanOrEqualAll(Vector256.Abs(a.As256() - b.As256()), Vector256.Create(eps));
+
+            if (SizeOf<T>() == 4)
+            {
+                a.As256(out var axy, out var azw);
+                b.As256(out var bxy, out var bzw);
+
+                var veps = Vector256.Create(eps);
+
+                return Vector256.LessThanOrEqualAll(Vector256.Abs(axy - bxy), veps)
+                    && Vector256.LessThanOrEqualAll(Vector256.Abs(azw - bzw), veps);
+            }
+        }
+        return Vec4.Equal(a.X, b.X, eps) && Vec4.Equal(a.Y, b.Y, eps) && Vec4.Equal(a.Z, b.Z, eps) && Vec4.Equal(a.W, b.W, eps);
+    }
+
     [MethodImpl(AggressiveInlining)]
     public static bool NotEqual<T>(Mat44<T> a, Mat44<T> b)
         where T : unmanaged, INumber<T>
     {
-        if (SizeOf<T>() == 2 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return a.As256() != b.As256();
+        if (Vector512<T>.IsSupported && Vector512.IsHardwareAccelerated)
+        {
+            if (SizeOf<T>() == 4)
+                return a.As512() != b.As512();
 
-        if (SizeOf<T>() == 4 && Vector512<T>.IsSupported && Vector512.IsHardwareAccelerated)
-            return a.As512() != b.As512();
+            if (SizeOf<T>() == 8)
+            {
+                a.As512(out var axy, out var azw);
+                b.As512(out var bxy, out var bzw);
+
+                return axy != bxy || azw != bzw;
+            }
+        }
+
+        if (Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+        {
+            if (SizeOf<T>() == 2)
+                return a.As256() != b.As256();
+
+            if (SizeOf<T>() == 4)
+            {
+                a.As256(out var axy, out var azw);
+                b.As256(out var bxy, out var bzw);
+
+                return axy != bxy || azw != bzw;
+            }
+        }
+
+        if (SizeOf<T>() == 1 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return a.As128() != b.As128();
 
         return a.X != b.X || a.Y != b.Y || a.Z != b.Z || a.W != b.W;
     }
@@ -51,6 +139,7 @@ public static partial class Mat44
                 b.As512(out var bxy, out var bzw);
                 axy += bxy;
                 azw += bzw;
+
                 return axy.Mat44(azw);
             }
         }
@@ -66,6 +155,7 @@ public static partial class Mat44
                 b.As256(out var bxy, out var bzw);
                 axy += bxy;
                 azw += bzw;
+
                 return axy.Mat44(azw);
             }
         }
@@ -91,6 +181,7 @@ public static partial class Mat44
                 b.As512(out var bxy, out var bzw);
                 axy -= bxy;
                 azw -= bzw;
+
                 return axy.Mat44(azw);
             }
         }
@@ -106,6 +197,7 @@ public static partial class Mat44
                 b.As256(out var bxy, out var bzw);
                 axy -= bxy;
                 azw -= bzw;
+
                 return axy.Mat44(azw);
             }
         }
@@ -130,6 +222,7 @@ public static partial class Mat44
                 m.As512(out var xy, out var zw);
                 xy *= n;
                 zw *= n;
+
                 return xy.Mat44(zw);
             }
         }
@@ -144,6 +237,7 @@ public static partial class Mat44
                 m.As256(out var xy, out var zw);
                 xy *= n;
                 zw *= n;
+
                 return xy.Mat44(zw);
             }
         }
@@ -159,12 +253,10 @@ public static partial class Mat44
         where T : unmanaged, INumber<T>
     {
         Mat44<T> m;
-
         m.X = Vec4.Transform(a.X, b);
         m.Y = Vec4.Transform(a.Y, b);
         m.Z = Vec4.Transform(a.Z, b);
         m.W = Vec4.Transform(a.W, b);
-
         return m;
     }
 
@@ -172,10 +264,10 @@ public static partial class Mat44
     public static Mat44<T> Transpose<T>(Mat44<T> m)
         where T : unmanaged, INumber<T>
     {
-        if (SizeOf<T>() == 1)
+        if (SizeOf<T>() == 1 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
             return Transpose8(m);
 
-        if (SizeOf<T>() == 2)
+        if (SizeOf<T>() == 2 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
             return Transpose16(m);
 
         if (SizeOf<T>() == 4)
@@ -191,13 +283,37 @@ public static partial class Mat44
             m.X.W, m.Y.W, m.Z.W, m.W.W);
     }
 
+    [Obsolete("vectorize, todo 'Scale' with input matrix")]
+    [MethodImpl(AggressiveInlining)]
+    public static Mat44<T> Scale<T>(T s) where T : unmanaged, INumber<T> => new(
+        s,      T.Zero, T.Zero, T.Zero,
+        T.Zero, s,      T.Zero, T.Zero,
+        T.Zero, T.Zero, s,      T.Zero,
+        T.Zero, T.Zero, T.Zero, T.One);
+
+    [Obsolete("vectorize, todo 'Scale' with input matrix")]
+    [MethodImpl(AggressiveInlining)]
+    public static Mat44<T> Scale<T>(Vec3<T> s) where T : unmanaged, INumber<T> => new(
+        s.X,    T.Zero, T.Zero, T.Zero,
+        T.Zero, s.Y,    T.Zero, T.Zero,
+        T.Zero, T.Zero, s.Z,    T.Zero,
+        T.Zero, T.Zero, T.Zero, T.One);
+
+    [Obsolete("vectorize, todo 'Translate' with input matrix")]
+    [MethodImpl(AggressiveInlining)]
+    public static Mat44<T> Translation<T>(Vec3<T> t) where T : unmanaged, INumber<T> => new(
+        T.One,  T.Zero, T.Zero, T.Zero,
+        T.Zero, T.One,  T.Zero, T.Zero,
+        T.Zero, T.Zero, T.One,  T.Zero,
+        t.X,    t.Y,    t.Z,    T.One);
+
     [MethodImpl(AggressiveInlining)]
     public static bool TryInvert<T>(Mat44<T> m, out Mat44<T> inv)
         where T : unmanaged, IFloatingPoint<T>
     {
         T eps = typeof(T) == typeof(float)
-            ? T.CreateTruncating(float.Epsilon)
-            : T.CreateTruncating(double.Epsilon);
+            ? T.CreateChecked(MathF.BitIncrement(1f / float.MaxValue)) // bit increment should be generalized
+            : T.CreateTruncating(Math.BitIncrement(1d / double.MaxValue));
 
         if (Sse.IsSupported && SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated) // uses SSE specific shuffle for float
          //|| (Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)) // slower than scalar way currently
@@ -376,35 +492,14 @@ public static partial class Mat44
              m.W.W);
     }
 
-    [Obsolete("vectorize, todo 'Scale' with input matrix")]
-    [MethodImpl(AggressiveInlining)]
-    public static Mat44<T> Scale<T>(T s) where T : unmanaged, INumber<T> => new(
-        s,      T.Zero, T.Zero, T.Zero,
-        T.Zero, s,      T.Zero, T.Zero,
-        T.Zero, T.Zero, s,      T.Zero,
-        T.Zero, T.Zero, T.Zero, T.One);
-
-    [Obsolete("vectorize, todo 'Scale' with input matrix")]
-    [MethodImpl(AggressiveInlining)]
-    public static Mat44<T> Scale<T>(Vec3<T> s) where T : unmanaged, INumber<T> => new(
-        s.X,    T.Zero, T.Zero, T.Zero,
-        T.Zero, s.Y,    T.Zero, T.Zero,
-        T.Zero, T.Zero, s.Z,    T.Zero,
-        T.Zero, T.Zero, T.Zero, T.One);
-
-    [Obsolete("vectorize, todo 'Translate' with input matrix")]
-    [MethodImpl(AggressiveInlining)]
-    public static Mat44<T> Translation<T>(Vec3<T> t) where T : unmanaged, INumber<T> => new(
-        T.One,  T.Zero, T.Zero, T.Zero,
-        T.Zero, T.One,  T.Zero, T.Zero,
-        T.Zero, T.Zero, T.One,  T.Zero,
-        t.X,    t.Y,    t.Z,    T.One);
-
     [MethodImpl(AggressiveInlining)]
     public static Mat44<T2> As<T, T2>(Mat44<T> m)
         where T : unmanaged, INumber<T>
         where T2 : unmanaged, INumber<T2>
     {
+        if (SizeOf<T>() == 4)
+            return Mat44<T>.Convert32<T2>(m);
+
         if (SizeOf<T>() == 8)
             return Mat44<T>.Convert64<T2>(m);
 

@@ -98,4 +98,18 @@ public class StressVector3 : BaseBench<float>
         for (int i = 0; i < Count; i++)
             @out[i] = Vector3.Normalize(vecs[i]);
     }
+
+    [Benchmark]
+    public void Sin()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Vector3.Cos(vecs[i]);
+    }
+
+    [Benchmark]
+    public void Cos()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = Vector3.Cos(vecs[i]);
+    }
 }

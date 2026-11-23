@@ -1,11 +1,13 @@
+using System.Runtime.Intrinsics;
+
 using BenchmarkDotNet.Attributes;
 
 namespace System.Numerics.Bench;
 
 [GenericTypeArguments(typeof(float))]
 [GenericTypeArguments(typeof(double))]
-public class StressVec2<T> : BaseStressVec2<T>
-    where T : unmanaged, INumber<T>, IRootFunctions<T>
+public class StressVec2<T> : StressSignedVec2<T>
+    where T : unmanaged, INumber<T>, ISignedNumber<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {
     [Benchmark]
     public void Length()
@@ -27,6 +29,20 @@ public class StressVec2<T> : BaseStressVec2<T>
         for (int i = 0; i < Count; i++)
             @out[i] = vecs[i].Normalize();
     }
+
+    [Benchmark]
+    public void Sin()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = vecs[i].Sin();
+    }
+
+    [Benchmark]
+    public void Cos()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = vecs[i].Cos();
+    }
 }
 
 [GenericTypeArguments(typeof(byte))]
@@ -36,11 +52,25 @@ public class StressVec2<T> : BaseStressVec2<T>
 public class StressVec2I<T> : BaseStressVec2<T>
     where T : unmanaged, INumber<T>;
 
+public abstract class StressSignedVec2<T> : BaseStressVec2<T>
+    where T : unmanaged, INumber<T>, ISignedNumber<T>
+{
+    [Benchmark]
+    public void Abs()
+    {
+        for (int i = 0; i < Count; i++)
+            @out[i] = vecs[i].Abs();
+    }
+}
+
 public abstract class BaseStressVec2<T> : BaseBench<T>
     where T : unmanaged, INumber<T>
 {
     protected static readonly Vec2<T>[] vecs = new Vec2<T>[Count],
                                         @out = new Vec2<T>[Count];
+
+    protected static readonly Vector128<T>[] vecs128 = new Vector128<T>[Count],
+                                             @out128 = new Vector128<T>[Count];
 
     public BaseStressVec2()
     {
