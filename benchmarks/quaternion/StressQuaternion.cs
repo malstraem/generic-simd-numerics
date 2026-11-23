@@ -9,7 +9,7 @@ public class StressQuaternion : BaseBench<float>
 
     public StressQuaternion()
     {
-        // for spherical slerp way
+        // force spherical slerp way
         float s1 = 0.1f, s2 = 0.5f;
         var q1 = new Quaternion(s1, s1, s1, s1);
         var q2 = new Quaternion(s2, s2, s2, s2);

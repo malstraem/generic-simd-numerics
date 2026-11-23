@@ -83,6 +83,9 @@ public partial struct Vec2<T>(T x, T y) :
     public readonly Vec2<T> Lerp(Vec2<T> v, T am) => Vec2.Lerp(this, v, am);
 
     [MethodImpl(AggressiveInlining)]
+    public readonly T Cross(Vec2<T> v) => Vec2.Cross(this, v);
+
+    [MethodImpl(AggressiveInlining)]
     public readonly T LengthSquared() => Vec2.LengthSquared(this);
 
     [MethodImpl(AggressiveInlining)]

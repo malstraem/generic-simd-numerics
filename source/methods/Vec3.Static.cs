@@ -4,34 +4,6 @@ namespace System.Numerics;
 
 public static class Vec3
 {
-    [Obsolete("add overload with target eps")]
-    [MethodImpl(AggressiveInlining)]
-    public static bool Equal<T>(Vec3<T> a, Vec3<T> b)
-        where T : unmanaged, INumber<T>
-    {
-        /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return a.As128() == b.As128();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return a.As256() == b.As256();*/
-
-        return a.X == b.X && a.Y == b.Y && a.Z == b.Z;
-    }
-
-    [Obsolete("add overload with target eps")]
-    [MethodImpl(AggressiveInlining)]
-    public static bool NotEqual<T>(Vec3<T> a, Vec3<T> b)
-        where T : unmanaged, INumber<T>
-    {
-        /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return a.As128() != b.As128();
-
-        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
-            return a.As256() != b.As256();*/
-
-        return a.X != b.X && a.Y != b.Y && a.Z != b.Z;
-    }
-
     [MethodImpl(AggressiveInlining)]
     public static bool LessOrEqual<T>(Vec3<T> a, Vec3<T> b)
         where T : unmanaged, INumber<T>
@@ -82,6 +54,39 @@ public static class Vec3
             return Vector256.GreaterThanAll(a.As256(), b.As256());*/
 
         return a.X > b.X && a.Y > b.Y && a.Z > b.Z;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool Equal<T>(Vec3<T> a, Vec3<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return a.As128() == b.As128();
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return a.As256() == b.As256();*/
+
+        return a.X == b.X && a.Y == b.Y && a.Z == b.Z;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool Equal<T>(Vec3<T> a, Vec3<T> b, T eps)
+        where T : unmanaged, IFloatingPoint<T>
+    {
+        return T.Abs(a.X - b.X) <= eps && T.Abs(a.Y - b.Y) <= eps && T.Abs(a.Z - b.Z) <= eps;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool NotEqual<T>(Vec3<T> a, Vec3<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        /*if (SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return a.As128() != b.As128();
+
+        if (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)
+            return a.As256() != b.As256();*/
+
+        return a.X != b.X && a.Y != b.Y && a.Z != b.Z;
     }
 
     [MethodImpl(AggressiveInlining)]

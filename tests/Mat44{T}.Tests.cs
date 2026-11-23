@@ -16,8 +16,6 @@ public class Mat44f64 : Mat44WithQuaternion<double>;
 public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
     where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {
-    private static readonly bool system = typeof(T) == typeof(float);
-
     private static Quat<T> Rotation => new(
         T.CreateTruncating(Random.Shared.NextDouble()),
         T.CreateTruncating(Random.Shared.NextDouble()),
@@ -54,32 +52,32 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
         T m31, T m32, T m33, T m34,
         T m41, T m42, T m43, T m44)
     {
-        Mat44<T> toInvert = new(
+        Mat44<T> matrix = new(
             m11, m12, m13, m14,
             m21, m22, m23, m24,
             m31, m32, m33, m34,
             m41, m42, m43, m44);
 
-        bool flag = Mat44.TryInvert(toInvert, out var inv);
+        bool result = Mat44.TryInvert(matrix, out var inverted);
 
-        bool expectedFlag;
+        bool expectedResult;
 
         Mat44<T> expected;
 
         if (system)
         {
-            expectedFlag = Matrix4x4.Invert(toInvert.System(), out var result);
-            expected = result.Mat44<T>();
+            expectedResult = Matrix4x4.Invert(matrix.System(), out var inv);
+            expected = inv.Mat44<T>();
         }
         else
         {
-            expectedFlag = Matrix4X4.Invert(toInvert.Silk(), out var result);
-            expected = result.Mat44();
+            expectedResult = Matrix4X4.Invert(matrix.Silk(), out var inv);
+            expected = inv.Mat44();
         }
-        await Assert.That(flag).IsEqualTo(expectedFlag);
+        await Assert.That(result).IsEqualTo(expectedResult);
 
-        if (expectedFlag)
-            await Assert.That(inv).IsEqualTo(expected);
+        if (expectedResult)
+            await Assert.That(inverted).IsEqualTo(expected);
     }
 
     [Test, Repeat(9), DisplayName("translation")]
@@ -192,6 +190,7 @@ public abstract class Mat44WithQuaternion<T> : Mat44Base<T>
         var expected = system ? (Matrix4x4.CreateScale(s.System())
                                * Matrix4x4.CreateFromQuaternion(r.System())
                                * Matrix4x4.CreateTranslation(t.System())).Mat44<T>()
+
                               : (Matrix4X4.CreateScale(s.Silk())
                                * Matrix4X4.CreateFromQuaternion(r.Silk())
                                * Matrix4X4.CreateTranslation(t.Silk())).Mat44();
@@ -254,16 +253,41 @@ public class Mat44Conversion<T1, T2>
 public abstract class Mat44Base<T>
     where T : unmanaged, INumber<T>
 {
+    protected static readonly bool system = typeof(T) == typeof(float);
+
     protected static readonly Mat44<T>
        a = Mat44<T>.Gen(T.One),
        b = Mat44<T>.Gen(T.One + T.One);
+
+    [Test, DisplayName("==")]
+    public async Task Equal()
+    {
+        bool equal = a == b;
+
+        bool expected = system ? a.System() == b.System()
+                               : a.Silk() == b.Silk();
+
+        await Assert.That(equal).IsEqualTo(expected);
+    }
+
+    [Test, DisplayName("!=")]
+    public async Task NotEqual()
+    {
+        bool equal = a != b;
+
+        bool expected = system ? a.System() != b.System()
+                               : a.Silk() != b.Silk();
+
+        await Assert.That(equal).IsEqualTo(expected);
+    }
 
     [Test, DisplayName("a + b")]
     public async Task Add()
     {
         var add = a + b;
 
-        var expected = (a.Silk() + b.Silk()).Mat44();
+        var expected = system ? (a.System() + b.System()).Mat44<T>()
+                              : (a.Silk() + b.Silk()).Mat44();
 
         await Assert.That(add).IsEqualTo(expected);
     }
@@ -273,7 +297,8 @@ public abstract class Mat44Base<T>
     {
         var sub = a - b;
 
-        var expected = (a.Silk() - b.Silk()).Mat44();
+        var expected = system ? (a.System() - b.System()).Mat44<T>()
+                              : (a.Silk() - b.Silk()).Mat44();
 
         await Assert.That(sub).IsEqualTo(expected);
     }
@@ -283,7 +308,8 @@ public abstract class Mat44Base<T>
     {
         var mul = a * b;
 
-        var expected = (a.Silk() * b.Silk()).Mat44();
+        var expected = system ? (a.System() * b.System()).Mat44<T>()
+                              : (a.Silk() * b.Silk()).Mat44();
 
         await Assert.That(mul).IsEqualTo(expected);
     }
@@ -293,7 +319,8 @@ public abstract class Mat44Base<T>
     {
         var transpose = a.Transpose();
 
-        var expected = Matrix4X4.Transpose(a.Silk()).Mat44();
+        var expected = system ? Matrix4x4.Transpose(a.System()).Mat44<T>()
+                              : Matrix4X4.Transpose(a.Silk()).Mat44();
 
         await Assert.That(transpose).IsEqualTo(Mat44.Transpose(a));
         await Assert.That(transpose).IsEqualTo(expected);

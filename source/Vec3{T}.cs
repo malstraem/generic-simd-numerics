@@ -88,13 +88,13 @@ public struct Vec3<T>(T x, T y, T z) :
     public readonly Vec3<T> Lerp(Vec3<T> v, T am) => Vec3.Lerp(this, v, am);
 
     [MethodImpl(AggressiveInlining)]
+    public readonly Vec3<T> Cross(Vec3<T> v) => Vec3.Cross(this, v);
+
+    [MethodImpl(AggressiveInlining)]
     public readonly T LengthSquared() => Vec3.LengthSquared(this);
 
     [MethodImpl(AggressiveInlining)]
     public readonly T DistanceSquared(Vec3<T> v) => Vec3.DistanceSquared(this, v);
-
-    [MethodImpl(AggressiveInlining)]
-    public readonly Vec3<T> Cross(Vec3<T> v) => Vec3.Cross(this, v);
 
     public readonly Vec3<TOther> As<TOther>()
         where TOther : unmanaged, INumber<TOther>

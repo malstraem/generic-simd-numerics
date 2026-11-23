@@ -78,6 +78,8 @@ Comparison uses `Mean` and follows `System.Numerics` -> `our` -> `Silk.NET.Maths
 
 ### Mat44&lt;T&gt;
 
+Matrix has a determinant > eps for `Invert`.
+
 `Affine` is `Rotation * Scale * Translation` for both `System.Numerics` and `Silk.NET.Maths`.
 
 ||Matrix4x4|Code Size|Mat44&lt;float&gt;|Code Size|Matrix4X4&lt;float&gt;|Code Size|

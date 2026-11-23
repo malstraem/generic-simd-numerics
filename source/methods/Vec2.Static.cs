@@ -4,28 +4,6 @@ namespace System.Numerics;
 
 public static class Vec2
 {
-    [Obsolete("add overload with target eps")]
-    [MethodImpl(AggressiveInlining)]
-    public static bool Equal<T>(Vec2<T> a, Vec2<T> b)
-        where T : unmanaged, INumber<T>
-    {
-        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return a.As128() == b.As128();
-
-        return a.X == b.X && a.Y == b.Y;
-    }
-
-    [Obsolete("add overload with target eps")]
-    [MethodImpl(AggressiveInlining)]
-    public static bool NotEqual<T>(Vec2<T> a, Vec2<T> b)
-        where T : unmanaged, INumber<T>
-    {
-        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
-            return a.As128() != b.As128();
-
-        return a.X != b.X && a.Y != b.Y;
-    }
-
     [MethodImpl(AggressiveInlining)]
     public static bool LessOrEqual<T>(Vec2<T> a, Vec2<T> b)
         where T : unmanaged, INumber<T>
@@ -64,6 +42,33 @@ public static class Vec2
             return Vector128.GreaterThanAll(a.As128(), b.As128());
 
         return a.X > b.X && a.Y > b.Y;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool Equal<T>(Vec2<T> a, Vec2<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return a.As128() == b.As128();
+
+        return a.X == b.X && a.Y == b.Y;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool Equal<T>(Vec2<T> a, Vec2<T> b, T eps)
+        where T : unmanaged, IFloatingPoint<T>
+    {
+        return T.Abs(a.X - b.X) <= eps && T.Abs(a.Y - b.Y) <= eps;
+    }
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool NotEqual<T>(Vec2<T> a, Vec2<T> b)
+        where T : unmanaged, INumber<T>
+    {
+        if (SizeOf<T>() == 8 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
+            return a.As128() != b.As128();
+
+        return a.X != b.X && a.Y != b.Y;
     }
 
     [MethodImpl(AggressiveInlining)]

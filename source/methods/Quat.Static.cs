@@ -3,6 +3,21 @@ namespace System.Numerics;
 public static class Quat
 {
     [MethodImpl(AggressiveInlining)]
+    public static bool Equal<T>(Quat<T> a, Quat<T> b)
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+            => Vec4.Equal(a.Vec4(), b.Vec4());
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool Equal<T>(Quat<T> a, Quat<T> b, T eps)
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+            => Vec4.Equal(a.Vec4(), b.Vec4(), eps);
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool NotEqual<T>(Quat<T> a, Quat<T> b)
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
+            => Vec4.NotEqual(a.Vec4(), b.Vec4());
+
+    [MethodImpl(AggressiveInlining)]
     public static Quat<T> Add<T>(Quat<T> a, T n)
         where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
             => Vec4.Add(a.Vec4(), n).Quat();

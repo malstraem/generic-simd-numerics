@@ -1,7 +1,22 @@
 namespace System.Numerics;
 
-public static class PlaneMethods // OOPSIE WOOPSIE, struct name...
+public static class Planes // OOPSIE WOOPSIE, struct name...
 {
+    [MethodImpl(AggressiveInlining)]
+    public static bool Equal<T>(Plane<T> a, Plane<T> b)
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>
+            => Vec4.Equal(a.Vec4(), b.Vec4());
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool Equal<T>(Plane<T> a, Plane<T> b, T eps)
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>
+            => Vec4.Equal(a.Vec4(), b.Vec4(), eps);
+
+    [MethodImpl(AggressiveInlining)]
+    public static bool NotEqual<T>(Plane<T> a, Plane<T> b)
+        where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>
+            => Vec4.NotEqual(a.Vec4(), b.Vec4());
+
     [MethodImpl(AggressiveInlining)]
     public static T Dot<T>(Plane<T> p, Vec4<T> v)
         where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>

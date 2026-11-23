@@ -2,8 +2,8 @@ using BenchmarkDotNet.Attributes;
 
 namespace System.Numerics.Bench;
 
-//[GenericTypeArguments(typeof(int), typeof(float))]
-//[GenericTypeArguments(typeof(int), typeof(double))]
+[GenericTypeArguments(typeof(int), typeof(float))]
+[GenericTypeArguments(typeof(int), typeof(double))]
 [GenericTypeArguments(typeof(float), typeof(double))]
 public class StressConversionMat44<T1, T2> : BaseBench<T1>
     where T1 : unmanaged, INumber<T1>
@@ -74,32 +74,43 @@ public class StressMat44WithQuat<T> : BaseStressMat44<T>
     }
 
     [Benchmark]
-    public void Invert()
+    public bool EqualEpsilon()
     {
-        for (int i = 0; i < Count; i++)
-            _ = Mat44.TryInvert(mats[i], out @out[i]);
+        bool equal = false;
+
+        for (int i = 0; i < Count - 1; i++)
+            equal = Mat44.Equal(mats[i], mats[i + 1], T.CreateTruncating(0.1));
+
+        return equal;
     }
 
-    [Benchmark]
-    public void Rotation()
-    {
-        for (int i = 0; i < Count; i++)
-            @out[i] = Mat44.Rotation(quats[i]);
-    }
+    //[Benchmark]
+    //public void Invert()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        _ = Mat44.TryInvert(mats[i], out @out[i]);
+    //}
 
-    [Benchmark]
-    public void Transform()
-    {
-        for (int i = 0; i < Count; i++)
-            @out[i] = Mat44.Rotate(mats[i], quats[i]);
-    }
+    //[Benchmark]
+    //public void Rotation()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        @out[i] = Mat44.Rotation(quats[i]);
+    //}
 
-    [Benchmark]
-    public void Affine()
-    {
-        for (int i = 0; i < Count; i++)
-            @out[i] = Mat44.Affine(quats[i], scales[i], positions[i]);
-    }
+    //[Benchmark]
+    //public void Transform()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        @out[i] = Mat44.Rotate(mats[i], quats[i]);
+    //}
+
+    //[Benchmark]
+    //public void Affine()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        @out[i] = Mat44.Affine(quats[i], scales[i], positions[i]);
+    //}
 }
 
 [GenericTypeArguments(typeof(byte))]
@@ -123,31 +134,31 @@ public abstract class BaseStressMat44<T> : BaseBench<T>
             mats[i] = m;
     }
 
-    [Benchmark]
-    public void Add()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            @out[i] = mats[i] + mats[i + 1];
-    }
+    //[Benchmark]
+    //public void Add()
+    //{
+    //    for (int i = 0; i < Count - 1; i++)
+    //        @out[i] = mats[i] + mats[i + 1];
+    //}
 
-    [Benchmark]
-    public void Subtract()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            @out[i] = mats[i] - mats[i + 1];
-    }
+    //[Benchmark]
+    //public void Subtract()
+    //{
+    //    for (int i = 0; i < Count - 1; i++)
+    //        @out[i] = mats[i] - mats[i + 1];
+    //}
 
-    [Benchmark]
-    public void Multiply()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            @out[i] = mats[i] * mats[i + 1];
-    }
+    //[Benchmark]
+    //public void Multiply()
+    //{
+    //    for (int i = 0; i < Count - 1; i++)
+    //        @out[i] = mats[i] * mats[i + 1];
+    //}
 
-    [Benchmark]
-    public void Transpose()
-    {
-        for (int i = 0; i < Count; i++)
-            @out[i] = mats[i].Transpose();
-    }
+    //[Benchmark]
+    //public void Transpose()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        @out[i] = mats[i].Transpose();
+    //}
 }

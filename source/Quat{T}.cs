@@ -27,10 +27,10 @@ public partial struct Quat<T>(T x, T y, T z, T w) :
 
     #region Operators
     [MethodImpl(AggressiveInlining)]
-    public static bool operator ==(Quat<T> a, Quat<T> b) => a.Vec4() == b.Vec4();
+    public static bool operator ==(Quat<T> a, Quat<T> b) => Quat.Equal(a, b);
 
     [MethodImpl(AggressiveInlining)]
-    public static bool operator !=(Quat<T> a, Quat<T> b) => a.Vec4() != b.Vec4();
+    public static bool operator !=(Quat<T> a, Quat<T> b) => Quat.NotEqual(a, b);
 
     [MethodImpl(AggressiveInlining)]
     public static Quat<T> operator -(Quat<T> q) => (-q.Vec4()).Quat();
