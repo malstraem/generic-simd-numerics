@@ -307,6 +307,27 @@ public static partial class Mat44
         T.Zero, T.Zero, T.One,  T.Zero,
         t.X,    t.Y,    t.Z,    T.One);
 
+    public static T Determinant<T>(Mat44<T> m)
+        where T : unmanaged, INumber<T>
+    {
+        if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Sse.IsSupported) // uses SSE specific shuffle
+         || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
+        {
+            return Determinant(m.X, m.Y, m.Z, m.W);
+        }
+        T xx = m.X.X, xy = m.X.Y, xz = m.X.Z, xw = m.X.W,
+          yx = m.Y.X, yy = m.Y.Y, yz = m.Y.Z, yw = m.Y.W,
+          zx = m.Z.X, zy = m.Z.Y, zz = m.Z.Z, zw = m.Z.W,
+          wx = m.W.X, wy = m.W.Y, wz = m.W.Z, ww = m.W.W;
+
+        return (((xx * yy) - (xy * yx)) * ((zz * ww) - (zw * wz)))
+             - (((xx * yz) - (xz * yx)) * ((zy * ww) - (zw * wy)))
+             + (((xx * yw) - (xw * yx)) * ((zy * wz) - (zz * wy)))
+             + (((xy * yz) - (xz * yy)) * ((zx * ww) - (zw * wx)))
+             - (((xy * yw) - (xw * yy)) * ((zx * wz) - (zz * wx)))
+             + (((xz * yw) - (xw * yz)) * ((zx * wy) - (zy * wx)));
+    }
+
     [MethodImpl(AggressiveInlining)]
     public static bool TryInvert<T>(Mat44<T> m, out Mat44<T> inv)
         where T : unmanaged, IFloatingPoint<T>
@@ -315,8 +336,8 @@ public static partial class Mat44
             ? T.CreateChecked(MathF.BitIncrement(1f / float.MaxValue)) // bit increment should be generalized
             : T.CreateTruncating(Math.BitIncrement(1d / double.MaxValue));
 
-        if (Sse.IsSupported && SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated) // uses SSE specific shuffle for float
-         //|| (Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)) // slower than scalar way currently
+        if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Sse.IsSupported) // uses SSE specific shuffle
+         || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated)) // slower than scalar way currently
         {
             return Invert(m, eps, out inv);
         }

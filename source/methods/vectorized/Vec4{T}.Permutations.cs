@@ -60,22 +60,13 @@ public partial struct Vec4<T>
         return Vector256.UnzipEven(this.As256(), v.As256()).Vec4();
     }
 
+    #region X---
     [MethodImpl(AggressiveInlining)]
     internal Vec4<T> XXXX() => Permute(0, 0, 0, 0);
 
     [MethodImpl(AggressiveInlining)]
-    internal Vec4<T> YYYY() => Permute(1, 1, 1, 1);
+    internal Vec4<T> XXYZ() => Permute(0, 0, 1, 2);
 
-    [MethodImpl(AggressiveInlining)]
-    internal Vec4<T> ZZZZ() => Permute(2, 2, 2, 2);
-
-    [MethodImpl(AggressiveInlining)]
-    internal Vec4<T> WWWW() => Permute(3, 3, 3, 3);
-
-    [MethodImpl(AggressiveInlining)]
-    internal Vec4<T> YYWW() => Permute(1, 1, 3, 3);
-
-    #region X---
     [MethodImpl(AggressiveInlining)]
     internal Vec4<T> XYWZ() => Permute(0, 1, 3, 2);
 
@@ -106,6 +97,18 @@ public partial struct Vec4<T>
 
     #region Y---
     [MethodImpl(AggressiveInlining)]
+    internal Vec4<T> YYYY() => Permute(1, 1, 1, 1);
+
+    [MethodImpl(AggressiveInlining)]
+    internal Vec4<T> YXXX() => Permute(1, 0, 0, 0);
+
+    [MethodImpl(AggressiveInlining)]
+    internal Vec4<T> YXWX() => Permute(1, 0, 3, 0);
+
+    [MethodImpl(AggressiveInlining)]
+    internal Vec4<T> YYWW() => Permute(1, 1, 3, 3);
+
+    [MethodImpl(AggressiveInlining)]
     internal Vec4<T> YXZW() => Permute(1, 0, 2, 3);
 
     [MethodImpl(AggressiveInlining)]
@@ -132,16 +135,31 @@ public partial struct Vec4<T>
 
     #region Z---
     [MethodImpl(AggressiveInlining)]
+    internal Vec4<T> ZZZZ() => Permute(2, 2, 2, 2);
+
+    [MethodImpl(AggressiveInlining)]
+    internal Vec4<T> ZZYY() => Permute(2, 2, 1, 1);
+
+    [MethodImpl(AggressiveInlining)]
+    internal Vec4<T> ZZWW() => Permute(2, 2, 3, 3);
+
+    [MethodImpl(AggressiveInlining)]
     internal Vec4<T> ZXYW() => Permute(2, 0, 1, 3);
 
     [MethodImpl(AggressiveInlining)]
     internal Vec4<T> ZXWY() => Permute(2, 0, 3, 1);
 
     [MethodImpl(AggressiveInlining)]
+    internal Vec4<T> ZYYX() => Permute(2, 1, 1, 0);
+
+    [MethodImpl(AggressiveInlining)]
     internal Vec4<T> ZYXW() => Permute(2, 1, 0, 3);
 
     [MethodImpl(AggressiveInlining)]
     internal Vec4<T> ZYWX() => Permute(2, 1, 3, 0);
+
+    [MethodImpl(AggressiveInlining)]
+    internal Vec4<T> ZYWZ() => Permute(2, 1, 3, 2);
 
     [MethodImpl(AggressiveInlining)]
     internal Vec4<T> ZWYX() => Permute(2, 3, 1, 0);
@@ -160,6 +178,18 @@ public partial struct Vec4<T>
     #endregion
 
     #region W---
+    [MethodImpl(AggressiveInlining)]
+    internal Vec4<T> WWWW() => Permute(3, 3, 3, 3);
+
+    [MethodImpl(AggressiveInlining)]
+    internal Vec4<T> WWWZ() => Permute(3, 3, 3, 2);
+
+    [MethodImpl(AggressiveInlining)]
+    internal Vec4<T> WWZW() => Permute(3, 3, 2, 3);
+
+    [MethodImpl(AggressiveInlining)]
+    internal Vec4<T> WXYY() => Permute(3, 0, 1, 1);
+
     [MethodImpl(AggressiveInlining)]
     internal Vec4<T> WXYZ() => Permute(3, 0, 1, 2);
 

@@ -1,6 +1,6 @@
 namespace System.Numerics;
 
-public static class VecNTrogonometric
+public static class VecNTrigonometric
 {
     extension<T>(Vec4<T> v)
         where T : unmanaged, INumber<T>, ITrigonometricFunctions<T>

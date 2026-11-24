@@ -325,4 +325,16 @@ public abstract class Mat44Base<T>
         await Assert.That(transpose).IsEqualTo(Mat44.Transpose(a));
         await Assert.That(transpose).IsEqualTo(expected);
     }
+
+    [Test]
+    public async Task Determinant()
+    {
+        var determinant = a.Determinant();
+
+        var expected = system ? (T)(object)a.System().GetDeterminant()
+                              : a.Silk().GetDeterminant();
+
+        await Assert.That(determinant).IsEqualTo(Mat44.Determinant(a));
+        await Assert.That(determinant).IsEqualTo(expected);
+    }
 }

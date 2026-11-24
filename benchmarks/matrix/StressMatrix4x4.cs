@@ -36,32 +36,39 @@ public class StressMatrix4x4 : BaseBench<float>
         }
     }
 
-    [Benchmark]
-    public void Add()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            @out[i] = mats[i] + mats[i + 1];
-    }
+    //[Benchmark]
+    //public void Add()
+    //{
+    //    for (int i = 0; i < Count - 1; i++)
+    //        @out[i] = mats[i] + mats[i + 1];
+    //}
+
+    //[Benchmark]
+    //public void Subtract()
+    //{
+    //    for (int i = 0; i < Count - 1; i++)
+    //        @out[i] = mats[i] - mats[i + 1];
+    //}
+
+    //[Benchmark]
+    //public void Multiply()
+    //{
+    //    for (int i = 0; i < Count - 1; i++)
+    //        @out[i] = mats[i] * mats[i + 1];
+    //}
+
+    //[Benchmark]
+    //public void Transpose()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        @out[i] = Matrix4x4.Transpose(mats[i]);
+    //}
 
     [Benchmark]
-    public void Subtract()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            @out[i] = mats[i] - mats[i + 1];
-    }
-
-    [Benchmark]
-    public void Multiply()
-    {
-        for (int i = 0; i < Count - 1; i++)
-            @out[i] = mats[i] * mats[i + 1];
-    }
-
-    [Benchmark]
-    public void Transpose()
+    public void Determinant()
     {
         for (int i = 0; i < Count; i++)
-            @out[i] = Matrix4x4.Transpose(mats[i]);
+            nums[i] = mats[i].GetDeterminant();
     }
 
     [Benchmark]
@@ -71,24 +78,24 @@ public class StressMatrix4x4 : BaseBench<float>
             _ = Matrix4x4.Invert(mats[i], out @out[i]);
     }
 
-    [Benchmark]
-    public void Rotation()
-    {
-        for (int i = 0; i < Count; i++)
-            @out[i] = Matrix4x4.CreateFromQuaternion(quats[i]);
-    }
+    //[Benchmark]
+    //public void Rotation()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        @out[i] = Matrix4x4.CreateFromQuaternion(quats[i]);
+    //}
 
-    [Benchmark]
-    public void Transform()
-    {
-        for (int i = 0; i < Count; i++)
-            @out[i] = Matrix4x4.Transform(mats[i], quats[i]);
-    }
+    //[Benchmark]
+    //public void Transform()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        @out[i] = Matrix4x4.Transform(mats[i], quats[i]);
+    //}
 
-    [Benchmark]
-    public void Affine()
-    {
-        for (int i = 0; i < Count; i++)
-            @out[i] = Matrix4x4.CreateFromQuaternion(quats[i]) * Matrix4x4.CreateScale(scales[i]) * Matrix4x4.CreateTranslation(positions[i]);
-    }
+    //[Benchmark]
+    //public void Affine()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        @out[i] = Matrix4x4.CreateFromQuaternion(quats[i]) * Matrix4x4.CreateScale(scales[i]) * Matrix4x4.CreateTranslation(positions[i]);
+    //}
 }

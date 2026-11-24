@@ -13,16 +13,16 @@ public static partial class Mat44
     private static Vec4<T> Permute<T>(
         Vec4<T> lower, Vec4<T> upper,
         [ConstantExpected] byte x, [ConstantExpected] byte y, [ConstantExpected] byte z, [ConstantExpected] byte w)
-            where T : unmanaged, IFloatingPoint<T>
+            where T : unmanaged, INumber<T>
     {
 #pragma warning disable CA1857
         if (SizeOf<T>() == 4)
             return Sse.Shuffle(lower.As128().As<T, float>(), upper.As128().As<T, float>(), (byte)((w << 6) | (z << 4) | (y << 2) | x)).As<float, T>().Vec4();
 
         return Vector256.ConcatLowerLower(
-            Vector256.Shuffle(lower.As256().As<T, double>(), Vector256.Create(x, y, 0, 0)),
-            Vector256.Shuffle(upper.As256().As<T, double>(), Vector256.Create(z, w, 0, 0))
-        ).As<double, T>().Vec4();
+            Vector256.Shuffle(lower.As256().As<T, double>(), Vector256.Create(x, y, 0, 0)).As<double, T>(),
+            Vector256.Shuffle(upper.As256().As<T, double>(), Vector256.Create(z, w, 0, 0)).As<double, T>()
+        ).Vec4();
 #pragma warning restore CA1857
     }
 
@@ -116,6 +116,35 @@ public static partial class Mat44
     }
 
     [MethodImpl(AggressiveInlining)]
+    private static T Determinant<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
+        where T : unmanaged, INumber<T>
+    {
+        Vec4<T>
+        v0 = z.ZYYX(), v1 = z.XXXY(),
+        v2 = w.WWZW(), v3 = w.ZYWZ(),
+        v4 = z.WWZW(), v5 = z.ZYWZ(),
+        v6 = w.ZYYX(), v7 = w.XXXY(),
+        v8 = y.YXXX(), v9 = y.ZZYY();
+
+        y = y.WWWZ();
+
+        v0 = v0 * v2 - v4 * v6;
+        v1 = v1 * v3 - v5 * v7;
+
+        v2 = Permute(v0, v1, 1, 3, 2, 0);
+
+        v0 = v0.XXYZ();
+        v1 = v1.WXYY();
+
+        x *= (v0 * v8 + v1 * y - v2 * v9);
+
+        x -= x.YXWX();
+        x += x.ZZYY();
+
+        return SizeOf<T>() == 4 ? x.As128()[0] : x.As256()[0];
+    }
+
+    [MethodImpl(AggressiveInlining)]
     private static bool Invert<T>(Mat44<T> m, T eps, out Mat44<T> inv)
         where T : unmanaged, IFloatingPoint<T>
     {
@@ -132,71 +161,73 @@ public static partial class Mat44
         z = xzt.ZipLower(ywt),
         w = xzt.ZipUpper(ywt),
 
-        c0, c1, c2, c3, c4, c5, c6, c7, v03, v13,
+        v0 = z.XXYY(), v1 = w.ZWZW(),
+        v2 = x.XXYY(), v3 = y.ZWZW(),
 
-        v00 = z.XXYY(), v10 = w.ZWZW(),
-        v01 = x.XXYY(), v11 = y.ZWZW(),
+        v4 = z.UnzipEven(x),
+        v5 = w.UnzipOdd(y),
 
-        v02 = z.UnzipEven(x),
-        v12 = w.UnzipOdd(y),
+        v6, v7,
 
-        d0 = v00 * v10,
-        d1 = v01 * v11,
-        d2 = v02 * v12;
+        d0 = v0 * v1,
+        d1 = v2 * v3,
+        d2 = v4 * v5,
 
-        v00 = z.ZWZW(); v10 = w.XXYY();
-        v01 = x.ZWZW(); v11 = y.XXYY();
+        c0, c1, c2, c3, c4, c5, c6, c7;
 
-        v02 = z.UnzipOdd(x);
-        v12 = w.UnzipEven(y);
+        v0 = z.ZWZW(); v1 = w.XXYY();
+        v2 = x.ZWZW(); v3 = y.XXYY();
 
-        d0 = v00.Estimate(-v10, d0);
-        d1 = v01.Estimate(-v11, d1);
-        d2 = v02.Estimate(-v12, d2);
+        v4 = z.UnzipOdd(x);
+        v5 = w.UnzipEven(y);
 
-        v11 = Permute(d0,  d2, 1, 3, 1, 1);
-        v13 = Permute(d1,  d2, 1, 3, 3, 3);
-        v10 = Permute(v11, d0, 2, 0, 3, 0);
-        v11 = Permute(v11, d0, 1, 2, 1, 2);
-        v12 = Permute(v13, d1, 2, 0, 3, 0);
-        v13 = Permute(v13, d1, 1, 2, 1, 2);
+        d0 = v0.Estimate(-v1, d0);
+        d1 = v2.Estimate(-v3, d1);
+        d2 = v4.Estimate(-v5, d2);
 
-        v00 = y.YZXY(); v01 = x.ZXYX();
-        v02 = w.YZXY(); v03 = z.ZXYX();
+        v3 = Permute(d0, d2, 1, 3, 1, 1);
+        v7 = Permute(d1, d2, 1, 3, 3, 3);
+        v1 = Permute(v3, d0, 2, 0, 3, 0);
+        v3 = Permute(v3, d0, 1, 2, 1, 2);
+        v5 = Permute(v7, d1, 2, 0, 3, 0);
+        v7 = Permute(v7, d1, 1, 2, 1, 2);
 
-        c0 = v00 * v10; c2 = v01 * v11;
-        c4 = v02 * v12; c6 = v03 * v13;
+        v0 = y.YZXY(); v2 = x.ZXYX();
+        v4 = w.YZXY(); v6 = z.ZXYX();
 
-        v11 = Permute(d0,  d2, 0, 1, 0, 0);
-        v13 = Permute(d1,  d2, 0, 1, 2, 2);
-        v10 = Permute(d0, v11, 3, 0, 1, 2);
-        v11 = Permute(d0, v11, 2, 1, 2, 0);
-        v12 = Permute(d1, v13, 3, 0, 1, 2);
-        v13 = Permute(d1, v13, 2, 1, 2, 0);
+        c0 = v0 * v1; c2 = v2 * v3;
+        c4 = v4 * v5; c6 = v6 * v7;
 
-        v00 = y.ZWYZ(); v01 = x.WZWY();
-        v02 = w.ZWYZ(); v03 = z.WZWY();
+        v3 = Permute(d0, d2, 0, 1, 0, 0);
+        v7 = Permute(d1, d2, 0, 1, 2, 2);
+        v1 = Permute(d0, v3, 3, 0, 1, 2);
+        v3 = Permute(d0, v3, 2, 1, 2, 0);
+        v5 = Permute(d1, v7, 3, 0, 1, 2);
+        v7 = Permute(d1, v7, 2, 1, 2, 0);
 
-        c0 = v00.Estimate(-v10, c0);
-        c2 = v01.Estimate(-v11, c2);
-        c4 = v02.Estimate(-v12, c4);
-        c6 = v03.Estimate(-v13, c6);
+        v0 = y.ZWYZ(); v2 = x.WZWY();
+        v4 = w.ZWYZ(); v6 = z.WZWY();
 
-        v10 = Permute(d0, d2, 2, 2, 0, 1).XWZX();
-        v11 = Permute(d0, d2, 0, 3, 0, 1).WXYZ();
-        v12 = Permute(d1, d2, 2, 2, 2, 3).XWZX();
-        v13 = Permute(d1, d2, 0, 3, 2, 3).WXYZ();
+        c0 = v0.Estimate(-v1, c0);
+        c2 = v2.Estimate(-v3, c2);
+        c4 = v4.Estimate(-v5, c4);
+        c6 = v6.Estimate(-v7, c6);
 
-        v00 = y.WXWX(); v01 = x.YWXZ();
-        v02 = w.WXWX(); v03 = z.YWXZ();
+        v1 = Permute(d0, d2, 2, 2, 0, 1).XWZX();
+        v3 = Permute(d0, d2, 0, 3, 0, 1).WXYZ();
+        v5 = Permute(d1, d2, 2, 2, 2, 3).XWZX();
+        v7 = Permute(d1, d2, 0, 3, 2, 3).WXYZ();
 
-        v00 *= v10; v01 *= v11;
-        v02 *= v12; v03 *= v13;
+        v0 = y.WXWX(); v2 = x.YWXZ();
+        v4 = w.WXWX(); v6 = z.YWXZ();
 
-        c1 = c0 - v00; c0 += v00;
-        c3 = c2 + v01; c2 -= v01;
-        c5 = c4 - v02; c4 += v02;
-        c7 = c6 + v03; c6 -= v03;
+        v0 *= v1; v2 *= v3;
+        v4 *= v5; v6 *= v7;
+
+        c1 = c0 - v0; c0 += v0;
+        c3 = c2 + v2; c2 -= v2;
+        c5 = c4 - v4; c4 += v4;
+        c7 = c6 + v6; c6 -= v6;
 
         c0 = Permute(c0, c1, 0, 2, 1, 3).XZYW();
         c2 = Permute(c2, c3, 0, 2, 1, 3).XZYW();

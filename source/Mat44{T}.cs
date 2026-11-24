@@ -51,6 +51,9 @@ public partial struct Mat44<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w) :
     [MethodImpl(AggressiveInlining)]
     public readonly Mat44<T> Transpose() => Mat44.Transpose(this);
 
+    [MethodImpl(AggressiveInlining)]
+    public readonly T Determinant() => Mat44.Determinant(this);
+
     public readonly Mat44<TOther> As<TOther>()
         where TOther : unmanaged, INumber<TOther>
             => Mat44.As<T, TOther>(this);
