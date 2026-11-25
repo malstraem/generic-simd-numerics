@@ -41,7 +41,7 @@ public class StressConversionMat44<T1, T2> : BaseBench<T1>
 }
 
 [GenericTypeArguments(typeof(float))]
-//[GenericTypeArguments(typeof(double))]
+[GenericTypeArguments(typeof(double))]
 public class StressMat44WithQuat<T> : BaseStressMat44<T>
     where T : unmanaged, IFloatingPoint<T>, IRootFunctions<T>, ITrigonometricFunctions<T>
 {
@@ -84,13 +84,13 @@ public class StressMat44WithQuat<T> : BaseStressMat44<T>
     //    return equal;
     //}
 
-    [Benchmark]
-    public void Invert()
-    {
-        for (int i = 0; i < Count; i++)
-            //_ = mats[i].TryInvert(out @out[i]);
-            _ = Mat44.TryInvert(mats[i], out @out[i]);
-    }
+    //[Benchmark]
+    //public void Invert()
+    //{
+    //    for (int i = 0; i < Count; i++)
+    //        //_ = mats[i].TryInvert(out @out[i]);
+    //        _ = Mat44.TryInvert(mats[i], out @out[i]);
+    //}
 
     //[Benchmark]
     //public void Rotation()

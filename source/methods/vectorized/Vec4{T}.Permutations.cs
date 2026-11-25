@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Intrinsics.X86;
 
 namespace System.Numerics;
 
@@ -60,6 +61,10 @@ public partial struct Vec4<T>
         return Vector256.UnzipEven(this.As256(), v.As256()).Vec4();
     }
 
+    // TODO:
+    // broadcasts for XXXX, ZZZZ, YYYY and WWWW?
+    // more optimal insturctions from ISA for concrete permutations
+
     #region X---
     [MethodImpl(AggressiveInlining)]
     internal Vec4<T> XXXX() => Permute(0, 0, 0, 0);
@@ -112,7 +117,20 @@ public partial struct Vec4<T>
     internal Vec4<T> YXZW() => Permute(1, 0, 2, 3);
 
     [MethodImpl(AggressiveInlining)]
-    internal Vec4<T> YXWZ() => Permute(1, 0, 3, 2);
+    internal Vec4<T> YXWZ()
+    {
+        if (SizeOf<T>() == 4)
+        {
+            if (Avx.IsSupported)
+                return Avx.Permute(this.As128().As<T, float>(), 0xB1).As<float, T>().Vec4();
+        }
+        if (SizeOf<T>() == 8)
+        {
+            if (Avx.IsSupported)
+                return Avx.Permute(this.As256().As<T, double>(), 0x05).As<double, T>().Vec4();
+        }
+        return Permute(1, 0, 3, 2);
+    }
 
     [MethodImpl(AggressiveInlining)]
     internal Vec4<T> YZXW() => Permute(1, 2, 0, 3);
@@ -165,7 +183,23 @@ public partial struct Vec4<T>
     internal Vec4<T> ZWYX() => Permute(2, 3, 1, 0);
 
     [MethodImpl(AggressiveInlining)]
-    internal Vec4<T> ZWXY() => Permute(2, 3, 0, 1);
+    internal Vec4<T> ZWXY()
+    {
+        if (SizeOf<T>() == 4)
+        {
+            if (Avx.IsSupported)
+                return Avx.Permute(this.As128().As<T, float>(), 0x4E).As<float, T>().Vec4();
+        }
+        if (SizeOf<T>() == 8)
+        {
+            if (Avx.IsSupported)
+            {
+                var v = this.As256().As<T, double>();
+                return Avx.Permute2x128(v, v, 0x01).As<double, T>().Vec4();
+            }
+        }
+        return Permute(2, 3, 0, 1);
+    }
 
     [MethodImpl(AggressiveInlining)]
     internal Vec4<T> ZWZW() => Permute(2, 3, 2, 3);

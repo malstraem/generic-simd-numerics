@@ -11,20 +11,29 @@ public static partial class Mat44
 {
     [MethodImpl(AggressiveInlining)]
     private static Vec4<T> Permute<T>(
-        Vec4<T> lower, Vec4<T> upper,
+        Vec4<T> a, Vec4<T> b,
         [ConstantExpected] byte x, [ConstantExpected] byte y, [ConstantExpected] byte z, [ConstantExpected] byte w)
             where T : unmanaged, INumber<T>
     {
 #pragma warning disable CA1857
         if (SizeOf<T>() == 4)
-            return Sse.Shuffle(lower.As128().As<T, float>(), upper.As128().As<T, float>(), (byte)((w << 6) | (z << 4) | (y << 2) | x)).As<float, T>().Vec4();
-
+        {
+            return Sse.Shuffle(a.As128().As<T, float>(), b.As128().As<T, float>(), (byte)((w << 6) | (z << 4) | (y << 2) | x)).As<float, T>().Vec4();
+        }
         return Vector256.ConcatLowerLower(
-            Vector256.Shuffle(lower.As256().As<T, double>(), Vector256.Create(x, y, 0, 0)).As<double, T>(),
-            Vector256.Shuffle(upper.As256().As<T, double>(), Vector256.Create(z, w, 0, 0)).As<double, T>()
+            Vector256.Shuffle(a.As256().As<T, double>(), Vector256.Create(x, y, 0, 0)).As<double, T>(),
+            Vector256.Shuffle(b.As256().As<T, double>(), Vector256.Create(z, w, 0, 0)).As<double, T>()
         ).Vec4();
 #pragma warning restore CA1857
     }
+
+    [MethodImpl(AggressiveInlining)]
+    private static Mat44<T> TransposeSoft<T>(Mat44<T> m)
+        where T : unmanaged, INumber<T> => new(
+            m.X.X, m.Y.X, m.Z.X, m.W.X,
+            m.X.Y, m.Y.Y, m.Z.Y, m.W.Y,
+            m.X.Z, m.Y.Z, m.Z.Z, m.W.Z,
+            m.X.W, m.Y.W, m.Z.W, m.W.W);
 
     [MethodImpl(AggressiveInlining)]
     private static Mat44<T> Transpose8<T>(Mat44<T> m)
@@ -69,11 +78,7 @@ public static partial class Mat44
 
             return m;
         }
-        return new(
-            m.X.X, m.Y.X, m.Z.X, m.W.X,
-            m.X.Y, m.Y.Y, m.Z.Y, m.W.Y,
-            m.X.Z, m.Y.Z, m.Z.Z, m.W.Z,
-            m.X.W, m.Y.W, m.Z.W, m.W.W);
+        return TransposeSoft(m);
     }
 
     [MethodImpl(AggressiveInlining)]
@@ -108,42 +113,41 @@ public static partial class Mat44
 
             return m;
         }
-        return new(
-            m.X.X, m.Y.X, m.Z.X, m.W.X,
-            m.X.Y, m.Y.Y, m.Z.Y, m.W.Y,
-            m.X.Z, m.Y.Z, m.Z.Z, m.W.Z,
-            m.X.W, m.Y.W, m.Z.W, m.W.W);
+        return TransposeSoft(m);
     }
 
     [MethodImpl(AggressiveInlining)]
-    private static T Determinant<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
+    public static T Determinant<T>(Vec4<T> x, Vec4<T> y, Vec4<T> z, Vec4<T> w)
         where T : unmanaged, INumber<T>
     {
-        Vec4<T>
-        v0 = z.ZYYX(), v1 = z.XXXY(),
-        v2 = w.WWZW(), v3 = w.ZYWZ(),
-        v4 = z.WWZW(), v5 = z.ZYWZ(),
-        v6 = w.ZYYX(), v7 = w.XXXY(),
-        v8 = y.YXXX(), v9 = y.ZZYY();
+        y = y.ZWXY();
+        w = w.ZWXY();
 
-        y = y.WWWZ();
+        var a = (z * w).YXWZ();
 
-        v0 = v0 * v2 - v4 * v6;
-        v1 = v1 * v3 - v5 * v7;
+        var b = a.ZWXY() - a;
 
-        v2 = Permute(v0, v1, 1, 3, 2, 0);
+        var c = y * b;
 
-        v0 = v0.XXYZ();
-        v1 = v1.WXYY();
+        a = y * z;
 
-        x *= (v0 * v8 + v1 * y - v2 * v9);
+        a = a.YXWZ();
+        b = a - a.ZWXY();
 
-        x -= x.YXWX();
-        x += x.ZZYY();
+        c = w.Estimate(b, c);
 
-        return SizeOf<T>() == 4 ? x.As128()[0] : x.As256()[0];
+        a = y.ZWXY() * w;
+        a = a.YXWZ();
+        z = z.ZWXY();
+
+        b = a - a.ZWXY();
+
+        c = z.Estimate(b, c);
+
+        return (x * c).Sum();
     }
 
+    [Obsolete("rewrite")]
     [MethodImpl(AggressiveInlining)]
     private static bool Invert<T>(Mat44<T> m, T eps, out Mat44<T> inv)
         where T : unmanaged, IFloatingPoint<T>

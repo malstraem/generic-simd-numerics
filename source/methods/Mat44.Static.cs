@@ -276,11 +276,7 @@ public static partial class Mat44
         if (SizeOf<T>() == 8)
             return Transpose64(m);
 
-        return new(
-            m.X.X, m.Y.X, m.Z.X, m.W.X,
-            m.X.Y, m.Y.Y, m.Z.Y, m.W.Y,
-            m.X.Z, m.Y.Z, m.Z.Z, m.W.Z,
-            m.X.W, m.Y.W, m.Z.W, m.W.W);
+        return TransposeSoft(m);
     }
 
     [Obsolete("vectorize, todo 'Scale' with input matrix")]
@@ -310,7 +306,7 @@ public static partial class Mat44
     public static T Determinant<T>(Mat44<T> m)
         where T : unmanaged, INumber<T>
     {
-        if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Sse.IsSupported) // uses SSE specific shuffle
+        if ((SizeOf<T>() == 4 && Vector128<T>.IsSupported && Vector128.IsHardwareAccelerated)
          || (SizeOf<T>() == 8 && Vector256<T>.IsSupported && Vector256.IsHardwareAccelerated))
         {
             return Determinant(m.X, m.Y, m.Z, m.W);
@@ -363,7 +359,7 @@ public static partial class Mat44
 
         T det = (xx * inv.X.X) + (xy * inv.Y.X) + (xz * inv.Z.X) + (xw * inv.W.X);
 
-        if (T.Abs(det) <= eps)
+        if (T.Abs(det) <= eps) // do we really need a NaN insertions as as is done in Matrix4x4?
             return false;
 
         inv.X.Y = -((xy * c0) - (xz * c1) + (xw * c2));
